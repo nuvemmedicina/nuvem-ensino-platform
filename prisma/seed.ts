@@ -267,7 +267,7 @@ async function main() {
       price: 450,
       hours: 3,
       status: "PUBLISHED",
-      previewUrl: "https://www.youtube.com/embed/73mWEooXdHE",
+      previewUrl: null,
     },
     create: {
       slug: "doencas-da-cavidade-oral-halimetria-e-sialometria",
@@ -281,7 +281,6 @@ async function main() {
       status: "PUBLISHED",
       instructorId: instructorWanderley.id,
       thumbnailUrl: "/instructors/vera-wanderley.jpg",
-      previewUrl: "https://www.youtube.com/embed/73mWEooXdHE",
       metaTitle: "Doenças da Cavidade Oral, Halimetria e Sialometria | Nuvem Ensino",
       metaDesc:
         "Curso online: diagnóstico de doenças da cavidade oral, halitose, xerostomia, candidose, úlceras aftosas e técnicas de halimetria e sialometria.",
