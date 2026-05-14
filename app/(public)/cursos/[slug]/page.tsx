@@ -12,57 +12,24 @@ import {
   Award,
   ChevronRight,
 } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
-type CourseSlug =
-  | "manometria-phmetria-impedancia"
-  | "manometria-anorretal"
-  | "testes-respiratorios"
-  | "fisioterapia-respiratoria";
-
-const coursesData: Record<
-  CourseSlug,
+// Rich static content (objectives, modules, audience) not yet in DB
+const staticContent: Record<
+  string,
   {
-    slug: CourseSlug;
-    name: string;
-    shortDesc: string;
-    description: string;
-    price: number;
-    hours: number;
-    category: "Hands-On" | "Online";
-    specialty: string;
-    instructorName: string;
-    instructorPhoto: string;
-    instructorTitle: string;
-    instructorBio: string;
-    seats: number | null;
-    reservedPct: number;
-    startDate: string | null;
-    location: string | null;
     objectives: string[];
     targetAudience: string[];
     modules: { title: string; lessons: string[] }[];
     includes: string[];
+    instructorBio: string;
+    startDate: string | null;
   }
 > = {
   "manometria-phmetria-impedancia": {
-    slug: "manometria-phmetria-impedancia",
-    name: "Manometria, pHmetria e Impedância",
-    shortDesc: "Treinamento hands-on em exames de motilidade digestiva de alta resolução.",
-    description:
-      "Curso intensivo presencial com equipamentos de última geração. O aluno realizará procedimentos supervisionados de manometria esofágica de alta resolução, pHmetria de 24h e impedancio-pHmetria, com análise e interpretação de laudos reais.",
-    price: 6500,
-    hours: 16,
-    category: "Hands-On",
-    specialty: "Gastroenterologia",
-    instructorName: "Dr. Felipe Nelson",
-    instructorPhoto: "/instructors/felipe-nelson.jpg",
-    instructorTitle: "Especialista em Motilidade Digestiva · CRM-MG",
     instructorBio:
       "Dr. Felipe Nelson é referência nacional em exames de motilidade digestiva, com mais de 10 anos de experiência em manometria de alta resolução, pHmetria e impedância esofágica. Formado pela UFMG com residência em Gastroenterologia.",
-    seats: 12,
-    reservedPct: 60,
     startDate: "A definir",
-    location: "Nuvem Medicina · Belo Horizonte — MG",
     objectives: [
       "Realizar manometria esofágica de alta resolução com autonomia",
       "Interpretar laudos de pHmetria de 24 horas e impedancio-pHmetria",
@@ -120,24 +87,9 @@ const coursesData: Record<
     ],
   },
   "manometria-anorretal": {
-    slug: "manometria-anorretal",
-    name: "Manometria Anorretal",
-    shortDesc: "Técnicas de manometria anorretal de alta resolução com interpretação clínica.",
-    description:
-      "Curso hands-on de manometria anorretal de alta resolução, com treinamento em equipamentos de ponta e foco na interpretação clínica voltada ao diagnóstico de distúrbios funcionais do assoalho pélvico.",
-    price: 4500,
-    hours: 12,
-    category: "Hands-On",
-    specialty: "Gastroenterologia",
-    instructorName: "Dra. Eliane Basques",
-    instructorPhoto: "/instructors/dra-eliane.jpg",
-    instructorTitle: "Especialista em Manometria Anorretal · CRM-MG",
     instructorBio:
       "Dra. Eliane Basques é especialista em fisiologia anorretal com ampla experiência em manometria de alta resolução e ultrassonografia endoanal. Professora convidada em diversos congressos nacionais de Coloproctologia.",
-    seats: 10,
-    reservedPct: 40,
     startDate: "A definir",
-    location: "Nuvem Medicina · Belo Horizonte — MG",
     objectives: [
       "Dominar a técnica de manometria anorretal de alta resolução",
       "Interpretar perfis de pressão e reflexo retoanal",
@@ -186,24 +138,9 @@ const coursesData: Record<
     ],
   },
   "testes-respiratorios": {
-    slug: "testes-respiratorios",
-    name: "Testes Respiratórios",
-    shortDesc: "Interpretação avançada de espirometria e manovacuometria em formato online.",
-    description:
-      "Curso online ao vivo com abordagem prática de espirometria, manovacuometria e curva fluxo-volume. Ideal para profissionais que desejam aprofundar a interpretação dos exames respiratórios no contexto clínico.",
-    price: 2200,
-    hours: 8,
-    category: "Online",
-    specialty: "Fisioterapia",
-    instructorName: "Dra. Vera Ângelo",
-    instructorPhoto: "/instructors/dra-vera.jpg",
-    instructorTitle: "Gastroenterologista & Motilidade Digestiva · CRM-MG 22284 · RQE 10411",
     instructorBio:
       "Dra. Vera Ângelo é diretora técnica da Nuvem Medicina e coordena os programas de formação da Nuvem Ensino. Especialista em gastroenterologia com foco em doenças funcionais digestivas e fisioterapia respiratória.",
-    seats: null,
-    reservedPct: 0,
     startDate: "A definir",
-    location: null,
     objectives: [
       "Compreender os fundamentos da espirometria e seus padrões obstrutivos e restritivos",
       "Interpretar curvas fluxo-volume com segurança clínica",
@@ -251,24 +188,9 @@ const coursesData: Record<
     ],
   },
   "fisioterapia-respiratoria": {
-    slug: "fisioterapia-respiratoria",
-    name: "Fisioterapia Respiratória",
-    shortDesc: "Técnicas de reabilitação pulmonar e manejo clínico em ambiente supervisionado.",
-    description:
-      "Treinamento hands-on em fisioterapia respiratória com foco em reabilitação pulmonar, manejo de pacientes críticos e técnicas de higiene brônquica em ambiente clínico real.",
-    price: 3500,
-    hours: 12,
-    category: "Hands-On",
-    specialty: "Fisioterapia",
-    instructorName: "Dra. Anna Karoline",
-    instructorPhoto: "/instructors/anna-karoline.jpg",
-    instructorTitle: "Fisioterapeuta Respiratória · CREFITO",
     instructorBio:
       "Dra. Anna Karoline é fisioterapeuta especializada em reabilitação pulmonar e fisioterapia respiratória intensiva. Atua na área clínica há mais de 8 anos e é referência em técnicas de higiene brônquica e ventilação mecânica não invasiva.",
-    seats: 14,
-    reservedPct: 25,
     startDate: "A definir",
-    location: "Nuvem Medicina · Belo Horizonte — MG",
     objectives: [
       "Aplicar técnicas de higiene brônquica com segurança",
       "Manusear equipamentos de fisioterapia respiratória",
@@ -322,35 +244,61 @@ type Props = {
 };
 
 export async function generateStaticParams() {
-  return Object.keys(coursesData).map((slug) => ({ slug }));
+  const courses = await prisma.course.findMany({
+    where: { status: "PUBLISHED" },
+    select: { slug: true },
+  });
+  return courses.map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const course = coursesData[slug as CourseSlug];
+  const course = await prisma.course.findFirst({
+    where: { slug, status: "PUBLISHED" },
+    include: { instructor: { include: { user: true } } },
+  });
   if (!course) return {};
 
   return {
-    title: `${course.name} | Nuvem Ensino`,
-    description: course.shortDesc,
+    title: course.metaTitle ?? `${course.title} | Nuvem Ensino`,
+    description: course.metaDesc ?? course.shortDesc ?? course.description,
     openGraph: {
-      title: course.name,
-      description: course.shortDesc,
-      images: [course.instructorPhoto],
+      title: course.title,
+      description: course.shortDesc ?? course.description,
+      images: course.thumbnailUrl ? [course.thumbnailUrl] : [],
     },
   };
 }
 
 export default async function CoursePage({ params }: Props) {
   const { slug } = await params;
-  const course = coursesData[slug as CourseSlug];
+
+  const course = await prisma.course.findFirst({
+    where: { slug, status: "PUBLISHED" },
+    include: {
+      instructor: { include: { user: true } },
+      tags: { include: { tag: true } },
+    },
+  });
 
   if (!course) notFound();
 
+  const content = staticContent[slug] ?? null;
+  const reservedPct =
+    course.totalSeats && course.totalSeats > 0
+      ? Math.round(((course.reservedSeats ?? 0) / course.totalSeats) * 100)
+      : 0;
   const availableSeats =
-    course.seats != null
-      ? Math.round(course.seats * (1 - course.reservedPct / 100))
+    course.totalSeats !== null
+      ? course.totalSeats - (course.reservedSeats ?? 0)
       : null;
+  const categoryLabel =
+    course.category === "HANDS_ON"
+      ? "Hands-On"
+      : course.category === "ONLINE"
+      ? "Online"
+      : "Híbrido";
+  const primaryTag = course.tags[0]?.tag.name;
 
   return (
     <div>
@@ -363,7 +311,7 @@ export default async function CoursePage({ params }: Props) {
             <ChevronRight className="w-3 h-3" />
             <Link href="/cursos" className="hover:text-white/70 transition-colors">Cursos</Link>
             <ChevronRight className="w-3 h-3" />
-            <span className="text-white/60">{course.name}</span>
+            <span className="text-white/60">{course.title}</span>
           </nav>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 items-start">
@@ -371,15 +319,17 @@ export default async function CoursePage({ params }: Props) {
             <div>
               <div className="flex flex-wrap items-center gap-3 mb-5">
                 <span className="font-sans text-[10px] font-semibold uppercase tracking-widest text-accent bg-primary/60 border border-accent/20 px-3 py-1 rounded-full">
-                  {course.category}
+                  {categoryLabel}
                 </span>
-                <span className="font-sans text-[10px] font-semibold uppercase tracking-widest text-white/50">
-                  {course.specialty}
-                </span>
+                {primaryTag && (
+                  <span className="font-sans text-[10px] font-semibold uppercase tracking-widest text-white/50">
+                    {primaryTag}
+                  </span>
+                )}
               </div>
 
               <h1 className="font-serif text-4xl sm:text-5xl font-light text-white leading-tight mb-4">
-                {course.name}
+                {course.title}
               </h1>
               <p className="font-sans text-base text-white/60 leading-relaxed max-w-2xl mb-8">
                 {course.description}
@@ -390,7 +340,7 @@ export default async function CoursePage({ params }: Props) {
                   <Clock className="w-4 h-4 text-accent/70" />
                   {course.hours}h de formação
                 </span>
-                {course.category === "Hands-On" && course.seats && (
+                {availableSeats !== null && (
                   <span className="flex items-center gap-2 font-sans text-sm">
                     <Users className="w-4 h-4 text-accent/70" />
                     {availableSeats} vagas disponíveis
@@ -402,10 +352,10 @@ export default async function CoursePage({ params }: Props) {
                     {course.location}
                   </span>
                 )}
-                {course.startDate && (
+                {content?.startDate && (
                   <span className="flex items-center gap-2 font-sans text-sm">
                     <Calendar className="w-4 h-4 text-accent/70" />
-                    {course.startDate}
+                    {content.startDate}
                   </span>
                 )}
               </div>
@@ -421,24 +371,24 @@ export default async function CoursePage({ params }: Props) {
                   {new Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL",
-                  }).format(course.price)}
+                  }).format(Number(course.price))}
                 </p>
                 <p className="font-sans text-xs text-white/40 mb-6">
-                  {course.category === "Online"
+                  {course.category === "ONLINE"
                     ? "Acesso completo ao curso"
                     : "Por pessoa — inclui todos os módulos"}
                 </p>
 
-                {course.seats && course.reservedPct > 0 && (
+                {course.totalSeats && reservedPct > 0 && (
                   <div className="mb-5">
                     <div className="flex justify-between font-sans text-[11px] text-white/50 mb-1.5">
                       <span>Reservas</span>
-                      <span>{course.reservedPct}%</span>
+                      <span>{reservedPct}%</span>
                     </div>
                     <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-accent/60 rounded-full"
-                        style={{ width: `${course.reservedPct}%` }}
+                        style={{ width: `${reservedPct}%` }}
                       />
                     </div>
                   </div>
@@ -468,83 +418,91 @@ export default async function CoursePage({ params }: Props) {
       <div className="max-w-5xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 items-start">
         <div className="space-y-14">
           {/* O que você vai aprender */}
-          <section>
-            <h2 className="font-serif text-2xl font-medium text-foreground mb-6 flex items-center gap-3">
-              <BookOpen className="w-5 h-5 text-primary/60" />
-              O que você vai aprender
-            </h2>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {course.objectives.map((obj) => (
-                <li key={obj} className="flex items-start gap-3">
-                  <CheckCircle className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                  <span className="font-sans text-sm text-muted leading-relaxed">{obj}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {content?.objectives && (
+            <section>
+              <h2 className="font-serif text-2xl font-medium text-foreground mb-6 flex items-center gap-3">
+                <BookOpen className="w-5 h-5 text-primary/60" />
+                O que você vai aprender
+              </h2>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {content.objectives.map((obj) => (
+                  <li key={obj} className="flex items-start gap-3">
+                    <CheckCircle className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                    <span className="font-sans text-sm text-muted leading-relaxed">{obj}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           {/* Ementa */}
-          <section>
-            <h2 className="font-serif text-2xl font-medium text-foreground mb-6">
-              Conteúdo do Curso
-            </h2>
-            <div className="flex flex-col gap-3">
-              {course.modules.map((mod, i) => (
-                <details
-                  key={mod.title}
-                  className="group rounded-xl border border-border bg-surface overflow-hidden"
-                  open={i === 0}
-                >
-                  <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none font-sans text-sm font-semibold text-foreground select-none">
-                    {mod.title}
-                    <ChevronRight className="w-4 h-4 text-muted transition-transform group-open:rotate-90" />
-                  </summary>
-                  <ul className="px-5 pb-4 flex flex-col gap-2 border-t border-border">
-                    {mod.lessons.map((lesson) => (
-                      <li
-                        key={lesson}
-                        className="flex items-center gap-3 font-sans text-sm text-muted py-1.5"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0" />
-                        {lesson}
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              ))}
-            </div>
-          </section>
+          {content?.modules && (
+            <section>
+              <h2 className="font-serif text-2xl font-medium text-foreground mb-6">
+                Conteúdo do Curso
+              </h2>
+              <div className="flex flex-col gap-3">
+                {content.modules.map((mod, i) => (
+                  <details
+                    key={mod.title}
+                    className="group rounded-xl border border-border bg-surface overflow-hidden"
+                    open={i === 0}
+                  >
+                    <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none font-sans text-sm font-semibold text-foreground select-none">
+                      {mod.title}
+                      <ChevronRight className="w-4 h-4 text-muted transition-transform group-open:rotate-90" />
+                    </summary>
+                    <ul className="px-5 pb-4 flex flex-col gap-2 border-t border-border">
+                      {mod.lessons.map((lesson) => (
+                        <li
+                          key={lesson}
+                          className="flex items-center gap-3 font-sans text-sm text-muted py-1.5"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0" />
+                          {lesson}
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Público-alvo */}
-          <section>
-            <h2 className="font-serif text-2xl font-medium text-foreground mb-6">
-              Para quem é este curso
-            </h2>
-            <ul className="flex flex-col gap-2">
-              {course.targetAudience.map((target) => (
-                <li key={target} className="flex items-center gap-3">
-                  <CheckCircle className="w-4 h-4 text-primary shrink-0" />
-                  <span className="font-sans text-sm text-muted">{target}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {content?.targetAudience && (
+            <section>
+              <h2 className="font-serif text-2xl font-medium text-foreground mb-6">
+                Para quem é este curso
+              </h2>
+              <ul className="flex flex-col gap-2">
+                {content.targetAudience.map((target) => (
+                  <li key={target} className="flex items-center gap-3">
+                    <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+                    <span className="font-sans text-sm text-muted">{target}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           {/* O que está incluído */}
-          <section>
-            <h2 className="font-serif text-2xl font-medium text-foreground mb-6 flex items-center gap-3">
-              <Award className="w-5 h-5 text-primary/60" />
-              O que está incluído
-            </h2>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {course.includes.map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <CheckCircle className="w-4 h-4 text-accent-dark mt-0.5 shrink-0" />
-                  <span className="font-sans text-sm text-muted leading-relaxed">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {content?.includes && (
+            <section>
+              <h2 className="font-serif text-2xl font-medium text-foreground mb-6 flex items-center gap-3">
+                <Award className="w-5 h-5 text-primary/60" />
+                O que está incluído
+              </h2>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {content.includes.map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <CheckCircle className="w-4 h-4 text-accent-dark mt-0.5 shrink-0" />
+                    <span className="font-sans text-sm text-muted leading-relaxed">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
 
         {/* ── Sidebar — Instrutor ── */}
@@ -555,35 +513,42 @@ export default async function CoursePage({ params }: Props) {
             </p>
             <div className="flex items-start gap-4 mb-4">
               <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20 shrink-0">
-                <Image
-                  src={course.instructorPhoto}
-                  alt={course.instructorName}
-                  fill
-                  className="object-cover object-top"
-                  sizes="64px"
-                />
+                {course.instructor.photoUrl ? (
+                  <Image
+                    src={course.instructor.photoUrl}
+                    alt={course.instructor.user.name ?? ""}
+                    fill
+                    className="object-cover object-top"
+                    sizes="64px"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-canvas" />
+                )}
               </div>
               <div>
                 <p className="font-serif text-lg font-medium text-foreground leading-tight">
-                  {course.instructorName}
+                  {course.instructor.user.name}
                 </p>
                 <p className="font-sans text-xs text-muted mt-1 leading-snug">
-                  {course.instructorTitle}
+                  {course.instructor.title}
+                  {course.instructor.crm && ` · ${course.instructor.crm}`}
                 </p>
               </div>
             </div>
-            <p className="font-sans text-sm text-muted leading-relaxed">
-              {course.instructorBio}
-            </p>
+            {content?.instructorBio && (
+              <p className="font-sans text-sm text-muted leading-relaxed">
+                {content.instructorBio}
+              </p>
+            )}
           </div>
 
-          {/* CTA mobile (visible below lg) */}
+          {/* CTA mobile */}
           <div className="lg:hidden bg-surface border border-border rounded-2xl p-6">
             <p className="font-serif text-3xl font-semibold text-primary mb-1">
               {new Intl.NumberFormat("pt-BR", {
                 style: "currency",
                 currency: "BRL",
-              }).format(course.price)}
+              }).format(Number(course.price))}
             </p>
             <p className="font-sans text-xs text-muted mb-5">
               {course.hours}h de formação

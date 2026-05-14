@@ -4,9 +4,6 @@ import { MercadoPagoConfig, Payment as MPPayment, Preference } from "mercadopago
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const mp = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN! });
-
 const courseData: Record<string, { name: string; price: number; hours: number }> = {
   "manometria-phmetria-impedancia": { name: "Manometria, pHmetria e Impedância", price: 6500, hours: 16 },
   "manometria-anorretal": { name: "Manometria Anorretal", price: 4500, hours: 12 },
@@ -15,6 +12,9 @@ const courseData: Record<string, { name: string; price: number; hours: number }>
 };
 
 export async function POST(req: Request) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+  const mp = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN! });
+
   const session = await auth();
   if (!session) {
     return NextResponse.json({ error: "Não autenticado." }, { status: 401 });

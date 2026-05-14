@@ -2,74 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { Filter, Search } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Cursos | Nuvem Ensino",
   description:
     "Explore nosso catálogo de cursos hands-on e online em gastroenterologia, motilidade digestiva e fisioterapia respiratória.",
 };
-
-const allCourses = [
-  {
-    slug: "manometria-phmetria-impedancia",
-    name: "Manometria, pHmetria e Impedância",
-    description:
-      "Domine os principais exames de motilidade digestiva: manometria de alta resolução, pHmetria e impedância em ambiente clínico supervisionado.",
-    price: 6500,
-    hours: 16,
-    category: "Hands-On" as const,
-    specialty: "Gastroenterologia",
-    instructorName: "Dr. Felipe Nelson",
-    instructorPhoto: "/instructors/felipe-nelson.jpg",
-    seats: 12,
-    reservedPct: 60,
-  },
-  {
-    slug: "manometria-anorretal",
-    name: "Manometria Anorretal",
-    description:
-      "Técnicas avançadas de manometria anorretal de alta resolução com interpretação clínica aplicada ao diagnóstico de distúrbios funcionais.",
-    price: 4500,
-    hours: 12,
-    category: "Hands-On" as const,
-    specialty: "Gastroenterologia",
-    instructorName: "Dra. Eliane Basques",
-    instructorPhoto: "/instructors/dra-eliane.jpg",
-    seats: 10,
-    reservedPct: 40,
-  },
-  {
-    slug: "testes-respiratorios",
-    name: "Testes Respiratórios",
-    description:
-      "Espirometria, manovacuometria e curva fluxo-volume com interpretação avançada em módulo online ao vivo.",
-    price: 2200,
-    hours: 8,
-    category: "Online" as const,
-    specialty: "Fisioterapia",
-    instructorName: "Dra. Vera Ângelo",
-    instructorPhoto: "/instructors/dra-vera.jpg",
-    seats: null,
-    reservedPct: 0,
-  },
-  {
-    slug: "fisioterapia-respiratoria",
-    name: "Fisioterapia Respiratória",
-    description:
-      "Técnicas de reabilitação pulmonar e manejo de pacientes críticos com foco em prática clínica e procedimentos supervisionados.",
-    price: 3500,
-    hours: 12,
-    category: "Hands-On" as const,
-    specialty: "Fisioterapia",
-    instructorName: "Dra. Anna Karoline",
-    instructorPhoto: "/instructors/anna-karoline.jpg",
-    seats: 14,
-    reservedPct: 25,
-  },
-];
-
-const instructors = [...new Set(allCourses.map((c) => c.instructorName))];
-const specialties = [...new Set(allCourses.map((c) => c.specialty))];
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
@@ -81,31 +20,61 @@ export default async function CursosPage({
   const params = await searchParams;
 
   const categoria = typeof params.categoria === "string" ? params.categoria : "";
-  const especialidade = typeof params.especialidade === "string" ? params.especialidade : "";
-  const instrutor = typeof params.instrutor === "string" ? params.instrutor : "";
-  const precoMax = typeof params.precoMax === "string" ? Number(params.precoMax) : Infinity;
+  const tagSlug = typeof params.especialidade === "string" ? params.especialidade : "";
+  const instructorSlug = typeof params.instrutor === "string" ? params.instrutor : "";
+  const precoMax = typeof params.precoMax === "string" ? Number(params.precoMax) : undefined;
   const busca = typeof params.busca === "string" ? params.busca.toLowerCase() : "";
 
-  const filtered = allCourses.filter((c) => {
-    if (categoria && c.category.toLowerCase() !== categoria.toLowerCase()) return false;
-    if (especialidade && c.specialty !== especialidade) return false;
-    if (instrutor && c.instructorName !== instrutor) return false;
-    if (precoMax < Infinity && c.price > precoMax) return false;
-    if (busca && !c.name.toLowerCase().includes(busca) && !c.description.toLowerCase().includes(busca)) return false;
-    return true;
+  const courses = await prisma.course.findMany({
+    where: {
+      status: "PUBLISHED",
+      ...(categoria
+        ? { category: categoria.toUpperCase() as "HANDS_ON" | "ONLINE" | "HYBRID" }
+        : {}),
+      ...(tagSlug
+        ? { tags: { some: { tag: { slug: tagSlug } } } }
+        : {}),
+      ...(instructorSlug
+        ? { instructor: { slug: instructorSlug } }
+        : {}),
+      ...(precoMax !== undefined ? { price: { lte: precoMax } } : {}),
+      ...(busca
+        ? {
+            OR: [
+              { title: { contains: busca, mode: "insensitive" } },
+              { description: { contains: busca, mode: "insensitive" } },
+            ],
+          }
+        : {}),
+    },
+    include: {
+      instructor: { include: { user: true } },
+      tags: { include: { tag: true } },
+    },
+    orderBy: { createdAt: "asc" },
+  });
+
+  // Data for filter options
+  const allTags = await prisma.tag.findMany({ orderBy: { name: "asc" } });
+  const allInstructors = await prisma.instructor.findMany({
+    include: { user: true },
+    orderBy: { user: { name: "asc" } },
   });
 
   function buildUrl(overrides: Record<string, string>) {
     const next: Record<string, string> = {
       ...(categoria && { categoria }),
-      ...(especialidade && { especialidade }),
-      ...(instrutor && { instrutor }),
+      ...(tagSlug && { especialidade: tagSlug }),
+      ...(instructorSlug && { instrutor: instructorSlug }),
       ...(busca && { busca }),
       ...overrides,
     };
     const q = new URLSearchParams(next).toString();
     return `/cursos${q ? `?${q}` : ""}`;
   }
+
+  const categoryLabel = (cat: string) =>
+    cat === "HANDS_ON" ? "Hands-On" : cat === "ONLINE" ? "Online" : "Híbrido";
 
   return (
     <div className="min-h-screen">
@@ -119,7 +88,7 @@ export default async function CursosPage({
             Todos os Cursos
           </h1>
           <p className="font-sans text-sm text-white/60 max-w-lg">
-            {filtered.length} curso{filtered.length !== 1 ? "s" : ""} encontrado{filtered.length !== 1 ? "s" : ""}
+            {courses.length} curso{courses.length !== 1 ? "s" : ""} encontrado{courses.length !== 1 ? "s" : ""}
           </p>
         </div>
       </section>
@@ -148,8 +117,8 @@ export default async function CursosPage({
                     className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted/50 focus:outline-none focus:border-primary/50"
                   />
                   {categoria && <input type="hidden" name="categoria" value={categoria} />}
-                  {especialidade && <input type="hidden" name="especialidade" value={especialidade} />}
-                  {instrutor && <input type="hidden" name="instrutor" value={instrutor} />}
+                  {tagSlug && <input type="hidden" name="especialidade" value={tagSlug} />}
+                  {instructorSlug && <input type="hidden" name="instrutor" value={instructorSlug} />}
                 </div>
               </form>
 
@@ -159,39 +128,43 @@ export default async function CursosPage({
                   Modalidade
                 </p>
                 <div className="flex flex-col gap-2">
-                  {["", "hands-on", "online"].map((val) => (
+                  {[
+                    { val: "", label: "Todos" },
+                    { val: "hands_on", label: "Hands-On" },
+                    { val: "online", label: "Online" },
+                  ].map(({ val, label }) => (
                     <Link
                       key={val}
                       href={buildUrl({ categoria: val })}
                       className={`font-sans text-sm px-3 py-1.5 rounded-lg transition-colors ${
-                        categoria === val
+                        categoria.toLowerCase() === val
                           ? "bg-primary text-white"
                           : "text-muted hover:text-foreground hover:bg-background"
                       }`}
                     >
-                      {val === "" ? "Todos" : val.charAt(0).toUpperCase() + val.slice(1)}
+                      {label}
                     </Link>
                   ))}
                 </div>
               </div>
 
-              {/* Especialidade */}
+              {/* Especialidade / Tags */}
               <div className="mb-6">
                 <p className="font-sans text-[11px] font-bold uppercase tracking-widest text-muted mb-3">
                   Especialidade
                 </p>
                 <div className="flex flex-col gap-2">
-                  {["", ...specialties].map((val) => (
+                  {[{ slug: "", name: "Todas" }, ...allTags].map((tag) => (
                     <Link
-                      key={val}
-                      href={buildUrl({ especialidade: val })}
+                      key={tag.slug}
+                      href={buildUrl({ especialidade: tag.slug })}
                       className={`font-sans text-sm px-3 py-1.5 rounded-lg transition-colors ${
-                        especialidade === val
+                        tagSlug === tag.slug
                           ? "bg-primary text-white"
                           : "text-muted hover:text-foreground hover:bg-background"
                       }`}
                     >
-                      {val === "" ? "Todas" : val}
+                      {tag.name}
                     </Link>
                   ))}
                 </div>
@@ -203,24 +176,24 @@ export default async function CursosPage({
                   Instrutor
                 </p>
                 <div className="flex flex-col gap-2">
-                  {["", ...instructors].map((val) => (
+                  {[{ slug: "", name: "Todos" }, ...allInstructors.map((i) => ({ slug: i.slug, name: i.user.name ?? i.slug }))].map((inst) => (
                     <Link
-                      key={val}
-                      href={buildUrl({ instrutor: val })}
+                      key={inst.slug}
+                      href={buildUrl({ instrutor: inst.slug })}
                       className={`font-sans text-sm px-3 py-1.5 rounded-lg transition-colors ${
-                        instrutor === val
+                        instructorSlug === inst.slug
                           ? "bg-primary text-white"
                           : "text-muted hover:text-foreground hover:bg-background"
                       }`}
                     >
-                      {val === "" ? "Todos" : val}
+                      {inst.name}
                     </Link>
                   ))}
                 </div>
               </div>
 
               {/* Limpar filtros */}
-              {(categoria || especialidade || instrutor || busca) && (
+              {(categoria || tagSlug || instructorSlug || busca) && (
                 <Link
                   href="/cursos"
                   className="block font-sans text-xs text-center text-primary/70 hover:text-primary transition-colors mt-2"
@@ -233,7 +206,7 @@ export default async function CursosPage({
 
           {/* ── GRID DE CURSOS ── */}
           <div className="flex-1 min-w-0">
-            {filtered.length === 0 ? (
+            {courses.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 text-center">
                 <p className="font-serif text-2xl text-foreground/40 mb-2">Nenhum curso encontrado</p>
                 <p className="font-sans text-sm text-muted">
@@ -246,81 +219,97 @@ export default async function CursosPage({
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {filtered.map((course) => (
-                  <div
-                    key={course.slug}
-                    className="flex flex-col rounded-2xl bg-surface border border-border overflow-hidden hover:border-primary/40 hover:shadow-md transition-all duration-300"
-                  >
-                    <div className="relative h-52 overflow-hidden">
-                      <Image
-                        src={course.instructorPhoto}
-                        alt={course.instructorName}
-                        fill
-                        className="object-cover object-top"
-                        sizes="(max-width: 640px) 100vw, 50vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                      <span className="absolute bottom-3 left-4 font-sans text-[10px] font-semibold uppercase tracking-widest text-white bg-primary/80 px-2.5 py-1 rounded-full">
-                        {course.category}
-                      </span>
-                      {course.seats && course.reservedPct > 0 && (
-                        <span className="absolute bottom-3 right-4 font-sans text-[10px] font-semibold text-white/80">
-                          {course.reservedPct}% Reservado
+                {courses.map((course) => {
+                  const reservedPct =
+                    course.totalSeats && course.totalSeats > 0
+                      ? Math.round(((course.reservedSeats ?? 0) / course.totalSeats) * 100)
+                      : 0;
+                  const availableSeats =
+                    course.totalSeats !== null
+                      ? course.totalSeats - (course.reservedSeats ?? 0)
+                      : null;
+
+                  return (
+                    <div
+                      key={course.slug}
+                      className="flex flex-col rounded-2xl bg-surface border border-border overflow-hidden hover:border-primary/40 hover:shadow-md transition-all duration-300"
+                    >
+                      <div className="relative h-52 overflow-hidden">
+                        {course.thumbnailUrl ? (
+                          <Image
+                            src={course.thumbnailUrl}
+                            alt={course.instructor.user.name ?? course.title}
+                            fill
+                            className="object-cover object-top"
+                            sizes="(max-width: 640px) 100vw, 50vw"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-canvas" />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                        <span className="absolute bottom-3 left-4 font-sans text-[10px] font-semibold uppercase tracking-widest text-white bg-primary/80 px-2.5 py-1 rounded-full">
+                          {categoryLabel(course.category)}
                         </span>
-                      )}
-                    </div>
+                        {course.totalSeats && reservedPct > 0 && (
+                          <span className="absolute bottom-3 right-4 font-sans text-[10px] font-semibold text-white/80">
+                            {reservedPct}% Reservado
+                          </span>
+                        )}
+                      </div>
 
-                    <div className="flex flex-col flex-1 p-6 gap-4">
-                      <div>
-                        <p className="font-sans text-[11px] text-muted mb-1">
-                          {course.instructorName} · {course.specialty}
+                      <div className="flex flex-col flex-1 p-6 gap-4">
+                        <div>
+                          <p className="font-sans text-[11px] text-muted mb-1">
+                            {course.instructor.user.name}
+                            {course.tags.length > 0 && ` · ${course.tags[0].tag.name}`}
+                          </p>
+                          <h2 className="font-serif text-xl font-medium text-foreground leading-snug">
+                            {course.title}
+                          </h2>
+                        </div>
+
+                        <p className="font-sans text-xs text-muted leading-relaxed flex-1">
+                          {course.shortDesc ?? course.description}
                         </p>
-                        <h2 className="font-serif text-xl font-medium text-foreground leading-snug">
-                          {course.name}
-                        </h2>
-                      </div>
 
-                      <p className="font-sans text-xs text-muted leading-relaxed flex-1">
-                        {course.description}
-                      </p>
-
-                      {course.seats && (
-                        <div className="flex flex-col gap-1">
-                          <div className="flex justify-between font-sans text-[11px] text-muted">
-                            <span>Vagas disponíveis</span>
-                            <span>{Math.round(course.seats * (1 - course.reservedPct / 100))}/{course.seats}</span>
+                        {course.totalSeats && (
+                          <div className="flex flex-col gap-1">
+                            <div className="flex justify-between font-sans text-[11px] text-muted">
+                              <span>Vagas disponíveis</span>
+                              <span>{availableSeats}/{course.totalSeats}</span>
+                            </div>
+                            <div className="h-1.5 bg-border rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-primary/60 rounded-full"
+                                style={{ width: `${reservedPct}%` }}
+                              />
+                            </div>
                           </div>
-                          <div className="h-1.5 bg-border rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-primary/60 rounded-full"
-                              style={{ width: `${course.reservedPct}%` }}
-                            />
-                          </div>
-                        </div>
-                      )}
+                        )}
 
-                      <div className="flex items-center justify-between pt-4 border-t border-border">
-                        <div className="flex flex-col">
-                          <span className="font-serif text-xl font-semibold text-primary">
-                            {new Intl.NumberFormat("pt-BR", {
-                              style: "currency",
-                              currency: "BRL",
-                            }).format(course.price)}
-                          </span>
-                          <span className="font-sans text-[10px] text-muted/70 tracking-wide">
-                            {course.hours}h de formação
-                          </span>
+                        <div className="flex items-center justify-between pt-4 border-t border-border">
+                          <div className="flex flex-col">
+                            <span className="font-serif text-xl font-semibold text-primary">
+                              {new Intl.NumberFormat("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                              }).format(Number(course.price))}
+                            </span>
+                            <span className="font-sans text-[10px] text-muted/70 tracking-wide">
+                              {course.hours}h de formação
+                            </span>
+                          </div>
+                          <Link
+                            href={`/cursos/${course.slug}`}
+                            className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition-all"
+                          >
+                            Saiba mais
+                          </Link>
                         </div>
-                        <Link
-                          href={`/cursos/${course.slug}`}
-                          className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition-all"
-                        >
-                          Saiba mais
-                        </Link>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
