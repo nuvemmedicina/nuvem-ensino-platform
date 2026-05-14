@@ -11,7 +11,6 @@ const cursos = [
 const plataforma = [
   { label: "Sobre", href: "/sobre" },
   { label: "Instrutores", href: "/instrutores" },
-  { label: "Planos", href: "/planos" },
   { label: "FAQ", href: "/faq" },
 ];
 
