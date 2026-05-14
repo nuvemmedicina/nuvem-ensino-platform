@@ -42,23 +42,35 @@ const courses = [
 const instructors = [
   {
     name: "Dra. Vera Ângelo",
-    specialty: "Gastroenterologista & Motilidade Digestiva",
+    specialty: "Gastroenterologia · Motilidade Digestiva",
+    crm: "CRM-MG 22284",
+    bio: "Diretora técnica da Nuvem Medicina, referência nacional em testes respiratórios e motilidade digestiva. Doutora pela UFMG e professora convidada do Hospital Israelita Albert Einstein.",
     photo: "/instructors/dra-vera.jpg",
+    slug: "dra-vera-angelo",
   },
   {
     name: "Dra. Eliane Basques",
-    specialty: "Especialista em Manometria Anorretal",
+    specialty: "Gastroenterologia · Manometria Anorretal",
+    crm: "CRM-MG 27601",
+    bio: "Cirurgiã Pediatra e especialista em manometria anorretal de alta resolução. Sócia proprietária da Clínica Nuvem Medicina em Belo Horizonte.",
     photo: "/instructors/dra-eliane.jpg",
+    slug: "dra-eliane-basques",
   },
   {
     name: "Dra. Anna Karoline",
     specialty: "Fisioterapia Pélvica",
+    crm: "",
+    bio: "Fisioterapeuta especialista em disfunções do assoalho pélvico. Doutoranda pela UNICAMP, alia rigor científico e experiência clínica na formação de profissionais.",
     photo: "/instructors/anna-karoline.jpg",
+    slug: "dra-anna-karoline",
   },
   {
     name: "Dr. Felipe Nelson",
-    specialty: "Motilidade Digestiva, pHmetria e Impedância",
+    specialty: "Gastroenterologia · Motilidade Digestiva",
+    crm: "CRM-MG",
+    bio: "Gastroenterologista pela USP-Ribeirão Preto, doutor pela USP. Especialista em manometria esofágica de alta resolução, pHmetria e impedancio-pHmetria.",
     photo: "/instructors/felipe-nelson.jpg",
+    slug: "dr-felipe-nelson",
   },
 ];
 
@@ -280,20 +292,32 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Instrutores — fundo claro */}
-      <section className="bg-background py-20 px-4">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="font-serif text-3xl sm:text-4xl font-light text-foreground mb-3">
-            Corpo Docente
-          </h2>
-          <p className="font-sans text-sm text-muted mb-14">
-            Especialistas com trajetória clínica e acadêmica de referência
-          </p>
+      {/* Instrutores — fundo escuro */}
+      <section className="bg-canvas py-20 px-4" style={{
+        backgroundImage: `linear-gradient(rgba(203,228,230,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(203,228,230,0.04) 1px, transparent 1px)`,
+        backgroundSize: "40px 40px",
+      }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="font-sans text-xs font-semibold tracking-[0.25em] uppercase text-accent opacity-80 mb-4 block">
+              Corpo docente
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-light text-white mb-3">
+              Especialistas de referência nacional
+            </h2>
+            <p className="font-sans text-sm text-white/50 max-w-xl mx-auto">
+              Médicos e fisioterapeutas com formação de alto nível e atuação clínica ativa nas suas especialidades
+            </p>
+          </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {instructors.map((instructor) => (
-              <div key={instructor.name} className="flex flex-col items-center gap-4">
-                <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-primary/20 shrink-0">
+              <Link
+                key={instructor.name}
+                href="/instrutores"
+                className="group flex gap-5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-2xl p-5 transition-all duration-200"
+              >
+                <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shrink-0">
                   <Image
                     src={instructor.photo}
                     alt={instructor.name}
@@ -302,16 +326,34 @@ export default function Home() {
                     sizes="96px"
                   />
                 </div>
-                <div>
-                  <p className="font-serif text-base font-medium text-foreground leading-tight">
+                <div className="flex-1 min-w-0">
+                  <p className="font-serif text-base sm:text-lg font-medium text-white leading-tight">
                     {instructor.name}
                   </p>
-                  <p className="font-sans text-xs text-muted mt-1 leading-snug">
+                  <p className="font-sans text-xs text-accent font-semibold mt-0.5 mb-2">
                     {instructor.specialty}
                   </p>
+                  {instructor.crm && (
+                    <p className="font-sans text-[10px] text-white/30 mb-2">{instructor.crm}</p>
+                  )}
+                  <p className="font-sans text-xs text-white/50 leading-relaxed line-clamp-2">
+                    {instructor.bio}
+                  </p>
                 </div>
-              </div>
+              </Link>
             ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <Link
+              href="/instrutores"
+              className="inline-flex items-center gap-2 font-sans text-sm font-semibold text-white/60 hover:text-white transition-colors"
+            >
+              Ver perfil completo dos instrutores
+              <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
+              </svg>
+            </Link>
           </div>
         </div>
       </section>
