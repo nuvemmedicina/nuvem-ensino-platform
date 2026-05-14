@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 
 const navLinks = [
@@ -16,13 +17,15 @@ export default function Header() {
     <header className="w-full bg-surface border-b border-border sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-1 shrink-0">
-            <span className="font-serif text-2xl font-semibold text-primary tracking-tight">
-              Nuvem
-            </span>
-            <span className="font-sans text-2xl font-light text-secondary tracking-tight">
-              Ensino
-            </span>
+          <Link href="/" className="shrink-0">
+            <Image
+              src="/logo.png"
+              alt="Nuvem Ensino"
+              width={120}
+              height={94}
+              className="h-11 w-auto"
+              priority
+            />
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">

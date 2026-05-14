@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const footerLinks = {
   Plataforma: [
@@ -22,13 +23,14 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="flex flex-col gap-4">
-            <Link href="/" className="flex items-center gap-1 w-fit">
-              <span className="font-serif text-2xl font-semibold text-white tracking-tight">
-                Nuvem
-              </span>
-              <span className="font-sans text-2xl font-light text-secondary-light tracking-tight">
-                Ensino
-              </span>
+            <Link href="/" className="w-fit">
+              <Image
+                src="/logo.png"
+                alt="Nuvem Ensino"
+                width={120}
+                height={94}
+                className="h-12 w-auto brightness-0 invert opacity-90"
+              />
             </Link>
             <p className="font-sans text-sm text-primary-foreground/70 leading-relaxed max-w-xs">
               Transforme sua carreira com cursos criados por especialistas do mercado.

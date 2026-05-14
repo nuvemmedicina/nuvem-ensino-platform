@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -11,6 +12,8 @@ const courses = [
     price: "R$ 6.500",
     hours: "16h",
     category: "Hands-On",
+    instructorName: "Dr. Felipe Nelson",
+    instructorPhoto: "/instructors/felipe-nelson.jpg",
   },
   {
     slug: "testes-respiratorios",
@@ -20,6 +23,8 @@ const courses = [
     price: "R$ 2.200",
     hours: "8h",
     category: "Online",
+    instructorName: "Dra. Eliane Basques",
+    instructorPhoto: "/instructors/dra-eliane.jpg",
   },
   {
     slug: "fisioterapia-respiratoria",
@@ -29,24 +34,31 @@ const courses = [
     price: "R$ 3.500",
     hours: "12h",
     category: "Hands-On",
+    instructorName: "Dra. Anna Karoline",
+    instructorPhoto: "/instructors/anna-karoline.jpg",
   },
 ];
 
 const instructors = [
   {
-    name: "Dra. Ana Beatriz Lemos",
-    specialty: "Gastroenterologista & Endoscopista",
-    initials: "AL",
+    name: "Dra. Vera Ângelo",
+    specialty: "Gastroenterologista & Motilidade Digestiva",
+    photo: "/instructors/dra-vera.jpg",
   },
   {
-    name: "Dra. Camila Vieira",
+    name: "Dra. Eliane Basques",
     specialty: "Pneumologista Clínica",
-    initials: "CV",
+    photo: "/instructors/dra-eliane.jpg",
   },
   {
-    name: "Dra. Fernanda Rocha",
+    name: "Dra. Anna Karoline",
     specialty: "Fisioterapeuta Respiratória",
-    initials: "FR",
+    photo: "/instructors/anna-karoline.jpg",
+  },
+  {
+    name: "Dr. Felipe Nelson",
+    specialty: "Especialista em Motilidade Digestiva",
+    photo: "/instructors/felipe-nelson.jpg",
   },
 ];
 
@@ -80,8 +92,9 @@ export default function Home() {
     <div className="flex flex-col min-h-full bg-background">
       <Header />
 
-      {/* Hero — fundo escuro */}
+      {/* Hero — fundo escuro com ícone decorativo */}
       <section className="relative flex flex-col items-center justify-center text-center px-4 pt-28 pb-32 overflow-hidden bg-canvas">
+        {/* Gradiente dourado */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
@@ -91,24 +104,39 @@ export default function Home() {
           }}
         />
 
-        <span className="font-sans text-xs font-semibold tracking-[0.25em] uppercase text-gold mb-6 opacity-80">
+        {/* Ícone da nuvem como fundo decorativo */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.04]"
+        >
+          <Image
+            src="/icone-nuvem.svg"
+            alt=""
+            width={900}
+            height={643}
+            className="w-[140%] max-w-none"
+            style={{ filter: "brightness(0) invert(1)" }}
+          />
+        </div>
+
+        <span className="relative font-sans text-xs font-semibold tracking-[0.25em] uppercase text-gold mb-6 opacity-80">
           Plataforma de Formação Médica
         </span>
 
-        <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl font-light text-white leading-tight max-w-3xl mb-6">
+        <h1 className="relative font-serif text-5xl sm:text-6xl lg:text-7xl font-light text-white leading-tight max-w-3xl mb-6">
           Formação Médica de{" "}
           <em className="not-italic italic text-gold font-medium">
             Excelência
           </em>
         </h1>
 
-        <p className="font-sans text-base sm:text-lg text-white/60 max-w-xl leading-relaxed mb-10">
+        <p className="relative font-sans text-base sm:text-lg text-white/60 max-w-xl leading-relaxed mb-10">
           Cursos hands-on e online desenvolvidos por especialistas, para
           profissionais de saúde que buscam dominar procedimentos clínicos com
           rigor científico.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 items-center">
+        <div className="relative flex flex-col sm:flex-row gap-4 items-center">
           <Link
             href="/cursos"
             className="font-sans text-sm font-semibold px-8 py-3.5 rounded-full bg-gold text-canvas hover:bg-gold-light transition-colors"
@@ -193,23 +221,27 @@ export default function Home() {
                 key={course.slug}
                 className="flex flex-col rounded-2xl bg-surface border border-border overflow-hidden hover:border-gold/50 hover:shadow-md transition-all duration-300"
               >
-                <div
-                  className="h-40 flex items-center justify-center"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, rgba(201,169,110,0.18) 0%, rgba(245,240,232,0.6) 100%)",
-                  }}
-                >
-                  <span className="font-serif text-5xl text-gold/40 font-light select-none">
-                    {course.name.charAt(0)}
+                {/* Foto do instrutor como capa */}
+                <div className="relative h-52 overflow-hidden">
+                  <Image
+                    src={course.instructorPhoto}
+                    alt={course.instructorName}
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                  {/* Overlay gradiente para legibilidade do badge */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                  <span className="absolute bottom-3 left-4 font-sans text-[10px] font-semibold uppercase tracking-widest text-white/90 bg-gold/80 px-2.5 py-1 rounded-full">
+                    {course.category}
                   </span>
                 </div>
 
                 <div className="flex flex-col flex-1 p-6 gap-4">
                   <div>
-                    <span className="font-sans text-[10px] font-semibold uppercase tracking-widest text-gold mb-2 block">
-                      {course.category}
-                    </span>
+                    <p className="font-sans text-[11px] text-muted mb-1">
+                      {course.instructorName}
+                    </p>
                     <h3 className="font-serif text-xl font-medium text-foreground leading-snug">
                       {course.name}
                     </h3>
@@ -242,9 +274,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Instrutoras — fundo claro */}
+      {/* Instrutores — fundo claro, 4 pessoas */}
       <section className="bg-background py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
           <h2 className="font-serif text-3xl sm:text-4xl font-light text-foreground mb-3">
             Corpo Docente
           </h2>
@@ -252,20 +284,23 @@ export default function Home() {
             Especialistas com trajetória clínica e acadêmica de referência
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
             {instructors.map((instructor) => (
               <div key={instructor.name} className="flex flex-col items-center gap-4">
-                <div
-                  className="w-24 h-24 rounded-full flex items-center justify-center text-gold font-serif text-2xl font-medium border border-gold/30"
-                  style={{ background: "rgba(201,169,110,0.1)" }}
-                >
-                  {instructor.initials}
+                <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-gold/20 shrink-0">
+                  <Image
+                    src={instructor.photo}
+                    alt={instructor.name}
+                    fill
+                    className="object-cover object-top"
+                    sizes="96px"
+                  />
                 </div>
                 <div>
-                  <p className="font-serif text-lg font-medium text-foreground">
+                  <p className="font-serif text-base font-medium text-foreground leading-tight">
                     {instructor.name}
                   </p>
-                  <p className="font-sans text-xs text-muted mt-1">
+                  <p className="font-sans text-xs text-muted mt-1 leading-snug">
                     {instructor.specialty}
                   </p>
                 </div>
