@@ -633,6 +633,7 @@ async function main() {
             order: lesson.order,
             duration: lesson.duration,
             type: "VIDEO",
+            videoUrl: lesson.videoUrl,
             isFree: lesson.order === 1 && mod.order === 1,
           },
         });
