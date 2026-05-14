@@ -38,24 +38,28 @@ const instrutores = [
     crm: "CRM-MG 22284 · RQE 10411 · RQE 22736",
     especialidade: "Gastroenterologia · Motilidade Digestiva",
     bio: "Diretora da Nuvem Medicina e referência em exames de motilidade digestiva no Brasil. Pioneira na realização de testes respiratórios com novos protocolos e na formação de profissionais de saúde na área.",
+    foto: "/instructors/dra-vera.jpg",
   },
   {
     nome: "Dra. Anna Karoline",
     crm: "",
     especialidade: "Fisioterapia Respiratória",
     bio: "Especialista em fisioterapia respiratória com expertise em função pulmonar, reabilitação e técnicas avançadas de avaliação clínica.",
+    foto: "/instructors/anna-karoline.jpg",
   },
   {
     nome: "Dra. Eliane Basques",
     crm: "",
     especialidade: "Gastroenterologia · Manometria Anorretal",
     bio: "Especialista em manometria anorretal de alta resolução e distúrbios funcionais do assoalho pélvico.",
+    foto: "/instructors/dra-eliane.jpg",
   },
   {
     nome: "Dr. Felipe Nelson",
     crm: "",
     especialidade: "Gastroenterologia · Manometria · pHmetria",
     bio: "Referência em exames de motilidade esofágica, pHmetria de 24 horas e impedancio-pHmetria. Mais de 10 anos de experiência clínica.",
+    foto: "/instructors/felipe-nelson.jpg",
   },
 ];
 
@@ -171,19 +175,25 @@ export default function SobrePage() {
           Corpo docente
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {instrutores.map(({ nome, crm, especialidade, bio }) => (
-            <div key={nome} className="bg-surface border border-border rounded-2xl p-6">
-              <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mb-4">
-                <span className="font-sans text-base font-semibold text-primary">
-                  {nome.split(" ").slice(-1)[0][0]}
-                </span>
+          {instrutores.map(({ nome, crm, especialidade, bio, foto }) => (
+            <div key={nome} className="bg-surface border border-border rounded-2xl p-6 flex gap-5">
+              <div className="relative w-20 h-20 rounded-2xl overflow-hidden shrink-0">
+                <Image
+                  src={foto}
+                  alt={nome}
+                  fill
+                  className="object-cover object-top"
+                  sizes="80px"
+                />
               </div>
-              <h3 className="font-serif text-lg font-medium text-foreground">{nome}</h3>
-              <p className="font-sans text-xs text-primary font-semibold mt-0.5 mb-1">{especialidade}</p>
-              {crm && (
-                <p className="font-sans text-[10px] text-muted mb-3">{crm}</p>
-              )}
-              <p className="font-sans text-xs text-muted leading-relaxed">{bio}</p>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-serif text-lg font-medium text-foreground">{nome}</h3>
+                <p className="font-sans text-xs text-primary font-semibold mt-0.5 mb-1">{especialidade}</p>
+                {crm && (
+                  <p className="font-sans text-[10px] text-muted mb-2">{crm}</p>
+                )}
+                <p className="font-sans text-xs text-muted leading-relaxed">{bio}</p>
+              </div>
             </div>
           ))}
         </div>
