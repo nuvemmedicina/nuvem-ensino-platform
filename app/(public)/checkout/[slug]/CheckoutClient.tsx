@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Image from "next/image";
-import { CreditCard, QrCode, FileText, Loader2, Shield, CheckCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { CreditCard, QrCode, FileText, Loader2, Shield, CheckCircle, Zap } from "lucide-react";
 
 type PaymentMethod = "stripe" | "pix" | "boleto" | "parcelado";
 
@@ -36,6 +36,7 @@ type Props = {
   hours: number;
   userEmail: string;
   userName: string;
+  hasPayment: boolean;
 };
 
 export default function CheckoutClient({
@@ -45,13 +46,16 @@ export default function CheckoutClient({
   hours,
   userEmail,
   userName,
+  hasPayment,
 }: Props) {
+  const router = useRouter();
   const [method, setMethod] = useState<PaymentMethod>("pix");
   const [couponCode, setCouponCode] = useState("");
   const [couponApplied, setCouponApplied] = useState(false);
   const [couponError, setCouponError] = useState("");
   const [isPending, startTransition] = useTransition();
   const [isCouponLoading, setIsCouponLoading] = useState(false);
+  const [isFreeEnrolling, setIsFreeEnrolling] = useState(false);
 
   const discount = couponApplied ? Math.round(price * 0.1) : 0;
   const finalPrice = price - discount;
@@ -104,6 +108,21 @@ export default function CheckoutClient({
     });
   }
 
+  async function handleFreeEnroll() {
+    setIsFreeEnrolling(true);
+    try {
+      const res = await fetch("/api/enroll", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ courseSlug: slug }),
+      });
+      const data = await res.json();
+      if (data.redirectUrl) router.push(data.redirectUrl);
+    } finally {
+      setIsFreeEnrolling(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -115,6 +134,30 @@ export default function CheckoutClient({
           <h1 className="font-serif text-3xl font-light text-white">{courseName}</h1>
         </div>
       </div>
+
+      {!hasPayment && (
+        <div className="bg-amber-500/10 border-b border-amber-500/20 px-4 py-4">
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <Zap className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-sans text-sm font-semibold text-amber-700">Acesso de demonstração disponível</p>
+                <p className="font-sans text-xs text-amber-600/80 mt-0.5">
+                  Os meios de pagamento ainda não estão configurados. Clique para acessar o curso agora.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleFreeEnroll}
+              disabled={isFreeEnrolling}
+              className="shrink-0 flex items-center gap-2 font-sans text-sm font-semibold px-5 py-2.5 rounded-full bg-amber-500 text-white hover:bg-amber-400 disabled:opacity-60 transition-colors"
+            >
+              {isFreeEnrolling ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+              Acessar agora
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-4xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8 items-start">
         {/* ── Formulário ── */}

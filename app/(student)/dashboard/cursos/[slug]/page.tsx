@@ -15,7 +15,7 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
   const { aula, sucesso } = await searchParams;
 
   const session = await auth();
-  if (!session) redirect("/entrar?callbackUrl=/dashboard");
+  if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard");
 
   const course = await prisma.course.findFirst({
     where: { slug },

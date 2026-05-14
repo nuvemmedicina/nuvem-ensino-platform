@@ -27,6 +27,8 @@ export default async function CheckoutPage({ params }: Props) {
   const session = await auth();
   if (!session) redirect(`/entrar?callbackUrl=/checkout/${slug}`);
 
+  const hasPayment = !!(process.env.STRIPE_SECRET_KEY && process.env.MP_ACCESS_TOKEN);
+
   return (
     <CheckoutClient
       slug={slug}
@@ -35,6 +37,7 @@ export default async function CheckoutPage({ params }: Props) {
       hours={course.hours}
       userEmail={session.user?.email ?? ""}
       userName={session.user?.name ?? ""}
+      hasPayment={hasPayment}
     />
   );
 }

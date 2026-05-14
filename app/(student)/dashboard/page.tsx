@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
@@ -36,7 +37,8 @@ function calcProgress(
 
 export default async function DashboardPage() {
   const session = await auth();
-  const { enrollments, certificatesCount } = await getDashboardData(session!.user.id);
+  if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard");
+  const { enrollments, certificatesCount } = await getDashboardData(session.user.id);
 
   const activeEnrollments = enrollments.filter((e) => e.status === "ACTIVE");
   const completedEnrollments = enrollments.filter((e) => e.status === "COMPLETED");
@@ -47,7 +49,7 @@ export default async function DashboardPage() {
     <div>
       <div className="mb-8">
         <h1 className="font-serif text-3xl font-light text-foreground">
-          Olá, {session!.user?.name?.split(" ")[0]}!
+          Olá, {session.user?.name?.split(" ")[0]}!
         </h1>
         <p className="font-sans text-sm text-muted mt-1">
           Bem-vindo de volta à sua área de aprendizado.
