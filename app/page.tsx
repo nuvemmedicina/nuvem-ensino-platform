@@ -306,25 +306,32 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Final — fundo teal primário */}
-      <section className="bg-canvas-light py-20 px-4 text-center">
+      {/* CTA Final — fundo accent claro com grade sutil */}
+      <section
+        className="py-20 px-4 text-center"
+        style={{
+          backgroundColor: "#CBE4E6",
+          backgroundImage: `
+            linear-gradient(rgba(0,71,94,0.07) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,71,94,0.07) 1px, transparent 1px)
+          `,
+          backgroundSize: "40px 40px",
+        }}
+      >
         <div
-          className="max-w-2xl mx-auto py-16 px-8 rounded-3xl border border-canvas-border"
-          style={{
-            background:
-              "radial-gradient(ellipse 100% 120% at 50% 50%, rgba(203,228,230,0.08) 0%, transparent 70%)",
-          }}
+          className="max-w-2xl mx-auto py-16 px-8 rounded-3xl border border-primary/15"
+          style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(8px)" }}
         >
-          <h2 className="font-serif text-3xl sm:text-4xl font-light text-white mb-4">
+          <h2 className="font-serif text-3xl sm:text-4xl font-light text-primary mb-4">
             Pronto para evoluir na sua carreira?
           </h2>
-          <p className="font-sans text-sm text-white/60 mb-8 leading-relaxed">
+          <p className="font-sans text-sm text-primary/70 mb-8 leading-relaxed">
             Junte-se a centenas de profissionais de saúde que já transformaram
             sua prática clínica com a Nuvem Ensino.
           </p>
           <Link
             href="/cursos"
-            className="inline-block font-sans text-sm font-semibold px-10 py-4 rounded-full bg-accent text-accent-foreground hover:bg-accent-light transition-colors"
+            className="inline-block font-sans text-sm font-semibold px-10 py-4 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
           >
             Começar agora
           </Link>
