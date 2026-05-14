@@ -3,9 +3,9 @@ import Image from "next/image";
 
 const cursos = [
   { label: "Manometria, pHmetria e Impedância", href: "/cursos/manometria-phmetria-impedancia" },
-  { label: "Manometria Anorretal", href: "/cursos/manometria-anorretal" },
   { label: "Testes Respiratórios", href: "/cursos/testes-respiratorios" },
   { label: "Fisioterapia Pélvica", href: "/cursos/fisioterapia-respiratoria" },
+  { label: "Desvendando a Constipação Intestinal", href: "/cursos/desvendando-a-constipacao-intestinal" },
 ];
 
 const plataforma = [

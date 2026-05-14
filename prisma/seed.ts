@@ -148,7 +148,7 @@ async function main() {
 
   const courseAnorretal = await prisma.course.upsert({
     where: { slug: "manometria-anorretal" },
-    update: {},
+    update: { status: "DRAFT" },
     create: {
       slug: "manometria-anorretal",
       title: "Manometria Anorretal",
@@ -158,7 +158,7 @@ async function main() {
       price: 4500,
       hours: 12,
       category: "HANDS_ON",
-      status: "PUBLISHED",
+      status: "DRAFT",
       instructorId: instructorEliane.id,
       totalSeats: 10,
       reservedSeats: 4,
