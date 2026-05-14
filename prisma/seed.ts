@@ -606,23 +606,10 @@ async function main() {
   // Curso: Doenças da Cavidade Oral, Halimetria e Sialometria
   const modulesCavidadeOral = [
     {
-      title: "Módulo 1 — Fundamentos e Diagnóstico da Cavidade Oral",
+      title: "Doenças da Cavidade Oral, Halimetria e Sialometria",
       order: 1,
       lessons: [
-        { title: "Anatomia e semiologia da cavidade oral", order: 1, duration: 25 },
-        { title: "Candidose oral: diagnóstico e tratamento", order: 2, duration: 20 },
-        { title: "Úlceras aftosas recorrentes e lesões brancas", order: 3, duration: 22 },
-        { title: "Manifestações orais de doenças sistêmicas", order: 4, duration: 20 },
-      ],
-    },
-    {
-      title: "Módulo 2 — Halimetria, Sialometria e Manejo Clínico",
-      order: 2,
-      lessons: [
-        { title: "Halitose: etiologia, avaliação e protocolos de tratamento", order: 1, duration: 25 },
-        { title: "Halimetria: técnica e interpretação clínica", order: 2, duration: 22 },
-        { title: "Xerostomia: diagnóstico diferencial e manejo", order: 3, duration: 20 },
-        { title: "Sialometria: fluxo salivar estimulado e não estimulado", order: 4, duration: 22 },
+        { title: "Doenças da Cavidade Oral, Halimetria e Sialometria", order: 1, duration: 196, videoUrl: "https://www.youtube.com/embed/73mWEooXdHE", isFree: true },
       ],
     },
   ];
