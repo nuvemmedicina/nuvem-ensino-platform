@@ -175,7 +175,7 @@ const staticContent: Record<
   },
   "doencas-da-cavidade-oral-halimetria-e-sialometria": {
     instructorBio:
-      "Dr. Wanderley Bertoni (RQE 24610/38052) é gastroenterologista formado pela UFRJ e professor de Medicina na FAMINAS-Muriaé. Especialista em Endoscopia Digestiva, atua no diagnóstico e tratamento de doenças da cavidade oral, halimetria e sialometria na prática clínica.",
+      "Dr. Wanderley Bertoni é gastroenterologista formado pela UFRJ e Professor da Faculdade de Medicina da FAMINAS-Muriaé. Especialista em Gastroenterologia pela FBG, Especialista em Endoscopia Digestiva Alta e Titular da SOBED. CRM-MG 26967 · RQE 24610/38052.",
     startDate: null,
     objectives: [
       "Diagnosticar e tratar candidose oral, úlceras aftosas e lesões brancas",

@@ -119,7 +119,7 @@ async function main() {
     create: {
       userId: wanderley.id,
       slug: "dr-wanderley-bertoni",
-      title: "Gastroenterologista & Endoscopia Digestiva",
+      title: "Gastroenterologista · Prof. FAMINAS-Muriaé · Titular SOBED",
       crm: "CRM-MG 26967",
       rqe: "RQE 24610/38052",
       photoUrl: "/instructors/wanderley-bertoni.jpg",
