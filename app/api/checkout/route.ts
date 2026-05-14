@@ -11,6 +11,7 @@ const courseData: Record<string, { name: string; price: number; hours: number }>
   "fisioterapia-respiratoria": { name: "Fisioterapia nas Disfunções do Assoalho Pélvico", price: 3500, hours: 30 },
   "desvendando-a-constipacao-intestinal": { name: "Desvendando a Constipação Intestinal, Classificação Roma IV, Tempo de Trânsito Colônico e Manometria Anorretal", price: 380, hours: 3 },
   "testes-respiratorios-h2-ch4-h2s-junho": { name: "Turma de Junho: Testes Respiratórios de H₂, CH₄ e H₂S", price: 2200, hours: 8 },
+  "doencas-da-cavidade-oral-halimetria-e-sialometria": { name: "Doenças da Cavidade Oral, Halimetria e Sialometria", price: 450, hours: 3 },
 };
 
 export async function POST(req: Request) {

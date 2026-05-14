@@ -7,6 +7,7 @@ const cursos = [
   { label: "Fisioterapia Pélvica", href: "/cursos/fisioterapia-respiratoria" },
   { label: "Desvendando a Constipação Intestinal", href: "/cursos/desvendando-a-constipacao-intestinal" },
   { label: "Testes Respiratórios H₂/CH₄/H₂S — Junho 2026", href: "/cursos/testes-respiratorios-h2-ch4-h2s-junho" },
+  { label: "Doenças da Cavidade Oral, Halimetria e Sialometria", href: "/cursos/doencas-da-cavidade-oral-halimetria-e-sialometria" },
 ];
 
 const plataforma = [

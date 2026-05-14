@@ -53,6 +53,17 @@ async function main() {
     },
   });
 
+  const wanderley = await prisma.user.upsert({
+    where: { email: "wanderley.bertoni@nuvemensino.com.br" },
+    update: {},
+    create: {
+      name: "Dr. Wanderley Bertoni",
+      email: "wanderley.bertoni@nuvemensino.com.br",
+      role: "INSTRUCTOR",
+      image: "/instructors/vera-wanderley.jpg",
+    },
+  });
+
   // ── Perfis de instrutor ──────────────────────────────────────────────────
   const instructorVera = await prisma.instructor.upsert({
     where: { userId: vera.id },
@@ -99,6 +110,19 @@ async function main() {
       title: "Motilidade Digestiva, pHmetria e Impedância",
       crm: "CRM-MG",
       photoUrl: "/instructors/felipe-nelson.jpg",
+    },
+  });
+
+  const instructorWanderley = await prisma.instructor.upsert({
+    where: { userId: wanderley.id },
+    update: {},
+    create: {
+      userId: wanderley.id,
+      slug: "dr-wanderley-bertoni",
+      title: "Gastroenterologista & Endoscopia Digestiva",
+      crm: "CRM",
+      rqe: "RQE 24610 · RQE 38052",
+      photoUrl: "/instructors/vera-wanderley.jpg",
     },
   });
 
@@ -233,6 +257,35 @@ async function main() {
     },
   });
 
+  const courseCavidadeOral = await prisma.course.upsert({
+    where: { slug: "doencas-da-cavidade-oral-halimetria-e-sialometria" },
+    update: {
+      title: "Doenças da Cavidade Oral, Halimetria e Sialometria",
+      description:
+        "Curso online com Dra. Vera Ângelo e Dr. Wanderley Bertoni: domine o diagnóstico e manejo das principais doenças da cavidade oral, candidose, úlceras aftosas recorrentes, lesões brancas, xerostomia e halitose. Aprenda halimetria e sialometria na prática clínica.",
+      shortDesc: "Diagnóstico e manejo de doenças da cavidade oral, halitose e fluxo salivar com Dra. Vera Ângelo e Dr. Wanderley Bertoni.",
+      price: 450,
+      hours: 3,
+      status: "PUBLISHED",
+    },
+    create: {
+      slug: "doencas-da-cavidade-oral-halimetria-e-sialometria",
+      title: "Doenças da Cavidade Oral, Halimetria e Sialometria",
+      description:
+        "Curso online com Dra. Vera Ângelo e Dr. Wanderley Bertoni: domine o diagnóstico e manejo das principais doenças da cavidade oral, candidose, úlceras aftosas recorrentes, lesões brancas, xerostomia e halitose. Aprenda halimetria e sialometria na prática clínica.",
+      shortDesc: "Diagnóstico e manejo de doenças da cavidade oral, halitose e fluxo salivar com Dra. Vera Ângelo e Dr. Wanderley Bertoni.",
+      price: 450,
+      hours: 3,
+      category: "ONLINE",
+      status: "PUBLISHED",
+      instructorId: instructorWanderley.id,
+      thumbnailUrl: "/instructors/vera-wanderley.jpg",
+      metaTitle: "Doenças da Cavidade Oral, Halimetria e Sialometria | Nuvem Ensino",
+      metaDesc:
+        "Curso online: diagnóstico de doenças da cavidade oral, halitose, xerostomia, candidose, úlceras aftosas e técnicas de halimetria e sialometria.",
+    },
+  });
+
   const courseTestesPresencial = await prisma.course.upsert({
     where: { slug: "testes-respiratorios-h2-ch4-h2s-junho" },
     update: {
@@ -310,6 +363,7 @@ async function main() {
       { courseId: courseConstipacao.id, tagId: tagMotilidade.id },
       { courseId: courseTestesPresencial.id, tagId: tagGastro.id },
       { courseId: courseTestesPresencial.id, tagId: tagMotilidade.id },
+      { courseId: courseCavidadeOral.id, tagId: tagGastro.id },
     ],
   });
 
@@ -527,6 +581,56 @@ async function main() {
     });
     const dbModule = existingModule ?? await prisma.module.create({
       data: { courseId: courseFisioterapia.id, title: mod.title, order: mod.order },
+    });
+    for (const lesson of mod.lessons) {
+      const existing = await prisma.lesson.findFirst({
+        where: { moduleId: dbModule.id, order: lesson.order },
+      });
+      if (!existing) {
+        await prisma.lesson.create({
+          data: {
+            moduleId: dbModule.id,
+            title: lesson.title,
+            order: lesson.order,
+            duration: lesson.duration,
+            type: "VIDEO",
+            isFree: lesson.order === 1 && mod.order === 1,
+          },
+        });
+      }
+    }
+  }
+
+  // Curso: Doenças da Cavidade Oral, Halimetria e Sialometria
+  const modulesCavidadeOral = [
+    {
+      title: "Módulo 1 — Fundamentos e Diagnóstico da Cavidade Oral",
+      order: 1,
+      lessons: [
+        { title: "Anatomia e semiologia da cavidade oral", order: 1, duration: 25 },
+        { title: "Candidose oral: diagnóstico e tratamento", order: 2, duration: 20 },
+        { title: "Úlceras aftosas recorrentes e lesões brancas", order: 3, duration: 22 },
+        { title: "Manifestações orais de doenças sistêmicas", order: 4, duration: 20 },
+      ],
+    },
+    {
+      title: "Módulo 2 — Halimetria, Sialometria e Manejo Clínico",
+      order: 2,
+      lessons: [
+        { title: "Halitose: etiologia, avaliação e protocolos de tratamento", order: 1, duration: 25 },
+        { title: "Halimetria: técnica e interpretação clínica", order: 2, duration: 22 },
+        { title: "Xerostomia: diagnóstico diferencial e manejo", order: 3, duration: 20 },
+        { title: "Sialometria: fluxo salivar estimulado e não estimulado", order: 4, duration: 22 },
+      ],
+    },
+  ];
+
+  for (const mod of modulesCavidadeOral) {
+    const existingModule = await prisma.module.findFirst({
+      where: { courseId: courseCavidadeOral.id, order: mod.order },
+    });
+    const dbModule = existingModule ?? await prisma.module.create({
+      data: { courseId: courseCavidadeOral.id, title: mod.title, order: mod.order },
     });
     for (const lesson of mod.lessons) {
       const existing = await prisma.lesson.findFirst({

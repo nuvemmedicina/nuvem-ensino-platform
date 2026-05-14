@@ -173,6 +173,51 @@ const staticContent: Record<
       "Material de apoio em PDF",
     ],
   },
+  "doencas-da-cavidade-oral-halimetria-e-sialometria": {
+    instructorBio:
+      "Dra. Vera Ângelo (CRM-MG 22284) é diretora técnica da Nuvem Medicina e referência em motilidade digestiva. Dr. Wanderley Bertoni (RQE 24610/38052) é gastroenterologista pela UFRJ e professor de Endoscopia Digestiva na FAMINAS-Muriaé. Juntos, oferecem uma abordagem clínica completa das doenças da cavidade oral.",
+    startDate: null,
+    objectives: [
+      "Diagnosticar e tratar candidose oral, úlceras aftosas e lesões brancas",
+      "Identificar manifestações orais de doenças sistêmicas",
+      "Realizar e interpretar halimetria na prática clínica",
+      "Avaliar e manejar xerostomia e halitose com protocolos atualizados",
+      "Realizar sialometria e interpretar o fluxo salivar estimulado e não estimulado",
+    ],
+    targetAudience: [
+      "Médicos gastroenterologistas e clínicos gerais",
+      "Dentistas e cirurgiões bucomaxilofaciais",
+      "Otorrinolaringologistas",
+      "Estudantes de medicina e odontologia (último ano)",
+    ],
+    modules: [
+      {
+        title: "Módulo 1 — Fundamentos e Diagnóstico da Cavidade Oral",
+        lessons: [
+          "Anatomia e semiologia da cavidade oral",
+          "Candidose oral: diagnóstico e tratamento",
+          "Úlceras aftosas recorrentes e lesões brancas",
+          "Manifestações orais de doenças sistêmicas",
+        ],
+      },
+      {
+        title: "Módulo 2 — Halimetria, Sialometria e Manejo Clínico",
+        lessons: [
+          "Halitose: etiologia, avaliação e protocolos de tratamento",
+          "Halimetria: técnica e interpretação clínica",
+          "Xerostomia: diagnóstico diferencial e manejo",
+          "Sialometria: fluxo salivar estimulado e não estimulado",
+        ],
+      },
+    ],
+    includes: [
+      "3h de aula gravada com acesso imediato",
+      "Ministrado por Dra. Vera Ângelo e Dr. Wanderley Bertoni",
+      "Certificado de conclusão",
+      "Nota fiscal para declaração de imposto de renda",
+      "Acesso ao conteúdo por tempo indeterminado",
+    ],
+  },
   "testes-respiratorios-h2-ch4-h2s-junho": {
     instructorBio:
       "Dra. Vera Ângelo é diretora técnica da Nuvem Medicina e referência nacional em motilidade digestiva e testes respiratórios. Mestre e Doutora em Patologia pela UFMG, pioneira na aplicação dos novos protocolos de H₂/CH₄/H₂S no Brasil e professora convidada do Albert Einstein.",
