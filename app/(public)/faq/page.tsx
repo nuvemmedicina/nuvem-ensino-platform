@@ -24,7 +24,7 @@ const faqs = [
   },
   {
     q: "Posso parcelar o pagamento?",
-    a: "Sim, aceitamos parcelamento em até 12x no cartão de crédito. O parcelamento pode estar sujeito a juros da operadora do cartão. Para pagamento à vista via Pix, pode haver desconto — verifique na página do curso.",
+    a: "Sim, aceitamos parcelamento em até 3x no cartão de crédito. Para pagamento à vista via Pix, pode haver desconto — verifique na página do curso.",
   },
   {
     q: "Qual é a política de reembolso?",
