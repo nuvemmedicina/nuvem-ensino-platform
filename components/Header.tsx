@@ -7,6 +7,7 @@ import { useState } from "react";
 const navLinks = [
   { label: "Cursos", href: "/cursos" },
   { label: "Sobre", href: "/sobre" },
+  { label: "NU.V.E.M Medicina", href: "https://nuvemmedicina.com.br/", external: true },
 ];
 
 export default function Header() {
@@ -32,6 +33,7 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
+                {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 className="font-sans text-sm font-medium text-foreground hover:text-primary-light transition-colors"
               >
                 {link.label}
@@ -68,6 +70,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
+                {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 className="font-sans text-sm font-medium text-foreground hover:text-primary-light transition-colors"
               >
                 {link.label}

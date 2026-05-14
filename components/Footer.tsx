@@ -17,6 +17,7 @@ const plataforma = [
 ];
 
 const institucional = [
+  { label: "NU.V.E.M Medicina", href: "https://nuvemmedicina.com.br/" },
   { label: "Contato", href: "/contato" },
   { label: "Política de Privacidade", href: "/privacidade" },
   { label: "Termos de Uso", href: "/termos" },
@@ -70,16 +71,20 @@ function NavColumn({ title, links }: { title: string; links: { label: string; hr
         {title}
       </h3>
       <ul className="flex flex-col gap-2.5">
-        {links.map((link) => (
-          <li key={link.href}>
-            <Link
-              href={link.href}
-              className="font-sans text-sm text-white/70 hover:text-white transition-colors"
-            >
-              {link.label}
-            </Link>
-          </li>
-        ))}
+        {links.map((link) => {
+          const isExternal = link.href.startsWith("http");
+          return (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="font-sans text-sm text-white/70 hover:text-white transition-colors"
+              >
+                {link.label}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
