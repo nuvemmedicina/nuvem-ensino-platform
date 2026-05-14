@@ -16,17 +16,6 @@ const courses = [
     instructorPhoto: "/instructors/felipe-nelson.jpg",
   },
   {
-    slug: "manometria-anorretal",
-    name: "Manometria Anorretal",
-    description:
-      "Avaliação funcional do assoalho pélvico e esfíncter anal com manometria de alta resolução, indicações e interpretação clínica.",
-    price: "R$ 4.500",
-    hours: "12h",
-    category: "Hands-On",
-    instructorName: "Dra. Eliane Basques",
-    instructorPhoto: "/instructors/dra-eliane.jpg",
-  },
-  {
     slug: "testes-respiratorios",
     name: "Testes Respiratórios",
     description:
@@ -224,7 +213,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {courses.map((course) => (
               <div
                 key={course.slug}
