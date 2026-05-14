@@ -92,28 +92,38 @@ export default function Home() {
     <div className="flex flex-col min-h-full bg-background">
       <Header />
 
-      {/* Hero — teal muito escuro */}
-      <section className="relative flex flex-col items-center justify-center text-center px-4 pt-28 pb-32 overflow-hidden bg-canvas">
+      {/* Hero — teal muito escuro com grade e ISO ao fundo */}
+      <section
+        className="relative flex flex-col items-center justify-center text-center px-4 pt-28 pb-32 overflow-hidden bg-canvas"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(203,228,230,0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(203,228,230,0.05) 1px, transparent 1px)
+          `,
+          backgroundSize: "40px 40px",
+        }}
+      >
+        {/* Gradiente radial suave no topo */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(203,228,230,0.1) 0%, transparent 70%)",
+              "radial-gradient(ellipse 80% 55% at 50% 0%, rgba(203,228,230,0.1) 0%, transparent 65%)",
           }}
         />
 
+        {/* Selo ISO 9001 como elemento decorativo de fundo */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.04]"
+          className="pointer-events-none absolute -right-16 top-1/2 -translate-y-1/2 opacity-[0.06]"
         >
           <Image
-            src="/icone-nuvem.svg"
+            src="/selo-iso-9001.png"
             alt=""
-            width={900}
-            height={643}
-            className="w-[140%] max-w-none"
-            style={{ filter: "brightness(0) invert(1)" }}
+            width={520}
+            height={520}
+            className="w-[420px] sm:w-[520px]"
           />
         </div>
 
