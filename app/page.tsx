@@ -5,15 +5,26 @@ import Footer from "@/components/Footer";
 
 const courses = [
   {
-    slug: "manometria-esofagica",
-    name: "Manometria Esofágica",
+    slug: "manometria-phmetria-impedancia",
+    name: "Manometria, pHmetria e Impedância",
     description:
-      "Domine a interpretação e realização de manometria de alta resolução em ambiente clínico supervisionado.",
+      "Domine os principais exames de motilidade digestiva: manometria de alta resolução, pHmetria e impedância em ambiente clínico supervisionado.",
     price: "R$ 6.500",
     hours: "16h",
     category: "Hands-On",
     instructorName: "Dr. Felipe Nelson",
     instructorPhoto: "/instructors/felipe-nelson.jpg",
+  },
+  {
+    slug: "manometria-anorretal",
+    name: "Manometria Anorretal",
+    description:
+      "Avaliação funcional do assoalho pélvico e esfíncter anal com manometria de alta resolução, indicações e interpretação clínica.",
+    price: "R$ 4.500",
+    hours: "12h",
+    category: "Hands-On",
+    instructorName: "Dra. Eliane Basques",
+    instructorPhoto: "/instructors/dra-eliane.jpg",
   },
   {
     slug: "testes-respiratorios",
@@ -46,13 +57,18 @@ const instructors = [
     photo: "/instructors/dra-vera.jpg",
   },
   {
+    name: "Dra. Eliane Basques",
+    specialty: "Especialista em Manometria Anorretal",
+    photo: "/instructors/dra-eliane.jpg",
+  },
+  {
     name: "Dra. Anna Karoline",
     specialty: "Fisioterapeuta Respiratória",
     photo: "/instructors/anna-karoline.jpg",
   },
   {
     name: "Dr. Felipe Nelson",
-    specialty: "Especialista em Motilidade Digestiva",
+    specialty: "Motilidade Digestiva, pHmetria e Impedância",
     photo: "/instructors/felipe-nelson.jpg",
   },
 ];
@@ -208,7 +224,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {courses.map((course) => (
               <div
                 key={course.slug}
@@ -275,7 +291,7 @@ export default function Home() {
             Especialistas com trajetória clínica e acadêmica de referência
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 max-w-3xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
             {instructors.map((instructor) => (
               <div key={instructor.name} className="flex flex-col items-center gap-4">
                 <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-primary/20 shrink-0">
