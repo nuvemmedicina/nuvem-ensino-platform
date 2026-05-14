@@ -175,7 +175,7 @@ const staticContent: Record<
   },
   "doencas-da-cavidade-oral-halimetria-e-sialometria": {
     instructorBio:
-      "Dra. Vera Ângelo (CRM-MG 22284) é diretora técnica da NU.V.E.M Medicina e referência em motilidade digestiva. Dr. Wanderley Bertoni (RQE 24610/38052) é gastroenterologista pela UFRJ e professor de Endoscopia Digestiva na FAMINAS-Muriaé. Juntos, oferecem uma abordagem clínica completa das doenças da cavidade oral.",
+      "Dr. Wanderley Bertoni (RQE 24610/38052) é gastroenterologista formado pela UFRJ e professor de Medicina na FAMINAS-Muriaé. Especialista em Endoscopia Digestiva, atua no diagnóstico e tratamento de doenças da cavidade oral, halimetria e sialometria na prática clínica.",
     startDate: null,
     objectives: [
       "Diagnosticar e tratar candidose oral, úlceras aftosas e lesões brancas",
@@ -212,7 +212,7 @@ const staticContent: Record<
     ],
     includes: [
       "3h de aula gravada com acesso imediato",
-      "Ministrado por Dra. Vera Ângelo e Dr. Wanderley Bertoni",
+      "Ministrado por Dr. Wanderley Bertoni",
       "Certificado de conclusão",
       "Nota fiscal para declaração de imposto de renda",
       "Acesso ao conteúdo por tempo indeterminado",
