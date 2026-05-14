@@ -9,10 +9,10 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#1B2E4B",
+          DEFAULT: "#1A1A2E",
           foreground: "#FFFFFF",
-          dark: "#111D30",
-          light: "#2D4A73",
+          dark: "#0F0F1F",
+          light: "#2A2A4E",
         },
         secondary: {
           DEFAULT: "#2563EB",
@@ -34,15 +34,15 @@ const config: Config = {
         },
         canvas: {
           DEFAULT: "#0F0F1A",
-          light: "#181828",
+          light: "#1A1A2E",
           card: "#1A1A2E",
           border: "#2A2A3E",
         },
-        background: "#FAFAF9",
-        foreground: "#1B2E4B",
+        background: "#F5F0E8",
+        foreground: "#1A1A2E",
         surface: "#FFFFFF",
-        muted: "#6B7280",
-        border: "#E5E7EB",
+        muted: "#54595F",
+        border: "#E8E0D5",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],

@@ -77,10 +77,10 @@ const categories = [
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-full bg-canvas">
+    <div className="flex flex-col min-h-full bg-background">
       <Header />
 
-      {/* Hero */}
+      {/* Hero — fundo escuro */}
       <section className="relative flex flex-col items-center justify-center text-center px-4 pt-28 pb-32 overflow-hidden bg-canvas">
         <div
           aria-hidden
@@ -130,13 +130,13 @@ export default function Home() {
         />
       </section>
 
-      {/* Categorias */}
-      <section className="bg-canvas-light py-20 px-4">
+      {/* Modalidades — fundo claro */}
+      <section className="bg-background py-20 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-serif text-3xl sm:text-4xl font-light text-white text-center mb-3">
+          <h2 className="font-serif text-3xl sm:text-4xl font-light text-foreground text-center mb-3">
             Modalidades de Ensino
           </h2>
-          <p className="font-sans text-sm text-white/50 text-center mb-12">
+          <p className="font-sans text-sm text-muted text-center mb-12">
             Escolha o formato que melhor se adapta à sua rotina
           </p>
 
@@ -145,20 +145,20 @@ export default function Home() {
               <Link
                 key={cat.label}
                 href={cat.href}
-                className="group flex flex-col gap-5 p-8 rounded-2xl bg-canvas-card border border-canvas-border hover:border-gold/40 transition-all duration-300"
+                className="group flex flex-col gap-5 p-8 rounded-2xl bg-surface border border-border hover:border-gold/60 hover:shadow-sm transition-all duration-300"
               >
-                <span className="text-gold/70 group-hover:text-gold transition-colors">
+                <span className="text-gold group-hover:text-gold-dark transition-colors">
                   {cat.icon}
                 </span>
                 <div>
-                  <h3 className="font-serif text-2xl font-medium text-white mb-2">
+                  <h3 className="font-serif text-2xl font-medium text-foreground mb-2">
                     {cat.label}
                   </h3>
-                  <p className="font-sans text-sm text-white/50 leading-relaxed">
+                  <p className="font-sans text-sm text-muted leading-relaxed">
                     {cat.description}
                   </p>
                 </div>
-                <span className="font-sans text-xs font-semibold text-gold/70 group-hover:text-gold transition-colors tracking-wider uppercase">
+                <span className="font-sans text-xs font-semibold text-gold group-hover:text-gold-dark transition-colors tracking-wider uppercase">
                   Explorar cursos →
                 </span>
               </Link>
@@ -167,21 +167,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Cursos em Destaque */}
-      <section className="bg-canvas py-20 px-4">
+      {/* Cursos em Destaque — fundo claro */}
+      <section className="bg-background py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
             <div>
-              <h2 className="font-serif text-3xl sm:text-4xl font-light text-white mb-2">
+              <h2 className="font-serif text-3xl sm:text-4xl font-light text-foreground mb-2">
                 Cursos em Destaque
               </h2>
-              <p className="font-sans text-sm text-white/50">
+              <p className="font-sans text-sm text-muted">
                 Formações de alto impacto para a sua prática clínica
               </p>
             </div>
             <Link
               href="/cursos"
-              className="font-sans text-xs font-semibold text-gold/70 hover:text-gold transition-colors tracking-wider uppercase shrink-0"
+              className="font-sans text-xs font-semibold text-gold hover:text-gold-dark transition-colors tracking-wider uppercase shrink-0"
             >
               Ver todos →
             </Link>
@@ -191,46 +191,46 @@ export default function Home() {
             {courses.map((course) => (
               <div
                 key={course.slug}
-                className="flex flex-col rounded-2xl bg-canvas-card border border-canvas-border overflow-hidden hover:border-gold/30 transition-all duration-300 group"
+                className="flex flex-col rounded-2xl bg-surface border border-border overflow-hidden hover:border-gold/50 hover:shadow-md transition-all duration-300"
               >
                 <div
                   className="h-40 flex items-center justify-center"
                   style={{
                     background:
-                      "linear-gradient(135deg, rgba(201,169,110,0.08) 0%, rgba(15,15,26,0.6) 100%)",
+                      "linear-gradient(135deg, rgba(201,169,110,0.18) 0%, rgba(245,240,232,0.6) 100%)",
                   }}
                 >
-                  <span className="font-serif text-4xl text-gold/30 font-light select-none">
+                  <span className="font-serif text-5xl text-gold/40 font-light select-none">
                     {course.name.charAt(0)}
                   </span>
                 </div>
 
                 <div className="flex flex-col flex-1 p-6 gap-4">
                   <div>
-                    <span className="font-sans text-[10px] font-semibold uppercase tracking-widest text-gold/60 mb-2 block">
+                    <span className="font-sans text-[10px] font-semibold uppercase tracking-widest text-gold mb-2 block">
                       {course.category}
                     </span>
-                    <h3 className="font-serif text-xl font-medium text-white leading-snug">
+                    <h3 className="font-serif text-xl font-medium text-foreground leading-snug">
                       {course.name}
                     </h3>
                   </div>
 
-                  <p className="font-sans text-xs text-white/50 leading-relaxed flex-1">
+                  <p className="font-sans text-xs text-muted leading-relaxed flex-1">
                     {course.description}
                   </p>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-canvas-border">
+                  <div className="flex items-center justify-between pt-4 border-t border-border">
                     <div className="flex flex-col">
                       <span className="font-serif text-xl font-semibold text-gold">
                         {course.price}
                       </span>
-                      <span className="font-sans text-[10px] text-white/40 tracking-wide">
+                      <span className="font-sans text-[10px] text-muted/70 tracking-wide">
                         {course.hours} de formação
                       </span>
                     </div>
                     <Link
                       href={`/cursos/${course.slug}`}
-                      className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-gold/50 text-gold hover:bg-gold hover:text-canvas transition-all"
+                      className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-gold text-gold hover:bg-gold hover:text-canvas transition-all"
                     >
                       Saiba mais
                     </Link>
@@ -242,13 +242,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Instrutoras */}
-      <section className="bg-canvas-light py-20 px-4">
+      {/* Instrutoras — fundo claro */}
+      <section className="bg-background py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-serif text-3xl sm:text-4xl font-light text-white mb-3">
+          <h2 className="font-serif text-3xl sm:text-4xl font-light text-foreground mb-3">
             Corpo Docente
           </h2>
-          <p className="font-sans text-sm text-white/50 mb-14">
+          <p className="font-sans text-sm text-muted mb-14">
             Especialistas com trajetória clínica e acadêmica de referência
           </p>
 
@@ -256,16 +256,16 @@ export default function Home() {
             {instructors.map((instructor) => (
               <div key={instructor.name} className="flex flex-col items-center gap-4">
                 <div
-                  className="w-24 h-24 rounded-full flex items-center justify-center text-gold font-serif text-2xl font-medium border border-gold/20"
-                  style={{ background: "rgba(201,169,110,0.08)" }}
+                  className="w-24 h-24 rounded-full flex items-center justify-center text-gold font-serif text-2xl font-medium border border-gold/30"
+                  style={{ background: "rgba(201,169,110,0.1)" }}
                 >
                   {instructor.initials}
                 </div>
                 <div>
-                  <p className="font-serif text-lg font-medium text-white">
+                  <p className="font-serif text-lg font-medium text-foreground">
                     {instructor.name}
                   </p>
-                  <p className="font-sans text-xs text-white/50 mt-1">
+                  <p className="font-sans text-xs text-muted mt-1">
                     {instructor.specialty}
                   </p>
                 </div>
@@ -275,13 +275,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA final */}
-      <section className="bg-canvas py-20 px-4 text-center">
+      {/* CTA Final — fundo escuro */}
+      <section className="bg-canvas-light py-20 px-4 text-center">
         <div
           className="max-w-2xl mx-auto py-16 px-8 rounded-3xl border border-canvas-border"
           style={{
             background:
-              "radial-gradient(ellipse 100% 120% at 50% 50%, rgba(201,169,110,0.07) 0%, transparent 70%)",
+              "radial-gradient(ellipse 100% 120% at 50% 50%, rgba(201,169,110,0.08) 0%, transparent 70%)",
           }}
         >
           <h2 className="font-serif text-3xl sm:text-4xl font-light text-white mb-4">

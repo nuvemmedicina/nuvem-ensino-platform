@@ -2,22 +2,22 @@
 @config "../tailwind.config.ts";
 
 :root {
-  --background: #FAFAF9;
-  --foreground: #1B2E4B;
-  --primary: #1B2E4B;
+  --background: #F5F0E8;
+  --foreground: #1A1A2E;
+  --primary: #1A1A2E;
   --primary-foreground: #FFFFFF;
   --secondary: #2563EB;
   --secondary-foreground: #FFFFFF;
   --accent: #D97706;
   --accent-foreground: #FFFFFF;
-  --muted: #6B7280;
-  --border: #E5E7EB;
+  --muted: #54595F;
+  --border: #E8E0D5;
   --surface: #FFFFFF;
   --gold: #C9A96E;
   --gold-light: #DFC28F;
   --gold-dark: #A8874E;
   --canvas: #0F0F1A;
-  --canvas-light: #181828;
+  --canvas-light: #1A1A2E;
   --canvas-card: #1A1A2E;
   --canvas-border: #2A2A3E;
 }
