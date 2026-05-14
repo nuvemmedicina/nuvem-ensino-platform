@@ -266,7 +266,7 @@ const staticContent: Record<
   },
   "desvendando-a-constipacao-intestinal": {
     instructorBio:
-      "Dra. Vera Ângelo é diretora técnica da NU.V.E.M Medicina e referência nacional em motilidade digestiva. Junto com a Dra. Eliane Basques (cirurgiã pediátrica especialista em manometria anorretal de alta resolução), apresenta uma abordagem completa e baseada em evidências para o diagnóstico da constipação intestinal.",
+      "Dra. Eliane Basques é cirurgiã pediátrica da FHEMIG e sócia proprietária da NU.V.E.M Medicina. Especialista em manometria anorretal de alta resolução e distúrbios funcionais do assoalho pélvico, apresenta uma abordagem completa e baseada em evidências para o diagnóstico da constipação intestinal.",
     startDate: null,
     objectives: [
       "Aplicar corretamente os critérios Roma IV no diagnóstico da constipação",
@@ -294,7 +294,7 @@ const staticContent: Record<
     ],
     includes: [
       "3h de aula gravada com acesso imediato",
-      "Ministrado por Dra. Vera Ângelo e Dra. Eliane Basques",
+      "Ministrado por Dra. Eliane Basques",
       "Certificado de participação",
       "Nota fiscal para declaração de imposto de renda",
       "Acesso ao conteúdo por tempo indeterminado",

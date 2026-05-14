@@ -341,7 +341,7 @@ async function main() {
       hours: 3,
       category: "ONLINE",
       status: "PUBLISHED",
-      instructorId: instructorVera.id,
+      instructorId: instructorEliane.id,
       thumbnailUrl: "/instructors/dra-eliane.jpg",
       previewUrl: "https://www.youtube.com/embed/J5dI4R3xCws",
       metaTitle: "Desvendando a Constipação Intestinal | Nuvem Ensino",
