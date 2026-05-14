@@ -60,7 +60,7 @@ async function main() {
       name: "Dr. Wanderley Bertoni",
       email: "wanderley.bertoni@nuvemensino.com.br",
       role: "INSTRUCTOR",
-      image: "/instructors/vera-wanderley.jpg",
+      image: "/instructors/wanderley-bertoni.jpg",
     },
   });
 
@@ -122,7 +122,7 @@ async function main() {
       title: "Gastroenterologista & Endoscopia Digestiva",
       crm: "CRM",
       rqe: "RQE 24610 · RQE 38052",
-      photoUrl: "/instructors/vera-wanderley.jpg",
+      photoUrl: "/instructors/wanderley-bertoni.jpg",
     },
   });
 
@@ -280,7 +280,7 @@ async function main() {
       category: "ONLINE",
       status: "PUBLISHED",
       instructorId: instructorWanderley.id,
-      thumbnailUrl: "/instructors/vera-wanderley.jpg",
+      thumbnailUrl: "/instructors/wanderley-bertoni.jpg",
       metaTitle: "Doenças da Cavidade Oral, Halimetria e Sialometria | Nuvem Ensino",
       metaDesc:
         "Curso online: diagnóstico de doenças da cavidade oral, halitose, xerostomia, candidose, úlceras aftosas e técnicas de halimetria e sialometria.",

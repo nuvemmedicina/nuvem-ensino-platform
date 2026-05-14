@@ -85,7 +85,7 @@ const profiles: Record<
   "dr-wanderley-bertoni": {
     especialidade: "Gastroenterologia · Endoscopia Digestiva · Cavidade Oral",
     crm: "RQE 24610 · RQE 38052",
-    foto: "/instructors/vera-wanderley.jpg",
+    foto: "/instructors/wanderley-bertoni.jpg",
     bio: "Gastroenterologista formado pela UFRJ e professor do curso de Medicina da FAMINAS-Muriaé. Especialista em Endoscopia Digestiva, atua clinicamente no diagnóstico e tratamento de doenças da cavidade oral, incluindo halimetria, sialometria, candidose oral e úlceras aftosas recorrentes.",
     formacao: [
       "Graduação em Medicina pela UFRJ",
