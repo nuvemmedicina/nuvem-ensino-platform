@@ -240,9 +240,248 @@ async function main() {
     },
   });
 
+  // ── Módulos e Aulas ──────────────────────────────────────────────────────
+  // Curso: Manometria, pHmetria e Impedância
+  const modulesManometria = [
+    {
+      title: "Módulo 1 — Fundamentos",
+      order: 1,
+      lessons: [
+        { title: "Anatomia e fisiologia da motilidade esofágica", order: 1, duration: 18 },
+        { title: "Indicações, contraindicações e preparo do paciente", order: 2, duration: 14 },
+        { title: "Classificação de Chicago v4.0", order: 3, duration: 22 },
+      ],
+    },
+    {
+      title: "Módulo 2 — Manometria na Prática",
+      order: 2,
+      lessons: [
+        { title: "Montagem do equipamento e cateter", order: 1, duration: 20 },
+        { title: "Realização do exame supervisionado", order: 2, duration: 35 },
+        { title: "Interpretação e laudo em tempo real", order: 3, duration: 28 },
+      ],
+    },
+    {
+      title: "Módulo 3 — pHmetria e Impedância",
+      order: 3,
+      lessons: [
+        { title: "Fundamentos de pHmetria esofágica", order: 1, duration: 16 },
+        { title: "Impedancio-pHmetria: posicionamento e análise", order: 2, duration: 24 },
+        { title: "Interpretação de laudos e correlação clínica", order: 3, duration: 30 },
+      ],
+    },
+    {
+      title: "Módulo 4 — Casos Clínicos",
+      order: 4,
+      lessons: [
+        { title: "Revisão de laudos reais — Parte 1", order: 1, duration: 40 },
+        { title: "Revisão de laudos reais — Parte 2", order: 2, duration: 38 },
+        { title: "Discussão multidisciplinar e avaliação final", order: 3, duration: 25 },
+      ],
+    },
+  ];
+
+  for (const mod of modulesManometria) {
+    const existingModule = await prisma.module.findFirst({
+      where: { courseId: courseManometria.id, order: mod.order },
+    });
+    const dbModule = existingModule ?? await prisma.module.create({
+      data: { courseId: courseManometria.id, title: mod.title, order: mod.order },
+    });
+    for (const lesson of mod.lessons) {
+      const existing = await prisma.lesson.findFirst({
+        where: { moduleId: dbModule.id, order: lesson.order },
+      });
+      if (!existing) {
+        await prisma.lesson.create({
+          data: {
+            moduleId: dbModule.id,
+            title: lesson.title,
+            order: lesson.order,
+            duration: lesson.duration,
+            type: "VIDEO",
+            isFree: lesson.order === 1 && mod.order === 1,
+          },
+        });
+      }
+    }
+  }
+
+  // Curso: Manometria Anorretal
+  const modulesAnorretal = [
+    {
+      title: "Módulo 1 — Bases da Fisiologia Anorretal",
+      order: 1,
+      lessons: [
+        { title: "Anatomia e neurofisiologia do assoalho pélvico", order: 1, duration: 20 },
+        { title: "Indicações e contraindicações", order: 2, duration: 12 },
+        { title: "Preparo e posicionamento do paciente", order: 3, duration: 10 },
+      ],
+    },
+    {
+      title: "Módulo 2 — Técnica e Prática",
+      order: 2,
+      lessons: [
+        { title: "Calibração e montagem do cateter", order: 1, duration: 18 },
+        { title: "Realização do exame supervisionado", order: 2, duration: 32 },
+        { title: "Protocolos de pressão e sensação retal", order: 3, duration: 22 },
+      ],
+    },
+    {
+      title: "Módulo 3 — Interpretação e Laudos",
+      order: 3,
+      lessons: [
+        { title: "Análise de traçados de alta resolução", order: 1, duration: 28 },
+        { title: "Laudos comentados e diagnósticos diferenciais", order: 2, duration: 35 },
+        { title: "Integração com outros exames funcionais", order: 3, duration: 20 },
+      ],
+    },
+  ];
+
+  for (const mod of modulesAnorretal) {
+    const existingModule = await prisma.module.findFirst({
+      where: { courseId: courseAnorretal.id, order: mod.order },
+    });
+    const dbModule = existingModule ?? await prisma.module.create({
+      data: { courseId: courseAnorretal.id, title: mod.title, order: mod.order },
+    });
+    for (const lesson of mod.lessons) {
+      const existing = await prisma.lesson.findFirst({
+        where: { moduleId: dbModule.id, order: lesson.order },
+      });
+      if (!existing) {
+        await prisma.lesson.create({
+          data: {
+            moduleId: dbModule.id,
+            title: lesson.title,
+            order: lesson.order,
+            duration: lesson.duration,
+            type: "VIDEO",
+            isFree: lesson.order === 1 && mod.order === 1,
+          },
+        });
+      }
+    }
+  }
+
+  // Curso: Testes Respiratórios
+  const modulesRespiratorio = [
+    {
+      title: "Módulo 1 — Espirometria",
+      order: 1,
+      lessons: [
+        { title: "Parâmetros espirométricos e valores de referência", order: 1, duration: 22 },
+        { title: "Padrão obstrutivo x restritivo x misto", order: 2, duration: 18 },
+        { title: "Critérios de aceitabilidade e reprodutibilidade", order: 3, duration: 16 },
+      ],
+    },
+    {
+      title: "Módulo 2 — Curva Fluxo-Volume",
+      order: 2,
+      lessons: [
+        { title: "Interpretação gráfica avançada", order: 1, duration: 24 },
+        { title: "Achados em DPOC, asma e fibrose pulmonar", order: 2, duration: 28 },
+        { title: "Casos clínicos comentados", order: 3, duration: 32 },
+      ],
+    },
+    {
+      title: "Módulo 3 — Manovacuometria",
+      order: 3,
+      lessons: [
+        { title: "Técnica de medição de PImáx e PEmáx", order: 1, duration: 15 },
+        { title: "Interpretação clínica e indicações", order: 2, duration: 18 },
+        { title: "Integração com reabilitação respiratória", order: 3, duration: 20 },
+      ],
+    },
+  ];
+
+  for (const mod of modulesRespiratorio) {
+    const existingModule = await prisma.module.findFirst({
+      where: { courseId: courseRespiratorio.id, order: mod.order },
+    });
+    const dbModule = existingModule ?? await prisma.module.create({
+      data: { courseId: courseRespiratorio.id, title: mod.title, order: mod.order },
+    });
+    for (const lesson of mod.lessons) {
+      const existing = await prisma.lesson.findFirst({
+        where: { moduleId: dbModule.id, order: lesson.order },
+      });
+      if (!existing) {
+        await prisma.lesson.create({
+          data: {
+            moduleId: dbModule.id,
+            title: lesson.title,
+            order: lesson.order,
+            duration: lesson.duration,
+            type: "VIDEO",
+            isFree: lesson.order === 1 && mod.order === 1,
+          },
+        });
+      }
+    }
+  }
+
+  // Curso: Fisioterapia Respiratória
+  const modulesFisioterapia = [
+    {
+      title: "Módulo 1 — Fundamentos",
+      order: 1,
+      lessons: [
+        { title: "Anatomia aplicada à fisioterapia respiratória", order: 1, duration: 20 },
+        { title: "Avaliação do paciente respiratório", order: 2, duration: 16 },
+        { title: "Técnicas de ausculta pulmonar", order: 3, duration: 18 },
+      ],
+    },
+    {
+      title: "Módulo 2 — Técnicas Práticas",
+      order: 2,
+      lessons: [
+        { title: "Higiene brônquica: tapotagem e vibração", order: 1, duration: 22 },
+        { title: "Drenagem postural e flutter", order: 2, duration: 20 },
+        { title: "Espirometria de incentivo e IPPB", order: 3, duration: 18 },
+      ],
+    },
+    {
+      title: "Módulo 3 — Reabilitação Pulmonar",
+      order: 3,
+      lessons: [
+        { title: "Protocolos em DPOC, asma e fibrose", order: 1, duration: 26 },
+        { title: "Treino muscular respiratório", order: 2, duration: 22 },
+        { title: "Alta hospitalar e plano domiciliar", order: 3, duration: 18 },
+      ],
+    },
+  ];
+
+  for (const mod of modulesFisioterapia) {
+    const existingModule = await prisma.module.findFirst({
+      where: { courseId: courseFisioterapia.id, order: mod.order },
+    });
+    const dbModule = existingModule ?? await prisma.module.create({
+      data: { courseId: courseFisioterapia.id, title: mod.title, order: mod.order },
+    });
+    for (const lesson of mod.lessons) {
+      const existing = await prisma.lesson.findFirst({
+        where: { moduleId: dbModule.id, order: lesson.order },
+      });
+      if (!existing) {
+        await prisma.lesson.create({
+          data: {
+            moduleId: dbModule.id,
+            title: lesson.title,
+            order: lesson.order,
+            duration: lesson.duration,
+            type: "VIDEO",
+            isFree: lesson.order === 1 && mod.order === 1,
+          },
+        });
+      }
+    }
+  }
+
   console.log("✅ Seed concluído!");
   console.log(`   - 4 instrutores`);
   console.log(`   - 4 cursos publicados`);
+  console.log(`   - Módulos e aulas para todos os cursos`);
   console.log(`   - Cupom NUVEM10 (10% de desconto)`);
 }
 
