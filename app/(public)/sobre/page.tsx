@@ -219,7 +219,7 @@ export default function SobrePage() {
             Pronto para avançar na sua formação?
           </h2>
           <p className="font-sans text-sm text-primary/70 mb-8 leading-relaxed">
-            Explore o catálogo da <strong>NU.V.E.M Ensino.</strong> e encontre o curso certo para a sua especialidade.
+            Explore o catálogo da <strong>Nuvem Ensino</strong> e encontre o curso certo para a sua especialidade.
           </p>
           <Link
             href="/cursos"
