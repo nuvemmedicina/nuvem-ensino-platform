@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, Trash2, Plus } from "lucide-react";
+import { ChevronLeft, Plus } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import {
   updateCourse,
@@ -10,6 +10,7 @@ import {
   deleteLesson,
   deleteModule,
 } from "./actions";
+import { DeleteButton } from "./DeleteButton";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -158,18 +159,11 @@ export default async function AdminCursoEditPage({ params }: Props) {
                 {/* Module header */}
                 <div className="flex items-center justify-between px-4 py-3 bg-background border-b border-border">
                   <span className="font-sans text-sm font-semibold text-foreground">{mod.title}</span>
-                  <form action={deleteModAction}>
-                    <button
-                      type="submit"
-                      title="Excluir módulo"
-                      onClick={(e) => {
-                        if (!confirm(`Excluir módulo "${mod.title}" e todas as suas aulas?`)) e.preventDefault();
-                      }}
-                      className={btnDanger}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </form>
+                  <DeleteButton
+                    action={deleteModAction}
+                    confirm={`Excluir módulo "${mod.title}" e todas as suas aulas?`}
+                    className={btnDanger}
+                  />
                 </div>
 
                 {/* Lessons */}
@@ -180,9 +174,9 @@ export default async function AdminCursoEditPage({ params }: Props) {
 
                     return (
                       <div key={lesson.id} className="px-4 py-4">
-                        <form action={updateLessonAction} className="space-y-3">
-                          <div className="flex items-start gap-3">
-                            <div className="flex-1 space-y-2">
+                        <div className="flex items-start gap-3 mb-3">
+                          <form action={updateLessonAction} className="flex-1 space-y-3">
+                            <div className="space-y-2">
                               <input
                                 name="title"
                                 defaultValue={lesson.title}
@@ -196,41 +190,38 @@ export default async function AdminCursoEditPage({ params }: Props) {
                                 className={inputClass}
                               />
                             </div>
-                            <form action={deleteLessonAction} className="shrink-0 mt-1">
-                              <button
-                                type="submit"
-                                title="Excluir aula"
-                                className={btnDanger}
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </form>
-                          </div>
 
-                          <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2 w-28">
-                              <input
-                                name="duration"
-                                type="number"
-                                min="0"
-                                defaultValue={lesson.duration ?? ""}
-                                placeholder="Duração"
-                                className={`${inputClass} text-xs`}
-                              />
-                              <span className="font-sans text-xs text-muted shrink-0">min</span>
+                            <div className="flex items-center gap-4">
+                              <div className="flex items-center gap-2 w-28">
+                                <input
+                                  name="duration"
+                                  type="number"
+                                  min="0"
+                                  defaultValue={lesson.duration ?? ""}
+                                  placeholder="Duração"
+                                  className={`${inputClass} text-xs`}
+                                />
+                                <span className="font-sans text-xs text-muted shrink-0">min</span>
+                              </div>
+                              <label className="flex items-center gap-2 font-sans text-xs text-muted cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  name="isFree"
+                                  defaultChecked={lesson.isFree}
+                                  className="accent-primary"
+                                />
+                                Aula gratuita
+                              </label>
+                              <button type="submit" className={btnGhost}>Salvar</button>
                             </div>
-                            <label className="flex items-center gap-2 font-sans text-xs text-muted cursor-pointer">
-                              <input
-                                type="checkbox"
-                                name="isFree"
-                                defaultChecked={lesson.isFree}
-                                className="accent-primary"
-                              />
-                              Aula gratuita
-                            </label>
-                            <button type="submit" className={btnGhost}>Salvar</button>
-                          </div>
-                        </form>
+                          </form>
+
+                          <DeleteButton
+                            action={deleteLessonAction}
+                            confirm={`Excluir aula "${lesson.title}"?`}
+                            className={`${btnDanger} shrink-0 mt-1`}
+                          />
+                        </div>
                       </div>
                     );
                   })}
