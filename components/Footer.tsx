@@ -18,6 +18,7 @@ const plataforma = [
 
 const institucional = [
   { label: "NU.V.E.M Medicina", href: "https://nuvemmedicina.com.br/" },
+  { label: "Avalie no Google", href: "https://g.page/r/CQQmzgdp8IZoEAE/review" },
   { label: "Contato", href: "/contato" },
   { label: "Política de Privacidade", href: "/privacidade" },
   { label: "Termos de Uso", href: "/termos" },
