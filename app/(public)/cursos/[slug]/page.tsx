@@ -1,0 +1,602 @@
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import {
+  Clock,
+  Users,
+  MapPin,
+  CheckCircle,
+  Calendar,
+  BookOpen,
+  Award,
+  ChevronRight,
+} from "lucide-react";
+
+type CourseSlug =
+  | "manometria-phmetria-impedancia"
+  | "manometria-anorretal"
+  | "testes-respiratorios"
+  | "fisioterapia-respiratoria";
+
+const coursesData: Record<
+  CourseSlug,
+  {
+    slug: CourseSlug;
+    name: string;
+    shortDesc: string;
+    description: string;
+    price: number;
+    hours: number;
+    category: "Hands-On" | "Online";
+    specialty: string;
+    instructorName: string;
+    instructorPhoto: string;
+    instructorTitle: string;
+    instructorBio: string;
+    seats: number | null;
+    reservedPct: number;
+    startDate: string | null;
+    location: string | null;
+    objectives: string[];
+    targetAudience: string[];
+    modules: { title: string; lessons: string[] }[];
+    includes: string[];
+  }
+> = {
+  "manometria-phmetria-impedancia": {
+    slug: "manometria-phmetria-impedancia",
+    name: "Manometria, pHmetria e Impedância",
+    shortDesc: "Treinamento hands-on em exames de motilidade digestiva de alta resolução.",
+    description:
+      "Curso intensivo presencial com equipamentos de última geração. O aluno realizará procedimentos supervisionados de manometria esofágica de alta resolução, pHmetria de 24h e impedancio-pHmetria, com análise e interpretação de laudos reais.",
+    price: 6500,
+    hours: 16,
+    category: "Hands-On",
+    specialty: "Gastroenterologia",
+    instructorName: "Dr. Felipe Nelson",
+    instructorPhoto: "/instructors/felipe-nelson.jpg",
+    instructorTitle: "Especialista em Motilidade Digestiva · CRM-MG",
+    instructorBio:
+      "Dr. Felipe Nelson é referência nacional em exames de motilidade digestiva, com mais de 10 anos de experiência em manometria de alta resolução, pHmetria e impedância esofágica. Formado pela UFMG com residência em Gastroenterologia.",
+    seats: 12,
+    reservedPct: 60,
+    startDate: "A definir",
+    location: "Nuvem Medicina · Belo Horizonte — MG",
+    objectives: [
+      "Realizar manometria esofágica de alta resolução com autonomia",
+      "Interpretar laudos de pHmetria de 24 horas e impedancio-pHmetria",
+      "Identificar padrões de motilidade e classificá-los segundo Chicago v4.0",
+      "Correlacionar achados funcionais com quadro clínico do paciente",
+      "Manejar equipamentos Sandhill e Medtronic",
+    ],
+    targetAudience: [
+      "Gastroenterologistas",
+      "Cirurgiões do esôfago",
+      "Médicos em especialização em Gastroenterologia",
+      "Nutrólogos e clínicos com interesse em funcional digestiva",
+    ],
+    modules: [
+      {
+        title: "Módulo 1 — Fundamentos",
+        lessons: [
+          "Anatomia e fisiologia da motilidade esofágica",
+          "Indicações, contraindicações e preparo do paciente",
+          "Classificação de Chicago v4.0",
+        ],
+      },
+      {
+        title: "Módulo 2 — Manometria na Prática",
+        lessons: [
+          "Montagem do equipamento e cateter",
+          "Realização do exame supervisionado",
+          "Interpretação e laudo em tempo real",
+        ],
+      },
+      {
+        title: "Módulo 3 — pHmetria e Impedância",
+        lessons: [
+          "Fundamentos de pHmetria esofágica",
+          "Impedancio-pHmetria: posicionamento e análise",
+          "Interpretação de laudos e correlação clínica",
+        ],
+      },
+      {
+        title: "Módulo 4 — Casos Clínicos",
+        lessons: [
+          "Revisão de 20 laudos reais",
+          "Discussão multidisciplinar",
+          "Avaliação e emissão de certificado",
+        ],
+      },
+    ],
+    includes: [
+      "16h de treinamento presencial supervisionado",
+      "Material didático impresso e digital",
+      "Acesso a biblioteca de laudos comentados",
+      "Certificado digital com QR Code",
+      "Coffee break nos dois dias",
+      "Suporte pós-curso por 30 dias via grupo exclusivo",
+    ],
+  },
+  "manometria-anorretal": {
+    slug: "manometria-anorretal",
+    name: "Manometria Anorretal",
+    shortDesc: "Técnicas de manometria anorretal de alta resolução com interpretação clínica.",
+    description:
+      "Curso hands-on de manometria anorretal de alta resolução, com treinamento em equipamentos de ponta e foco na interpretação clínica voltada ao diagnóstico de distúrbios funcionais do assoalho pélvico.",
+    price: 4500,
+    hours: 12,
+    category: "Hands-On",
+    specialty: "Gastroenterologia",
+    instructorName: "Dra. Eliane Basques",
+    instructorPhoto: "/instructors/dra-eliane.jpg",
+    instructorTitle: "Especialista em Manometria Anorretal · CRM-MG",
+    instructorBio:
+      "Dra. Eliane Basques é especialista em fisiologia anorretal com ampla experiência em manometria de alta resolução e ultrassonografia endoanal. Professora convidada em diversos congressos nacionais de Coloproctologia.",
+    seats: 10,
+    reservedPct: 40,
+    startDate: "A definir",
+    location: "Nuvem Medicina · Belo Horizonte — MG",
+    objectives: [
+      "Dominar a técnica de manometria anorretal de alta resolução",
+      "Interpretar perfis de pressão e reflexo retoanal",
+      "Diagnosticar incontinência fecal, constipação funcional e dissinergias",
+      "Correlacionar achados com biofeedback e tratamento conservador",
+    ],
+    targetAudience: [
+      "Coloproctologistas",
+      "Gastroenterologistas",
+      "Fisioterapeutas pélvicos",
+      "Ginecologistas com interesse em assoalho pélvico",
+    ],
+    modules: [
+      {
+        title: "Módulo 1 — Bases da Fisiologia Anorretal",
+        lessons: [
+          "Anatomia e neurofisiologia do assoalho pélvico",
+          "Indicações e contraindicações",
+          "Preparo e posicionamento do paciente",
+        ],
+      },
+      {
+        title: "Módulo 2 — Técnica e Prática",
+        lessons: [
+          "Calibração e montagem do cateter",
+          "Realização do exame supervisionado",
+          "Protocolos de pressão e sensação retal",
+        ],
+      },
+      {
+        title: "Módulo 3 — Interpretação e Laudos",
+        lessons: [
+          "Análise de traçados de alta resolução",
+          "Laudos comentados e diagnósticos diferenciais",
+          "Integração com outros exames funcionais",
+        ],
+      },
+    ],
+    includes: [
+      "12h de treinamento presencial supervisionado",
+      "Material didático digital",
+      "Acesso a atlas de laudos comentados",
+      "Certificado digital com QR Code",
+      "Coffee break",
+      "Grupo de suporte pós-curso",
+    ],
+  },
+  "testes-respiratorios": {
+    slug: "testes-respiratorios",
+    name: "Testes Respiratórios",
+    shortDesc: "Interpretação avançada de espirometria e manovacuometria em formato online.",
+    description:
+      "Curso online ao vivo com abordagem prática de espirometria, manovacuometria e curva fluxo-volume. Ideal para profissionais que desejam aprofundar a interpretação dos exames respiratórios no contexto clínico.",
+    price: 2200,
+    hours: 8,
+    category: "Online",
+    specialty: "Fisioterapia",
+    instructorName: "Dra. Vera Ângelo",
+    instructorPhoto: "/instructors/dra-vera.jpg",
+    instructorTitle: "Gastroenterologista & Motilidade Digestiva · CRM-MG 22284 · RQE 10411",
+    instructorBio:
+      "Dra. Vera Ângelo é diretora técnica da Nuvem Medicina e coordena os programas de formação da Nuvem Ensino. Especialista em gastroenterologia com foco em doenças funcionais digestivas e fisioterapia respiratória.",
+    seats: null,
+    reservedPct: 0,
+    startDate: "A definir",
+    location: null,
+    objectives: [
+      "Compreender os fundamentos da espirometria e seus padrões obstrutivos e restritivos",
+      "Interpretar curvas fluxo-volume com segurança clínica",
+      "Realizar e interpretar manovacuometria (PImáx e PEmáx)",
+      "Correlacionar achados com diagnóstico e planejamento terapêutico",
+    ],
+    targetAudience: [
+      "Fisioterapeutas",
+      "Pneumologistas",
+      "Médicos clínicos",
+      "Residentes em Fisioterapia e Medicina",
+    ],
+    modules: [
+      {
+        title: "Módulo 1 — Espirometria",
+        lessons: [
+          "Parâmetros espirométricos e valores de referência",
+          "Padrão obstrutivo x restritivo x misto",
+          "Critérios de aceitabilidade e reprodutibilidade",
+        ],
+      },
+      {
+        title: "Módulo 2 — Curva Fluxo-Volume",
+        lessons: [
+          "Interpretação gráfica avançada",
+          "Achados em DPOC, asma e fibrose pulmonar",
+          "Casos clínicos comentados",
+        ],
+      },
+      {
+        title: "Módulo 3 — Manovacuometria",
+        lessons: [
+          "Técnica de medição de PImáx e PEmáx",
+          "Interpretação clínica e indicações",
+          "Integração com reabilitação respiratória",
+        ],
+      },
+    ],
+    includes: [
+      "8h de aulas ao vivo via Google Meet",
+      "Gravação disponível por 60 dias",
+      "Material didático em PDF",
+      "Certificado digital com QR Code",
+      "Grupo exclusivo para dúvidas pós-curso",
+    ],
+  },
+  "fisioterapia-respiratoria": {
+    slug: "fisioterapia-respiratoria",
+    name: "Fisioterapia Respiratória",
+    shortDesc: "Técnicas de reabilitação pulmonar e manejo clínico em ambiente supervisionado.",
+    description:
+      "Treinamento hands-on em fisioterapia respiratória com foco em reabilitação pulmonar, manejo de pacientes críticos e técnicas de higiene brônquica em ambiente clínico real.",
+    price: 3500,
+    hours: 12,
+    category: "Hands-On",
+    specialty: "Fisioterapia",
+    instructorName: "Dra. Anna Karoline",
+    instructorPhoto: "/instructors/anna-karoline.jpg",
+    instructorTitle: "Fisioterapeuta Respiratória · CREFITO",
+    instructorBio:
+      "Dra. Anna Karoline é fisioterapeuta especializada em reabilitação pulmonar e fisioterapia respiratória intensiva. Atua na área clínica há mais de 8 anos e é referência em técnicas de higiene brônquica e ventilação mecânica não invasiva.",
+    seats: 14,
+    reservedPct: 25,
+    startDate: "A definir",
+    location: "Nuvem Medicina · Belo Horizonte — MG",
+    objectives: [
+      "Aplicar técnicas de higiene brônquica com segurança",
+      "Manusear equipamentos de fisioterapia respiratória",
+      "Desenvolver protocolos de reabilitação pulmonar",
+      "Atuar no paciente crítico hospitalizado com autonomia técnica",
+    ],
+    targetAudience: [
+      "Fisioterapeutas hospitalares e ambulatoriais",
+      "Estudantes de fisioterapia em último ano",
+      "Técnicos em enfermagem com interesse na área",
+    ],
+    modules: [
+      {
+        title: "Módulo 1 — Fundamentos",
+        lessons: [
+          "Anatomia aplicada à fisioterapia respiratória",
+          "Avaliação do paciente respiratório",
+          "Técnicas de ausculta pulmonar",
+        ],
+      },
+      {
+        title: "Módulo 2 — Técnicas Práticas",
+        lessons: [
+          "Higiene brônquica: tapotagem e vibração",
+          "Drenagem postural e flutter",
+          "Espirometria de incentivo e IPPB",
+        ],
+      },
+      {
+        title: "Módulo 3 — Reabilitação Pulmonar",
+        lessons: [
+          "Protocolos em DPOC, asma e fibrose",
+          "Treino muscular respiratório",
+          "Alta hospitalar e plano domiciliar",
+        ],
+      },
+    ],
+    includes: [
+      "12h de treinamento presencial supervisionado",
+      "Material didático impresso e digital",
+      "Acesso a protocolos clínicos em PDF",
+      "Certificado digital com QR Code",
+      "Coffee break",
+      "Suporte pós-curso",
+    ],
+  },
+};
+
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export async function generateStaticParams() {
+  return Object.keys(coursesData).map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const course = coursesData[slug as CourseSlug];
+  if (!course) return {};
+
+  return {
+    title: `${course.name} | Nuvem Ensino`,
+    description: course.shortDesc,
+    openGraph: {
+      title: course.name,
+      description: course.shortDesc,
+      images: [course.instructorPhoto],
+    },
+  };
+}
+
+export default async function CoursePage({ params }: Props) {
+  const { slug } = await params;
+  const course = coursesData[slug as CourseSlug];
+
+  if (!course) notFound();
+
+  const availableSeats =
+    course.seats != null
+      ? Math.round(course.seats * (1 - course.reservedPct / 100))
+      : null;
+
+  return (
+    <div>
+      {/* ── Hero do curso ── */}
+      <section className="bg-canvas px-4 py-16">
+        <div className="max-w-5xl mx-auto">
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-1.5 font-sans text-xs text-white/40 mb-8">
+            <Link href="/" className="hover:text-white/70 transition-colors">Início</Link>
+            <ChevronRight className="w-3 h-3" />
+            <Link href="/cursos" className="hover:text-white/70 transition-colors">Cursos</Link>
+            <ChevronRight className="w-3 h-3" />
+            <span className="text-white/60">{course.name}</span>
+          </nav>
+
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 items-start">
+            {/* Info principal */}
+            <div>
+              <div className="flex flex-wrap items-center gap-3 mb-5">
+                <span className="font-sans text-[10px] font-semibold uppercase tracking-widest text-accent bg-primary/60 border border-accent/20 px-3 py-1 rounded-full">
+                  {course.category}
+                </span>
+                <span className="font-sans text-[10px] font-semibold uppercase tracking-widest text-white/50">
+                  {course.specialty}
+                </span>
+              </div>
+
+              <h1 className="font-serif text-4xl sm:text-5xl font-light text-white leading-tight mb-4">
+                {course.name}
+              </h1>
+              <p className="font-sans text-base text-white/60 leading-relaxed max-w-2xl mb-8">
+                {course.description}
+              </p>
+
+              <div className="flex flex-wrap gap-6 text-white/70">
+                <span className="flex items-center gap-2 font-sans text-sm">
+                  <Clock className="w-4 h-4 text-accent/70" />
+                  {course.hours}h de formação
+                </span>
+                {course.category === "Hands-On" && course.seats && (
+                  <span className="flex items-center gap-2 font-sans text-sm">
+                    <Users className="w-4 h-4 text-accent/70" />
+                    {availableSeats} vagas disponíveis
+                  </span>
+                )}
+                {course.location && (
+                  <span className="flex items-center gap-2 font-sans text-sm">
+                    <MapPin className="w-4 h-4 text-accent/70" />
+                    {course.location}
+                  </span>
+                )}
+                {course.startDate && (
+                  <span className="flex items-center gap-2 font-sans text-sm">
+                    <Calendar className="w-4 h-4 text-accent/70" />
+                    {course.startDate}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Card de inscrição */}
+            <div className="lg:sticky lg:top-24">
+              <div
+                className="rounded-2xl border border-white/10 p-6"
+                style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(8px)" }}
+              >
+                <p className="font-serif text-4xl font-semibold text-accent mb-1">
+                  {new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(course.price)}
+                </p>
+                <p className="font-sans text-xs text-white/40 mb-6">
+                  {course.category === "Online"
+                    ? "Acesso completo ao curso"
+                    : "Por pessoa — inclui todos os módulos"}
+                </p>
+
+                {course.seats && course.reservedPct > 0 && (
+                  <div className="mb-5">
+                    <div className="flex justify-between font-sans text-[11px] text-white/50 mb-1.5">
+                      <span>Reservas</span>
+                      <span>{course.reservedPct}%</span>
+                    </div>
+                    <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-accent/60 rounded-full"
+                        style={{ width: `${course.reservedPct}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <Link
+                  href={`/checkout/${course.slug}`}
+                  className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full bg-accent text-accent-foreground hover:bg-accent-light transition-colors mb-3"
+                >
+                  Inscrever-se agora
+                </Link>
+                <a
+                  href="https://wa.me/5531997261029"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full border border-white/20 text-white/80 hover:border-white/50 hover:text-white transition-all"
+                >
+                  Tirar dúvidas no WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Conteúdo principal ── */}
+      <div className="max-w-5xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 items-start">
+        <div className="space-y-14">
+          {/* O que você vai aprender */}
+          <section>
+            <h2 className="font-serif text-2xl font-medium text-foreground mb-6 flex items-center gap-3">
+              <BookOpen className="w-5 h-5 text-primary/60" />
+              O que você vai aprender
+            </h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {course.objectives.map((obj) => (
+                <li key={obj} className="flex items-start gap-3">
+                  <CheckCircle className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                  <span className="font-sans text-sm text-muted leading-relaxed">{obj}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          {/* Ementa */}
+          <section>
+            <h2 className="font-serif text-2xl font-medium text-foreground mb-6">
+              Conteúdo do Curso
+            </h2>
+            <div className="flex flex-col gap-3">
+              {course.modules.map((mod, i) => (
+                <details
+                  key={mod.title}
+                  className="group rounded-xl border border-border bg-surface overflow-hidden"
+                  open={i === 0}
+                >
+                  <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none font-sans text-sm font-semibold text-foreground select-none">
+                    {mod.title}
+                    <ChevronRight className="w-4 h-4 text-muted transition-transform group-open:rotate-90" />
+                  </summary>
+                  <ul className="px-5 pb-4 flex flex-col gap-2 border-t border-border">
+                    {mod.lessons.map((lesson) => (
+                      <li
+                        key={lesson}
+                        className="flex items-center gap-3 font-sans text-sm text-muted py-1.5"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0" />
+                        {lesson}
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ))}
+            </div>
+          </section>
+
+          {/* Público-alvo */}
+          <section>
+            <h2 className="font-serif text-2xl font-medium text-foreground mb-6">
+              Para quem é este curso
+            </h2>
+            <ul className="flex flex-col gap-2">
+              {course.targetAudience.map((target) => (
+                <li key={target} className="flex items-center gap-3">
+                  <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+                  <span className="font-sans text-sm text-muted">{target}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          {/* O que está incluído */}
+          <section>
+            <h2 className="font-serif text-2xl font-medium text-foreground mb-6 flex items-center gap-3">
+              <Award className="w-5 h-5 text-primary/60" />
+              O que está incluído
+            </h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {course.includes.map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <CheckCircle className="w-4 h-4 text-accent-dark mt-0.5 shrink-0" />
+                  <span className="font-sans text-sm text-muted leading-relaxed">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+
+        {/* ── Sidebar — Instrutor ── */}
+        <div className="lg:sticky lg:top-24 space-y-6">
+          <div className="bg-surface border border-border rounded-2xl p-6">
+            <p className="font-sans text-[11px] font-bold uppercase tracking-widest text-muted mb-4">
+              Instrutor
+            </p>
+            <div className="flex items-start gap-4 mb-4">
+              <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20 shrink-0">
+                <Image
+                  src={course.instructorPhoto}
+                  alt={course.instructorName}
+                  fill
+                  className="object-cover object-top"
+                  sizes="64px"
+                />
+              </div>
+              <div>
+                <p className="font-serif text-lg font-medium text-foreground leading-tight">
+                  {course.instructorName}
+                </p>
+                <p className="font-sans text-xs text-muted mt-1 leading-snug">
+                  {course.instructorTitle}
+                </p>
+              </div>
+            </div>
+            <p className="font-sans text-sm text-muted leading-relaxed">
+              {course.instructorBio}
+            </p>
+          </div>
+
+          {/* CTA mobile (visible below lg) */}
+          <div className="lg:hidden bg-surface border border-border rounded-2xl p-6">
+            <p className="font-serif text-3xl font-semibold text-primary mb-1">
+              {new Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              }).format(course.price)}
+            </p>
+            <p className="font-sans text-xs text-muted mb-5">
+              {course.hours}h de formação
+            </p>
+            <Link
+              href={`/checkout/${course.slug}`}
+              className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
+            >
+              Inscrever-se agora
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
