@@ -16,13 +16,13 @@ const courses = [
     instructorPhoto: "/instructors/felipe-nelson.jpg",
   },
   {
-    slug: "testes-respiratorios",
-    name: "Testes Respiratórios",
+    slug: "testes-respiratorios-h2-ch4-h2s-junho",
+    name: "Testes Respiratórios de H₂, CH₄ e H₂S",
     description:
-      "Espirometria, manovacuometria e curva fluxo-volume com interpretação avançada em módulo online ao vivo.",
+      "Turma de Junho: formação presencial com teoria e prática supervisionada em testes respiratórios — 19 e 20 de junho de 2026.",
     price: "R$ 2.200",
     hours: "8h",
-    category: "Online",
+    category: "Hands-On",
     instructorName: "Dra. Vera Ângelo",
     instructorPhoto: "/instructors/dra-vera.jpg",
   },
