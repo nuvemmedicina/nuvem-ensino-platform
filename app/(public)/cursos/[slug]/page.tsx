@@ -173,6 +173,52 @@ const staticContent: Record<
       "Material de apoio em PDF",
     ],
   },
+  "testes-respiratorios-h2-ch4-h2s-junho": {
+    instructorBio:
+      "Dra. Vera Ângelo é diretora técnica da Nuvem Medicina e referência nacional em motilidade digestiva e testes respiratórios. Mestre e Doutora em Patologia pela UFMG, pioneira na aplicação dos novos protocolos de H₂/CH₄/H₂S no Brasil e professora convidada do Albert Einstein.",
+    startDate: "19–20 de junho de 2026",
+    objectives: [
+      "Diagnosticar intolerâncias alimentares (lactose, frutose, frutanas, sacarose) com precisão",
+      "Identificar e diferenciar SIBO, IMO, LIBO e SIFO pelos critérios atualizados",
+      "Operar com autonomia os equipamentos Dynamed e Health Go",
+      "Elaborar e interpretar laudos de testes respiratórios de H₂, CH₄ e H₂S",
+      "Implantar ou aprimorar um serviço de testes respiratórios na sua clínica",
+      "Aplicar as atualizações do DDW 2025 na prática clínica",
+    ],
+    targetAudience: [
+      "Médicos que desejam implantar testes respiratórios na clínica",
+      "Gastroenterologistas e clínicos gerais",
+      "Nutrólogos e nutricionistas clínicos",
+      "Profissionais interessados em diagnóstico funcional digestivo",
+    ],
+    modules: [
+      {
+        title: "Dia 1 (19/06) — Módulo Teórico · 14h–18h",
+        lessons: [
+          "Intolerâncias alimentares: lactose, frutose, frutanas e sacarose",
+          "SIBO, IMO, LIBO e SIFO — diagnóstico e critérios atualizados",
+          "Atualizações DDW 2025 — novos protocolos e guidelines",
+        ],
+      },
+      {
+        title: "Dia 2 (20/06) — Teoria + Prática Supervisionada · 8h–17h30",
+        lessons: [
+          "Como estruturar e implantar um serviço de testes respiratórios",
+          "Prática supervisionada: equipamento Dynamed",
+          "Prática supervisionada: equipamento Health Go",
+          "Elaboração e interpretação de laudos — casos reais",
+        ],
+      },
+    ],
+    includes: [
+      "8h de treinamento teórico-prático (19 e 20 de junho de 2026)",
+      "Prática supervisionada com equipamentos Dynamed e Health Go",
+      "Material didático completo",
+      "Coffee break e almoço incluídos",
+      "Certificado de conclusão",
+      "Atualizações DDW 2025",
+    ],
+  },
   "desvendando-a-constipacao-intestinal": {
     instructorBio:
       "Dra. Vera Ângelo é diretora técnica da Nuvem Medicina e referência nacional em motilidade digestiva. Junto com a Dra. Eliane Basques — cirurgiã pediátrica especialista em manometria anorretal de alta resolução — apresenta uma abordagem completa e baseada em evidências para o diagnóstico da constipação intestinal.",

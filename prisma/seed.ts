@@ -233,6 +233,36 @@ async function main() {
     },
   });
 
+  const courseTestesPresencial = await prisma.course.upsert({
+    where: { slug: "testes-respiratorios-h2-ch4-h2s-junho" },
+    update: {
+      title: "Turma de Junho: Testes Respiratórios de H₂, CH₄ e H₂S",
+      description:
+        "Treinamento teórico-prático completo em testes respiratórios de H₂, CH₄ e H₂S com a Dra. Vera Ângelo. Domine o diagnóstico de intolerâncias alimentares, SIBO, IMO, LIBO e SIFO, incluindo prática supervisionada com equipamentos Dynamed e Health Go e atualizações do DDW 2025.",
+      shortDesc: "Treinamento presencial em testes respiratórios H₂/CH₄/H₂S: intolerâncias, SIBO, IMO, laudos e prática supervisionada com equipamentos reais.",
+      price: 2200,
+      hours: 8,
+      status: "PUBLISHED",
+    },
+    create: {
+      slug: "testes-respiratorios-h2-ch4-h2s-junho",
+      title: "Turma de Junho: Testes Respiratórios de H₂, CH₄ e H₂S",
+      description:
+        "Treinamento teórico-prático completo em testes respiratórios de H₂, CH₄ e H₂S com a Dra. Vera Ângelo. Domine o diagnóstico de intolerâncias alimentares, SIBO, IMO, LIBO e SIFO, incluindo prática supervisionada com equipamentos Dynamed e Health Go e atualizações do DDW 2025.",
+      shortDesc: "Treinamento presencial em testes respiratórios H₂/CH₄/H₂S: intolerâncias, SIBO, IMO, laudos e prática supervisionada com equipamentos reais.",
+      price: 2200,
+      hours: 8,
+      category: "HANDS_ON",
+      status: "PUBLISHED",
+      instructorId: instructorVera.id,
+      thumbnailUrl: "/instructors/dra-vera.jpg",
+      location: "Nuvem Medicina · Belo Horizonte — MG",
+      metaTitle: "Testes Respiratórios H₂, CH₄ e H₂S — Turma Junho 2026 | Nuvem Ensino",
+      metaDesc:
+        "Curso presencial com Dra. Vera Ângelo: testes respiratórios de hidrogênio, metano e H₂S, intolerâncias alimentares, SIBO, IMO, laudos e prática supervisionada.",
+    },
+  });
+
   const courseConstipacao = await prisma.course.upsert({
     where: { slug: "desvendando-a-constipacao-intestinal" },
     update: {
@@ -278,6 +308,8 @@ async function main() {
       { courseId: courseFisioterapia.id, tagId: tagFisio.id },
       { courseId: courseConstipacao.id, tagId: tagGastro.id },
       { courseId: courseConstipacao.id, tagId: tagMotilidade.id },
+      { courseId: courseTestesPresencial.id, tagId: tagGastro.id },
+      { courseId: courseTestesPresencial.id, tagId: tagMotilidade.id },
     ],
   });
 
@@ -495,6 +527,55 @@ async function main() {
     });
     const dbModule = existingModule ?? await prisma.module.create({
       data: { courseId: courseFisioterapia.id, title: mod.title, order: mod.order },
+    });
+    for (const lesson of mod.lessons) {
+      const existing = await prisma.lesson.findFirst({
+        where: { moduleId: dbModule.id, order: lesson.order },
+      });
+      if (!existing) {
+        await prisma.lesson.create({
+          data: {
+            moduleId: dbModule.id,
+            title: lesson.title,
+            order: lesson.order,
+            duration: lesson.duration,
+            type: "VIDEO",
+            isFree: lesson.order === 1 && mod.order === 1,
+          },
+        });
+      }
+    }
+  }
+
+  // Curso: Testes Respiratórios Presencial Junho 2026
+  const modulesTestesPresencial = [
+    {
+      title: "Dia 1 (19/06) — Módulo Teórico",
+      order: 1,
+      lessons: [
+        { title: "Intolerâncias alimentares: lactose, frutose, frutanas e sacarose", order: 1, duration: 50 },
+        { title: "SIBO, IMO, LIBO e SIFO — diagnóstico e critérios atualizados", order: 2, duration: 50 },
+        { title: "Atualizações DDW 2025 — novos protocolos e guidelines", order: 3, duration: 60 },
+      ],
+    },
+    {
+      title: "Dia 2 (20/06) — Teoria + Prática Supervisionada",
+      order: 2,
+      lessons: [
+        { title: "Como estruturar e implantar um serviço de testes respiratórios", order: 1, duration: 60 },
+        { title: "Prática supervisionada: equipamento Dynamed", order: 2, duration: 60 },
+        { title: "Prática supervisionada: equipamento Health Go", order: 3, duration: 60 },
+        { title: "Elaboração e interpretação de laudos — casos reais", order: 4, duration: 70 },
+      ],
+    },
+  ];
+
+  for (const mod of modulesTestesPresencial) {
+    const existingModule = await prisma.module.findFirst({
+      where: { courseId: courseTestesPresencial.id, order: mod.order },
+    });
+    const dbModule = existingModule ?? await prisma.module.create({
+      data: { courseId: courseTestesPresencial.id, title: mod.title, order: mod.order },
     });
     for (const lesson of mod.lessons) {
       const existing = await prisma.lesson.findFirst({
