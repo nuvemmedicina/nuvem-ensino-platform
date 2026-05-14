@@ -172,22 +172,32 @@ async function main() {
 
   const courseRespiratorio = await prisma.course.upsert({
     where: { slug: "testes-respiratorios" },
-    update: {},
+    update: {
+      title: "Aperfeiçoamento Teórico em Teste Respiratório Hidrogênio e Metano – Novos Protocolos",
+      description:
+        "Atualize seus conhecimentos e domine as novas técnicas de teste respiratório de hidrogênio e metano, aprendendo protocolos modernos e interpretação de laudos com precisão.",
+      shortDesc: "Domine os novos protocolos de teste respiratório de H₂/CH₄ com interpretação de laudos e casos clínicos reais.",
+      price: 450,
+      hours: 3,
+      metaTitle: "Aperfeiçoamento em Teste Respiratório Hidrogênio e Metano | Nuvem Ensino",
+      metaDesc:
+        "Curso online com Dra. Vera Ângelo: novos protocolos de teste respiratório de hidrogênio e metano, interpretação de laudos e guidelines internacionais.",
+    },
     create: {
       slug: "testes-respiratorios",
-      title: "Testes Respiratórios",
+      title: "Aperfeiçoamento Teórico em Teste Respiratório Hidrogênio e Metano – Novos Protocolos",
       description:
-        "Espirometria, manovacuometria e curva fluxo-volume com interpretação avançada em módulo online ao vivo.",
-      shortDesc: "Interpretação avançada de espirometria e manovacuometria em formato online.",
-      price: 2200,
-      hours: 8,
+        "Atualize seus conhecimentos e domine as novas técnicas de teste respiratório de hidrogênio e metano, aprendendo protocolos modernos e interpretação de laudos com precisão.",
+      shortDesc: "Domine os novos protocolos de teste respiratório de H₂/CH₄ com interpretação de laudos e casos clínicos reais.",
+      price: 450,
+      hours: 3,
       category: "ONLINE",
       status: "PUBLISHED",
       instructorId: instructorVera.id,
       thumbnailUrl: "/instructors/dra-vera.jpg",
-      metaTitle: "Testes Respiratórios | Nuvem Ensino",
+      metaTitle: "Aperfeiçoamento em Teste Respiratório Hidrogênio e Metano | Nuvem Ensino",
       metaDesc:
-        "Curso online de espirometria, manovacuometria e curva fluxo-volume com Dra. Vera Ângelo.",
+        "Curso online com Dra. Vera Ângelo: novos protocolos de teste respiratório de hidrogênio e metano, interpretação de laudos e guidelines internacionais.",
     },
   });
 
@@ -364,33 +374,17 @@ async function main() {
     }
   }
 
-  // Curso: Testes Respiratórios
+  // Curso: Aperfeiçoamento em Teste Respiratório Hidrogênio e Metano
   const modulesRespiratorio = [
     {
-      title: "Módulo 1 — Espirometria",
+      title: "Teste Respiratório – Novos Protocolos",
       order: 1,
       lessons: [
-        { title: "Parâmetros espirométricos e valores de referência", order: 1, duration: 22 },
-        { title: "Padrão obstrutivo x restritivo x misto", order: 2, duration: 18 },
-        { title: "Critérios de aceitabilidade e reprodutibilidade", order: 3, duration: 16 },
-      ],
-    },
-    {
-      title: "Módulo 2 — Curva Fluxo-Volume",
-      order: 2,
-      lessons: [
-        { title: "Interpretação gráfica avançada", order: 1, duration: 24 },
-        { title: "Achados em DPOC, asma e fibrose pulmonar", order: 2, duration: 28 },
-        { title: "Casos clínicos comentados", order: 3, duration: 32 },
-      ],
-    },
-    {
-      title: "Módulo 3 — Manovacuometria",
-      order: 3,
-      lessons: [
-        { title: "Técnica de medição de PImáx e PEmáx", order: 1, duration: 15 },
-        { title: "Interpretação clínica e indicações", order: 2, duration: 18 },
-        { title: "Integração com reabilitação respiratória", order: 3, duration: 20 },
+        { title: "Introdução para prática de Teste Respiratório", order: 1, duration: 25 },
+        { title: "Vivendo a experiência prática de exames", order: 2, duration: 45 },
+        { title: "Interpretação de laudos realizados na prática", order: 3, duration: 40 },
+        { title: "Desvendando novos Guidelines de Teste Respiratório", order: 4, duration: 50 },
+        { title: "Casos clínicos desafiadores", order: 5, duration: 35 },
       ],
     },
   ];

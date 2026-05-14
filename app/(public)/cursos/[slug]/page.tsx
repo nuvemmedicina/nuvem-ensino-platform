@@ -139,52 +139,38 @@ const staticContent: Record<
   },
   "testes-respiratorios": {
     instructorBio:
-      "Dra. Vera Ângelo é diretora técnica da Nuvem Medicina e coordena os programas de formação da Nuvem Ensino. Especialista em gastroenterologia com foco em doenças funcionais digestivas e fisioterapia respiratória.",
-    startDate: "A definir",
+      "Dra. Vera Ângelo é diretora técnica da Nuvem Medicina e referência nacional em motilidade digestiva e testes respiratórios. Especialista em Gastroenterologia pela UFMG, conduz pesquisa clínica aplicada em teste respiratório de hidrogênio e metano há mais de uma década.",
+    startDate: null,
     objectives: [
-      "Compreender os fundamentos da espirometria e seus padrões obstrutivos e restritivos",
-      "Interpretar curvas fluxo-volume com segurança clínica",
-      "Realizar e interpretar manovacuometria (PImáx e PEmáx)",
-      "Correlacionar achados com diagnóstico e planejamento terapêutico",
+      "Dominar os novos protocolos de teste respiratório de hidrogênio e metano",
+      "Interpretar laudos com precisão e correlacionar com quadro clínico",
+      "Compreender e aplicar os últimos guidelines internacionais",
+      "Analisar casos clínicos desafiadores com raciocínio diagnóstico avançado",
     ],
     targetAudience: [
-      "Fisioterapeutas",
-      "Pneumologistas",
-      "Médicos clínicos",
-      "Residentes em Fisioterapia e Medicina",
+      "Médicos gastroenterologistas",
+      "Clínicos gerais e internistas",
+      "Nutrólogos e nutricionistas clínicos",
+      "Profissionais de saúde com interesse em diagnóstico funcional digestivo",
     ],
     modules: [
       {
-        title: "Módulo 1 — Espirometria",
+        title: "Teste Respiratório – Novos Protocolos",
         lessons: [
-          "Parâmetros espirométricos e valores de referência",
-          "Padrão obstrutivo x restritivo x misto",
-          "Critérios de aceitabilidade e reprodutibilidade",
-        ],
-      },
-      {
-        title: "Módulo 2 — Curva Fluxo-Volume",
-        lessons: [
-          "Interpretação gráfica avançada",
-          "Achados em DPOC, asma e fibrose pulmonar",
-          "Casos clínicos comentados",
-        ],
-      },
-      {
-        title: "Módulo 3 — Manovacuometria",
-        lessons: [
-          "Técnica de medição de PImáx e PEmáx",
-          "Interpretação clínica e indicações",
-          "Integração com reabilitação respiratória",
+          "Introdução para prática de Teste Respiratório",
+          "Vivendo a experiência prática de exames",
+          "Interpretação de laudos realizados na prática",
+          "Desvendando novos Guidelines de Teste Respiratório",
+          "Casos clínicos desafiadores",
         ],
       },
     ],
     includes: [
-      "8h de aulas ao vivo via Google Meet",
-      "Gravação disponível por 60 dias",
-      "Material didático em PDF",
-      "Certificado digital com QR Code",
-      "Grupo exclusivo para dúvidas pós-curso",
+      "3h15min de aula gravada com acesso imediato",
+      "5 aulas práticas com casos clínicos reais",
+      "Certificado de participação com nota fiscal",
+      "Acesso ao conteúdo por tempo indeterminado",
+      "Material de apoio em PDF",
     ],
   },
   "fisioterapia-respiratoria": {
