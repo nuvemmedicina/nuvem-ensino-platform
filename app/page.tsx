@@ -293,10 +293,10 @@ export default function Home() {
       </section>
 
       {/* Instrutores — fundo escuro */}
-      <section className="bg-canvas py-20 px-4" style={{
-        backgroundImage: `linear-gradient(rgba(203,228,230,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(203,228,230,0.04) 1px, transparent 1px)`,
-        backgroundSize: "40px 40px",
-      }}>
+      <section className="relative bg-canvas py-20 px-4 overflow-hidden">
+        <div aria-hidden className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 opacity-[0.04] w-[600px]">
+          <Image src="/icone-nuvem.svg" alt="" width={600} height={428} className="w-full h-auto" />
+        </div>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
             <span className="font-sans text-xs font-semibold tracking-[0.25em] uppercase text-accent opacity-80 mb-4 block">
