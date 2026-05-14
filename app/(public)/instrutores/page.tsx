@@ -149,7 +149,7 @@ export default async function InstrutoresPage() {
                           aria-label="Instagram"
                           className="flex items-center gap-1.5 font-sans text-xs text-muted hover:text-primary transition-colors"
                         >
-                          <Instagram className="w-4 h-4" />
+                          <InstagramIcon className="w-4 h-4" />
                           <span className="hidden sm:inline">
                             @{p.instagram.split("instagram.com/")[1].replace("/", "")}
                           </span>
