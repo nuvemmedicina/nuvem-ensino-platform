@@ -190,17 +190,30 @@ export default function SobrePage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-canvas px-4 py-16">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="font-serif text-3xl font-light text-white mb-4">
+      <section
+        className="py-20 px-4 text-center"
+        style={{
+          backgroundColor: "#CBE4E6",
+          backgroundImage: `
+            linear-gradient(rgba(0,71,94,0.07) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,71,94,0.07) 1px, transparent 1px)
+          `,
+          backgroundSize: "40px 40px",
+        }}
+      >
+        <div
+          className="max-w-2xl mx-auto py-16 px-8 rounded-3xl border border-primary/15"
+          style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(8px)" }}
+        >
+          <h2 className="font-serif text-3xl sm:text-4xl font-light text-primary mb-4">
             Pronto para avançar na sua formação?
           </h2>
-          <p className="font-sans text-sm text-white/60 mb-8">
-            Explore nosso catálogo e encontre o curso certo para a sua especialidade.
+          <p className="font-sans text-sm text-primary/70 mb-8 leading-relaxed">
+            Explore o catálogo da <strong>NU.V.E.M Ensino.</strong> e encontre o curso certo para a sua especialidade.
           </p>
           <Link
             href="/cursos"
-            className="inline-block font-sans text-sm font-semibold px-8 py-3 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
+            className="inline-block font-sans text-sm font-semibold px-10 py-4 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
           >
             Ver todos os cursos
           </Link>
