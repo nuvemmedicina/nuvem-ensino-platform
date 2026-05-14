@@ -203,25 +203,33 @@ async function main() {
 
   const courseFisioterapia = await prisma.course.upsert({
     where: { slug: "fisioterapia-respiratoria" },
-    update: {},
+    update: {
+      title: "Treinamento Teórico-Prático de Fisioterapia nas Disfunções do Assoalho Pélvico",
+      description:
+        "Formação teórico-prática em fisioterapia pélvica: anatomia, avaliação clínica e instrumental, estratégias terapêuticas baseadas em evidências, discussão de casos reais e prática supervisionada. Turmas com no máximo 2 alunos.",
+      shortDesc: "Treinamento hands-on em disfunções do assoalho pélvico com Dra. Karol Rocha. Turmas com máximo 2 alunos.",
+      hours: 30,
+      metaTitle: "Fisioterapia nas Disfunções do Assoalho Pélvico | Nuvem Ensino",
+      metaDesc:
+        "Treinamento teórico-prático com Dra. Karol Rocha: avaliação, tratamento e prática supervisionada em disfunções do assoalho pélvico.",
+    },
     create: {
       slug: "fisioterapia-respiratoria",
-      title: "Fisioterapia Respiratória",
+      title: "Treinamento Teórico-Prático de Fisioterapia nas Disfunções do Assoalho Pélvico",
       description:
-        "Técnicas de reabilitação pulmonar e manejo de pacientes críticos com foco em prática clínica.",
-      shortDesc: "Técnicas de reabilitação pulmonar e manejo clínico em ambiente supervisionado.",
+        "Formação teórico-prática em fisioterapia pélvica: anatomia, avaliação clínica e instrumental, estratégias terapêuticas baseadas em evidências, discussão de casos reais e prática supervisionada. Turmas com no máximo 2 alunos.",
+      shortDesc: "Treinamento hands-on em disfunções do assoalho pélvico com Dra. Karol Rocha. Turmas com máximo 2 alunos.",
       price: 3500,
-      hours: 12,
+      hours: 30,
       category: "HANDS_ON",
       status: "PUBLISHED",
       instructorId: instructorAnna.id,
-      totalSeats: 14,
-      reservedSeats: 4,
-      thumbnailUrl: "/instructors/anna-karoline.jpg",
+      totalSeats: 2,
+      reservedSeats: 0,
       location: "Nuvem Medicina · Belo Horizonte — MG",
-      metaTitle: "Fisioterapia Respiratória | Nuvem Ensino",
+      metaTitle: "Fisioterapia nas Disfunções do Assoalho Pélvico | Nuvem Ensino",
       metaDesc:
-        "Curso hands-on de fisioterapia respiratória e reabilitação pulmonar com Dra. Anna Karoline.",
+        "Treinamento teórico-prático com Dra. Karol Rocha: avaliação, tratamento e prática supervisionada em disfunções do assoalho pélvico.",
     },
   });
 
