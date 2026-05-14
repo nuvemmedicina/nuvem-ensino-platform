@@ -13,6 +13,13 @@
   --muted: #6B7280;
   --border: #E5E7EB;
   --surface: #FFFFFF;
+  --gold: #C9A96E;
+  --gold-light: #DFC28F;
+  --gold-dark: #A8874E;
+  --canvas: #0F0F1A;
+  --canvas-light: #181828;
+  --canvas-card: #1A1A2E;
+  --canvas-border: #2A2A3E;
 }
 
 @theme inline {
@@ -27,6 +34,13 @@
   --color-muted: var(--muted);
   --color-border: var(--border);
   --color-surface: var(--surface);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-dark: var(--gold-dark);
+  --color-canvas: var(--canvas);
+  --color-canvas-light: var(--canvas-light);
+  --color-canvas-card: var(--canvas-card);
+  --color-canvas-border: var(--canvas-border);
   --font-sans: var(--font-inter), system-ui, sans-serif;
   --font-serif: var(--font-cormorant), Georgia, serif;
 }

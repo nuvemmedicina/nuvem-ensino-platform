@@ -26,6 +26,18 @@ const config: Config = {
           dark: "#B45309",
           light: "#F59E0B",
         },
+        gold: {
+          DEFAULT: "#C9A96E",
+          light: "#DFC28F",
+          dark: "#A8874E",
+          muted: "#C9A96E33",
+        },
+        canvas: {
+          DEFAULT: "#0F0F1A",
+          light: "#181828",
+          card: "#1A1A2E",
+          border: "#2A2A3E",
+        },
         background: "#FAFAF9",
         foreground: "#1B2E4B",
         surface: "#FFFFFF",
