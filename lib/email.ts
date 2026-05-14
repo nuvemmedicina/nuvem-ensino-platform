@@ -1,6 +1,8 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY ?? "re_placeholder");
+}
 const FROM = process.env.EMAIL_FROM ?? "NU.V.E.M Ensino <cursos@nuvemensino.com.br>";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://cursos.nuvemmedicina.com.br";
 
@@ -64,7 +66,7 @@ export async function sendEnrollmentConfirmation({
     <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Dúvidas? Responda este e-mail ou fale pelo WhatsApp <a href="https://wa.me/5531997261029" style="color:#00475e;">(31) 99726-1029</a>.</p>
   `;
 
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to,
     subject: `Matrícula confirmada: ${courseName}`,
@@ -127,7 +129,7 @@ export async function sendLiveSessionReminder({
     <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Dúvidas? Entre em contato pelo WhatsApp <a href="https://wa.me/5531997261029" style="color:#00475e;">(31) 99726-1029</a>.</p>
   `;
 
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to,
     subject,
