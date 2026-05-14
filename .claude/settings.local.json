@@ -56,7 +56,9 @@
       "Bash(git commit *)",
       "Bash(node -e ' *)",
       "Bash(npx tsx -e ' *)",
-      "Bash(xargs grep -l -i \"certif\")"
+      "Bash(xargs grep -l -i \"certif\")",
+      "Bash(npx tsx *)",
+      "Bash(python3 -c ' *)"
     ]
   }
 }

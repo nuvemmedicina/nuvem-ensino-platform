@@ -59,6 +59,25 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
     progressMap[p.lessonId] = p.completed;
   }
 
+  const nextLiveSession = await prisma.liveSession.findFirst({
+    where: { courseId: course.id, startAt: { gte: new Date() } },
+    orderBy: { startAt: "asc" },
+  });
+
+  const calendarUrl = nextLiveSession
+    ? (() => {
+        const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+        const params = new URLSearchParams({
+          action: "TEMPLATE",
+          text: nextLiveSession.title,
+          dates: `${fmt(nextLiveSession.startAt)}/${fmt(nextLiveSession.endAt)}`,
+          details: nextLiveSession.meetUrl ? `Link: ${nextLiveSession.meetUrl}` : course.title,
+          location: nextLiveSession.location ?? nextLiveSession.meetUrl ?? "",
+        });
+        return `https://calendar.google.com/calendar/render?${params.toString()}`;
+      })()
+    : null;
+
   return (
     <div className="-mx-6 -mt-6 lg:-mx-8 lg:-mt-8">
       {/* Topbar */}
@@ -93,6 +112,37 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
         <div className="mx-4 lg:mx-6 mt-4 flex items-center gap-3 bg-green-500/10 border border-green-500/20 text-green-700 rounded-xl px-4 py-3 font-sans text-sm">
           <Award className="w-4 h-4 shrink-0" />
           Matrícula confirmada! Bem-vindo ao curso.
+        </div>
+      )}
+
+      {/* Próxima aula ao vivo */}
+      {nextLiveSession && (
+        <div className="mx-4 lg:mx-6 mt-4 bg-primary/10 border border-primary/20 rounded-xl px-4 py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <p className="font-sans text-[10px] font-bold uppercase tracking-widest text-primary mb-0.5">
+                Próxima aula ao vivo
+              </p>
+              <p className="font-sans text-sm font-semibold text-foreground">{nextLiveSession.title}</p>
+              <p className="font-sans text-xs text-muted mt-0.5">
+                {new Intl.DateTimeFormat("pt-BR", { dateStyle: "full", timeStyle: "short", timeZone: "America/Sao_Paulo" }).format(new Date(nextLiveSession.startAt))}
+              </p>
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              {nextLiveSession.meetUrl && (
+                <a href={nextLiveSession.meetUrl} target="_blank" rel="noopener noreferrer"
+                  className="font-sans text-xs font-semibold px-4 py-2 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors">
+                  Entrar no Meet
+                </a>
+              )}
+              {calendarUrl && (
+                <a href={calendarUrl} target="_blank" rel="noopener noreferrer"
+                  className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-primary/30 text-primary hover:bg-primary/10 transition-colors">
+                  + Google Agenda
+                </a>
+              )}
+            </div>
+          </div>
         </div>
       )}
 

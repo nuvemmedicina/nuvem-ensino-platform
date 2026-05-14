@@ -162,11 +162,12 @@ model Course {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
-  instructor  Instructor   @relation(fields: [instructorId], references: [id])
-  modules     Module[]
-  enrollments Enrollment[]
-  coupons     CouponUsage[]
-  tags        CourseTag[]
+  instructor    Instructor     @relation(fields: [instructorId], references: [id])
+  modules       Module[]
+  enrollments   Enrollment[]
+  coupons       CouponUsage[]
+  tags          CourseTag[]
+  liveSessions  LiveSession[]
 }
 
 model Tag {
@@ -406,4 +407,23 @@ model ChatMessage {
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── LIVE SESSIONS ────────────────────────────────────────────────────────────
+
+model LiveSession {
+  id          String    @id @default(cuid())
+  courseId    String
+  title       String
+  description String?
+  startAt     DateTime
+  endAt       DateTime
+  meetUrl     String?
+  location    String?
+  reminder24h Boolean   @default(false)
+  reminder1h  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }

@@ -1,14 +1,14 @@
-import { auth } from "@/auth";
+﻿import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, LayoutDashboard, Users, LogOut } from "lucide-react";
+import { BookOpen, LayoutDashboard, Users, Video, LogOut } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
 
 const navLinks = [
-  { label: "Visão geral", href: "/admin", icon: LayoutDashboard },
+  { label: "VisÃ£o geral", href: "/admin", icon: LayoutDashboard },
   { label: "Cursos", href: "/admin/cursos", icon: BookOpen },
-  { label: "Matrículas", href: "/admin/matriculas", icon: Users },
+  { label: "MatrÃ­culas", href: "/admin/matriculas", icon: Users },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -75,3 +75,4 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     </div>
   );
 }
+
