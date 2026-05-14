@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { BookOpen, Users, Eye, EyeOff, Archive, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 
 const statusLabel: Record<string, { label: string; color: string }> = {
   PUBLISHED: { label: "Publicado", color: "text-green-600 bg-green-500/10 border-green-500/20" },
@@ -25,6 +25,13 @@ export default async function AdminCursosPage() {
           <h1 className="font-serif text-3xl font-light text-foreground">Cursos</h1>
           <p className="font-sans text-sm text-muted mt-1">{courses.length} cursos cadastrados</p>
         </div>
+        <Link
+          href="/admin/cursos/novo"
+          className="inline-flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors"
+        >
+          <Plus className="w-4 h-4" />
+          Novo Curso
+        </Link>
       </div>
 
       <div className="flex flex-col gap-3">
