@@ -7,6 +7,7 @@ import { useState } from "react";
 const navLinks = [
   { label: "Cursos", href: "/cursos" },
   { label: "Sobre", href: "/sobre" },
+  { label: "Blog", href: "https://nuvemmedicina.com.br/blog/", external: true },
   { label: "NU.V.E.M Medicina", href: "https://nuvemmedicina.com.br/", external: true },
 ];
 

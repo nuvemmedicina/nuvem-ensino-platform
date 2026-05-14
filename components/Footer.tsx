@@ -13,6 +13,7 @@ const cursos = [
 const plataforma = [
   { label: "Sobre", href: "/sobre" },
   { label: "Instrutores", href: "/instrutores" },
+  { label: "Blog", href: "https://nuvemmedicina.com.br/blog/" },
   { label: "FAQ", href: "/faq" },
 ];
 
