@@ -9,7 +9,7 @@ type PaymentMethod = "stripe" | "pix" | "boleto" | "parcelado";
 const methodLabels: Record<PaymentMethod, { label: string; desc: string; icon: React.ReactNode }> = {
   stripe: {
     label: "Cartão internacional",
-    desc: "Visa, Mastercard, Amex — USD/EUR",
+    desc: "Visa, Mastercard, Amex (USD/EUR)",
     icon: <CreditCard className="w-4 h-4" />,
   },
   pix: {
@@ -247,7 +247,7 @@ export default function CheckoutClient({
             {couponApplied ? (
               <div className="flex items-center gap-2 text-green-600 font-sans text-sm">
                 <CheckCircle className="w-4 h-4" />
-                Cupom aplicado — 10% de desconto
+                Cupom aplicado, 10% de desconto
               </div>
             ) : (
               <div className="flex gap-2">

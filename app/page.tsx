@@ -19,7 +19,7 @@ const courses = [
     slug: "testes-respiratorios-h2-ch4-h2s-junho",
     name: "Testes Respiratórios de H₂, CH₄ e H₂S",
     description:
-      "Turma de Junho: formação presencial com teoria e prática supervisionada em testes respiratórios — 19 e 20 de junho de 2026.",
+      "Turma de Junho: formação presencial com teoria e prática supervisionada em testes respiratórios nos dias 19 e 20 de junho de 2026.",
     price: "R$ 2.200",
     hours: "8h",
     category: "Hands-On",
@@ -44,7 +44,7 @@ const instructors = [
     name: "Dra. Vera Ângelo",
     specialty: "Gastroenterologia · Motilidade Digestiva",
     crm: "CRM-MG 22284",
-    bio: "Diretora técnica da Nuvem Medicina, referência nacional em testes respiratórios e motilidade digestiva. Doutora pela UFMG e professora convidada do Hospital Israelita Albert Einstein.",
+    bio: "Diretora técnica da NU.V.E.M Medicina, referência nacional em testes respiratórios e motilidade digestiva. Doutora pela UFMG e professora convidada do Hospital Israelita Albert Einstein.",
     photo: "/instructors/dra-vera.jpg",
     slug: "dra-vera-angelo",
   },
@@ -52,7 +52,7 @@ const instructors = [
     name: "Dra. Eliane Basques",
     specialty: "Gastroenterologia · Manometria Anorretal",
     crm: "CRM-MG 27601",
-    bio: "Cirurgiã Pediatra e especialista em manometria anorretal de alta resolução. Sócia proprietária da Clínica Nuvem Medicina em Belo Horizonte.",
+    bio: "Cirurgiã Pediatra e especialista em manometria anorretal de alta resolução. Sócia proprietária da Clínica NU.V.E.M Medicina em Belo Horizonte.",
     photo: "/instructors/dra-eliane.jpg",
     slug: "dra-eliane-basques",
   },
@@ -379,7 +379,7 @@ export default function Home() {
           </h2>
           <p className="font-sans text-sm text-primary/70 mb-8 leading-relaxed">
             Junte-se a centenas de profissionais de saúde que já transformaram
-            sua prática clínica com a Nuvem Ensino.
+            sua prática clínica com a NU.V.E.M Ensino.
           </p>
           <Link
             href="/cursos"

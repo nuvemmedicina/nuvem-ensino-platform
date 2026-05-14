@@ -8,11 +8,11 @@ export const metadata: Metadata = {
 const sections = [
   {
     title: "1. Aceitação dos Termos",
-    text: "Ao acessar e utilizar a plataforma Nuvem Ensino, você concorda com estes Termos de Uso. Caso não concorde com alguma disposição, recomendamos que não utilize os serviços. A Nuvem Ensino reserva-se o direito de atualizar estes termos a qualquer momento, com aviso prévio aos usuários cadastrados.",
+    text: "Ao acessar e utilizar a plataforma NU.V.E.M Ensino, você concorda com estes Termos de Uso. Caso não concorde com alguma disposição, recomendamos que não utilize os serviços. A NU.V.E.M Ensino reserva-se o direito de atualizar estes termos a qualquer momento, com aviso prévio aos usuários cadastrados.",
   },
   {
     title: "2. Descrição dos Serviços",
-    text: "A Nuvem Ensino é uma plataforma de ensino médico online e presencial, operada por NUVEM ENSINO (CNPJ 42.679.051/0001-31), que oferece cursos nas áreas de gastroenterologia, motilidade digestiva e fisioterapia pélvica, ministrados por profissionais habilitados.",
+    text: "A NU.V.E.M Ensino é uma plataforma de ensino médico online e presencial, operada por NUVEM ENSINO (CNPJ 42.679.051/0001-31), que oferece cursos nas áreas de gastroenterologia, motilidade digestiva e fisioterapia pélvica, ministrados por profissionais habilitados.",
   },
   {
     title: "3. Cadastro e Conta",
@@ -28,7 +28,7 @@ const sections = [
   },
   {
     title: "6. Propriedade Intelectual",
-    text: "Todo o conteúdo da plataforma — videoaulas, materiais didáticos, textos, imagens e marcas — é de propriedade exclusiva da Nuvem Ensino ou de seus instrutores. É vedada a reprodução, distribuição ou comercialização de qualquer conteúdo sem autorização expressa e por escrito.",
+    text: "Todo o conteúdo da plataforma (videoaulas, materiais didáticos, textos, imagens e marcas) é de propriedade exclusiva da NU.V.E.M Ensino ou de seus instrutores. É vedada a reprodução, distribuição ou comercialização de qualquer conteúdo sem autorização expressa e por escrito.",
   },
   {
     title: "7. Uso Permitido",
@@ -40,15 +40,15 @@ const sections = [
   },
   {
     title: "9. Limitação de Responsabilidade",
-    text: "A Nuvem Ensino não se responsabiliza por danos decorrentes de interrupções técnicas, erros de sistema ou uso indevido da plataforma pelo usuário. Nosso compromisso é garantir a disponibilidade do serviço com razoável nível de continuidade.",
+    text: "A NU.V.E.M Ensino não se responsabiliza por danos decorrentes de interrupções técnicas, erros de sistema ou uso indevido da plataforma pelo usuário. Nosso compromisso é garantir a disponibilidade do serviço com razoável nível de continuidade.",
   },
   {
     title: "10. Foro e Legislação",
-    text: "Estes termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da Comarca de Belo Horizonte — MG para dirimir quaisquer controvérsias decorrentes deste instrumento.",
+    text: "Estes termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da Comarca de Belo Horizonte, MG para dirimir quaisquer controvérsias decorrentes deste instrumento.",
   },
   {
     title: "11. Contato",
-    text: "Para dúvidas ou solicitações relacionadas a estes Termos, entre em contato: cursos@nuvemensino.com.br | (31) 2537-3131 | Belo Horizonte — MG.",
+    text: "Para dúvidas ou solicitações relacionadas a estes Termos, entre em contato: cursos@nuvemensino.com.br | (31) 2537-3131 | Belo Horizonte, MG.",
   },
 ];
 

@@ -24,7 +24,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
           <Link href="/">
             <Image
               src="/logo.png"
-              alt="Nuvem Ensino"
+              alt="NU.V.E.M Ensino"
               width={100}
               height={78}
               className="h-9 w-auto brightness-0 invert opacity-90"
@@ -82,7 +82,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
           <Link href="/">
             <Image
               src="/logo.png"
-              alt="Nuvem Ensino"
+              alt="NU.V.E.M Ensino"
               width={80}
               height={62}
               className="h-8 w-auto brightness-0 invert opacity-90"

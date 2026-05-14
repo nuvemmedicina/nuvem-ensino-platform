@@ -3,10 +3,10 @@ import Image from "next/image";
 
 const cursos = [
   { label: "Manometria, pHmetria e Impedância", href: "/cursos/manometria-phmetria-impedancia" },
-  { label: "Testes Respiratórios — Online", href: "/cursos/testes-respiratorios" },
+  { label: "Testes Respiratórios, Online", href: "/cursos/testes-respiratorios" },
   { label: "Fisioterapia Pélvica", href: "/cursos/fisioterapia-respiratoria" },
   { label: "Desvendando a Constipação Intestinal", href: "/cursos/desvendando-a-constipacao-intestinal" },
-  { label: "Testes Respiratórios H₂/CH₄/H₂S — Presencial", href: "/cursos/testes-respiratorios-h2-ch4-h2s-junho" },
+  { label: "Testes Respiratórios H₂/CH₄/H₂S, Presencial", href: "/cursos/testes-respiratorios-h2-ch4-h2s-junho" },
   { label: "Doenças da Cavidade Oral, Halimetria e Sialometria", href: "/cursos/doencas-da-cavidade-oral-halimetria-e-sialometria" },
 ];
 
@@ -97,7 +97,7 @@ export default function Footer() {
             <Link href="/" className="w-fit">
               <Image
                 src="/logo.png"
-                alt="Nuvem Ensino"
+                alt="NU.V.E.M Ensino"
                 width={120}
                 height={94}
                 className="h-12 w-auto brightness-0 invert opacity-90"
@@ -115,7 +115,7 @@ export default function Footer() {
               <a href="tel:+5531997261029" className="hover:text-white transition-colors">
                 (31) 99726-1029
               </a>
-              <span>Belo Horizonte — MG</span>
+              <span>Belo Horizonte, MG</span>
             </div>
 
             {/* Selo ISO 9001 */}
@@ -164,10 +164,10 @@ export default function Footer() {
           {/* Linha 1 — CNPJ e dados legais */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-white/40">
             <span>
-              © {new Date().getFullYear()} Nuvem Ensino · CNPJ 42.679.051/0001-31
+              © {new Date().getFullYear()} NU.V.E.M Ensino · CNPJ 42.679.051/0001-31
             </span>
             <span className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-              <span>NUVEM MEDICINA · CRM-MG 20532</span>
+              <span>NU.V.E.M MEDICINA · CRM-MG 20532</span>
               <span className="hidden sm:inline text-white/20">·</span>
               <span>Dra. Vera Ângelo · CRM-MG 22284 · RQE 10411 · RQE 22736</span>
             </span>

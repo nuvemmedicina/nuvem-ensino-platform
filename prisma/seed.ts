@@ -163,7 +163,7 @@ async function main() {
       totalSeats: 12,
       reservedSeats: 7,
       thumbnailUrl: "/instructors/felipe-nelson.jpg",
-      location: "Nuvem Medicina · Belo Horizonte — MG",
+      location: "NU.V.E.M Medicina · Belo Horizonte, MG",
       metaTitle: "Manometria, pHmetria e Impedância | Nuvem Ensino",
       metaDesc:
         "Curso hands-on de manometria esofágica de alta resolução, pHmetria e impedancio-pHmetria com Dr. Felipe Nelson.",
@@ -187,7 +187,7 @@ async function main() {
       totalSeats: 10,
       reservedSeats: 4,
       thumbnailUrl: "/instructors/dra-eliane.jpg",
-      location: "Nuvem Medicina · Belo Horizonte — MG",
+      location: "NU.V.E.M Medicina · Belo Horizonte, MG",
       metaTitle: "Manometria Anorretal | Nuvem Ensino",
       metaDesc:
         "Curso hands-on de manometria anorretal de alta resolução com Dra. Eliane Basques.",
@@ -250,7 +250,7 @@ async function main() {
       instructorId: instructorAnna.id,
       totalSeats: 2,
       reservedSeats: 0,
-      location: "Nuvem Medicina · Belo Horizonte — MG",
+      location: "NU.V.E.M Medicina · Belo Horizonte, MG",
       metaTitle: "Fisioterapia nas Disfunções do Assoalho Pélvico | Nuvem Ensino",
       metaDesc:
         "Treinamento teórico-prático com Dra. Karol Rocha: avaliação, tratamento e prática supervisionada em disfunções do assoalho pélvico.",
@@ -310,7 +310,7 @@ async function main() {
       status: "PUBLISHED",
       instructorId: instructorVera.id,
       thumbnailUrl: "/instructors/dra-vera.jpg",
-      location: "Nuvem Medicina · Belo Horizonte — MG",
+      location: "NU.V.E.M Medicina · Belo Horizonte, MG",
       metaTitle: "Testes Respiratórios H₂, CH₄ e H₂S — Turma Junho 2026 | Nuvem Ensino",
       metaDesc:
         "Curso presencial com Dra. Vera Ângelo: testes respiratórios de hidrogênio, metano e H₂S, intolerâncias alimentares, SIBO, IMO, laudos e prática supervisionada.",
@@ -384,7 +384,7 @@ async function main() {
   // Curso: Manometria, pHmetria e Impedância
   const modulesManometria = [
     {
-      title: "Módulo 1 — Fundamentos",
+      title: "Módulo 1: Fundamentos",
       order: 1,
       lessons: [
         { title: "Anatomia e fisiologia da motilidade esofágica", order: 1, duration: 18 },
@@ -393,7 +393,7 @@ async function main() {
       ],
     },
     {
-      title: "Módulo 2 — Manometria na Prática",
+      title: "Módulo 2: Manometria na Prática",
       order: 2,
       lessons: [
         { title: "Montagem do equipamento e cateter", order: 1, duration: 20 },
@@ -402,7 +402,7 @@ async function main() {
       ],
     },
     {
-      title: "Módulo 3 — pHmetria e Impedância",
+      title: "Módulo 3: pHmetria e Impedância",
       order: 3,
       lessons: [
         { title: "Fundamentos de pHmetria esofágica", order: 1, duration: 16 },
@@ -411,11 +411,11 @@ async function main() {
       ],
     },
     {
-      title: "Módulo 4 — Casos Clínicos",
+      title: "Módulo 4: Casos Clínicos",
       order: 4,
       lessons: [
-        { title: "Revisão de laudos reais — Parte 1", order: 1, duration: 40 },
-        { title: "Revisão de laudos reais — Parte 2", order: 2, duration: 38 },
+        { title: "Revisão de laudos reais, Parte 1", order: 1, duration: 40 },
+        { title: "Revisão de laudos reais, Parte 2", order: 2, duration: 38 },
         { title: "Discussão multidisciplinar e avaliação final", order: 3, duration: 25 },
       ],
     },
@@ -450,7 +450,7 @@ async function main() {
   // Curso: Manometria Anorretal
   const modulesAnorretal = [
     {
-      title: "Módulo 1 — Bases da Fisiologia Anorretal",
+      title: "Módulo 1: Bases da Fisiologia Anorretal",
       order: 1,
       lessons: [
         { title: "Anatomia e neurofisiologia do assoalho pélvico", order: 1, duration: 20 },
@@ -459,7 +459,7 @@ async function main() {
       ],
     },
     {
-      title: "Módulo 2 — Técnica e Prática",
+      title: "Módulo 2: Técnica e Prática",
       order: 2,
       lessons: [
         { title: "Calibração e montagem do cateter", order: 1, duration: 18 },
@@ -468,7 +468,7 @@ async function main() {
       ],
     },
     {
-      title: "Módulo 3 — Interpretação e Laudos",
+      title: "Módulo 3: Interpretação e Laudos",
       order: 3,
       lessons: [
         { title: "Análise de traçados de alta resolução", order: 1, duration: 28 },
@@ -548,7 +548,7 @@ async function main() {
   // Curso: Fisioterapia Respiratória
   const modulesFisioterapia = [
     {
-      title: "Módulo 1 — Fundamentos",
+      title: "Módulo 1: Fundamentos",
       order: 1,
       lessons: [
         { title: "Anatomia aplicada à fisioterapia respiratória", order: 1, duration: 20 },
@@ -557,7 +557,7 @@ async function main() {
       ],
     },
     {
-      title: "Módulo 2 — Técnicas Práticas",
+      title: "Módulo 2: Técnicas Práticas",
       order: 2,
       lessons: [
         { title: "Higiene brônquica: tapotagem e vibração", order: 1, duration: 22 },
@@ -566,7 +566,7 @@ async function main() {
       ],
     },
     {
-      title: "Módulo 3 — Reabilitação Pulmonar",
+      title: "Módulo 3: Reabilitação Pulmonar",
       order: 3,
       lessons: [
         { title: "Protocolos em DPOC, asma e fibrose", order: 1, duration: 26 },
@@ -643,22 +643,22 @@ async function main() {
   // Curso: Testes Respiratórios Presencial Junho 2026
   const modulesTestesPresencial = [
     {
-      title: "Dia 1 (19/06) — Módulo Teórico",
+      title: "Dia 1 (19/06): Módulo Teórico",
       order: 1,
       lessons: [
         { title: "Intolerâncias alimentares: lactose, frutose, frutanas e sacarose", order: 1, duration: 50 },
-        { title: "SIBO, IMO, LIBO e SIFO — diagnóstico e critérios atualizados", order: 2, duration: 50 },
-        { title: "Atualizações DDW 2025 — novos protocolos e guidelines", order: 3, duration: 60 },
+        { title: "SIBO, IMO, LIBO e SIFO: diagnóstico e critérios atualizados", order: 2, duration: 50 },
+        { title: "Atualizações DDW 2025: novos protocolos e guidelines", order: 3, duration: 60 },
       ],
     },
     {
-      title: "Dia 2 (20/06) — Teoria + Prática Supervisionada",
+      title: "Dia 2 (20/06): Teoria + Prática Supervisionada",
       order: 2,
       lessons: [
         { title: "Como estruturar e implantar um serviço de testes respiratórios", order: 1, duration: 60 },
         { title: "Prática supervisionada: equipamento Dynamed", order: 2, duration: 60 },
         { title: "Prática supervisionada: equipamento Health Go", order: 3, duration: 60 },
-        { title: "Elaboração e interpretação de laudos — casos reais", order: 4, duration: 70 },
+        { title: "Elaboração e interpretação de laudos, casos reais", order: 4, duration: 70 },
       ],
     },
   ];

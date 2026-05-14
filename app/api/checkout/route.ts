@@ -74,7 +74,7 @@ export async function POST(req: Request) {
             currency: "brl",
             product_data: {
               name: course.name,
-              description: `${course.hours}h de formação — Nuvem Ensino`,
+              description: `${course.hours}h de formação, NU.V.E.M Ensino`,
             },
             unit_amount: Math.round(finalPrice * 100),
           },

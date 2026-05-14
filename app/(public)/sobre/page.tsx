@@ -6,14 +6,14 @@ import { Award, BookOpen, Users, MapPin, ExternalLink } from "lucide-react";
 export const metadata: Metadata = {
   title: "Sobre | Nuvem Ensino",
   description:
-    "Conheça a Nuvem Ensino — plataforma de formação médica da Nuvem Medicina, única clínica com certificação ISO 9001 no segmento em Belo Horizonte.",
+    "Conheça a NU.V.E.M Ensino, plataforma de formação médica da NU.V.E.M Medicina, única clínica com certificação ISO 9001 no segmento em Belo Horizonte.",
 };
 
 const diferenciais = [
   {
     icon: Award,
     title: "ISO 9001 Certificada",
-    desc: "A Nuvem Medicina é a única clínica do segmento em Belo Horizonte com certificação ISO 9001 em gestão da qualidade.",
+    desc: "A NU.V.E.M Medicina é a única clínica do segmento em Belo Horizonte com certificação ISO 9001 em gestão da qualidade.",
   },
   {
     icon: BookOpen,
@@ -27,7 +27,7 @@ const diferenciais = [
   },
   {
     icon: MapPin,
-    title: "Belo Horizonte — MG",
+    title: "Belo Horizonte, MG",
     desc: "Estrutura completa para cursos presenciais, com laboratórios equipados e ambiente preparado para o aprendizado avançado.",
   },
 ];
@@ -37,7 +37,7 @@ const instrutores = [
     nome: "Dra. Vera Ângelo",
     crm: "CRM-MG 22284 · RQE 10411 · RQE 22736",
     especialidade: "Gastroenterologia · Motilidade Digestiva",
-    bio: "Diretora da Nuvem Medicina e referência em exames de motilidade digestiva no Brasil. Pioneira na realização de testes respiratórios com novos protocolos e na formação de profissionais de saúde na área.",
+    bio: "Diretora da NU.V.E.M Medicina e referência em exames de motilidade digestiva no Brasil. Pioneira na realização de testes respiratórios com novos protocolos e na formação de profissionais de saúde na área.",
     foto: "/instructors/dra-vera.jpg",
   },
   {
@@ -77,7 +77,7 @@ export default function SobrePage() {
             Ensino médico de excelência,<br className="hidden sm:block" /> direto da prática clínica
           </h1>
           <p className="font-sans text-base text-white/60 max-w-2xl mx-auto leading-relaxed">
-            A Nuvem Ensino nasceu dentro da Nuvem Medicina — clínica especializada em motilidade digestiva e
+            A NU.V.E.M Ensino nasceu dentro da NU.V.E.M Medicina, clínica especializada em motilidade digestiva e
             fisioterapia respiratória em Belo Horizonte. Compartilhamos o que praticamos todos os dias, com
             rigor científico e compromisso com a qualidade.
           </p>
@@ -93,18 +93,18 @@ export default function SobrePage() {
             </h2>
             <div className="space-y-4 font-sans text-sm text-muted leading-relaxed">
               <p>
-                A Nuvem Medicina foi fundada pela Dra. Vera Ângelo com o propósito de elevar o padrão dos
+                A NU.V.E.M Medicina foi fundada pela Dra. Vera Ângelo com o propósito de elevar o padrão dos
                 exames de motilidade digestiva em Minas Gerais. Com o tempo, médicos e fisioterapeutas de
                 todo o Brasil passaram a buscar capacitação prática nas técnicas realizadas na clínica.
               </p>
               <p>
-                A Nuvem Ensino é a resposta a essa demanda: uma plataforma que une o rigor clínico de uma
+                A NU.V.E.M Ensino é a resposta a essa demanda: uma plataforma que une o rigor clínico de uma
                 estrutura certificada com a flexibilidade do ensino online e presencial, permitindo que
                 profissionais de saúde desenvolvam competências reais em procedimentos de alta complexidade.
               </p>
               <p>
                 Nossos cursos combinam aulas gravadas com módulos práticos supervisionados, laudos comentados
-                e discussão de casos clínicos reais — porque acreditamos que a formação de verdade acontece
+                e discussão de casos clínicos reais, porque acreditamos que a formação de verdade acontece
                 na interface entre teoria e prática.
               </p>
             </div>
@@ -130,7 +130,7 @@ export default function SobrePage() {
               </div>
             </div>
             <p className="font-sans text-sm text-muted leading-relaxed">
-              A Nuvem Medicina é certificada pela norma ISO 9001, que atesta a excelência em gestão da
+              A NU.V.E.M Medicina é certificada pela norma ISO 9001, que atesta a excelência em gestão da
               qualidade em todos os processos clínicos e educacionais. Essa certificação reflete nosso
               compromisso com segurança, padronização e melhoria contínua.
             </p>
@@ -151,7 +151,7 @@ export default function SobrePage() {
       <section className="bg-surface border-y border-border py-16">
         <div className="max-w-5xl mx-auto px-4">
           <h2 className="font-serif text-2xl font-medium text-foreground text-center mb-10">
-            Por que a Nuvem Ensino
+            Por que a NU.V.E.M Ensino
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {diferenciais.map(({ icon: Icon, title, desc }) => (
@@ -219,7 +219,7 @@ export default function SobrePage() {
             Pronto para avançar na sua formação?
           </h2>
           <p className="font-sans text-sm text-primary/70 mb-8 leading-relaxed">
-            Explore o catálogo da <strong>Nuvem Ensino</strong> e encontre o curso certo para a sua especialidade.
+            Explore o catálogo da <strong>NU.V.E.M Ensino</strong> e encontre o curso certo para a sua especialidade.
           </p>
           <Link
             href="/cursos"

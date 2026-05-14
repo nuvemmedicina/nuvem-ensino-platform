@@ -45,7 +45,7 @@ const staticContent: Record<
     ],
     modules: [
       {
-        title: "Módulo 1 — Fundamentos",
+        title: "Módulo 1: Fundamentos",
         lessons: [
           "Anatomia e fisiologia da motilidade esofágica",
           "Indicações, contraindicações e preparo do paciente",
@@ -53,7 +53,7 @@ const staticContent: Record<
         ],
       },
       {
-        title: "Módulo 2 — Manometria na Prática",
+        title: "Módulo 2: Manometria na Prática",
         lessons: [
           "Montagem do equipamento e cateter",
           "Realização do exame supervisionado",
@@ -61,7 +61,7 @@ const staticContent: Record<
         ],
       },
       {
-        title: "Módulo 3 — pHmetria e Impedância",
+        title: "Módulo 3: pHmetria e Impedância",
         lessons: [
           "Fundamentos de pHmetria esofágica",
           "Impedancio-pHmetria: posicionamento e análise",
@@ -69,7 +69,7 @@ const staticContent: Record<
         ],
       },
       {
-        title: "Módulo 4 — Casos Clínicos",
+        title: "Módulo 4: Casos Clínicos",
         lessons: [
           "Revisão de 20 laudos reais",
           "Discussão multidisciplinar",
@@ -104,7 +104,7 @@ const staticContent: Record<
     ],
     modules: [
       {
-        title: "Módulo 1 — Bases da Fisiologia Anorretal",
+        title: "Módulo 1: Bases da Fisiologia Anorretal",
         lessons: [
           "Anatomia e neurofisiologia do assoalho pélvico",
           "Indicações e contraindicações",
@@ -112,7 +112,7 @@ const staticContent: Record<
         ],
       },
       {
-        title: "Módulo 2 — Técnica e Prática",
+        title: "Módulo 2: Técnica e Prática",
         lessons: [
           "Calibração e montagem do cateter",
           "Realização do exame supervisionado",
@@ -120,7 +120,7 @@ const staticContent: Record<
         ],
       },
       {
-        title: "Módulo 3 — Interpretação e Laudos",
+        title: "Módulo 3: Interpretação e Laudos",
         lessons: [
           "Análise de traçados de alta resolução",
           "Laudos comentados e diagnósticos diferenciais",
@@ -139,7 +139,7 @@ const staticContent: Record<
   },
   "testes-respiratorios": {
     instructorBio:
-      "Dra. Vera Ângelo é diretora técnica da Nuvem Medicina e referência nacional em motilidade digestiva e testes respiratórios. Especialista em Gastroenterologia pela UFMG, conduz pesquisa clínica aplicada em teste respiratório de hidrogênio e metano há mais de uma década.",
+      "Dra. Vera Ângelo é diretora técnica da NU.V.E.M Medicina e referência nacional em motilidade digestiva e testes respiratórios. Especialista em Gastroenterologia pela UFMG, conduz pesquisa clínica aplicada em teste respiratório de hidrogênio e metano há mais de uma década.",
     startDate: null,
     objectives: [
       "Dominar os novos protocolos de teste respiratório de hidrogênio e metano",
@@ -175,7 +175,7 @@ const staticContent: Record<
   },
   "doencas-da-cavidade-oral-halimetria-e-sialometria": {
     instructorBio:
-      "Dra. Vera Ângelo (CRM-MG 22284) é diretora técnica da Nuvem Medicina e referência em motilidade digestiva. Dr. Wanderley Bertoni (RQE 24610/38052) é gastroenterologista pela UFRJ e professor de Endoscopia Digestiva na FAMINAS-Muriaé. Juntos, oferecem uma abordagem clínica completa das doenças da cavidade oral.",
+      "Dra. Vera Ângelo (CRM-MG 22284) é diretora técnica da NU.V.E.M Medicina e referência em motilidade digestiva. Dr. Wanderley Bertoni (RQE 24610/38052) é gastroenterologista pela UFRJ e professor de Endoscopia Digestiva na FAMINAS-Muriaé. Juntos, oferecem uma abordagem clínica completa das doenças da cavidade oral.",
     startDate: null,
     objectives: [
       "Diagnosticar e tratar candidose oral, úlceras aftosas e lesões brancas",
@@ -192,7 +192,7 @@ const staticContent: Record<
     ],
     modules: [
       {
-        title: "Módulo 1 — Fundamentos e Diagnóstico da Cavidade Oral",
+        title: "Módulo 1: Fundamentos e Diagnóstico da Cavidade Oral",
         lessons: [
           "Anatomia e semiologia da cavidade oral",
           "Candidose oral: diagnóstico e tratamento",
@@ -201,7 +201,7 @@ const staticContent: Record<
         ],
       },
       {
-        title: "Módulo 2 — Halimetria, Sialometria e Manejo Clínico",
+        title: "Módulo 2: Halimetria, Sialometria e Manejo Clínico",
         lessons: [
           "Halitose: etiologia, avaliação e protocolos de tratamento",
           "Halimetria: técnica e interpretação clínica",
@@ -220,7 +220,7 @@ const staticContent: Record<
   },
   "testes-respiratorios-h2-ch4-h2s-junho": {
     instructorBio:
-      "Dra. Vera Ângelo é diretora técnica da Nuvem Medicina e referência nacional em motilidade digestiva e testes respiratórios. Mestre e Doutora em Patologia pela UFMG, pioneira na aplicação dos novos protocolos de H₂/CH₄/H₂S no Brasil e professora convidada do Albert Einstein.",
+      "Dra. Vera Ângelo é diretora técnica da NU.V.E.M Medicina e referência nacional em motilidade digestiva e testes respiratórios. Mestre e Doutora em Patologia pela UFMG, pioneira na aplicação dos novos protocolos de H₂/CH₄/H₂S no Brasil e professora convidada do Albert Einstein.",
     startDate: "19–20 de junho de 2026",
     objectives: [
       "Diagnosticar intolerâncias alimentares (lactose, frutose, frutanas, sacarose) com precisão",
@@ -238,20 +238,20 @@ const staticContent: Record<
     ],
     modules: [
       {
-        title: "Dia 1 (19/06) — Módulo Teórico · 14h–18h",
+        title: "Dia 1 (19/06): Módulo Teórico · 14h–18h",
         lessons: [
           "Intolerâncias alimentares: lactose, frutose, frutanas e sacarose",
-          "SIBO, IMO, LIBO e SIFO — diagnóstico e critérios atualizados",
-          "Atualizações DDW 2025 — novos protocolos e guidelines",
+          "SIBO, IMO, LIBO e SIFO: diagnóstico e critérios atualizados",
+          "Atualizações DDW 2025: novos protocolos e guidelines",
         ],
       },
       {
-        title: "Dia 2 (20/06) — Teoria + Prática Supervisionada · 8h–17h30",
+        title: "Dia 2 (20/06): Teoria + Prática Supervisionada · 8h–17h30",
         lessons: [
           "Como estruturar e implantar um serviço de testes respiratórios",
           "Prática supervisionada: equipamento Dynamed",
           "Prática supervisionada: equipamento Health Go",
-          "Elaboração e interpretação de laudos — casos reais",
+          "Elaboração e interpretação de laudos, casos reais",
         ],
       },
     ],
@@ -266,7 +266,7 @@ const staticContent: Record<
   },
   "desvendando-a-constipacao-intestinal": {
     instructorBio:
-      "Dra. Vera Ângelo é diretora técnica da Nuvem Medicina e referência nacional em motilidade digestiva. Junto com a Dra. Eliane Basques — cirurgiã pediátrica especialista em manometria anorretal de alta resolução — apresenta uma abordagem completa e baseada em evidências para o diagnóstico da constipação intestinal.",
+      "Dra. Vera Ângelo é diretora técnica da NU.V.E.M Medicina e referência nacional em motilidade digestiva. Junto com a Dra. Eliane Basques (cirurgiã pediátrica especialista em manometria anorretal de alta resolução), apresenta uma abordagem completa e baseada em evidências para o diagnóstico da constipação intestinal.",
     startDate: null,
     objectives: [
       "Aplicar corretamente os critérios Roma IV no diagnóstico da constipação",
@@ -285,7 +285,7 @@ const staticContent: Record<
       {
         title: "Desvendando a Constipação Intestinal",
         lessons: [
-          "Classificação Roma IV — critérios diagnósticos atualizados",
+          "Classificação Roma IV: critérios diagnósticos atualizados",
           "Tempo de trânsito colônico: como solicitar e interpretar",
           "Manometria anorretal na constipação: padrões e achados",
           "Correlação clínica e plano de tratamento individualizado",
@@ -318,7 +318,7 @@ const staticContent: Record<
     ],
     modules: [
       {
-        title: "Módulo 1 — Anatomia e Biomecânica",
+        title: "Módulo 1: Anatomia e Biomecânica",
         lessons: [
           "Anatomia detalhada do assoalho pélvico",
           "Biomecânica e fisiologia pélvica",
@@ -326,7 +326,7 @@ const staticContent: Record<
         ],
       },
       {
-        title: "Módulo 2 — Avaliação Clínica e Instrumental",
+        title: "Módulo 2: Avaliação Clínica e Instrumental",
         lessons: [
           "Anamnese e exame físico especializado",
           "Avaliação instrumental do assoalho pélvico",
@@ -334,7 +334,7 @@ const staticContent: Record<
         ],
       },
       {
-        title: "Módulo 3 — Estratégias Terapêuticas",
+        title: "Módulo 3: Estratégias Terapêuticas",
         lessons: [
           "Técnicas de reabilitação baseadas em evidências",
           "Protocolos para incontinência urinária e fecal",
@@ -342,7 +342,7 @@ const staticContent: Record<
         ],
       },
       {
-        title: "Módulo 4 — Casos Clínicos e Protocolos",
+        title: "Módulo 4: Casos Clínicos e Protocolos",
         lessons: [
           "Discussão de casos clínicos reais",
           "Atualizações de protocolo e guidelines internacionais",
@@ -350,7 +350,7 @@ const staticContent: Record<
         ],
       },
       {
-        title: "Módulo 5 — Prática Supervisionada",
+        title: "Módulo 5: Prática Supervisionada",
         lessons: [
           "Atendimento supervisionado em ambiente clínico",
           "Execução de técnicas sob supervisão direta",
@@ -360,7 +360,7 @@ const staticContent: Record<
     ],
     includes: [
       "30h de treinamento teórico-prático (17 a 19 de junho de 2026)",
-      "Turmas com no máximo 2 alunos por data — atenção individualizada",
+      "Turmas com no máximo 2 alunos por data, com atenção individualizada",
       "Certificado de conclusão",
       "Material de apoio digital",
       "Suporte pós-curso",
@@ -505,7 +505,7 @@ export default async function CoursePage({ params }: Props) {
                 <p className="font-sans text-xs text-white/40 mb-6">
                   {course.category === "ONLINE"
                     ? "Acesso completo ao curso"
-                    : "Por pessoa — inclui todos os módulos"}
+                    : "Por pessoa, inclui todos os módulos"}
                 </p>
 
                 {course.totalSeats && reservedPct > 0 && (

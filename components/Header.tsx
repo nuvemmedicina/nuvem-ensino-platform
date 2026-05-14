@@ -19,7 +19,7 @@ export default function Header() {
           <Link href="/" className="shrink-0">
             <Image
               src="/logo.png"
-              alt="Nuvem Ensino"
+              alt="NU.V.E.M Ensino"
               width={120}
               height={94}
               className="h-11 w-auto"

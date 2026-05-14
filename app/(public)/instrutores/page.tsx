@@ -16,7 +16,7 @@ function InstagramIcon({ className }: { className?: string }) {
 export const metadata: Metadata = {
   title: "Instrutores | Nuvem Ensino",
   description:
-    "Conheça o corpo docente da Nuvem Ensino — especialistas referência nacional em gastroenterologia, motilidade digestiva e fisioterapia pélvica.",
+    "Conheça o corpo docente da NU.V.E.M Ensino, especialistas referência nacional em gastroenterologia, motilidade digestiva e fisioterapia pélvica.",
 };
 
 const profiles: Record<
@@ -35,9 +35,9 @@ const profiles: Record<
     crm: "CRM-MG",
     foto: "/instructors/felipe-nelson.jpg",
     instagram: "https://www.instagram.com/felipenelson.gastro/",
-    bio: "Gastroenterologista com ampla experiência em doenças motoras do esôfago, realizando manometria esofágica de alta resolução e pHmetria. Atua nas doenças relacionadas ao esôfago e estômago — refluxo gastroesofágico, gastrites, acalásia e espasmo esofagiano — além de ter experiência em Hepatologia e Doenças Inflamatórias Intestinais. Realiza consultas e exames na Clínica Nuvem Medicina em Belo Horizonte.",
+    bio: "Gastroenterologista com ampla experiência em doenças motoras do esôfago, realizando manometria esofágica de alta resolução e pHmetria. Atua nas doenças relacionadas ao esôfago e estômago (refluxo gastroesofágico, gastrites, acalásia e espasmo esofagiano), além de ter experiência em Hepatologia e Doenças Inflamatórias Intestinais. Realiza consultas e exames na Clínica NU.V.E.M Medicina em Belo Horizonte.",
     formacao: [
-      "Gastroenterologista pela Universidade de São Paulo (USP) — Ribeirão Preto",
+      "Gastroenterologista pela Universidade de São Paulo (USP), Ribeirão Preto",
       "Doutorado pela Universidade de São Paulo (USP)",
       "Sócio Titular da Federação Brasileira de Gastroenterologia (FBG)",
     ],
@@ -47,14 +47,14 @@ const profiles: Record<
     crm: "CRM-MG 22284 · RQE 10411 (Gastroenterologia) · RQE 22736 (Patologia Clínica)",
     foto: "/instructors/dra-vera.jpg",
     instagram: "https://www.instagram.com/veraangelo/",
-    bio: "Responsável Técnica da Clínica Nuvem Medicina e Ensino. Professora Convidada da pós-graduação em Doenças Funcionais e Manometria pelo Hospital Israelita Albert Einstein. Tutora de treinamentos em doenças funcionais e testes respiratórios. Autora de publicações de referência na área de gastroenterologia e motilidade digestiva.",
+    bio: "Responsável Técnica da Clínica NU.V.E.M Medicina e Ensino. Professora Convidada da pós-graduação em Doenças Funcionais e Manometria pelo Hospital Israelita Albert Einstein. Tutora de treinamentos em doenças funcionais e testes respiratórios. Autora de publicações de referência na área de gastroenterologia e motilidade digestiva.",
     formacao: [
       "Mestre e Doutora em Patologia pela UFMG",
       "Gastroenterologista com Título de Especialista pela FBG",
-      "Residência em Gastroenterologia — Hospital Felício Rocho",
-      "Residência em Clínica Médica / Patologia Clínica — Hospital Sarah Kubitschek",
+      "Residência em Gastroenterologia, Hospital Felício Rocho",
+      "Residência em Clínica Médica / Patologia Clínica, Hospital Sarah Kubitschek",
       "Sócia Titular da GEDIIB e da Sociedade Brasileira de Motilidade Digestiva",
-      "Autora: Doenças Funcionais em Gastrenterologia 2025 · Métodos Diagnósticos 2025 · Manual Prático do Teste Respiratório 2019 (Editora Rubio)",
+      "Autora: Doenças Funcionais em Gastrenterologia 2025, Métodos Diagnósticos 2025, Manual Prático do Teste Respiratório 2019 (Editora Rubio)",
     ],
   },
   "dra-anna-karoline": {
@@ -74,12 +74,12 @@ const profiles: Record<
     crm: "CRM-MG 27601 · RQE 9324",
     foto: "/instructors/dra-eliane.jpg",
     instagram: "https://www.instagram.com/elianebasques/",
-    bio: "Cirurgiã Pediatra da Fundação Hospitalar do Estado de Minas Gerais (FHEMIG) e sócia proprietária da Clínica Nuvem Medicina em Belo Horizonte. Especialista em manometria anorretal de alta resolução e distúrbios funcionais do assoalho pélvico.",
+    bio: "Cirurgiã Pediatra da Fundação Hospitalar do Estado de Minas Gerais (FHEMIG) e sócia proprietária da Clínica NU.V.E.M Medicina em Belo Horizonte. Especialista em manometria anorretal de alta resolução e distúrbios funcionais do assoalho pélvico.",
     formacao: [
       "Graduação em Medicina pela UFMG (1994)",
       "Residência em Cirurgia Geral e Pediátrica",
       "Mestre em Saúde da Criança e do Adolescente",
-      "Pós-graduação em Doenças Funcionais — Instituto Israelita Albert Einstein",
+      "Pós-graduação em Doenças Funcionais, Instituto Israelita Albert Einstein",
     ],
   },
   "dr-wanderley-bertoni": {
@@ -90,8 +90,8 @@ const profiles: Record<
     formacao: [
       "Graduação em Medicina pela UFRJ",
       "Especialista em Gastroenterologia",
-      "Especialista em Endoscopia Digestiva — RQE 24610 · RQE 38052",
-      "Professor de Medicina — FAMINAS-Muriaé",
+      "Especialista em Endoscopia Digestiva, RQE 24610, RQE 38052",
+      "Professor de Medicina, FAMINAS-Muriaé",
     ],
   },
 };

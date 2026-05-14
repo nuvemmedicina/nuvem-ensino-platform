@@ -12,7 +12,7 @@ const faqs = [
   },
   {
     q: "Os cursos têm data e hora fixas?",
-    a: "Os cursos online (gravados) ficam disponíveis 24 horas por dia e você assiste no seu próprio ritmo. Os cursos hands-on presenciais têm datas específicas — consulte a página de cada curso para ver as turmas disponíveis.",
+    a: "Os cursos online (gravados) ficam disponíveis 24 horas por dia e você assiste no seu próprio ritmo. Os cursos hands-on presenciais têm datas específicas, consulte a página de cada curso para ver as turmas disponíveis.",
   },
   {
     q: "Por quanto tempo tenho acesso ao conteúdo?",
@@ -24,7 +24,7 @@ const faqs = [
   },
   {
     q: "Posso parcelar o pagamento?",
-    a: "Sim, aceitamos parcelamento em até 3x no cartão de crédito. Para pagamento à vista via Pix, pode haver desconto — verifique na página do curso.",
+    a: "Sim, aceitamos parcelamento em até 3x no cartão de crédito. Para pagamento à vista via Pix, pode haver desconto. Verifique na página do curso.",
   },
   {
     q: "Qual é a política de reembolso?",
@@ -36,7 +36,7 @@ const faqs = [
   },
   {
     q: "Como funciona o curso presencial?",
-    a: "Os cursos hands-on são realizados na Nuvem Medicina em Belo Horizonte — MG. As turmas são pequenas (máximo 2 a 14 alunos dependendo do curso) para garantir atenção individualizada. Após a compra, nossa equipe entrará em contato para confirmar a data.",
+    a: "Os cursos hands-on são realizados na NU.V.E.M Medicina em Belo Horizonte, MG. As turmas são pequenas (máximo 2 a 14 alunos dependendo do curso) para garantir atenção individualizada. Após a compra, nossa equipe entrará em contato para confirmar a data.",
   },
   {
     q: "Há desconto para grupos ou instituições?",

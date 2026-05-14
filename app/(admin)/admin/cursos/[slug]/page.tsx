@@ -129,7 +129,7 @@ export default async function AdminCursoEditPage({ params }: Props) {
 
           <div>
             <label className={labelClass}>Local (presencial)</label>
-            <input name="location" defaultValue={course.location ?? ""} placeholder="Ex: Nuvem Medicina · Belo Horizonte" className={inputClass} />
+            <input name="location" defaultValue={course.location ?? ""} placeholder="Ex: NU.V.E.M Medicina · Belo Horizonte" className={inputClass} />
           </div>
 
           <div>
