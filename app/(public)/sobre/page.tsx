@@ -43,8 +43,8 @@ const instrutores = [
   {
     nome: "Dra. Anna Karoline",
     crm: "",
-    especialidade: "Fisioterapia Respiratória",
-    bio: "Especialista em fisioterapia respiratória com expertise em função pulmonar, reabilitação e técnicas avançadas de avaliação clínica.",
+    especialidade: "Fisioterapia Pélvica",
+    bio: "Fisioterapeuta especialista em disfunções do assoalho pélvico, com atuação clínica em avaliação e reabilitação pélvica feminina.",
     foto: "/instructors/anna-karoline.jpg",
   },
   {
