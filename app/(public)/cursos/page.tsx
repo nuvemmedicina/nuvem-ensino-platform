@@ -29,7 +29,7 @@ export default async function CursosPage({
     where: {
       status: "PUBLISHED",
       ...(categoria
-        ? { category: categoria.toUpperCase() as "HANDS_ON" | "ONLINE" | "HYBRID" }
+        ? { category: categoria.toUpperCase().replace(/-/g, "_") as "HANDS_ON" | "ONLINE" | "HYBRID" }
         : {}),
       ...(tagSlug
         ? { tags: { some: { tag: { slug: tagSlug } } } }
