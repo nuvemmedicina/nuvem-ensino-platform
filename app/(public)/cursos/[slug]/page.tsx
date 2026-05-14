@@ -173,6 +173,42 @@ const staticContent: Record<
       "Material de apoio em PDF",
     ],
   },
+  "desvendando-a-constipacao-intestinal": {
+    instructorBio:
+      "Dra. Vera Ângelo é diretora técnica da Nuvem Medicina e referência nacional em motilidade digestiva. Junto com a Dra. Eliane Basques — cirurgiã pediátrica especialista em manometria anorretal de alta resolução — apresenta uma abordagem completa e baseada em evidências para o diagnóstico da constipação intestinal.",
+    startDate: null,
+    objectives: [
+      "Aplicar corretamente os critérios Roma IV no diagnóstico da constipação",
+      "Interpretar o tempo de trânsito colônico e seus padrões",
+      "Correlacionar achados de manometria anorretal com o quadro clínico",
+      "Elaborar planos de tratamento individualizados baseados nos exames",
+      "Diferenciar constipação funcional de dissinergias do assoalho pélvico",
+    ],
+    targetAudience: [
+      "Gastroenterologistas e coloproctologistas",
+      "Clínicos gerais e internistas",
+      "Fisioterapeutas pélvicos",
+      "Médicos em formação com interesse em funcional digestiva",
+    ],
+    modules: [
+      {
+        title: "Desvendando a Constipação Intestinal",
+        lessons: [
+          "Classificação Roma IV — critérios diagnósticos atualizados",
+          "Tempo de trânsito colônico: como solicitar e interpretar",
+          "Manometria anorretal na constipação: padrões e achados",
+          "Correlação clínica e plano de tratamento individualizado",
+        ],
+      },
+    ],
+    includes: [
+      "3h de aula gravada com acesso imediato",
+      "Ministrado por Dra. Vera Ângelo e Dra. Eliane Basques",
+      "Certificado de participação",
+      "Nota fiscal para declaração de imposto de renda",
+      "Acesso ao conteúdo por tempo indeterminado",
+    ],
+  },
   "fisioterapia-respiratoria": {
     instructorBio:
       "Dra. Karol Rocha é fisioterapeuta formada pela PUC-MG, mestre em Ciências da Reabilitação pela UNIFAL-MG e doutoranda pela UNICAMP. Especializada no tratamento de disfunções do assoalho pélvico, alia rigor científico e experiência clínica para oferecer formação de alto nível a profissionais de saúde.",
@@ -415,6 +451,23 @@ export default async function CoursePage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      {/* ── Preview do curso (YouTube) ── */}
+      {course.previewUrl && (
+        <section className="bg-canvas/50 border-b border-white/5 py-10 px-4">
+          <div className="max-w-3xl mx-auto">
+            <div className="relative w-full rounded-2xl overflow-hidden border border-white/10" style={{ paddingTop: "56.25%" }}>
+              <iframe
+                src={course.previewUrl}
+                title={course.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── Conteúdo principal ── */}
       <div className="max-w-5xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 items-start">

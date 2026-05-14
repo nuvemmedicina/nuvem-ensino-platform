@@ -233,6 +233,39 @@ async function main() {
     },
   });
 
+  const courseConstipacao = await prisma.course.upsert({
+    where: { slug: "desvendando-a-constipacao-intestinal" },
+    update: {
+      title: "Desvendando a Constipação Intestinal, Classificação Roma IV, Tempo de Trânsito Colônico e Manometria Anorretal",
+      description:
+        "Domine a abordagem diagnóstica da constipação intestinal: aplique corretamente a Classificação Roma IV na prática clínica, interprete o tempo de trânsito colônico e correlacione achados de manometria anorretal para traçar planos de tratamento individualizados.",
+      shortDesc: "Aplique a Classificação Roma IV, interprete exames complementares e elabore planos de tratamento para constipação intestinal.",
+      price: 380,
+      hours: 3,
+      previewUrl: "https://www.youtube.com/embed/J5dI4R3xCws",
+      metaTitle: "Desvendando a Constipação Intestinal | Nuvem Ensino",
+      metaDesc:
+        "Curso online com Dra. Vera Ângelo e Dra. Eliane Basques: Roma IV, tempo de trânsito colônico e manometria anorretal aplicados ao diagnóstico da constipação.",
+    },
+    create: {
+      slug: "desvendando-a-constipacao-intestinal",
+      title: "Desvendando a Constipação Intestinal, Classificação Roma IV, Tempo de Trânsito Colônico e Manometria Anorretal",
+      description:
+        "Domine a abordagem diagnóstica da constipação intestinal: aplique corretamente a Classificação Roma IV na prática clínica, interprete o tempo de trânsito colônico e correlacione achados de manometria anorretal para traçar planos de tratamento individualizados.",
+      shortDesc: "Aplique a Classificação Roma IV, interprete exames complementares e elabore planos de tratamento para constipação intestinal.",
+      price: 380,
+      hours: 3,
+      category: "ONLINE",
+      status: "PUBLISHED",
+      instructorId: instructorVera.id,
+      thumbnailUrl: "/instructors/dra-vera.jpg",
+      previewUrl: "https://www.youtube.com/embed/J5dI4R3xCws",
+      metaTitle: "Desvendando a Constipação Intestinal | Nuvem Ensino",
+      metaDesc:
+        "Curso online com Dra. Vera Ângelo e Dra. Eliane Basques: Roma IV, tempo de trânsito colônico e manometria anorretal aplicados ao diagnóstico da constipação.",
+    },
+  });
+
   // ── Tags nos cursos ──────────────────────────────────────────────────────
   await prisma.courseTag.createMany({
     skipDuplicates: true,
@@ -243,6 +276,8 @@ async function main() {
       { courseId: courseAnorretal.id, tagId: tagMotilidade.id },
       { courseId: courseRespiratorio.id, tagId: tagFisio.id },
       { courseId: courseFisioterapia.id, tagId: tagFisio.id },
+      { courseId: courseConstipacao.id, tagId: tagGastro.id },
+      { courseId: courseConstipacao.id, tagId: tagMotilidade.id },
     ],
   });
 
@@ -480,9 +515,47 @@ async function main() {
     }
   }
 
+  // Curso: Desvendando a Constipação Intestinal
+  const modulesConstipacao = [
+    {
+      title: "Desvendando a Constipação Intestinal",
+      order: 1,
+      lessons: [
+        { title: "Constipação intestinal: classificação Roma IV e abordagem clínica", order: 1, duration: 181, videoUrl: "https://www.youtube.com/embed/J5dI4R3xCws", isFree: true },
+      ],
+    },
+  ];
+
+  for (const mod of modulesConstipacao) {
+    const existingModule = await prisma.module.findFirst({
+      where: { courseId: courseConstipacao.id, order: mod.order },
+    });
+    const dbModule = existingModule ?? await prisma.module.create({
+      data: { courseId: courseConstipacao.id, title: mod.title, order: mod.order },
+    });
+    for (const lesson of mod.lessons) {
+      const existing = await prisma.lesson.findFirst({
+        where: { moduleId: dbModule.id, order: lesson.order },
+      });
+      if (!existing) {
+        await prisma.lesson.create({
+          data: {
+            moduleId: dbModule.id,
+            title: lesson.title,
+            order: lesson.order,
+            duration: lesson.duration,
+            type: "VIDEO",
+            videoUrl: lesson.videoUrl,
+            isFree: lesson.isFree,
+          },
+        });
+      }
+    }
+  }
+
   console.log("✅ Seed concluído!");
   console.log(`   - 4 instrutores`);
-  console.log(`   - 4 cursos publicados`);
+  console.log(`   - 5 cursos publicados`);
   console.log(`   - Módulos e aulas para todos os cursos`);
   console.log(`   - Cupom NUVEM10 (10% de desconto)`);
 }

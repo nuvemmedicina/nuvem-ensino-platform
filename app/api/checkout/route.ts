@@ -9,6 +9,7 @@ const courseData: Record<string, { name: string; price: number; hours: number }>
   "manometria-anorretal": { name: "Manometria Anorretal", price: 4500, hours: 12 },
   "testes-respiratorios": { name: "Aperfeiçoamento Teórico em Teste Respiratório Hidrogênio e Metano – Novos Protocolos", price: 450, hours: 3 },
   "fisioterapia-respiratoria": { name: "Fisioterapia nas Disfunções do Assoalho Pélvico", price: 3500, hours: 30 },
+  "desvendando-a-constipacao-intestinal": { name: "Desvendando a Constipação Intestinal, Classificação Roma IV, Tempo de Trânsito Colônico e Manometria Anorretal", price: 380, hours: 3 },
 };
 
 export async function POST(req: Request) {
