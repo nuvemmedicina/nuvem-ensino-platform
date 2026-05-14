@@ -33,7 +33,7 @@ export default function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="font-sans text-sm font-medium text-foreground hover:text-secondary transition-colors"
+                className="font-sans text-sm font-medium text-foreground hover:text-primary-light transition-colors"
               >
                 {link.label}
               </Link>
@@ -69,7 +69,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="font-sans text-sm font-medium text-foreground hover:text-secondary transition-colors"
+                className="font-sans text-sm font-medium text-foreground hover:text-primary-light transition-colors"
               >
                 {link.label}
               </Link>

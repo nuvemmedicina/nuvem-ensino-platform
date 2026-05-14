@@ -2,24 +2,19 @@
 @config "../tailwind.config.ts";
 
 :root {
-  --background: #F5F0E8;
-  --foreground: #1A1A2E;
-  --primary: #1A1A2E;
+  --background: #F0F0F0;
+  --foreground: #00475E;
+  --primary: #00475E;
   --primary-foreground: #FFFFFF;
-  --secondary: #2563EB;
-  --secondary-foreground: #FFFFFF;
-  --accent: #D97706;
-  --accent-foreground: #FFFFFF;
+  --accent: #CBE4E6;
+  --accent-foreground: #00475E;
   --muted: #54595F;
-  --border: #E8E0D5;
+  --border: #B3B3B3;
   --surface: #FFFFFF;
-  --gold: #C9A96E;
-  --gold-light: #DFC28F;
-  --gold-dark: #A8874E;
-  --canvas: #0F0F1A;
-  --canvas-light: #1A1A2E;
-  --canvas-card: #1A1A2E;
-  --canvas-border: #2A2A3E;
+  --canvas: #002A38;
+  --canvas-light: #00475E;
+  --canvas-card: #003D52;
+  --canvas-border: #1A6880;
 }
 
 @theme inline {
@@ -27,16 +22,11 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-muted: var(--muted);
   --color-border: var(--border);
   --color-surface: var(--surface);
-  --color-gold: var(--gold);
-  --color-gold-light: var(--gold-light);
-  --color-gold-dark: var(--gold-dark);
   --color-canvas: var(--canvas);
   --color-canvas-light: var(--canvas-light);
   --color-canvas-card: var(--canvas-card);

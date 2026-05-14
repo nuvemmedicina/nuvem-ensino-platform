@@ -23,8 +23,8 @@ const courses = [
     price: "R$ 2.200",
     hours: "8h",
     category: "Online",
-    instructorName: "Dra. Eliane Basques",
-    instructorPhoto: "/instructors/dra-eliane.jpg",
+    instructorName: "Dra. Vera Ângelo",
+    instructorPhoto: "/instructors/dra-vera.jpg",
   },
   {
     slug: "fisioterapia-respiratoria",
@@ -44,11 +44,6 @@ const instructors = [
     name: "Dra. Vera Ângelo",
     specialty: "Gastroenterologista & Motilidade Digestiva",
     photo: "/instructors/dra-vera.jpg",
-  },
-  {
-    name: "Dra. Eliane Basques",
-    specialty: "Pneumologista Clínica",
-    photo: "/instructors/dra-eliane.jpg",
   },
   {
     name: "Dra. Anna Karoline",
@@ -92,19 +87,17 @@ export default function Home() {
     <div className="flex flex-col min-h-full bg-background">
       <Header />
 
-      {/* Hero — fundo escuro com ícone decorativo */}
+      {/* Hero — teal muito escuro */}
       <section className="relative flex flex-col items-center justify-center text-center px-4 pt-28 pb-32 overflow-hidden bg-canvas">
-        {/* Gradiente dourado */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,169,110,0.12) 0%, transparent 70%)",
+              "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(203,228,230,0.1) 0%, transparent 70%)",
           }}
         />
 
-        {/* Ícone da nuvem como fundo decorativo */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-[0.04]"
@@ -119,13 +112,13 @@ export default function Home() {
           />
         </div>
 
-        <span className="relative font-sans text-xs font-semibold tracking-[0.25em] uppercase text-gold mb-6 opacity-80">
+        <span className="relative font-sans text-xs font-semibold tracking-[0.25em] uppercase text-accent mb-6 opacity-80">
           Plataforma de Formação Médica
         </span>
 
         <h1 className="relative font-serif text-5xl sm:text-6xl lg:text-7xl font-light text-white leading-tight max-w-3xl mb-6">
           Formação Médica de{" "}
-          <em className="not-italic italic text-gold font-medium">
+          <em className="not-italic italic text-accent font-medium">
             Excelência
           </em>
         </h1>
@@ -139,13 +132,13 @@ export default function Home() {
         <div className="relative flex flex-col sm:flex-row gap-4 items-center">
           <Link
             href="/cursos"
-            className="font-sans text-sm font-semibold px-8 py-3.5 rounded-full bg-gold text-canvas hover:bg-gold-light transition-colors"
+            className="font-sans text-sm font-semibold px-8 py-3.5 rounded-full bg-accent text-accent-foreground hover:bg-accent-light transition-colors"
           >
             Ver Cursos
           </Link>
           <Link
             href="/sobre"
-            className="font-sans text-sm font-semibold px-8 py-3.5 rounded-full border border-gold text-gold hover:bg-gold/10 transition-colors"
+            className="font-sans text-sm font-semibold px-8 py-3.5 rounded-full border border-accent text-accent hover:bg-accent/10 transition-colors"
           >
             Conheça a Plataforma
           </Link>
@@ -154,7 +147,7 @@ export default function Home() {
         <div
           aria-hidden
           className="pointer-events-none absolute bottom-0 left-0 right-0 h-px"
-          style={{ background: "linear-gradient(90deg, transparent, rgba(201,169,110,0.3), transparent)" }}
+          style={{ background: "linear-gradient(90deg, transparent, rgba(203,228,230,0.3), transparent)" }}
         />
       </section>
 
@@ -173,9 +166,9 @@ export default function Home() {
               <Link
                 key={cat.label}
                 href={cat.href}
-                className="group flex flex-col gap-5 p-8 rounded-2xl bg-surface border border-border hover:border-gold/60 hover:shadow-sm transition-all duration-300"
+                className="group flex flex-col gap-5 p-8 rounded-2xl bg-surface border border-border hover:border-primary/40 hover:shadow-sm transition-all duration-300"
               >
-                <span className="text-gold group-hover:text-gold-dark transition-colors">
+                <span className="text-primary group-hover:text-primary-light transition-colors">
                   {cat.icon}
                 </span>
                 <div>
@@ -186,7 +179,7 @@ export default function Home() {
                     {cat.description}
                   </p>
                 </div>
-                <span className="font-sans text-xs font-semibold text-gold group-hover:text-gold-dark transition-colors tracking-wider uppercase">
+                <span className="font-sans text-xs font-semibold text-primary group-hover:text-primary-light transition-colors tracking-wider uppercase">
                   Explorar cursos →
                 </span>
               </Link>
@@ -209,7 +202,7 @@ export default function Home() {
             </div>
             <Link
               href="/cursos"
-              className="font-sans text-xs font-semibold text-gold hover:text-gold-dark transition-colors tracking-wider uppercase shrink-0"
+              className="font-sans text-xs font-semibold text-primary hover:text-primary-light transition-colors tracking-wider uppercase shrink-0"
             >
               Ver todos →
             </Link>
@@ -219,9 +212,8 @@ export default function Home() {
             {courses.map((course) => (
               <div
                 key={course.slug}
-                className="flex flex-col rounded-2xl bg-surface border border-border overflow-hidden hover:border-gold/50 hover:shadow-md transition-all duration-300"
+                className="flex flex-col rounded-2xl bg-surface border border-border overflow-hidden hover:border-primary/40 hover:shadow-md transition-all duration-300"
               >
-                {/* Foto do instrutor como capa */}
                 <div className="relative h-52 overflow-hidden">
                   <Image
                     src={course.instructorPhoto}
@@ -230,9 +222,8 @@ export default function Home() {
                     className="object-cover object-top"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
-                  {/* Overlay gradiente para legibilidade do badge */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                  <span className="absolute bottom-3 left-4 font-sans text-[10px] font-semibold uppercase tracking-widest text-white/90 bg-gold/80 px-2.5 py-1 rounded-full">
+                  <span className="absolute bottom-3 left-4 font-sans text-[10px] font-semibold uppercase tracking-widest text-white bg-primary/80 px-2.5 py-1 rounded-full">
                     {course.category}
                   </span>
                 </div>
@@ -253,7 +244,7 @@ export default function Home() {
 
                   <div className="flex items-center justify-between pt-4 border-t border-border">
                     <div className="flex flex-col">
-                      <span className="font-serif text-xl font-semibold text-gold">
+                      <span className="font-serif text-xl font-semibold text-primary">
                         {course.price}
                       </span>
                       <span className="font-sans text-[10px] text-muted/70 tracking-wide">
@@ -262,7 +253,7 @@ export default function Home() {
                     </div>
                     <Link
                       href={`/cursos/${course.slug}`}
-                      className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-gold text-gold hover:bg-gold hover:text-canvas transition-all"
+                      className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition-all"
                     >
                       Saiba mais
                     </Link>
@@ -274,7 +265,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Instrutores — fundo claro, 4 pessoas */}
+      {/* Instrutores — fundo claro */}
       <section className="bg-background py-20 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="font-serif text-3xl sm:text-4xl font-light text-foreground mb-3">
@@ -284,10 +275,10 @@ export default function Home() {
             Especialistas com trajetória clínica e acadêmica de referência
           </p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 max-w-3xl mx-auto">
             {instructors.map((instructor) => (
               <div key={instructor.name} className="flex flex-col items-center gap-4">
-                <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-gold/20 shrink-0">
+                <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-primary/20 shrink-0">
                   <Image
                     src={instructor.photo}
                     alt={instructor.name}
@@ -310,25 +301,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Final — fundo escuro */}
+      {/* CTA Final — fundo teal primário */}
       <section className="bg-canvas-light py-20 px-4 text-center">
         <div
           className="max-w-2xl mx-auto py-16 px-8 rounded-3xl border border-canvas-border"
           style={{
             background:
-              "radial-gradient(ellipse 100% 120% at 50% 50%, rgba(201,169,110,0.08) 0%, transparent 70%)",
+              "radial-gradient(ellipse 100% 120% at 50% 50%, rgba(203,228,230,0.08) 0%, transparent 70%)",
           }}
         >
           <h2 className="font-serif text-3xl sm:text-4xl font-light text-white mb-4">
             Pronto para evoluir na sua carreira?
           </h2>
-          <p className="font-sans text-sm text-white/50 mb-8 leading-relaxed">
+          <p className="font-sans text-sm text-white/60 mb-8 leading-relaxed">
             Junte-se a centenas de profissionais de saúde que já transformaram
             sua prática clínica com a Nuvem Ensino.
           </p>
           <Link
             href="/cursos"
-            className="inline-block font-sans text-sm font-semibold px-10 py-4 rounded-full bg-gold text-canvas hover:bg-gold-light transition-colors"
+            className="inline-block font-sans text-sm font-semibold px-10 py-4 rounded-full bg-accent text-accent-foreground hover:bg-accent-light transition-colors"
           >
             Começar agora
           </Link>
