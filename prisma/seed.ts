@@ -120,8 +120,8 @@ async function main() {
       userId: wanderley.id,
       slug: "dr-wanderley-bertoni",
       title: "Gastroenterologista & Endoscopia Digestiva",
-      crm: "RQE 24610 · 38052",
-      rqe: "RQE 24610 · 38052",
+      crm: "CRM-MG 26967",
+      rqe: "RQE 24610/38052",
       photoUrl: "/instructors/wanderley-bertoni.jpg",
     },
   });
