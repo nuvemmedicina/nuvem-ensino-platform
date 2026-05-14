@@ -44,7 +44,7 @@ const instrutores = [
     nome: "Dra. Anna Karoline",
     crm: "",
     especialidade: "Fisioterapia Pélvica",
-    bio: "Fisioterapeuta especialista em disfunções do assoalho pélvico, com atuação clínica em avaliação e reabilitação pélvica feminina.",
+    bio: "Fisioterapeuta especialista em disfunções do assoalho pélvico, com atuação clínica em avaliação e reabilitação pélvica.",
     foto: "/instructors/anna-karoline.jpg",
   },
   {

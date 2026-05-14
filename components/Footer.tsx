@@ -5,7 +5,7 @@ const cursos = [
   { label: "Manometria, pHmetria e Impedância", href: "/cursos/manometria-phmetria-impedancia" },
   { label: "Manometria Anorretal", href: "/cursos/manometria-anorretal" },
   { label: "Testes Respiratórios", href: "/cursos/testes-respiratorios" },
-  { label: "Fisioterapia Respiratória", href: "/cursos/fisioterapia-respiratoria" },
+  { label: "Fisioterapia Pélvica", href: "/cursos/fisioterapia-respiratoria" },
 ];
 
 const plataforma = [

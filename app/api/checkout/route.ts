@@ -8,7 +8,7 @@ const courseData: Record<string, { name: string; price: number; hours: number }>
   "manometria-phmetria-impedancia": { name: "Manometria, pHmetria e Impedância", price: 6500, hours: 16 },
   "manometria-anorretal": { name: "Manometria Anorretal", price: 4500, hours: 12 },
   "testes-respiratorios": { name: "Aperfeiçoamento Teórico em Teste Respiratório Hidrogênio e Metano – Novos Protocolos", price: 450, hours: 3 },
-  "fisioterapia-respiratoria": { name: "Fisioterapia Respiratória", price: 3500, hours: 12 },
+  "fisioterapia-respiratoria": { name: "Fisioterapia nas Disfunções do Assoalho Pélvico", price: 3500, hours: 30 },
 };
 
 export async function POST(req: Request) {

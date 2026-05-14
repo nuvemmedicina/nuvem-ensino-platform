@@ -28,11 +28,11 @@ const courses = [
   },
   {
     slug: "fisioterapia-respiratoria",
-    name: "Fisioterapia Respiratória",
+    name: "Fisioterapia nas Disfunções do Assoalho Pélvico",
     description:
-      "Técnicas de reabilitação pulmonar e manejo de pacientes críticos com foco em prática clínica.",
+      "Treinamento teórico-prático em fisioterapia pélvica: avaliação, tratamento e prática supervisionada com Dra. Anna Karoline.",
     price: "R$ 3.500",
-    hours: "12h",
+    hours: "30h",
     category: "Hands-On",
     instructorName: "Dra. Anna Karoline",
     instructorPhoto: "/instructors/anna-karoline.jpg",
@@ -52,7 +52,7 @@ const instructors = [
   },
   {
     name: "Dra. Anna Karoline",
-    specialty: "Fisioterapeuta Respiratória",
+    specialty: "Fisioterapia Pélvica",
     photo: "/instructors/anna-karoline.jpg",
   },
   {

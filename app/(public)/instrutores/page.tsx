@@ -17,7 +17,7 @@ const bios: Record<string, { especialidade: string; bio: string; foto: string; c
   },
   "anna-karoline": {
     especialidade: "Fisioterapia Pélvica",
-    bio: "Fisioterapeuta especialista em disfunções do assoalho pélvico, com atuação clínica em avaliação e reabilitação pélvica feminina.",
+    bio: "Fisioterapeuta especialista em disfunções do assoalho pélvico, com atuação clínica em avaliação e reabilitação pélvica.",
     foto: "/instructors/anna-karoline.jpg",
   },
   "dra-eliane": {
