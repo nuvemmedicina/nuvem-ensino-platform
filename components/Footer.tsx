@@ -182,10 +182,28 @@ export default function Footer() {
                 Termos de Uso
               </Link>
             </div>
-            <p className="max-w-md text-right leading-relaxed">
-              As informações neste site têm caráter educacional e não substituem consulta médica profissional,
-              em conformidade com as normas do Conselho Federal de Medicina (Res. CFM n° 1.974/2011).
-            </p>
+            <div className="flex flex-col sm:items-end gap-2">
+              <p className="max-w-md sm:text-right leading-relaxed">
+                As informações neste site têm caráter educacional e não substituem consulta médica profissional,
+                em conformidade com as normas do Conselho Federal de Medicina (Res. CFM n° 1.974/2011).
+              </p>
+              <a
+                href="https://www.anawebdesign.com.br/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 opacity-40 hover:opacity-70 transition-opacity"
+                aria-label="Desenvolvido por Ana Webdesign"
+              >
+                <span className="text-[11px] text-white/60 tracking-wide">Desenvolvido por</span>
+                <Image
+                  src="/logo-awd-white.svg"
+                  alt="Ana Webdesign"
+                  width={72}
+                  height={23}
+                  className="h-4 w-auto"
+                />
+              </a>
+            </div>
           </div>
 
         </div>
