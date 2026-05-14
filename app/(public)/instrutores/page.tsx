@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Instagram } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+
+function InstagramIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className={className}>
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" strokeWidth={0} />
+    </svg>
+  );
+}
 
 export const metadata: Metadata = {
   title: "Instrutores | Nuvem Ensino",
