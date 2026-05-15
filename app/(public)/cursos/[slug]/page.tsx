@@ -427,6 +427,38 @@ export default async function CoursePage({ params }: Props) {
   if (!course) notFound();
 
   const content = staticContent[slug] ?? null;
+
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.nuvemensino.com.br";
+  const courseJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: course.title,
+    description: course.description,
+    url: `${APP_URL}/cursos/${course.slug}`,
+    image: course.thumbnailUrl ?? `${APP_URL}/og-image.png`,
+    provider: {
+      "@type": "EducationalOrganization",
+      name: "NU.V.E.M Ensino",
+      url: APP_URL,
+      sameAs: APP_URL,
+    },
+    instructor: {
+      "@type": "Person",
+      name: course.instructor.user.name ?? "",
+      jobTitle: course.instructor.title ?? "",
+    },
+    offers: {
+      "@type": "Offer",
+      price: Number(course.price).toFixed(2),
+      priceCurrency: "BRL",
+      availability: "https://schema.org/InStock",
+      url: `${APP_URL}/checkout/${course.slug}`,
+    },
+    ...(course.hours ? { timeRequired: `PT${course.hours}H` } : {}),
+    ...(course.location ? { locationCreated: { "@type": "Place", name: course.location } } : {}),
+    inLanguage: "pt-BR",
+    courseMode: course.category === "ONLINE" ? "online" : "onsite",
+  };
   const reservedPct =
     course.totalSeats && course.totalSeats > 0
       ? Math.round(((course.reservedSeats ?? 0) / course.totalSeats) * 100)
@@ -445,6 +477,10 @@ export default async function CoursePage({ params }: Props) {
 
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }}
+      />
       {/* ── Hero do curso ── */}
       <section className="bg-canvas px-4 py-16">
         <div className="max-w-5xl mx-auto">

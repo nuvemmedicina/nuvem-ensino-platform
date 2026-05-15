@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Política de Privacidade | Nuvem Ensino",
+  title: "Política de Privacidade",
+  description:
+    "Saiba como a NU.V.E.M Ensino coleta, usa e protege seus dados pessoais em conformidade com a LGPD.",
+  alternates: { canonical: "/privacidade" },
+  robots: { index: false, follow: false },
 };
 
 const sections = [

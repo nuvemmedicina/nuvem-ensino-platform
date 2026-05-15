@@ -1,7 +1,24 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+
+export const metadata: Metadata = {
+  title: "NU.V.E.M Ensino — Formação Médica de Excelência",
+  description:
+    "Plataforma de formação médica com cursos hands-on e online de Gastroenterologia, Motilidade Digestiva, Testes Respiratórios e Fisioterapia Pélvica. Certificação ISO 9001 em Belo Horizonte, MG.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "NU.V.E.M Ensino — Formação Médica de Excelência",
+    description:
+      "Cursos hands-on e online para profissionais de saúde. Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica com especialistas de referência nacional.",
+    url: "/",
+    type: "website",
+  },
+};
 
 const courses = [
   {
@@ -99,9 +116,64 @@ const categories = [
   },
 ];
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "EducationalOrganization",
+      "@id": "https://www.nuvemensino.com.br/#organization",
+      name: "NU.V.E.M Ensino",
+      alternateName: "Nuvem Ensino",
+      url: "https://www.nuvemensino.com.br",
+      logo: "https://www.nuvemensino.com.br/logo.png",
+      description:
+        "Plataforma de formação médica especializada em Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Certificação ISO 9001.",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Belo Horizonte",
+        addressRegion: "MG",
+        addressCountry: "BR",
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: "+55-31-99726-1029",
+        contactType: "customer service",
+        email: "cursos@nuvemensino.com.br",
+        availableLanguage: "Portuguese",
+      },
+      sameAs: [
+        "https://www.instagram.com/NuvemEnsino",
+        "https://nuvemmedicina.com.br",
+      ],
+      hasCredential: {
+        "@type": "EducationalOccupationalCredential",
+        name: "ISO 9001",
+        description: "Certificação internacional de qualidade",
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.nuvemensino.com.br/#website",
+      url: "https://www.nuvemensino.com.br",
+      name: "NU.V.E.M Ensino",
+      publisher: { "@id": "https://www.nuvemensino.com.br/#organization" },
+      inLanguage: "pt-BR",
+      potentialAction: {
+        "@type": "SearchAction",
+        target: "https://www.nuvemensino.com.br/cursos?q={search_term_string}",
+        "query-input": "required name=search_term_string",
+      },
+    },
+  ],
+};
+
 export default function Home() {
   return (
     <div className="flex flex-col min-h-full bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
 
       {/* Hero — teal muito escuro com grade e ISO ao fundo */}

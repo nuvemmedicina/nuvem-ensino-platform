@@ -4,9 +4,16 @@ import Link from "next/link";
 import { Award, BookOpen, Users, MapPin, ExternalLink, Star, GraduationCap, Microscope, Globe } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Sobre | NU.V.E.M Ensino",
+  title: "Sobre a NU.V.E.M Ensino",
   description:
-    "A NU.V.E.M nasceu da visão de duas médicas que acreditaram que era possível fazer diferente, com mais precisão, mais cuidado e mais propósito.",
+    "A NU.V.E.M Ensino foi fundada pela Dra. Vera Ângelo e Dra. Eliane Basques. Única clínica do segmento em BH com certificação ISO 9001. Formação médica baseada em casos clínicos reais.",
+  alternates: { canonical: "/sobre" },
+  openGraph: {
+    title: "Sobre a NU.V.E.M Ensino",
+    description:
+      "Fundada por especialistas apaixonados pela medicina. Certificação ISO 9001, casos clínicos reais e formação de excelência em Belo Horizonte.",
+    url: "/sobre",
+  },
 };
 
 const numeros = [

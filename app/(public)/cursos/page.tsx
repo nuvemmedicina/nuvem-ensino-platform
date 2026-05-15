@@ -5,9 +5,16 @@ import { Filter, Search } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
-  title: "Cursos | Nuvem Ensino",
+  title: "Cursos",
   description:
-    "Explore nosso catálogo de cursos hands-on e online em gastroenterologia, motilidade digestiva e fisioterapia respiratória.",
+    "Catálogo completo de cursos hands-on e online em Gastroenterologia, Manometria Esofágica, Testes Respiratórios, pHmetria e Fisioterapia Pélvica. Formação prática com especialistas em Belo Horizonte.",
+  alternates: { canonical: "/cursos" },
+  openGraph: {
+    title: "Cursos | NU.V.E.M Ensino",
+    description:
+      "Cursos hands-on e online de Gastroenterologia, Manometria, Testes Respiratórios e Fisioterapia Pélvica. Turmas reduzidas com especialistas.",
+    url: "/cursos",
+  },
 };
 
 type SearchParams = { [key: string]: string | string[] | undefined };

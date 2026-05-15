@@ -14,9 +14,16 @@ function InstagramIcon({ className }: { className?: string }) {
 }
 
 export const metadata: Metadata = {
-  title: "Instrutores | Nuvem Ensino",
+  title: "Instrutores",
   description:
-    "Conheça o corpo docente da NU.V.E.M Ensino, especialistas referência nacional em gastroenterologia, motilidade digestiva e fisioterapia pélvica.",
+    "Conheça o corpo docente da NU.V.E.M Ensino: Dra. Vera Ângelo, Dra. Eliane Basques, Dr. Felipe Nelson e outros especialistas de referência nacional em Gastroenterologia e Fisioterapia Pélvica.",
+  alternates: { canonical: "/instrutores" },
+  openGraph: {
+    title: "Instrutores | NU.V.E.M Ensino",
+    description:
+      "Especialistas de referência nacional em Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Conheça quem vai te formar.",
+    url: "/instrutores",
+  },
 };
 
 const profiles: Record<

@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Termos de Uso | Nuvem Ensino",
+  title: "Termos de Uso",
+  description:
+    "Leia os termos de uso da plataforma NU.V.E.M Ensino: condições de uso, matrículas, pagamentos e propriedade intelectual.",
+  alternates: { canonical: "/termos" },
+  robots: { index: false, follow: false },
 };
 
 const sections = [

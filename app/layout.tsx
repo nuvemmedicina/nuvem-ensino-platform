@@ -13,9 +13,75 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.nuvemensino.com.br";
+
 export const metadata: Metadata = {
-  title: "Nuvem Ensino",
-  description: "Plataforma de ensino online para sua evolução profissional",
+  metadataBase: new URL(APP_URL),
+  title: {
+    default: "NU.V.E.M Ensino — Formação Médica de Excelência",
+    template: "%s | NU.V.E.M Ensino",
+  },
+  description:
+    "Cursos hands-on e online de Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Formação prática supervisionada por especialistas em Belo Horizonte, MG. Certificação ISO 9001.",
+  keywords: [
+    "cursos médicos",
+    "gastroenterologia",
+    "manometria esofágica",
+    "testes respiratórios",
+    "pHmetria",
+    "fisioterapia pélvica",
+    "motilidade digestiva",
+    "formação médica",
+    "cursos hands-on",
+    "belo horizonte",
+    "NU.V.E.M",
+    "nuvem ensino",
+    "dra vera angelo",
+    "manometria de alta resolução",
+  ],
+  authors: [{ name: "NU.V.E.M Ensino", url: APP_URL }],
+  creator: "NU.V.E.M Ensino",
+  publisher: "NU.V.E.M Ensino",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    url: APP_URL,
+    siteName: "NU.V.E.M Ensino",
+    title: "NU.V.E.M Ensino — Formação Médica de Excelência",
+    description:
+      "Cursos hands-on e online de Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Certificação ISO 9001.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "NU.V.E.M Ensino — Formação Médica de Excelência",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NU.V.E.M Ensino — Formação Médica de Excelência",
+    description:
+      "Cursos hands-on e online de Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Certificação ISO 9001.",
+    images: ["/og-image.png"],
+    creator: "@NuvemEnsino",
+  },
+  alternates: {
+    canonical: APP_URL,
+  },
+  category: "education",
 };
 
 export default function RootLayout({
