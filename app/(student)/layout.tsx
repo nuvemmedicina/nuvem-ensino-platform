@@ -2,13 +2,14 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { LayoutDashboard, BookOpen, Award, User, LogOut, Menu } from "lucide-react";
+import { LayoutDashboard, BookOpen, Award, User, Video, LogOut, Menu } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
 
 const navLinks = [
   { label: "Painel", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Meus Cursos", href: "/dashboard/cursos", icon: BookOpen },
-  { label: "Certificados", href: "/dashboard/certificados", icon: Award },
+  { label: "Meus Cursos",   href: "/dashboard/cursos",        icon: BookOpen },
+  { label: "Aulas ao Vivo", href: "/dashboard/aulas-ao-vivo", icon: Video },
+  { label: "Certificados",  href: "/dashboard/certificados",  icon: Award },
   { label: "Perfil", href: "/dashboard/perfil", icon: User },
 ];
 
