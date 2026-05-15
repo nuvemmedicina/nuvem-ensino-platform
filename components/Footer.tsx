@@ -1,29 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-
-const cursos = [
-  { label: "Manometria, pHmetria e Impedância", href: "/cursos/manometria-phmetria-impedancia" },
-  { label: "Testes Respiratórios, Online", href: "/cursos/testes-respiratorios" },
-  { label: "Fisioterapia Pélvica", href: "/cursos/fisioterapia-respiratoria" },
-  { label: "Desvendando a Constipação Intestinal", href: "/cursos/desvendando-a-constipacao-intestinal" },
-  { label: "Testes Respiratórios H₂/CH₄/H₂S, Presencial", href: "/cursos/testes-respiratorios-h2-ch4-h2s-junho" },
-  { label: "Doenças da Cavidade Oral, Halimetria e Sialometria", href: "/cursos/doencas-da-cavidade-oral-halimetria-e-sialometria" },
-];
-
-const plataforma = [
-  { label: "Sobre", href: "/sobre" },
-  { label: "Instrutores", href: "/instrutores" },
-  { label: "Blog", href: "https://nuvemmedicina.com.br/blog/" },
-  { label: "FAQ", href: "/faq" },
-];
-
-const institucional = [
-  { label: "NU.V.E.M Medicina", href: "https://nuvemmedicina.com.br/" },
-  { label: "Avalie no Google", href: "https://g.page/r/CQQmzgdp8IZoEAE/review" },
-  { label: "Contato", href: "/contato" },
-  { label: "Política de Privacidade", href: "/privacidade" },
-  { label: "Termos de Uso", href: "/termos" },
-];
+import { getTranslations } from "next-intl/server";
+import { Link as LocaleLink } from "@/i18n/navigation";
 
 const socialLinks = [
   {
@@ -66,33 +44,61 @@ const socialLinks = [
   },
 ];
 
-function NavColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
-  return (
-    <div className="flex flex-col gap-3">
-      <h3 className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-white/50 pb-2 border-b border-white/10">
-        {title}
-      </h3>
-      <ul className="flex flex-col gap-2.5">
-        {links.map((link) => {
-          const isExternal = link.href.startsWith("http");
-          return (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                className="font-sans text-sm text-white/70 hover:text-white transition-colors"
-              >
-                {link.label}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-}
+export default async function Footer() {
+  const t = await getTranslations("footer");
 
-export default function Footer() {
+  const cursosLinks = [
+    { label: "Manometria, pHmetria e Impedância", href: "/cursos/manometria-phmetria-impedancia" },
+    { label: "Testes Respiratórios, Online", href: "/cursos/testes-respiratorios" },
+    { label: "Fisioterapia Pélvica", href: "/cursos/fisioterapia-respiratoria" },
+    { label: "Desvendando a Constipação Intestinal", href: "/cursos/desvendando-a-constipacao-intestinal" },
+    { label: "Testes Respiratórios H₂/CH₄/H₂S, Presencial", href: "/cursos/testes-respiratorios-h2-ch4-h2s-junho" },
+    { label: "Doenças da Cavidade Oral, Halimetria e Sialometria", href: "/cursos/doencas-da-cavidade-oral-halimetria-e-sialometria" },
+  ];
+
+  const plataformaLinks = [
+    { label: t("links.about"), href: "/sobre" },
+    { label: t("links.instructors"), href: "/instrutores" },
+    { label: t("links.blog"), href: "https://nuvemmedicina.com.br/blog/" },
+    { label: t("links.faq"), href: "/faq" },
+  ];
+
+  const institucionalLinks = [
+    { label: t("links.nuvemMedicina"), href: "https://nuvemmedicina.com.br/" },
+    { label: t("links.reviewGoogle"), href: "https://g.page/r/CQQmzgdp8IZoEAE/review" },
+    { label: t("links.contact"), href: "/contato" },
+    { label: t("links.privacy"), href: "/privacidade" },
+    { label: t("links.terms"), href: "/termos" },
+  ];
+
+  function NavColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
+    return (
+      <div className="flex flex-col gap-3">
+        <h3 className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-white/50 pb-2 border-b border-white/10">
+          {title}
+        </h3>
+        <ul className="flex flex-col gap-2.5">
+          {links.map((link) => {
+            const isExternal = link.href.startsWith("http");
+            return (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="font-sans text-sm text-white/70 hover:text-white transition-colors"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  }
+
+  const year = new Date().getFullYear();
+
   return (
     <footer className="w-full bg-canvas-light text-white">
       {/* Corpo principal */}
@@ -101,7 +107,7 @@ export default function Footer() {
 
           {/* Coluna 1 — Logo + info + ISO + social */}
           <div className="flex flex-col gap-5 lg:col-span-1">
-            <Link href="/" className="w-fit">
+            <LocaleLink href="/" className="w-fit">
               <Image
                 src="/logo.png"
                 alt="NU.V.E.M Ensino"
@@ -109,10 +115,10 @@ export default function Footer() {
                 height={94}
                 className="h-12 w-auto brightness-0 invert opacity-90"
               />
-            </Link>
+            </LocaleLink>
 
             <p className="font-sans text-sm text-white/60 leading-relaxed">
-              Plataforma de formação médica com excelência em ensino clínico para profissionais de saúde.
+              {t("description")}
             </p>
 
             <div className="flex flex-col gap-1.5 text-sm text-white/60">
@@ -129,14 +135,14 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               <Image
                 src="/selo-iso-9001.png"
-                alt="Certificação ISO 9001"
+                alt={t("iso.title")}
                 width={56}
                 height={56}
                 className="w-14 h-14 object-contain shrink-0"
               />
               <div>
-                <p className="font-sans text-xs font-semibold text-white/90">Certificação ISO 9001</p>
-                <p className="font-sans text-xs text-white/50">Única clínica do segmento em BH</p>
+                <p className="font-sans text-xs font-semibold text-white/90">{t("iso.title")}</p>
+                <p className="font-sans text-xs text-white/50">{t("iso.subtitle")}</p>
               </div>
             </div>
 
@@ -158,9 +164,9 @@ export default function Footer() {
           </div>
 
           {/* Colunas de navegação */}
-          <NavColumn title="Cursos" links={cursos} />
-          <NavColumn title="Plataforma" links={plataforma} />
-          <NavColumn title="Institucional" links={institucional} />
+          <NavColumn title={t("columns.courses")} links={cursosLinks} />
+          <NavColumn title={t("columns.platform")} links={plataformaLinks} />
+          <NavColumn title={t("columns.institutional")} links={institucionalLinks} />
         </div>
       </div>
 
@@ -171,29 +177,28 @@ export default function Footer() {
           {/* Linha 1 — CNPJ e dados legais */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-white/40">
             <span>
-              © {new Date().getFullYear()} NU.V.E.M Ensino · CNPJ 42.679.051/0001-31
+              {t("legal.copyright", { year })}
             </span>
             <span className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-              <span>NU.V.E.M MEDICINA · CRM-MG 20532</span>
+              <span>{t("legal.crm")}</span>
               <span className="hidden sm:inline text-white/20">·</span>
-              <span>Dra. Vera Ângelo · CRM-MG 22284 · RQE 10411 · RQE 22736</span>
+              <span>{t("legal.director")}</span>
             </span>
           </div>
 
           {/* Linha 2 — Disclaimer médico + links */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 text-xs text-white/30">
             <div className="flex items-center gap-4">
-              <Link href="/privacidade" className="hover:text-white/60 transition-colors">
-                Política de Privacidade
-              </Link>
-              <Link href="/termos" className="hover:text-white/60 transition-colors">
-                Termos de Uso
-              </Link>
+              <LocaleLink href="/privacidade" className="hover:text-white/60 transition-colors">
+                {t("links.privacy")}
+              </LocaleLink>
+              <LocaleLink href="/termos" className="hover:text-white/60 transition-colors">
+                {t("links.terms")}
+              </LocaleLink>
             </div>
             <div className="flex flex-col sm:items-end gap-2">
               <p className="max-w-md sm:text-right leading-relaxed">
-                As informações neste site têm caráter educacional e não substituem consulta médica profissional,
-                em conformidade com as normas do Conselho Federal de Medicina (Res. CFM n° 1.974/2011).
+                {t("legal.disclaimer")}
               </p>
               <a
                 href="https://www.anawebdesign.com.br/"
@@ -202,7 +207,7 @@ export default function Footer() {
                 className="flex items-center gap-2 opacity-40 hover:opacity-70 transition-opacity"
                 aria-label="Desenvolvido por Ana Webdesign"
               >
-                <span className="text-[11px] text-white/60 tracking-wide">Desenvolvido por</span>
+                <span className="text-[11px] text-white/60 tracking-wide">{t("legal.builtBy")}</span>
                 <Image
                   src="/logo-awd-white.svg"
                   alt="Ana Webdesign"

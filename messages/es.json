@@ -1,0 +1,328 @@
+{
+  "nav": {
+    "courses": "Cursos",
+    "about": "Sobre",
+    "blog": "Blog",
+    "nuchemMedicina": "NU.V.E.M Medicina",
+    "signIn": "Ingresar",
+    "openMenu": "Abrir menú"
+  },
+  "footer": {
+    "description": "Plataforma de formación médica con excelencia en enseñanza clínica para profesionales de la salud.",
+    "columns": {
+      "courses": "Cursos",
+      "platform": "Plataforma",
+      "institutional": "Institucional"
+    },
+    "links": {
+      "about": "Sobre",
+      "instructors": "Instructores",
+      "blog": "Blog",
+      "faq": "FAQ",
+      "nuvemMedicina": "NU.V.E.M Medicina",
+      "reviewGoogle": "Calificar en Google",
+      "contact": "Contacto",
+      "privacy": "Política de Privacidad",
+      "terms": "Términos de Uso"
+    },
+    "iso": {
+      "title": "Certificación ISO 9001",
+      "subtitle": "La única clínica certificada del segmento en BH"
+    },
+    "legal": {
+      "copyright": "© {year} NU.V.E.M Ensino · CNPJ 42.679.051/0001-31",
+      "crm": "NU.V.E.M MEDICINA · CRM-MG 20532",
+      "director": "Dra. Vera Ângelo · CRM-MG 22284 · RQE 10411 · RQE 22736",
+      "disclaimer": "La información en este sitio tiene carácter educativo y no sustituye la consulta médica profesional, conforme a las normas del Consejo Federal de Medicina (Res. CFM n° 1.974/2011).",
+      "builtBy": "Desarrollado por"
+    }
+  },
+  "home": {
+    "hero": {
+      "badge": "Plataforma de Formación Médica",
+      "title": "Formación Médica de",
+      "titleHighlight": "Excelencia",
+      "description": "Cursos prácticos y en línea desarrollados por especialistas, para profesionales de la salud que buscan dominar procedimientos clínicos con rigor científico.",
+      "cta": "Ver Cursos",
+      "ctaSecondary": "Conocer la Plataforma"
+    },
+    "modalities": {
+      "title": "Modalidades de Enseñanza",
+      "subtitle": "Elige el formato que mejor se adapta a tu rutina",
+      "handsOnDescription": "Entrenamiento presencial en ambiente controlado con equipos reales y supervisión especializada.",
+      "onlineDescription": "Clases en vivo y grabadas con acceso flexible, material didáctico y certificación reconocida.",
+      "explore": "Explorar cursos →"
+    },
+    "featured": {
+      "title": "Cursos Destacados",
+      "subtitle": "Formaciones de alto impacto para tu práctica clínica",
+      "viewAll": "Ver todos →",
+      "training": "{hours}h de formación",
+      "learnMore": "Saber más"
+    },
+    "instructors": {
+      "badge": "Cuerpo docente",
+      "title": "Especialistas de referencia nacional",
+      "subtitle": "Médicos y fisioterapeutas con formación de alto nivel y práctica clínica activa en sus especialidades",
+      "viewProfiles": "Ver perfil completo de los instructores"
+    },
+    "cta": {
+      "title": "¿Listo para avanzar en tu carrera?",
+      "description": "Únete a cientos de profesionales de la salud que ya transformaron su práctica clínica con NU.V.E.M Ensino.",
+      "button": "Comenzar ahora"
+    }
+  },
+  "courses": {
+    "meta": {
+      "title": "Cursos",
+      "description": "Catálogo completo de cursos prácticos y en línea en Gastroenterología, Manometría Esofágica, Pruebas Respiratorias, pHmetría y Fisioterapia Pélvica."
+    },
+    "badge": "Catálogo",
+    "title": "Todos los Cursos",
+    "found": "{count} curso encontrado",
+    "foundPlural": "{count} cursos encontrados",
+    "filters": {
+      "title": "Filtros",
+      "search": "Buscar",
+      "searchPlaceholder": "Nombre o contenido...",
+      "modality": "Modalidad",
+      "all": "Todos",
+      "handsOn": "Práctico",
+      "online": "En línea",
+      "specialty": "Especialidad",
+      "allSpecialties": "Todas",
+      "instructor": "Instructor",
+      "allInstructors": "Todos",
+      "clearFilters": "Limpiar filtros"
+    },
+    "card": {
+      "seats": "Plazas disponibles",
+      "reserved": "{pct}% Reservado",
+      "training": "{hours}h de formación",
+      "learnMore": "Saber más"
+    },
+    "empty": {
+      "title": "No se encontraron cursos",
+      "description": "Intenta ajustar los filtros o",
+      "viewAll": "ver todos los cursos"
+    }
+  },
+  "coursePage": {
+    "enroll": "Inscribirse",
+    "hours": "horas",
+    "category": {
+      "HANDS_ON": "Práctico",
+      "ONLINE": "En línea",
+      "HYBRID": "Híbrido"
+    },
+    "instructor": "Instructor",
+    "duration": "Duración",
+    "workload": "Carga horaria",
+    "level": "Nivel",
+    "certificate": "Certificado",
+    "about": "Sobre el curso",
+    "curriculum": "Programa",
+    "prerequisites": "Requisitos previos",
+    "targetAudience": "Público objetivo",
+    "paymentLink": "Ir al Pago",
+    "checkoutButton": "Inscribirse ahora",
+    "soldOut": "Sin plazas disponibles",
+    "availableSeats": "{count} plaza disponible",
+    "availableSeatsPlural": "{count} plazas disponibles"
+  },
+  "checkout": {
+    "title": "Completar Inscripción",
+    "course": "Curso",
+    "price": "Valor",
+    "name": "Nombre completo",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "crm": "CRM (opcional)",
+    "specialty": "Especialidad",
+    "submit": "Confirmar inscripción",
+    "successTitle": "¡Inscripción recibida!",
+    "successMessage": "Nos pondremos en contacto contigo pronto para confirmar tu inscripción.",
+    "alreadyEnrolled": "Ya estás inscrito en este curso."
+  },
+  "auth": {
+    "login": {
+      "title": "Ingresar",
+      "subtitle": "Accede a tu cuenta para continuar.",
+      "googleButton": "Continuar con Google",
+      "or": "o",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "tu@correo.com",
+      "passwordLabel": "Contraseña",
+      "forgot": "¿Olvidaste?",
+      "submitButton": "Ingresar",
+      "noAccount": "¿No tienes cuenta?",
+      "createAccount": "Crear cuenta",
+      "error": "Correo o contraseña incorrectos."
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "subtitle": "Accede a cursos y materiales exclusivos.",
+      "googleButton": "Continuar con Google",
+      "or": "o",
+      "nameLabel": "Nombre completo",
+      "namePlaceholder": "Dra. Nombre Apellido",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "tu@correo.com",
+      "passwordLabel": "Contraseña",
+      "passwordPlaceholder": "Mínimo 8 caracteres",
+      "showPassword": "Ver contraseña",
+      "submitButton": "Crear cuenta",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "signIn": "Ingresar",
+      "passwordTooShort": "La contraseña debe tener al menos 8 caracteres.",
+      "errorDefault": "Error al crear la cuenta. Inténtalo de nuevo."
+    },
+    "forgotPassword": {
+      "title": "Olvidé mi contraseña",
+      "subtitle": "Ingresa tu correo para recibir un enlace de recuperación.",
+      "emailLabel": "Correo electrónico",
+      "submitButton": "Enviar enlace",
+      "backToLogin": "Volver al inicio de sesión",
+      "successMessage": "Si este correo está registrado, recibirás un enlace de recuperación en breve."
+    },
+    "resetPassword": {
+      "title": "Nueva contraseña",
+      "subtitle": "Establece tu nueva contraseña de acceso.",
+      "passwordLabel": "Nueva contraseña",
+      "confirmLabel": "Confirmar contraseña",
+      "submitButton": "Guardar nueva contraseña",
+      "success": "Contraseña actualizada con éxito.",
+      "mismatch": "Las contraseñas no coinciden."
+    },
+    "verifyEmail": {
+      "title": "Verifica tu correo",
+      "description": "Enviamos un enlace de verificación a",
+      "resend": "Reenviar correo",
+      "backToLogin": "Volver al inicio de sesión"
+    }
+  },
+  "dashboard": {
+    "greeting": "¡Hola, {name}!",
+    "welcome": "Bienvenido de vuelta a tu área de aprendizaje.",
+    "stats": {
+      "activeCourses": "Cursos activos",
+      "completed": "Completados",
+      "certificates": "Certificados",
+      "studyHours": "Horas de estudio"
+    },
+    "inProgress": {
+      "title": "En progreso",
+      "viewAll": "Ver todos",
+      "progress": "Progreso"
+    },
+    "empty": {
+      "title": "Aún no tienes cursos",
+      "description": "Explora nuestro catálogo y comienza tu formación.",
+      "cta": "Ver Cursos"
+    },
+    "nav": {
+      "panel": "Panel",
+      "myCourses": "Mis Cursos",
+      "liveLessons": "Clases en Vivo",
+      "certificates": "Certificados",
+      "profile": "Perfil",
+      "signOut": "Cerrar sesión"
+    },
+    "courses": {
+      "title": "Mis Cursos",
+      "noCourses": "Aún no tienes cursos.",
+      "exploreCatalog": "Explorar catálogo"
+    },
+    "certificates": {
+      "title": "Mis Certificados",
+      "none": "Aún no tienes certificados.",
+      "download": "Descargar PDF",
+      "issued": "Emitido el"
+    },
+    "profile": {
+      "title": "Mi Perfil",
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "save": "Guardar cambios",
+      "saved": "¡Guardado!"
+    },
+    "liveLessons": {
+      "title": "Clases en Vivo",
+      "upcoming": "Próximas clases",
+      "join": "Entrar a la clase",
+      "noLessons": "No hay clases en vivo programadas."
+    }
+  },
+  "admin": {
+    "nav": {
+      "overview": "Resumen",
+      "courses": "Cursos",
+      "students": "Alumnos",
+      "instructors": "Instructores",
+      "enrollments": "Inscripciones",
+      "certificates": "Certificados",
+      "liveLessons": "Clases en Vivo",
+      "finance": "Finanzas",
+      "settings": "Configuración"
+    },
+    "overview": {
+      "title": "Resumen",
+      "totalStudents": "Total de Alumnos",
+      "totalCourses": "Total de Cursos",
+      "totalRevenue": "Ingresos Totales",
+      "activeEnrollments": "Inscripciones Activas"
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "Sobre",
+      "description": "Conoce NU.V.E.M Ensino, plataforma especializada de formación médica."
+    }
+  },
+  "instructors": {
+    "meta": {
+      "title": "Instructores",
+      "description": "Conoce los especialistas que imparten los cursos de NU.V.E.M Ensino."
+    },
+    "badge": "Cuerpo Docente",
+    "title": "Nuestros Instructores",
+    "subtitle": "Especialistas de referencia nacional con práctica clínica activa",
+    "viewProfile": "Ver perfil completo"
+  },
+  "faq": {
+    "meta": {
+      "title": "Preguntas Frecuentes",
+      "description": "Resuelve tus dudas sobre los cursos de NU.V.E.M Ensino."
+    },
+    "title": "Preguntas Frecuentes",
+    "subtitle": "Resuelve tus dudas sobre nuestros cursos y plataforma.",
+    "noResults": "No se encontraron preguntas."
+  },
+  "privacy": {
+    "title": "Política de Privacidad"
+  },
+  "terms": {
+    "title": "Términos de Uso"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error. Inténtalo de nuevo.",
+    "notFound": "Página no encontrada",
+    "backHome": "Volver al inicio",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "view": "Ver",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "close": "Cerrar",
+    "yes": "Sí",
+    "no": "No",
+    "currency": "R$",
+    "of": "de",
+    "and": "y",
+    "or": "o"
+  }
+}

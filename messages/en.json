@@ -1,0 +1,328 @@
+{
+  "nav": {
+    "courses": "Courses",
+    "about": "About",
+    "blog": "Blog",
+    "nuchemMedicina": "NU.V.E.M Medicine",
+    "signIn": "Sign In",
+    "openMenu": "Open menu"
+  },
+  "footer": {
+    "description": "Medical education platform with excellence in clinical training for healthcare professionals.",
+    "columns": {
+      "courses": "Courses",
+      "platform": "Platform",
+      "institutional": "Institutional"
+    },
+    "links": {
+      "about": "About",
+      "instructors": "Instructors",
+      "blog": "Blog",
+      "faq": "FAQ",
+      "nuvemMedicina": "NU.V.E.M Medicine",
+      "reviewGoogle": "Review on Google",
+      "contact": "Contact",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Use"
+    },
+    "iso": {
+      "title": "ISO 9001 Certification",
+      "subtitle": "The only certified clinic in this segment in BH"
+    },
+    "legal": {
+      "copyright": "© {year} NU.V.E.M Ensino · CNPJ 42.679.051/0001-31",
+      "crm": "NU.V.E.M MEDICINA · CRM-MG 20532",
+      "director": "Dra. Vera Ângelo · CRM-MG 22284 · RQE 10411 · RQE 22736",
+      "disclaimer": "The information on this site is for educational purposes only and does not replace professional medical consultation, in accordance with the Federal Council of Medicine (Res. CFM n° 1.974/2011).",
+      "builtBy": "Built by"
+    }
+  },
+  "home": {
+    "hero": {
+      "badge": "Medical Education Platform",
+      "title": "Medical Training of",
+      "titleHighlight": "Excellence",
+      "description": "Hands-on and online courses developed by specialists, for healthcare professionals seeking to master clinical procedures with scientific rigor.",
+      "cta": "View Courses",
+      "ctaSecondary": "Explore the Platform"
+    },
+    "modalities": {
+      "title": "Teaching Modalities",
+      "subtitle": "Choose the format that best fits your routine",
+      "handsOnDescription": "In-person training in a controlled environment with real equipment and specialized supervision.",
+      "onlineDescription": "Live and recorded classes with flexible access, teaching materials and recognized certification.",
+      "explore": "Explore courses →"
+    },
+    "featured": {
+      "title": "Featured Courses",
+      "subtitle": "High-impact training for your clinical practice",
+      "viewAll": "View all →",
+      "training": "{hours}h of training",
+      "learnMore": "Learn more"
+    },
+    "instructors": {
+      "badge": "Faculty",
+      "title": "Nationally recognized specialists",
+      "subtitle": "Physicians and physiotherapists with high-level training and active clinical practice in their specialties",
+      "viewProfiles": "View instructor full profiles"
+    },
+    "cta": {
+      "title": "Ready to advance your career?",
+      "description": "Join hundreds of healthcare professionals who have already transformed their clinical practice with NU.V.E.M Ensino.",
+      "button": "Get started"
+    }
+  },
+  "courses": {
+    "meta": {
+      "title": "Courses",
+      "description": "Complete catalog of hands-on and online courses in Gastroenterology, Esophageal Manometry, Breath Tests, pHmetry and Pelvic Physiotherapy."
+    },
+    "badge": "Catalog",
+    "title": "All Courses",
+    "found": "{count} course found",
+    "foundPlural": "{count} courses found",
+    "filters": {
+      "title": "Filters",
+      "search": "Search",
+      "searchPlaceholder": "Name or content...",
+      "modality": "Modality",
+      "all": "All",
+      "handsOn": "Hands-On",
+      "online": "Online",
+      "specialty": "Specialty",
+      "allSpecialties": "All",
+      "instructor": "Instructor",
+      "allInstructors": "All",
+      "clearFilters": "Clear filters"
+    },
+    "card": {
+      "seats": "Available seats",
+      "reserved": "{pct}% Reserved",
+      "training": "{hours}h of training",
+      "learnMore": "Learn more"
+    },
+    "empty": {
+      "title": "No courses found",
+      "description": "Try adjusting the filters or",
+      "viewAll": "view all courses"
+    }
+  },
+  "coursePage": {
+    "enroll": "Enroll",
+    "hours": "hours",
+    "category": {
+      "HANDS_ON": "Hands-On",
+      "ONLINE": "Online",
+      "HYBRID": "Hybrid"
+    },
+    "instructor": "Instructor",
+    "duration": "Duration",
+    "workload": "Workload",
+    "level": "Level",
+    "certificate": "Certificate",
+    "about": "About this course",
+    "curriculum": "Curriculum",
+    "prerequisites": "Prerequisites",
+    "targetAudience": "Target audience",
+    "paymentLink": "Go to Payment",
+    "checkoutButton": "Enroll now",
+    "soldOut": "Sold out",
+    "availableSeats": "{count} seat available",
+    "availableSeatsPlural": "{count} seats available"
+  },
+  "checkout": {
+    "title": "Complete Enrollment",
+    "course": "Course",
+    "price": "Price",
+    "name": "Full name",
+    "email": "Email",
+    "phone": "Phone",
+    "crm": "CRM (optional)",
+    "specialty": "Specialty",
+    "submit": "Confirm enrollment",
+    "successTitle": "Enrollment received!",
+    "successMessage": "We will contact you shortly to confirm your enrollment.",
+    "alreadyEnrolled": "You are already enrolled in this course."
+  },
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "subtitle": "Access your account to continue.",
+      "googleButton": "Continue with Google",
+      "or": "or",
+      "emailLabel": "Email",
+      "emailPlaceholder": "your@email.com",
+      "passwordLabel": "Password",
+      "forgot": "Forgot?",
+      "submitButton": "Sign In",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create account",
+      "error": "Incorrect email or password."
+    },
+    "register": {
+      "title": "Create account",
+      "subtitle": "Access exclusive courses and materials.",
+      "googleButton": "Continue with Google",
+      "or": "or",
+      "nameLabel": "Full name",
+      "namePlaceholder": "Dr. First Last",
+      "emailLabel": "Email",
+      "emailPlaceholder": "your@email.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Minimum 8 characters",
+      "showPassword": "Show password",
+      "submitButton": "Create account",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "passwordTooShort": "Password must be at least 8 characters.",
+      "errorDefault": "Error creating account. Please try again."
+    },
+    "forgotPassword": {
+      "title": "Forgot my password",
+      "subtitle": "Enter your email to receive a recovery link.",
+      "emailLabel": "Email",
+      "submitButton": "Send link",
+      "backToLogin": "Back to sign in",
+      "successMessage": "If this email is registered, you will receive a recovery link shortly."
+    },
+    "resetPassword": {
+      "title": "New password",
+      "subtitle": "Set your new access password.",
+      "passwordLabel": "New password",
+      "confirmLabel": "Confirm password",
+      "submitButton": "Save new password",
+      "success": "Password updated successfully.",
+      "mismatch": "Passwords do not match."
+    },
+    "verifyEmail": {
+      "title": "Check your email",
+      "description": "We sent a verification link to",
+      "resend": "Resend email",
+      "backToLogin": "Back to sign in"
+    }
+  },
+  "dashboard": {
+    "greeting": "Hello, {name}!",
+    "welcome": "Welcome back to your learning area.",
+    "stats": {
+      "activeCourses": "Active courses",
+      "completed": "Completed",
+      "certificates": "Certificates",
+      "studyHours": "Study hours"
+    },
+    "inProgress": {
+      "title": "In progress",
+      "viewAll": "View all",
+      "progress": "Progress"
+    },
+    "empty": {
+      "title": "No courses yet",
+      "description": "Explore our catalog and start your training.",
+      "cta": "View Courses"
+    },
+    "nav": {
+      "panel": "Dashboard",
+      "myCourses": "My Courses",
+      "liveLessons": "Live Classes",
+      "certificates": "Certificates",
+      "profile": "Profile",
+      "signOut": "Sign out"
+    },
+    "courses": {
+      "title": "My Courses",
+      "noCourses": "You don't have any courses yet.",
+      "exploreCatalog": "Explore catalog"
+    },
+    "certificates": {
+      "title": "My Certificates",
+      "none": "No certificates yet.",
+      "download": "Download PDF",
+      "issued": "Issued on"
+    },
+    "profile": {
+      "title": "My Profile",
+      "name": "Name",
+      "email": "Email",
+      "save": "Save changes",
+      "saved": "Saved!"
+    },
+    "liveLessons": {
+      "title": "Live Classes",
+      "upcoming": "Upcoming classes",
+      "join": "Join class",
+      "noLessons": "No live classes scheduled."
+    }
+  },
+  "admin": {
+    "nav": {
+      "overview": "Overview",
+      "courses": "Courses",
+      "students": "Students",
+      "instructors": "Instructors",
+      "enrollments": "Enrollments",
+      "certificates": "Certificates",
+      "liveLessons": "Live Classes",
+      "finance": "Finance",
+      "settings": "Settings"
+    },
+    "overview": {
+      "title": "Overview",
+      "totalStudents": "Total Students",
+      "totalCourses": "Total Courses",
+      "totalRevenue": "Total Revenue",
+      "activeEnrollments": "Active Enrollments"
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "About",
+      "description": "Learn about NU.V.E.M Ensino, a specialized medical education platform."
+    }
+  },
+  "instructors": {
+    "meta": {
+      "title": "Instructors",
+      "description": "Meet the specialists who teach NU.V.E.M Ensino courses."
+    },
+    "badge": "Faculty",
+    "title": "Our Instructors",
+    "subtitle": "Nationally recognized specialists with active clinical practice",
+    "viewProfile": "View full profile"
+  },
+  "faq": {
+    "meta": {
+      "title": "Frequently Asked Questions",
+      "description": "Find answers about NU.V.E.M Ensino courses."
+    },
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers about our courses and platform.",
+    "noResults": "No questions found."
+  },
+  "privacy": {
+    "title": "Privacy Policy"
+  },
+  "terms": {
+    "title": "Terms of Use"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred. Please try again.",
+    "notFound": "Page not found",
+    "backHome": "Back to home",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "search": "Search",
+    "filter": "Filter",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "currency": "R$",
+    "of": "of",
+    "and": "and",
+    "or": "or"
+  }
+}

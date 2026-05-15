@@ -1,10 +1,11 @@
 import { withSentryConfig } from "@sentry/nextjs";
+import createNextIntlPlugin from "next-intl/plugin";
 import type { NextConfig } from "next";
 import path from "path";
 
+const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
+
 const nextConfig: NextConfig = {
-  // Garante que o Turbopack use este diretório como root,
-  // evitando conflito com o package-lock.json do projeto-pai.
   turbopack: {
     root: path.resolve(__dirname),
   },
@@ -18,12 +19,12 @@ const nextConfig: NextConfig = {
   },
 };
 
-// Só aplica o wrapper do Sentry quando o token estiver presente.
-// Sem token, o CLI tentaria criar releases e falharia com 401.
 const hasSentryToken = Boolean(process.env.SENTRY_AUTH_TOKEN);
 
+const configWithIntl = withNextIntl(nextConfig);
+
 export default hasSentryToken
-  ? withSentryConfig(nextConfig, {
+  ? withSentryConfig(configWithIntl, {
       org: "nuvem-ensino",
       project: "javascript-nextjs",
       silent: !process.env.CI,
@@ -35,4 +36,4 @@ export default hasSentryToken
         },
       },
     })
-  : nextConfig;
+  : configWithIntl;

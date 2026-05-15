@@ -6,7 +6,7 @@ import { BookOpen, ClipboardList, LayoutDashboard, Users, BarChart2, LogOut } fr
 import SignOutButton from "@/components/SignOutButton";
 
 const navLinks = [
-  { label: "VisÃ£o geral", href: "/admin", icon: LayoutDashboard },
+  { label: "Visão geral", href: "/admin", icon: LayoutDashboard },
   { label: "Cursos",     href: "/admin/cursos",     icon: BookOpen },
   { label: "Matrículas", href: "/admin/matriculas", icon: ClipboardList },
   { label: "Usuários",   href: "/admin/usuarios",   icon: Users },

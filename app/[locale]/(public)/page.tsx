@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "NU.V.E.M Ensino — Formação Médica de Excelência",
@@ -174,7 +172,6 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Header />
 
       {/* Hero — teal muito escuro com grade e ISO ao fundo */}
       <section
@@ -239,7 +236,7 @@ export default function Home() {
             href="/sobre"
             className="font-sans text-sm font-semibold px-8 py-3.5 rounded-full border border-accent text-accent hover:bg-accent/10 transition-colors"
           >
-            Conheça a Plataforma
+            Conhecer a Plataforma
           </Link>
         </div>
 
@@ -462,7 +459,6 @@ export default function Home() {
         </div>
       </section>
 
-      <Footer />
     </div>
   );
 }
