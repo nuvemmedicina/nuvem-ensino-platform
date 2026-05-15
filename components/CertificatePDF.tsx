@@ -234,34 +234,28 @@ function BrandLogo() {
 }
 
 // ── Selo ISO 9001 ───────────────────────────────────────────────────────────
-function Iso9001Seal() {
+function Iso9001Seal({ imageUri }: { imageUri?: string }) {
+  if (imageUri) {
+    return (
+      <View style={s.isoSeal}>
+        <Image src={imageUri} style={{ width: 64, height: 64, objectFit: "contain" }} />
+      </View>
+    );
+  }
+  // Fallback SVG quando a imagem não estiver disponível
   return (
     <View style={s.isoSeal}>
-      {/* Círculos SVG do selo */}
       <Svg width={64} height={64} viewBox="0 0 64 64">
-        {/* Fundo teal */}
         <Circle cx={32} cy={32} r={30} fill={C.teal} />
-        {/* Anel dourado externo */}
         <Circle cx={32} cy={32} r={30} fill="none" stroke={C.gold} strokeWidth={2} />
-        {/* Anel dourado interno */}
         <Circle cx={32} cy={32} r={24} fill="none" stroke={C.gold} strokeWidth={0.75} />
-        {/* Linha horizontal decorativa */}
         <Line x1={16} y1={36} x2={48} y2={36} stroke={C.goldLight} strokeWidth={0.5} />
-        {/* Triângulo / chevron superior */}
         <Path d="M32 10 L36 18 L28 18 Z" fill={C.gold} />
       </Svg>
-
-      {/* Texto sobreposto com posição absoluta */}
       <View style={s.isoText}>
-        <Text style={{ fontFamily: "Helvetica", fontSize: 6, color: C.goldLight, letterSpacing: 1, textAlign: "center", marginBottom: 1 }}>
-          QUALIDADE
-        </Text>
-        <Text style={{ fontFamily: "Helvetica", fontWeight: "bold", fontSize: 8.5, color: C.white, letterSpacing: 0.5, textAlign: "center" }}>
-          ISO 9001
-        </Text>
-        <Text style={{ fontFamily: "Helvetica", fontSize: 5.5, color: C.goldLight, letterSpacing: 0.5, textAlign: "center", marginTop: 1 }}>
-          CERTIFICADO
-        </Text>
+        <Text style={{ fontFamily: "Helvetica", fontSize: 6, color: C.goldLight, letterSpacing: 1, textAlign: "center", marginBottom: 1 }}>QUALIDADE</Text>
+        <Text style={{ fontFamily: "Helvetica", fontWeight: "bold", fontSize: 8.5, color: C.white, letterSpacing: 0.5, textAlign: "center" }}>ISO 9001</Text>
+        <Text style={{ fontFamily: "Helvetica", fontSize: 5.5, color: C.goldLight, letterSpacing: 0.5, textAlign: "center", marginTop: 1 }}>CERTIFICADO</Text>
       </View>
     </View>
   );
@@ -279,6 +273,10 @@ type Props = {
   instructorSignature?: string;
   /** Base64 data URI da assinatura da Diretora Técnica (opcional) */
   directorSignature?: string;
+  /** Quando true, o instrutor é a própria Diretora Técnica — exibe só uma assinatura */
+  isInstructorDirector?: boolean;
+  /** Base64 data URI do selo ISO 9001 (opcional — usa SVG como fallback) */
+  isoSeal?: string;
 };
 
 function formatDate(date: Date): string {
@@ -290,7 +288,7 @@ function formatDate(date: Date): string {
 }
 
 // ── Componente principal ───────────────────────────────────────────────────
-export function CertificatePDF({ studentName, courseTitle, hours, instructorName, issueDate, code, instructorSignature, directorSignature }: Props) {
+export function CertificatePDF({ studentName, courseTitle, hours, instructorName, issueDate, code, instructorSignature, directorSignature, isInstructorDirector, isoSeal }: Props) {
   return (
     <Document title={`Certificado — ${courseTitle}`} author="NU.V.E.M Ensino" subject="Certificado de Conclusão">
       <Page size="A4" orientation="landscape" style={s.page}>
@@ -308,7 +306,7 @@ export function CertificatePDF({ studentName, courseTitle, hours, instructorName
         <View style={s.cornerBR} />
 
         {/* Selo ISO 9001 */}
-        <Iso9001Seal />
+        <Iso9001Seal imageUri={isoSeal} />
 
         {/* Corpo */}
         <View style={s.body}>
@@ -340,35 +338,42 @@ export function CertificatePDF({ studentName, courseTitle, hours, instructorName
           <View style={s.dividerThin} />
 
           {/* Assinaturas */}
-          <View style={s.signaturesRow}>
-            {/* Instrutor */}
-            <View style={s.sigBlock}>
-              {instructorSignature ? (
-                <Image
-                  src={instructorSignature}
-                  style={{ width: 110, height: 44, objectFit: "contain", marginBottom: 2 }}
-                />
-              ) : (
-                <View style={s.sigLine} />
-              )}
-              <Text style={s.sigName}>{instructorName}</Text>
-              <Text style={s.sigRole}>Instrutor Responsável</Text>
+          {isInstructorDirector ? (
+            // Instrutor = Diretora Técnica → uma única assinatura centralizada
+            <View style={[s.signaturesRow, { justifyContent: "center" }]}>
+              <View style={s.sigBlock}>
+                {directorSignature ? (
+                  <Image src={directorSignature} style={{ width: 120, height: 48, objectFit: "contain", marginBottom: 2 }} />
+                ) : (
+                  <View style={s.sigLine} />
+                )}
+                <Text style={s.sigName}>{instructorName}</Text>
+                <Text style={s.sigRole}>Instrutora e Diretora Técnica</Text>
+              </View>
             </View>
-
-            {/* Diretora Técnica — Dra. Vera Ângelo */}
-            <View style={s.sigBlock}>
-              {directorSignature ? (
-                <Image
-                  src={directorSignature}
-                  style={{ width: 110, height: 44, objectFit: "contain", marginBottom: 2 }}
-                />
-              ) : (
-                <View style={s.sigLine} />
-              )}
-              <Text style={s.sigName}>Dra. Vera Ângelo</Text>
-              <Text style={s.sigRole}>Diretora Técnica</Text>
+          ) : (
+            // Instrutor diferente da Diretora → duas assinaturas
+            <View style={s.signaturesRow}>
+              <View style={s.sigBlock}>
+                {instructorSignature ? (
+                  <Image src={instructorSignature} style={{ width: 110, height: 44, objectFit: "contain", marginBottom: 2 }} />
+                ) : (
+                  <View style={s.sigLine} />
+                )}
+                <Text style={s.sigName}>{instructorName}</Text>
+                <Text style={s.sigRole}>Instrutor Responsável</Text>
+              </View>
+              <View style={s.sigBlock}>
+                {directorSignature ? (
+                  <Image src={directorSignature} style={{ width: 110, height: 44, objectFit: "contain", marginBottom: 2 }} />
+                ) : (
+                  <View style={s.sigLine} />
+                )}
+                <Text style={s.sigName}>Dra. Vera Ângelo</Text>
+                <Text style={s.sigRole}>Diretora Técnica</Text>
+              </View>
             </View>
-          </View>
+          )}
 
           {/* Rodapé */}
           <View style={s.footer}>

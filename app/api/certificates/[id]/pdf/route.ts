@@ -77,6 +77,17 @@ export async function GET(req: NextRequest, { params }: Props) {
     loadSignature("vera-angelo.jpg") ||
     undefined;
 
+  // Quando o instrutor é a própria Diretora Técnica (Vera),
+  // exibe apenas uma assinatura para não repetir
+  const VERA_USER_ID = "cmp5k89q700001lk8ns4u6xkrv";
+  const isInstructorDirector = instructorUserId === VERA_USER_ID;
+
+  // Selo ISO 9001 (imagem real se disponível)
+  const isoSeal =
+    loadSignature("../selo-iso9001.png") ||
+    loadSignature("../selo-iso9001.jpg") ||
+    undefined;
+
   const buffer = await renderToBuffer(
     CertificatePDF({
       studentName: cert.user.name ?? "Participante",
@@ -87,6 +98,8 @@ export async function GET(req: NextRequest, { params }: Props) {
       code: cert.code,
       instructorSignature,
       directorSignature,
+      isInstructorDirector,
+      isoSeal,
     })
   );
 
