@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { CheckCircle, Circle, PlayCircle, Lock, ChevronDown, ChevronRight } from "lucide-react";
+import MuxPlayer from "@mux/mux-player-react";
+import { CheckCircle, Circle, PlayCircle, ChevronDown, ChevronRight } from "lucide-react";
 
 type Lesson = {
   id: string;
   title: string;
   duration: number | null;
   videoUrl: string | null;
+  muxPlaybackId: string | null;
   isFree: boolean;
   order: number;
 };
@@ -77,12 +79,10 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
       });
       if (res.ok) {
         setProgress((prev) => ({ ...prev, [lesson.id]: completed }));
-        // auto-advance to next lesson when marking complete
         if (completed) {
           const idx = allLessons.findIndex((l) => l.id === lesson.id);
           if (idx !== -1 && idx < allLessons.length - 1) {
             setCurrentLesson(allLessons[idx + 1]);
-            // open the module that contains next lesson
             const nextLesson = allLessons[idx + 1];
             const nextModule = modules.find((m) => m.lessons.some((l) => l.id === nextLesson.id));
             if (nextModule) setOpenModules((prev) => ({ ...prev, [nextModule.id]: true }));
@@ -96,7 +96,9 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
   const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
   const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
 
-  const youtubeId = currentLesson?.videoUrl ? extractYoutubeId(currentLesson.videoUrl) : null;
+  // Decide qual player usar: Mux tem prioridade sobre YouTube
+  const hasMux = Boolean(currentLesson?.muxPlaybackId);
+  const youtubeId = !hasMux && currentLesson?.videoUrl ? extractYoutubeId(currentLesson.videoUrl) : null;
 
   return (
     <div className="flex flex-col lg:flex-row gap-0 min-h-[calc(100vh-4rem)]">
@@ -104,7 +106,20 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
       <div className="flex-1 min-w-0 flex flex-col">
         {/* Video */}
         <div className="bg-black aspect-video w-full">
-          {youtubeId ? (
+          {hasMux ? (
+            <MuxPlayer
+              key={currentLesson!.muxPlaybackId!}
+              playbackId={currentLesson!.muxPlaybackId!}
+              streamType="on-demand"
+              style={{ height: "100%", width: "100%" }}
+              accentColor="#00a3c4"
+              onEnded={() => {
+                if (currentLesson && !progress[currentLesson.id]) {
+                  handleMarkComplete(currentLesson, true);
+                }
+              }}
+            />
+          ) : youtubeId ? (
             <iframe
               key={youtubeId}
               src={`https://www.youtube.com/embed/${youtubeId}?rel=0&modestbranding=1`}

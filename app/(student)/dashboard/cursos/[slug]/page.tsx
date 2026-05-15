@@ -31,6 +31,7 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
               title: true,
               duration: true,
               videoUrl: true,
+              muxPlaybackId: true,
               isFree: true,
               order: true,
             },

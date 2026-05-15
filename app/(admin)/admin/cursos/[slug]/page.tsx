@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, Plus } from "lucide-react";
+import { ChevronLeft, Plus, CheckCircle } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import {
   updateCourse,
@@ -11,6 +11,7 @@ import {
   deleteModule,
 } from "./actions";
 import { DeleteButton } from "./DeleteButton";
+import { MuxUploader } from "./MuxUploader";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -186,7 +187,7 @@ export default async function AdminCursoEditPage({ params }: Props) {
                               <input
                                 name="videoUrl"
                                 defaultValue={lesson.videoUrl ?? ""}
-                                placeholder="URL do YouTube (https://youtu.be/...)"
+                                placeholder="URL do YouTube (opcional — use se não tiver vídeo Mux)"
                                 className={inputClass}
                               />
                             </div>
@@ -221,6 +222,29 @@ export default async function AdminCursoEditPage({ params }: Props) {
                             confirm={`Excluir aula "${lesson.title}"?`}
                             className={`${btnDanger} shrink-0 mt-1`}
                           />
+                        </div>
+
+                        {/* Mux video section */}
+                        <div className="mt-1 pt-3 border-t border-border/50">
+                          {lesson.muxPlaybackId ? (
+                            <div className="flex items-center gap-2 text-green-600">
+                              <CheckCircle className="w-4 h-4 shrink-0" />
+                              <span className="font-sans text-xs font-semibold">
+                                Vídeo Mux ativo
+                              </span>
+                              <span className="font-sans text-[10px] text-muted font-mono">
+                                {lesson.muxPlaybackId.slice(0, 12)}…
+                              </span>
+                            </div>
+                          ) : lesson.muxAssetId ? (
+                            <div className="flex items-center gap-2 text-amber-600">
+                              <span className="font-sans text-xs">
+                                ⏳ Processando no Mux… aguarde o webhook
+                              </span>
+                            </div>
+                          ) : (
+                            <MuxUploader lessonId={lesson.id} />
+                          )}
                         </div>
                       </div>
                     );

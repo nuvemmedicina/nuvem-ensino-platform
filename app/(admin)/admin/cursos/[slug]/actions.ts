@@ -87,3 +87,13 @@ export async function deleteModule(moduleId: string, courseSlug: string) {
   await prisma.module.delete({ where: { id: moduleId } });
   revalidatePath(`/admin/cursos/${courseSlug}`);
 }
+
+// Chamado pelo MuxUploader após upload concluído
+export async function saveMuxAsset(lessonId: string, muxAssetId: string, courseSlug: string) {
+  await requireAdmin();
+  await prisma.lesson.update({
+    where: { id: lessonId },
+    data: { muxAssetId },
+  });
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}

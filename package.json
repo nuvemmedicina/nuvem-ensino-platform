@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@mux/mux-node": ">=8",
+    "@mux/mux-player-react": ">=3",
     "@sentry/nextjs": "^10.53.1",
     "next": "16.2.6",
     "react": "19.2.4",
