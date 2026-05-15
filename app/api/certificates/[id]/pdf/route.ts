@@ -84,6 +84,8 @@ export async function GET(req: NextRequest, { params }: Props) {
 
   // Selo ISO 9001 (imagem real se disponível)
   const isoSeal =
+    loadSignature("../selo-iso-9001.png") ||
+    loadSignature("../selo-iso-9001.jpg") ||
     loadSignature("../selo-iso9001.png") ||
     loadSignature("../selo-iso9001.jpg") ||
     undefined;
