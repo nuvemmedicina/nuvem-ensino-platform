@@ -68,6 +68,15 @@ export default async function AdminCursosPage() {
                   <p className="font-sans text-xs text-muted">Matrículas</p>
                   <p className="font-sans text-sm font-semibold text-foreground">{course._count.enrollments}</p>
                 </div>
+                {course.totalSeats !== null && (
+                  <div className="hidden sm:block">
+                    <p className="font-sans text-xs text-muted">Vagas</p>
+                    <p className="font-sans text-sm font-semibold text-foreground">
+                      {course.totalSeats - course.reservedSeats}
+                      <span className="text-muted font-normal">/{course.totalSeats}</span>
+                    </p>
+                  </div>
+                )}
                 <div>
                   <p className="font-sans text-xs text-muted">Preço</p>
                   <p className="font-serif text-sm font-semibold text-primary">

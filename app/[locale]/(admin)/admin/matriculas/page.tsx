@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
 const statusLabel: Record<string, { label: string; color: string }> = {
@@ -11,7 +12,8 @@ export default async function AdminMatriculasPage() {
   const enrollments = await prisma.enrollment.findMany({
     include: {
       user:   { select: { name: true, email: true } },
-      course: { select: { title: true, slug: true } },
+      course: { select: { title: true, slug: true, totalSeats: true } },
+      _count: { select: { attendances: { where: { status: { in: ["PRESENT", "LATE"] } } } } },
     },
     orderBy: { enrolledAt: "desc" },
   });
@@ -33,6 +35,7 @@ export default async function AdminMatriculasPage() {
                 <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">Aluno</th>
                 <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">Curso</th>
                 <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden sm:table-cell">Data</th>
+                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden md:table-cell">Presenças</th>
                 <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">Status</th>
               </tr>
             </thead>
@@ -46,12 +49,31 @@ export default async function AdminMatriculasPage() {
                       <p className="font-sans text-xs text-muted">{e.user.email}</p>
                     </td>
                     <td className="px-5 py-3.5">
-                      <span className="font-sans text-sm text-foreground line-clamp-1">{e.course.title}</span>
+                      {e.course.totalSeats !== null ? (
+                        <Link
+                          href={`/admin/cursos/${e.course.slug}/inscritos`}
+                          className="font-sans text-sm text-foreground hover:text-primary transition-colors line-clamp-1"
+                          onClick={(ev) => ev.stopPropagation()}
+                        >
+                          {e.course.title}
+                        </Link>
+                      ) : (
+                        <span className="font-sans text-sm text-foreground line-clamp-1">{e.course.title}</span>
+                      )}
                     </td>
                     <td className="px-5 py-3.5 hidden sm:table-cell">
                       <span className="font-sans text-xs text-muted">
                         {new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(e.enrolledAt))}
                       </span>
+                    </td>
+                    <td className="px-5 py-3.5 hidden md:table-cell">
+                      {e.course.totalSeats !== null ? (
+                        <span className="font-sans text-xs text-foreground">
+                          {e._count.attendances} dia{e._count.attendances !== 1 ? "s" : ""}
+                        </span>
+                      ) : (
+                        <span className="font-sans text-xs text-muted">—</span>
+                      )}
                     </td>
                     <td className="px-5 py-3.5">
                       <span className={`font-sans text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${st.color}`}>

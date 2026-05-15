@@ -42,26 +42,59 @@ export async function POST(req: Request) {
   const finalPrice = Math.round(course.price * (1 - discountPct / 100) * 100) / 100;
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
-  // Find or create course record
-  const dbCourse = await prisma.course.findFirst({ where: { slug: courseSlug } });
-  if (!dbCourse) {
-    return NextResponse.json({ error: "Curso não cadastrado no banco." }, { status: 404 });
-  }
+  // Find course + reserve seat atomically
+  // eslint-disable-next-line prefer-const
+  let dbCourse!: { id: string };
+  // eslint-disable-next-line prefer-const
+  let enrollment!: { id: string };
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      const c = await tx.course.findFirst({
+        where: { slug: courseSlug },
+        select: { id: true, totalSeats: true, reservedSeats: true },
+      });
+      if (!c) throw Object.assign(new Error("Curso não cadastrado no banco."), { status: 404 });
 
-  // Ensure no duplicate enrollment
-  const existingEnrollment = await prisma.enrollment.findUnique({
-    where: { userId_courseId: { userId: session.user.id, courseId: dbCourse.id } },
-  });
-  if (existingEnrollment?.status === "ACTIVE" || existingEnrollment?.status === "COMPLETED") {
-    return NextResponse.json({ error: "Você já está matriculado neste curso." }, { status: 409 });
-  }
+      // Seat availability check
+      if (c.totalSeats !== null) {
+        const available = c.totalSeats - c.reservedSeats;
+        if (available <= 0) {
+          throw Object.assign(new Error("Não há vagas disponíveis para este curso."), { status: 409 });
+        }
+      }
 
-  // Create pending enrollment
-  const enrollment = await prisma.enrollment.upsert({
-    where: { userId_courseId: { userId: session.user.id, courseId: dbCourse.id } },
-    create: { userId: session.user.id, courseId: dbCourse.id, status: "ACTIVE" },
-    update: { status: "ACTIVE" },
-  });
+      // Duplicate enrollment check
+      const existing = await tx.enrollment.findUnique({
+        where: { userId_courseId: { userId: session.user.id, courseId: c.id } },
+        select: { id: true, status: true },
+      });
+      if (existing?.status === "ACTIVE" || existing?.status === "COMPLETED") {
+        throw Object.assign(new Error("Você já está matriculado neste curso."), { status: 409 });
+      }
+
+      // Reserve seat
+      if (c.totalSeats !== null) {
+        await tx.course.update({
+          where: { id: c.id },
+          data: { reservedSeats: { increment: 1 } },
+        });
+      }
+
+      const enr = existing
+        ? await tx.enrollment.update({ where: { id: existing.id }, data: { status: "ACTIVE" } })
+        : await tx.enrollment.create({
+            data: { userId: session.user.id, courseId: c.id, status: "ACTIVE" },
+          });
+
+      return { course: c, enrollment: enr };
+    });
+
+    dbCourse = result.course;
+    enrollment = result.enrollment;
+  } catch (err: unknown) {
+    const e = err as Error & { status?: number };
+    return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
+  }
 
   if (method === "stripe") {
     const checkoutSession = await stripe.checkout.sessions.create({

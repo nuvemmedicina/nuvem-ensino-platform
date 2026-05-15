@@ -53,6 +53,52 @@ export async function POST(req: Request) {
         where: { enrollmentId, status: "PENDING" },
         data: { status: "FAILED" },
       });
+      // Release reserved seat
+      const enrollment = await prisma.enrollment.findUnique({
+        where: { id: enrollmentId },
+        select: { courseId: true, status: true },
+      });
+      if (enrollment) {
+        await prisma.enrollment.update({
+          where: { id: enrollmentId },
+          data: { status: "CANCELLED" },
+        });
+        await prisma.course.update({
+          where: { id: enrollment.courseId },
+          data: { reservedSeats: { decrement: 1 } },
+        });
+      }
+    }
+  }
+
+  if (event.type === "charge.refunded") {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const charge = (event as any).data.object as { payment_intent?: string };
+    if (charge.payment_intent) {
+      const payment = await prisma.payment.findFirst({
+        where: { stripeIntentId: charge.payment_intent as string },
+        select: { enrollmentId: true },
+      });
+      if (payment) {
+        await prisma.payment.updateMany({
+          where: { stripeIntentId: charge.payment_intent as string },
+          data: { status: "REFUNDED" },
+        });
+        const enrollment = await prisma.enrollment.findUnique({
+          where: { id: payment.enrollmentId },
+          select: { courseId: true },
+        });
+        if (enrollment) {
+          await prisma.enrollment.update({
+            where: { id: payment.enrollmentId },
+            data: { status: "REFUNDED" },
+          });
+          await prisma.course.update({
+            where: { id: enrollment.courseId },
+            data: { reservedSeats: { decrement: 1 } },
+          });
+        }
+      }
     }
   }
 

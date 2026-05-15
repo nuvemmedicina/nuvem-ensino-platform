@@ -44,6 +44,40 @@ export async function POST(req: Request) {
       where: { enrollmentId, status: "PENDING" },
       data: { status: "FAILED" },
     });
+    // Release reserved seat
+    const enrollment = await prisma.enrollment.findUnique({
+      where: { id: enrollmentId },
+      select: { courseId: true },
+    });
+    if (enrollment) {
+      await prisma.enrollment.update({
+        where: { id: enrollmentId },
+        data: { status: "CANCELLED" },
+      });
+      await prisma.course.update({
+        where: { id: enrollment.courseId },
+        data: { reservedSeats: { decrement: 1 } },
+      });
+    }
+  } else if (status === "refunded") {
+    await prisma.payment.updateMany({
+      where: { enrollmentId },
+      data: { status: "REFUNDED" },
+    });
+    const enrollment = await prisma.enrollment.findUnique({
+      where: { id: enrollmentId },
+      select: { courseId: true },
+    });
+    if (enrollment) {
+      await prisma.enrollment.update({
+        where: { id: enrollmentId },
+        data: { status: "REFUNDED" },
+      });
+      await prisma.course.update({
+        where: { id: enrollment.courseId },
+        data: { reservedSeats: { decrement: 1 } },
+      });
+    }
   }
 
   return NextResponse.json({ ok: true });

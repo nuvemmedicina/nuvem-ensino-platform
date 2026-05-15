@@ -56,6 +56,12 @@ enum LessonType {
   QUIZ
 }
 
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+}
+
 // ─── USERS & AUTH ─────────────────────────────────────────────────────────────
 
 model User {
@@ -73,14 +79,15 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts     Account[]
-  sessions     Session[]
-  enrollments  Enrollment[]
-  notes        Note[]
-  quizAttempts QuizAttempt[]
-  certificates Certificate[]
-  chatHistory  ChatMessage[]
-  instructor   Instructor?
+  accounts          Account[]
+  sessions          Session[]
+  enrollments       Enrollment[]
+  notes             Note[]
+  quizAttempts      QuizAttempt[]
+  certificates      Certificate[]
+  chatHistory       ChatMessage[]
+  instructor        Instructor?
+  attendancesMade   Attendance[]  @relation("AttendanceMarkedBy")
 }
 
 model Account {
@@ -252,9 +259,10 @@ model Enrollment {
 
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   course   Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  payments Payment[]
-  progress Progress[]
+  payments    Payment[]
+  progress    Progress[]
   certificate Certificate?
+  attendances Attendance[]
 
   @@unique([userId, courseId])
 }
@@ -272,6 +280,23 @@ model Progress {
   lesson     Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@unique([enrollmentId, lessonId])
+}
+
+// ─── ATTENDANCE ───────────────────────────────────────────────────────────────
+
+model Attendance {
+  id           String           @id @default(cuid())
+  enrollmentId String
+  date         DateTime         @db.Date
+  status       AttendanceStatus @default(ABSENT)
+  markedById   String
+  markedAt     DateTime         @default(now())
+  notes        String?
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  markedBy   User       @relation("AttendanceMarkedBy", fields: [markedById], references: [id])
+
+  @@unique([enrollmentId, date])
 }
 
 // ─── PAYMENTS ─────────────────────────────────────────────────────────────────

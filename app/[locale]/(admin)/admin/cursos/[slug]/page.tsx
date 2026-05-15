@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, Plus, CheckCircle } from "lucide-react";
+import { ChevronLeft, Plus, CheckCircle, Users } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import {
   updateCourse,
@@ -53,9 +53,18 @@ export default async function AdminCursoEditPage({ params }: Props) {
         Cursos
       </Link>
 
-      <h1 className="font-serif text-2xl font-medium text-foreground mb-8 line-clamp-2">
-        {course.title}
-      </h1>
+      <div className="flex items-start justify-between gap-4 mb-8">
+        <h1 className="font-serif text-2xl font-medium text-foreground line-clamp-2">
+          {course.title}
+        </h1>
+        <Link
+          href={`/admin/cursos/${slug}/inscritos`}
+          className="shrink-0 inline-flex items-center gap-1.5 font-sans text-xs font-semibold px-3 py-2 rounded-lg border border-border text-muted hover:border-primary/40 hover:text-foreground transition-colors"
+        >
+          <Users className="w-3.5 h-3.5" />
+          Ver inscritos
+        </Link>
+      </div>
 
       {/* ── Dados do curso ── */}
       <section className="bg-surface border border-border rounded-2xl p-6 mb-6">
