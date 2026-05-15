@@ -246,7 +246,7 @@ const staticContent: Record<
       "Operar com autonomia os equipamentos Dynamed e Health Go",
       "Elaborar e interpretar laudos de testes respiratórios de H₂, CH₄ e H₂S",
       "Implantar ou aprimorar um serviço de testes respiratórios na sua clínica",
-      "Aplicar as atualizações do DDW 2025 na prática clínica",
+      "Aplicar as atualizações do DDW 2026 na prática clínica",
     ],
     targetAudience: [
       "Médicos que desejam implantar testes respiratórios na clínica",
@@ -260,7 +260,7 @@ const staticContent: Record<
         lessons: [
           "Intolerâncias alimentares: lactose, frutose, frutanas e sacarose",
           "SIBO, IMO, LIBO e SIFO: diagnóstico e critérios atualizados",
-          "Atualizações DDW 2025: novos protocolos e guidelines",
+          "Atualizações DDW 2026: novos protocolos e guidelines",
         ],
       },
       {
@@ -279,7 +279,7 @@ const staticContent: Record<
       "Material didático completo",
       "Coffee break e almoço incluídos",
       "Certificado de conclusão",
-      "Atualizações DDW 2025",
+      "Atualizações DDW 2026",
     ],
   },
   "desvendando-a-constipacao-intestinal": {
