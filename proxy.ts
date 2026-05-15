@@ -67,5 +67,7 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$).*)"],
+  // Exclude Next.js internals, Vercel internals, and any file with an extension
+  // (images, fonts, etc.) so next-intl never rewrites static asset URLs.
+  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)" ],
 };
