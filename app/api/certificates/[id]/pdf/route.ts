@@ -25,6 +25,20 @@ function loadSignature(filename: string): string | undefined {
   }
 }
 
+/** Lê um arquivo diretamente da pasta public/ e retorna data URI base64, ou undefined. */
+function loadPublicImage(filename: string): string | undefined {
+  try {
+    const filePath = path.join(process.cwd(), "public", filename);
+    if (!fs.existsSync(filePath)) return undefined;
+    const buffer = fs.readFileSync(filePath);
+    const ext = path.extname(filename).slice(1).toLowerCase();
+    const mime = ext === "png" ? "image/png" : "image/jpeg";
+    return `data:${mime};base64,${buffer.toString("base64")}`;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function GET(req: NextRequest, { params }: Props) {
   const session = await auth();
   if (!session?.user?.id) {
@@ -46,7 +60,7 @@ export async function GET(req: NextRequest, { params }: Props) {
               instructor: {
                 select: {
                   userId: true,
-                  user: { select: { name: true } },
+                  user: { select: { name: true, email: true } },
                 },
               },
             },
@@ -79,15 +93,16 @@ export async function GET(req: NextRequest, { params }: Props) {
 
   // Quando o instrutor é a própria Diretora Técnica (Vera),
   // exibe apenas uma assinatura para não repetir
-  const VERA_USER_ID = "cmp5k89q700001lk8ns4u6xkrv";
-  const isInstructorDirector = instructorUserId === VERA_USER_ID;
+  const VERA_EMAIL = "vera.angelo@nuvemensino.com.br";
+  const instructorEmail = cert.enrollment.course.instructor?.user.email;
+  const isInstructorDirector = instructorEmail === VERA_EMAIL;
 
-  // Selo ISO 9001 (imagem real se disponível)
+  // Selo ISO 9001 (imagem real da pasta public/)
   const isoSeal =
-    loadSignature("../selo-iso-9001.png") ||
-    loadSignature("../selo-iso-9001.jpg") ||
-    loadSignature("../selo-iso9001.png") ||
-    loadSignature("../selo-iso9001.jpg") ||
+    loadPublicImage("selo-iso-9001.png") ||
+    loadPublicImage("selo-iso-9001.jpg") ||
+    loadPublicImage("selo-iso9001.png") ||
+    loadPublicImage("selo-iso9001.jpg") ||
     undefined;
 
   const buffer = await renderToBuffer(
