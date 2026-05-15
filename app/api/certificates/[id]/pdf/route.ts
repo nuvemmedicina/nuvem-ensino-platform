@@ -24,10 +24,13 @@ export async function GET(req: NextRequest, { params }: Props) {
       enrollment: {
         include: {
           course: {
-            select: { title: true, hours: true },
-            include: {
+            select: {
+              title: true,
+              hours: true,
               instructor: {
-                include: { user: { select: { name: true } } },
+                select: {
+                  user: { select: { name: true } },
+                },
               },
             },
           },
