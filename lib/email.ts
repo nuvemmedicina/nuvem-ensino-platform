@@ -74,6 +74,72 @@ export async function sendEnrollmentConfirmation({
   });
 }
 
+export async function sendPasswordResetEmail({
+  to,
+  userName,
+  token,
+}: {
+  to: string;
+  userName: string;
+  token: string;
+}) {
+  const link = `${APP_URL}/resetar-senha?token=${token}`;
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Recebemos uma solicitação para redefinir a senha da sua conta NU.V.E.M Ensino.</p>
+    <div style="text-align:center;margin:32px 0;">
+      <a href="${link}"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Redefinir minha senha
+      </a>
+    </div>
+    <p style="margin:0 0 8px;color:#6b7280;font-size:13px;">⏱ Este link expira em <strong>1 hora</strong>.</p>
+    <p style="margin:0 0 24px;color:#6b7280;font-size:13px;">Se você não solicitou a redefinição de senha, ignore este e-mail — sua conta permanece segura.</p>
+    <p style="margin:0;color:#9ca3af;font-size:12px;">Ou copie e cole este endereço no navegador:<br/><span style="color:#00475e;word-break:break-all;">${link}</span></p>
+  `;
+
+  return getResend().emails.send({
+    from: FROM,
+    to,
+    subject: "Redefina sua senha — NU.V.E.M Ensino",
+    html: baseLayout("Redefinição de Senha", body),
+  });
+}
+
+export async function sendEmailVerificationEmail({
+  to,
+  userName,
+  token,
+}: {
+  to: string;
+  userName: string;
+  token: string;
+}) {
+  const link = `${APP_URL}/verificar-email?token=${token}`;
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Bem-vindo(a) à NU.V.E.M Ensino! Confirme seu endereço de e-mail para ativar sua conta.</p>
+    <div style="text-align:center;margin:32px 0;">
+      <a href="${link}"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Confirmar meu e-mail
+      </a>
+    </div>
+    <p style="margin:0 0 8px;color:#6b7280;font-size:13px;">⏱ Este link expira em <strong>24 horas</strong>.</p>
+    <p style="margin:0 0 24px;color:#6b7280;font-size:13px;">Se você não criou uma conta na NU.V.E.M Ensino, ignore este e-mail.</p>
+    <p style="margin:0;color:#9ca3af;font-size:12px;">Ou copie e cole este endereço no navegador:<br/><span style="color:#00475e;word-break:break-all;">${link}</span></p>
+  `;
+
+  return getResend().emails.send({
+    from: FROM,
+    to,
+    subject: "Confirme seu e-mail — NU.V.E.M Ensino",
+    html: baseLayout("Confirmação de E-mail", body),
+  });
+}
+
 export async function sendLiveSessionReminder({
   to,
   userName,
