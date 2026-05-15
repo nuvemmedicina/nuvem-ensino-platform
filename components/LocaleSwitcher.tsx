@@ -2,6 +2,7 @@
 
 import { useLocale } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
+import { useParams } from "next/navigation";
 import { useTransition } from "react";
 
 const localeLabels: Record<string, string> = {
@@ -13,13 +14,23 @@ const localeLabels: Record<string, string> = {
 export default function LocaleSwitcher() {
   const locale = useLocale();
   const router = useRouter();
+  // usePathname() from next-intl returns the locale-independent pathname
+  // TEMPLATE, e.g. "/cursos/[slug]" — not the filled-in value.
   const pathname = usePathname();
+  // useParams() from next/navigation gives the actual param values,
+  // e.g. { locale: "en", slug: "manometria-phmetria-impedancia" }.
+  // We pass them to router.replace so next-intl can fill in the template
+  // when generating the localized URL.
+  const params = useParams();
   const [, startTransition] = useTransition();
 
   function handleChange(newLocale: string) {
     startTransition(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      router.replace(pathname as any, { locale: newLocale });
+      router.replace(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { pathname, params: params as any },
+        { locale: newLocale },
+      );
     });
   }
 
