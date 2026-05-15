@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { CertificatePDF } from "@/components/CertificatePDF";
+import QRCode from "qrcode";
 import fs from "fs";
 import path from "path";
 
@@ -57,6 +58,7 @@ export async function GET(req: NextRequest, { params }: Props) {
             select: {
               title: true,
               hours: true,
+              shortDesc: true,
               instructor: {
                 select: {
                   userId: true,
@@ -78,26 +80,25 @@ export async function GET(req: NextRequest, { params }: Props) {
     return Response.json({ error: "Não autorizado" }, { status: 403 });
   }
 
-  // Assinatura do instrutor: public/assinaturas/{instructorUserId}.png (ou .jpg)
+  // ── Assinatura do instrutor ──────────────────────────────────────────────
   const instructorUserId = cert.enrollment.course.instructor?.userId;
   const instructorSignature =
     (instructorUserId && loadSignature(`${instructorUserId}.png`)) ||
     (instructorUserId && loadSignature(`${instructorUserId}.jpg`)) ||
     undefined;
 
-  // Assinatura fixa da Diretora Técnica
+  // ── Assinatura da Diretora Técnica ───────────────────────────────────────
   const directorSignature =
     loadSignature("vera-angelo.png") ||
     loadSignature("vera-angelo.jpg") ||
     undefined;
 
-  // Quando o instrutor é a própria Diretora Técnica (Vera),
-  // exibe apenas uma assinatura para não repetir
+  // Quando o instrutor é a própria Dra. Vera, exibe só uma assinatura
   const VERA_EMAIL = "vera.angelo@nuvemensino.com.br";
   const instructorEmail = cert.enrollment.course.instructor?.user.email;
   const isInstructorDirector = instructorEmail === VERA_EMAIL;
 
-  // Selo ISO 9001 (imagem real da pasta public/)
+  // ── Selo ISO 9001 ────────────────────────────────────────────────────────
   const isoSeal =
     loadPublicImage("selo-iso-9001.png") ||
     loadPublicImage("selo-iso-9001.jpg") ||
@@ -105,27 +106,55 @@ export async function GET(req: NextRequest, { params }: Props) {
     loadPublicImage("selo-iso9001.jpg") ||
     undefined;
 
+  // ── Logo oficial ─────────────────────────────────────────────────────────
+  const logoUri =
+    loadPublicImage("logo.png") ||
+    loadPublicImage("logo.svg") ||
+    undefined;
+
+  // ── QR Code — aponta para /verificar com o código do certificado ─────────
+  const codeDisplay = cert.code.slice(0, 16).toUpperCase();
+  const verifyUrl = `https://nuvemensino.com.br/verificar?codigo=${codeDisplay}`;
+  let qrCodeDataUri: string | undefined;
+  try {
+    qrCodeDataUri = await QRCode.toDataURL(verifyUrl, {
+      width: 160,
+      margin: 1,
+      color: {
+        dark: "#00475e",   // teal (igual à paleta do certificado)
+        light: "#f5f3ec",  // offwhite (fundo do certificado)
+      },
+    });
+  } catch {
+    // QR code não gerado — não bloqueia o PDF
+    qrCodeDataUri = undefined;
+  }
+
+  // ── Gera o PDF ───────────────────────────────────────────────────────────
   const buffer = await renderToBuffer(
     CertificatePDF({
-      studentName: cert.user.name ?? "Participante",
-      courseTitle: cert.enrollment.course.title,
-      hours: cert.enrollment.course.hours,
-      instructorName: cert.enrollment.course.instructor?.user.name ?? "NU.V.E.M Ensino",
-      issueDate: cert.issueDate,
-      code: cert.code,
+      studentName:         cert.user.name ?? "Participante",
+      courseTitle:         cert.enrollment.course.title,
+      hours:               cert.enrollment.course.hours,
+      instructorName:      cert.enrollment.course.instructor?.user.name ?? "NU.V.E.M Ensino",
+      issueDate:           cert.issueDate,
+      code:                cert.code,
+      courseDescription:   cert.enrollment.course.shortDesc ?? undefined,
+      qrCodeDataUri,
       instructorSignature,
       directorSignature,
       isInstructorDirector,
       isoSeal,
+      logoUri,
     })
   );
 
   return new Response(new Uint8Array(buffer), {
     status: 200,
     headers: {
-      "Content-Type": "application/pdf",
+      "Content-Type":        "application/pdf",
       "Content-Disposition": `attachment; filename="certificado-nuvem-ensino-${cert.code.slice(0, 8)}.pdf"`,
-      "Cache-Control": "private, max-age=3600",
+      "Cache-Control":       "no-store",
     },
   });
 }

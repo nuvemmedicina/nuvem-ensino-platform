@@ -64,7 +64,7 @@ export const metadata: Metadata = {
       "Cursos hands-on e online de Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Certificação ISO 9001.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "NU.V.E.M Ensino — Formação Médica de Excelência",
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
     title: "NU.V.E.M Ensino — Formação Médica de Excelência",
     description:
       "Cursos hands-on e online de Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Certificação ISO 9001.",
-    images: ["/og-image.png"],
+    images: ["/opengraph-image"],
     creator: "@NuvemEnsino",
   },
   alternates: {

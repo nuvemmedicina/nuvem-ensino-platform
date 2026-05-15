@@ -28,7 +28,7 @@ const staticContent: Record<
 > = {
   "manometria-phmetria-impedancia": {
     instructorBio:
-      "Dr. Felipe Nelson é referência em exames de motilidade esofágica, pHmetria de 24 horas e impedancio-pHmetria, com mais de 10 anos de experiência clínica. Especialista em Gastroenterologia, conduz ensino e pesquisa em manometria de alta resolução e realiza mentoria direta durante a execução dos exames com pacientes reais.",
+      "Dr. Felipe Nelson é referência em exames de motilidade esofágica, pHmetria de 24 horas e impedancio-pHmetria, com anos de experiência clínica. Especialista em Gastroenterologia, conduz ensino e pesquisa em manometria de alta resolução e realiza mentoria direta durante a execução dos exames com pacientes reais.",
     startDate: "15–19 de junho de 2026",
     objectives: [
       "Realizar manometria esofágica de alta resolução com autonomia e segurança",
@@ -46,55 +46,59 @@ const staticContent: Record<
     ],
     modules: [
       {
-        title: "Dia 1 (15/06): Abordagem Multidisciplinar da Disfagia",
+        title: "Dia 1 (15/06): Fundamentos e Preparação",
         lessons: [
-          "Fisiopatologia e avaliação clínica da disfagia orofaríngea",
-          "Perspectiva fonoaudiológica: avaliação e reabilitação",
-          "Abordagem nutricional na disfagia",
-          "Cuidados paliativos e qualidade de vida",
-        ],
-      },
-      {
-        title: "Dia 2 (16/06): Manometria Esofágica de Alta Resolução",
-        lessons: [
-          "Protocolos de exame e Classificação de Chicago 4.0",
+          "Fisiologia esofágica",
+          "Preparo da sala de manometria esofágica de alta resolução",
+          "Preparo para os exames de manometria, pHmetria e impedâncio-pHmetria",
           "Posicionamento de sonda, técnica de coleta e calibração",
-          "Interpretação de laudos em tempo real",
+          "Lavagem e cuidados com as sondas dos exames de motilidade digestiva",
+        ],
+      },
+      {
+        title: "Dia 2 (16/06): Hands On — Manometria, pHmetria e Impedância",
+        lessons: [
+          "Hands On de exames de manometria esofágica de alta resolução + pHmetria + impedância",
           "Exames com pacientes reais sob mentoria direta",
+          "Interpretação e realização de laudos em tempo real",
+          "Classificação de Chicago 4.0",
+          "Análise da junção esofagogástrica",
         ],
       },
       {
-        title: "Dia 3 (17/06): pHmetria e Impedancio-pHmetria",
+        title: "Dia 3 (17/06): Hands On — Sistematização, Motilidade Orofaríngea e Pós-operatório",
         lessons: [
-          "Fundamentos e indicações da pHmetria esofágica de 24 horas",
-          "Posicionamento de cateter e protocolo de coleta",
-          "Análise e interpretação de laudos",
-          "Refluxo funcional: diagnóstico diferencial",
+          "Hands On de exames de manometria esofágica de alta resolução + pHmetria + impedância",
+          "Sistematização da coleta dos exames de manometria, pHmetria e impedância",
+          "Interpretação e realização de laudos em tempo real",
+          "Casos de motilidade orofaríngea e exames complementares",
+          "Casos de pós-operatório de cirurgias antirrefluxo e cirurgia bariátrica",
+          "Radiologia combinada à manometria do esôfago",
         ],
       },
       {
-        title: "Dia 4 (18/06): Casos Especiais e Disfagia Pós-Cirúrgica",
+        title: "Dia 4 (18/06): Hands On — Acalasia e Doença de Chagas",
         lessons: [
-          "Acalasia: diagnóstico e seguimento pós-tratamento",
-          "Disfagia por doença de Chagas esofágica",
-          "Disfagia após fundoplicatura e cirurgia bariátrica",
-          "Discussão multidisciplinar de casos complexos",
+          "Hands On de exames de manometria esofágica de alta resolução + pHmetria + impedância",
+          "Interpretação e realização de laudos em tempo real",
+          "Casos de pós-operatório de procedimentos para o tratamento da acalasia (POEM, Heller, dilatação pneumática)",
+          "Manometria esofágica em pacientes com Doença de Chagas",
         ],
       },
       {
-        title: "Dia 5 (19/06): Exames ao Vivo e Certificação",
+        title: "Dia 5 (19/06): Hands On — Casos Especiais e Certificação",
         lessons: [
-          "Exames com pacientes reais e análise ao vivo",
-          "Mentoria direta com Dr. Felipe Nelson",
-          "Discussão final de casos e dúvidas",
-          "Avaliação e emissão do certificado de conclusão",
+          "Hands On de exames de manometria esofágica de alta resolução + pHmetria + impedância",
+          "Interpretação e realização de laudos em tempo real",
+          "Casos especiais de pHmetria e impedância (Eructações Supragástricas, Síndrome de Ruminação, sintomas atípicos)",
+          "Casos especiais de manometria esofágica (Síndrome de Ruminação, Incapacidade de Eructar, casos inconclusivos)",
         ],
       },
     ],
     includes: [
       "5 dias de imersão teórico-prática (15 a 19 de junho de 2026)",
       "Exames em pacientes reais com mentoria direta do Dr. Felipe Nelson",
-      "Abordagem multidisciplinar com fonoaudiologia, nutrição e cuidados paliativos",
+      "Hands On diário de manometria esofágica de alta resolução, pHmetria e impedância",
       "Material de apoio completo",
       "Coffee break diário",
       "Certificado de conclusão",
@@ -402,13 +406,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
   if (!course) return {};
 
+  const description =
+    course.metaDesc ??
+    course.shortDesc ??
+    `Curso ${course.title} — ${course.hours}h de formação prática com especialistas. Certificação ISO 9001 pela NU.V.E.M Ensino.`;
+
+  const ogImage = course.thumbnailUrl
+    ? { url: course.thumbnailUrl, width: 1200, height: 630, alt: course.title }
+    : { url: `/cursos/${slug}/opengraph-image`, width: 1200, height: 630, alt: course.title };
+
   return {
-    title: course.metaTitle ?? `${course.title} | Nuvem Ensino`,
-    description: course.metaDesc ?? course.shortDesc ?? course.description,
+    title: course.metaTitle ?? `${course.title} | NU.V.E.M Ensino`,
+    description,
+    alternates: { canonical: `/cursos/${slug}` },
     openGraph: {
+      type: "website",
       title: course.title,
-      description: course.shortDesc ?? course.description,
-      images: course.thumbnailUrl ? [course.thumbnailUrl] : [],
+      description,
+      url: `/cursos/${slug}`,
+      images: [ogImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: course.title,
+      description,
+      images: [ogImage.url],
     },
   };
 }

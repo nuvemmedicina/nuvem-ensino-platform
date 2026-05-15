@@ -73,7 +73,7 @@ const instrutores = [
     nome: "Dr. Felipe Nelson",
     crm: "",
     especialidade: "Gastroenterologia · Manometria · pHmetria",
-    bio: "Referência em exames de motilidade esofágica, pHmetria de 24 horas e impedancio-pHmetria. Mais de 10 anos de experiência clínica.",
+    bio: "Referência em exames de motilidade esofágica, pHmetria de 24 horas e impedancio-pHmetria, com anos de experiência clínica.",
     foto: "/instructors/felipe-nelson.jpg",
   },
   {

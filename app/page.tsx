@@ -27,7 +27,7 @@ const courses = [
     description:
       "Domine os principais exames de motilidade digestiva: manometria de alta resolução, pHmetria e impedância em ambiente clínico supervisionado.",
     price: "R$ 6.500",
-    hours: "16h",
+    hours: "40h",
     category: "Hands-On",
     instructorName: "Dr. Felipe Nelson",
     instructorPhoto: "/instructors/felipe-nelson.jpg",
@@ -85,7 +85,7 @@ const instructors = [
     name: "Dr. Felipe Nelson",
     specialty: "Gastroenterologia · Motilidade Digestiva",
     crm: "CRM-MG",
-    bio: "Gastroenterologista pela USP-Ribeirão Preto, doutor pela USP. Especialista em manometria esofágica de alta resolução, pHmetria e impedancio-pHmetria.",
+    bio: "Gastroenterologista pela USP-Ribeirão Preto, doutor pela USP. Especialista em manometria esofágica de alta resolução, pHmetria e impedancio-pHmetria, com anos de experiência clínica.",
     photo: "/instructors/felipe-nelson.jpg",
     slug: "dr-felipe-nelson",
   },
