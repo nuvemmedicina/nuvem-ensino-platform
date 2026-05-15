@@ -1,5 +1,7 @@
 import { ImageResponse } from "next/og";
 import { prisma } from "@/lib/prisma";
+import fs from "fs";
+import path from "path";
 
 export const runtime = "nodejs";
 export const alt = "Curso — NU.V.E.M Ensino";
@@ -22,14 +24,11 @@ export default async function Image({ params }: Props) {
   const hours       = course?.hours       ?? 0;
   const thumbnail   = course?.thumbnailUrl ?? null;
 
-  // Fontes
-  const interLight = await fetch(
-    "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2"
-  ).then((r) => r.arrayBuffer());
-
-  const interSemiBold = await fetch(
-    "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiJ-Ek-_EeA.woff2"
-  ).then((r) => r.arrayBuffer());
+  // Fontes (woff — woff2 não é suportado pelo Satori/next-og)
+  const interLightBuf    = fs.readFileSync(path.join(process.cwd(), "public", "fonts", "Inter-Light.woff"));
+  const interSemiBoldBuf = fs.readFileSync(path.join(process.cwd(), "public", "fonts", "Inter-SemiBold.woff"));
+  const interLight    = interLightBuf.buffer.slice(interLightBuf.byteOffset, interLightBuf.byteOffset + interLightBuf.byteLength);
+  const interSemiBold = interSemiBoldBuf.buffer.slice(interSemiBoldBuf.byteOffset, interSemiBoldBuf.byteOffset + interSemiBoldBuf.byteLength);
 
   return new ImageResponse(
     (

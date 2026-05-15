@@ -20,14 +20,11 @@ export default async function Image() {
     photoDataUri = null;
   }
 
-  // Fontes
-  const interLight = await fetch(
-    "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2"
-  ).then((r) => r.arrayBuffer());
-
-  const interSemiBold = await fetch(
-    "https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiJ-Ek-_EeA.woff2"
-  ).then((r) => r.arrayBuffer());
+  // Fontes (woff — woff2 não é suportado pelo Satori/next-og)
+  const interLightBuf    = fs.readFileSync(path.join(process.cwd(), "public", "fonts", "Inter-Light.woff"));
+  const interSemiBoldBuf = fs.readFileSync(path.join(process.cwd(), "public", "fonts", "Inter-SemiBold.woff"));
+  const interLight    = interLightBuf.buffer.slice(interLightBuf.byteOffset, interLightBuf.byteOffset + interLightBuf.byteLength);
+  const interSemiBold = interSemiBoldBuf.buffer.slice(interSemiBoldBuf.byteOffset, interSemiBoldBuf.byteOffset + interSemiBoldBuf.byteLength);
 
   return new ImageResponse(
     (
