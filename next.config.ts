@@ -5,24 +5,21 @@ const nextConfig: NextConfig = {
   /* config options here */
 };
 
-export default withSentryConfig(nextConfig, {
-  org: "nuvem-ensino",
-  project: "javascript-nextjs",
+// Só aplica o wrapper do Sentry quando o token estiver presente.
+// Sem token, o CLI tentaria criar releases e falharia com 401.
+const hasSentryToken = Boolean(process.env.SENTRY_AUTH_TOKEN);
 
-  // Só exibe logs em CI
-  silent: !process.env.CI,
-
-  // Upload de source maps só quando SENTRY_AUTH_TOKEN estiver configurado
-  sourcemaps: {
-    disable: !process.env.SENTRY_AUTH_TOKEN,
-  },
-
-  widenClientFileUpload: true,
-
-  webpack: {
-    automaticVercelMonitors: true,
-    treeshake: {
-      removeDebugLogging: true,
-    },
-  },
-});
+export default hasSentryToken
+  ? withSentryConfig(nextConfig, {
+      org: "nuvem-ensino",
+      project: "javascript-nextjs",
+      silent: !process.env.CI,
+      widenClientFileUpload: true,
+      webpack: {
+        automaticVercelMonitors: true,
+        treeshake: {
+          removeDebugLogging: true,
+        },
+      },
+    })
+  : nextConfig;

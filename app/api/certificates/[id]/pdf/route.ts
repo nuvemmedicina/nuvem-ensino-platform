@@ -12,7 +12,7 @@ type Props = { params: Promise<{ id: string }> };
 export async function GET(req: NextRequest, { params }: Props) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+    return Response.json({ error: "Não autenticado" }, { status: 401 });
   }
 
   const { id } = await params;
@@ -37,12 +37,12 @@ export async function GET(req: NextRequest, { params }: Props) {
   });
 
   if (!cert) {
-    return NextResponse.json({ error: "Certificado não encontrado" }, { status: 404 });
+    return Response.json({ error: "Certificado não encontrado" }, { status: 404 });
   }
 
   // Garante que o certificado pertence ao usuário autenticado
   if (cert.userId !== session.user.id) {
-    return NextResponse.json({ error: "Não autorizado" }, { status: 403 });
+    return Response.json({ error: "Não autorizado" }, { status: 403 });
   }
 
   const buffer = await renderToBuffer(
