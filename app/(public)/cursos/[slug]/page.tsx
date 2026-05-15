@@ -450,7 +450,7 @@ export default async function CoursePage({ params }: Props) {
 
   const content = staticContent[slug] ?? null;
 
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.nuvemensino.com.br";
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br";
   const courseJsonLd = {
     "@context": "https://schema.org",
     "@type": "Course",

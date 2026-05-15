@@ -121,11 +121,11 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "EducationalOrganization",
-      "@id": "https://www.nuvemensino.com.br/#organization",
+      "@id": "https://nuvemensino.com.br/#organization",
       name: "NU.V.E.M Ensino",
       alternateName: "Nuvem Ensino",
-      url: "https://www.nuvemensino.com.br",
-      logo: "https://www.nuvemensino.com.br/logo.png",
+      url: "https://nuvemensino.com.br",
+      logo: "https://nuvemensino.com.br/logo.png",
       description:
         "Plataforma de formação médica especializada em Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Certificação ISO 9001.",
       address: {
@@ -153,14 +153,14 @@ const jsonLd = {
     },
     {
       "@type": "WebSite",
-      "@id": "https://www.nuvemensino.com.br/#website",
-      url: "https://www.nuvemensino.com.br",
+      "@id": "https://nuvemensino.com.br/#website",
+      url: "https://nuvemensino.com.br",
       name: "NU.V.E.M Ensino",
-      publisher: { "@id": "https://www.nuvemensino.com.br/#organization" },
+      publisher: { "@id": "https://nuvemensino.com.br/#organization" },
       inLanguage: "pt-BR",
       potentialAction: {
         "@type": "SearchAction",
-        target: "https://www.nuvemensino.com.br/cursos?q={search_term_string}",
+        target: "https://nuvemensino.com.br/cursos?q={search_term_string}",
         "query-input": "required name=search_term_string",
       },
     },
