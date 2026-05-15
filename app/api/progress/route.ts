@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { captureServerEvent } from "@/lib/posthog";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -13,6 +14,7 @@ export async function POST(req: Request) {
 
   const enrollment = await prisma.enrollment.findUnique({
     where: { userId_courseId: { userId: session.user.id, courseId } },
+    include: { course: { select: { title: true, slug: true } } },
   });
   if (!enrollment) {
     return NextResponse.json({ error: "Matrícula não encontrada." }, { status: 404 });
@@ -32,23 +34,42 @@ export async function POST(req: Request) {
     },
   });
 
-  // Check if all lessons completed → mark enrollment as COMPLETED
+  // Evento: aula concluída
   if (progress.completed) {
+    await captureServerEvent(session.user.id, "lesson_completed", {
+      course_id: courseId,
+      course_title: enrollment.course.title,
+      course_slug: enrollment.course.slug,
+      lesson_id: lessonId,
+    });
+
+    // Verifica se todas as aulas foram concluídas
     const totalLessons = await prisma.lesson.count({
       where: { module: { courseId } },
     });
     const completedLessons = await prisma.progress.count({
       where: { enrollmentId: enrollment.id, completed: true },
     });
+
     if (totalLessons > 0 && completedLessons >= totalLessons) {
       await prisma.enrollment.update({
         where: { id: enrollment.id },
         data: { status: "COMPLETED", completedAt: new Date() },
       });
-      await prisma.certificate.upsert({
+
+      const cert = await prisma.certificate.upsert({
         where: { enrollmentId: enrollment.id },
         create: { userId: session.user.id, enrollmentId: enrollment.id },
         update: {},
+      });
+
+      // Evento: curso concluído + certificado emitido
+      await captureServerEvent(session.user.id, "course_completed", {
+        course_id: courseId,
+        course_title: enrollment.course.title,
+        course_slug: enrollment.course.slug,
+        certificate_id: cert.id,
+        total_lessons: totalLessons,
       });
     }
   }
