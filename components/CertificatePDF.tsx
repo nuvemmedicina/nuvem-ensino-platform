@@ -8,6 +8,7 @@ import {
   Svg,
   Path,
   Circle,
+  Line,
   Image,
 } from "@react-pdf/renderer";
 
