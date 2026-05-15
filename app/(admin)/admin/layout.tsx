@@ -2,7 +2,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, ClipboardList, LayoutDashboard, Users, LogOut } from "lucide-react";
+import { BookOpen, ClipboardList, LayoutDashboard, Users, BarChart2, LogOut } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
 
 const navLinks = [
@@ -10,6 +10,7 @@ const navLinks = [
   { label: "Cursos",     href: "/admin/cursos",     icon: BookOpen },
   { label: "Matrículas", href: "/admin/matriculas", icon: ClipboardList },
   { label: "Usuários",   href: "/admin/usuarios",   icon: Users },
+  { label: "Relatórios", href: "/admin/relatorios", icon: BarChart2 },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
