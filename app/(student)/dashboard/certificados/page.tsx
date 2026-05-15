@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { Award, Download } from "lucide-react";
+import { Award, Download, ExternalLink } from "lucide-react";
 
 export default async function CertificadosPage() {
   const session = await auth();
@@ -55,9 +55,9 @@ export default async function CertificadosPage() {
                 <span className="font-mono text-[10px] text-muted tracking-wider">
                   #{cert.code.slice(0, 12).toUpperCase()}
                 </span>
-                {cert.pdfUrl ? (
+                <div className="flex items-center gap-3">
                   <a
-                    href={cert.pdfUrl}
+                    href={`/api/certificates/${cert.id}/pdf`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-primary hover:text-primary-dark transition-colors"
@@ -65,9 +65,7 @@ export default async function CertificadosPage() {
                     <Download className="w-3.5 h-3.5" />
                     Baixar PDF
                   </a>
-                ) : (
-                  <span className="font-sans text-xs text-muted/50">PDF em processamento</span>
-                )}
+                </div>
               </div>
             </div>
           ))}
