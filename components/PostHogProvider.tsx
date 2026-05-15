@@ -23,12 +23,12 @@ function PageViewTracker() {
 // Inicializa PostHog uma única vez no browser
 if (typeof window !== "undefined") {
   const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://us.i.posthog.com";
+  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://eu.i.posthog.com";
 
   if (key && !posthog.__loaded) {
     posthog.init(key, {
       api_host: host,
-      ui_host: "https://us.posthog.com",
+      ui_host: "https://eu.posthog.com",
       capture_pageview: false,       // controlamos manualmente via PageViewTracker
       capture_pageleave: true,
       persistence: "localStorage+cookie",

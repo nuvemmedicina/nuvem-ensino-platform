@@ -5,7 +5,7 @@ let _client: PostHog | null = null;
 
 export function getPostHogServer(): PostHog | null {
   const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://us.i.posthog.com";
+  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://eu.i.posthog.com";
 
   if (!key) return null; // silencia se não configurado
 
