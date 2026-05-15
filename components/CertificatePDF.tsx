@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Document,
   Page,
@@ -10,8 +8,7 @@ import {
   Svg,
   Path,
   Circle,
-  Rect,
-  Line,
+  Image,
 } from "@react-pdf/renderer";
 
 // Fontes built-in do PDF — registradas para uso com variantes
@@ -277,6 +274,10 @@ type Props = {
   instructorName: string;
   issueDate: Date;
   code: string;
+  /** Base64 data URI da assinatura do instrutor (opcional) */
+  instructorSignature?: string;
+  /** Base64 data URI da assinatura da Diretora Técnica (opcional) */
+  directorSignature?: string;
 };
 
 function formatDate(date: Date): string {
@@ -288,7 +289,7 @@ function formatDate(date: Date): string {
 }
 
 // ── Componente principal ───────────────────────────────────────────────────
-export function CertificatePDF({ studentName, courseTitle, hours, instructorName, issueDate, code }: Props) {
+export function CertificatePDF({ studentName, courseTitle, hours, instructorName, issueDate, code, instructorSignature, directorSignature }: Props) {
   return (
     <Document title={`Certificado — ${courseTitle}`} author="NU.V.E.M Ensino" subject="Certificado de Conclusão">
       <Page size="A4" orientation="landscape" style={s.page}>
@@ -339,15 +340,32 @@ export function CertificatePDF({ studentName, courseTitle, hours, instructorName
 
           {/* Assinaturas */}
           <View style={s.signaturesRow}>
+            {/* Instrutor */}
             <View style={s.sigBlock}>
-              <View style={s.sigLine} />
+              {instructorSignature ? (
+                <Image
+                  src={instructorSignature}
+                  style={{ width: 110, height: 44, objectFit: "contain", marginBottom: 2 }}
+                />
+              ) : (
+                <View style={s.sigLine} />
+              )}
               <Text style={s.sigName}>{instructorName}</Text>
               <Text style={s.sigRole}>Instrutor Responsável</Text>
             </View>
+
+            {/* Diretora Técnica — Dra. Vera Ângelo */}
             <View style={s.sigBlock}>
-              <View style={s.sigLine} />
-              <Text style={s.sigName}>NU.V.E.M Ensino</Text>
-              <Text style={s.sigRole}>Diretoria Acadêmica</Text>
+              {directorSignature ? (
+                <Image
+                  src={directorSignature}
+                  style={{ width: 110, height: 44, objectFit: "contain", marginBottom: 2 }}
+                />
+              ) : (
+                <View style={s.sigLine} />
+              )}
+              <Text style={s.sigName}>Dra. Vera Ângelo</Text>
+              <Text style={s.sigRole}>Diretora Técnica</Text>
             </View>
           </View>
 

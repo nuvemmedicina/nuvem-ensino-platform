@@ -3,11 +3,27 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { CertificatePDF } from "@/components/CertificatePDF";
+import fs from "fs";
+import path from "path";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ id: string }> };
+
+/** Lê um arquivo da pasta public/assinaturas e retorna data URI base64, ou undefined. */
+function loadSignature(filename: string): string | undefined {
+  try {
+    const filePath = path.join(process.cwd(), "public", "assinaturas", filename);
+    if (!fs.existsSync(filePath)) return undefined;
+    const buffer = fs.readFileSync(filePath);
+    const ext = path.extname(filename).slice(1).toLowerCase();
+    const mime = ext === "png" ? "image/png" : "image/jpeg";
+    return `data:${mime};base64,${buffer.toString("base64")}`;
+  } catch {
+    return undefined;
+  }
+}
 
 export async function GET(req: NextRequest, { params }: Props) {
   const session = await auth();
@@ -29,6 +45,7 @@ export async function GET(req: NextRequest, { params }: Props) {
               hours: true,
               instructor: {
                 select: {
+                  userId: true,
                   user: { select: { name: true } },
                 },
               },
@@ -43,10 +60,22 @@ export async function GET(req: NextRequest, { params }: Props) {
     return Response.json({ error: "Certificado não encontrado" }, { status: 404 });
   }
 
-  // Garante que o certificado pertence ao usuário autenticado
   if (cert.userId !== session.user.id) {
     return Response.json({ error: "Não autorizado" }, { status: 403 });
   }
+
+  // Assinatura do instrutor: public/assinaturas/{instructorUserId}.png (ou .jpg)
+  const instructorUserId = cert.enrollment.course.instructor?.userId;
+  const instructorSignature =
+    (instructorUserId && loadSignature(`${instructorUserId}.png`)) ||
+    (instructorUserId && loadSignature(`${instructorUserId}.jpg`)) ||
+    undefined;
+
+  // Assinatura fixa da Diretora Técnica
+  const directorSignature =
+    loadSignature("vera-angelo.png") ||
+    loadSignature("vera-angelo.jpg") ||
+    undefined;
 
   const buffer = await renderToBuffer(
     CertificatePDF({
@@ -56,6 +85,8 @@ export async function GET(req: NextRequest, { params }: Props) {
       instructorName: cert.enrollment.course.instructor?.user.name ?? "NU.V.E.M Ensino",
       issueDate: cert.issueDate,
       code: cert.code,
+      instructorSignature,
+      directorSignature,
     })
   );
 
