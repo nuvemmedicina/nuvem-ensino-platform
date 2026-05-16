@@ -279,6 +279,74 @@
     "meta": {
       "title": "About",
       "description": "Learn about NU.V.E.M Ensino, a specialized medical education platform."
+    },
+    "hero": {
+      "badge": "About NU.V.E.M",
+      "title": "A new way to care. A new way to teach.",
+      "description": "NU.V.E.M was born from the vision of two physicians who believed they could do things differently — with more precision, more care, and more purpose."
+    },
+    "founders": {
+      "badge": "Founded by those who live medicine every day",
+      "title": "Clinic and education under one roof",
+      "p1": "NU.V.E.M Medicina and NU.V.E.M Ensino were founded by Dr. Vera Ângelo and Dr. Eliane Basques, specialists passionate about medicine and the transformative power of shared knowledge.",
+      "p2": "Together, they created a unique ecosystem that unites clinic and education under one roof, where each patient seen inspires new content, and each trained professional raises the standard of healthcare.",
+      "p3": "NU.V.E.M Medicina is a reference in Gastroenterology, Digestive Motility, Pelvic Physiotherapy and Advanced Diagnostics in Belo Horizonte, with state-of-the-art equipment and a highly specialized multidisciplinary team.",
+      "p4": "NU.V.E.M Ensino was born as a natural extension of this clinical excellence, training physicians, physiotherapists and specialists through theoretical-practical courses, hands-on immersions and methodology based on real clinical cases from the clinic itself."
+    },
+    "iso": {
+      "badge": "ISO 9001 Certification",
+      "title": "The international standard of quality",
+      "text": "We are the only clinic of this type in Belo Horizonte with ISO 9001 Certification. This means that every process — from scheduling to diagnosis, from teaching to certificate issuance — follows rigorous quality, traceability and continuous improvement protocols, audited by independent certification bodies.",
+      "quote": "It's not just a seal. It's the commitment to deliver excellence in every detail, every day.",
+      "link": "Learn more about our certification"
+    },
+    "numbers": {
+      "title": "Our numbers",
+      "googleReviews": "Google Reviews",
+      "professionals": "Trained professionals",
+      "specialties": "Medical specialties",
+      "certification": "International certification",
+      "students": "Students worldwide"
+    },
+    "meaning": {
+      "badge": "What does NU.V.E.M mean?",
+      "title": "More than a name, a philosophy",
+      "p1": "It is a new climate that brings together ideas, people and dreams, where healthcare professionals meet to learn, grow and transform lives.",
+      "p2": "It is patient care elevated to a new level. It is the certainty that medicine practiced with scientific rigor, humanity and purpose makes all the difference.",
+      "quote": "We brought a new way of caring and teaching. An environment that inspires, that welcomes, that trains. Above all, care for your health.",
+      "quoteAuthor": "Dr. Vera Ângelo & Dr. Eliane Basques, founders"
+    },
+    "differentials": {
+      "title": "Why NU.V.E.M Ensino",
+      "iso": {
+        "title": "ISO 9001 Certified",
+        "desc": "The only clinic of this type in Belo Horizonte with ISO 9001 certification. Every process, from scheduling to certification, follows rigorous protocols audited by independent bodies."
+      },
+      "realCases": {
+        "title": "Training based on real cases",
+        "desc": "Courses are held at the clinic itself, with state-of-the-art equipment and methodology based on real clinical cases, consistently bridging theory and practice."
+      },
+      "specialists": {
+        "title": "Founded by specialists",
+        "desc": "Created by Dr. Vera Ângelo and Dr. Eliane Basques, physicians passionate about medicine and the transformative power of shared knowledge."
+      },
+      "location": {
+        "title": "Belo Horizonte, MG",
+        "desc": "Complete infrastructure for hands-on in-person courses, with equipped laboratories and an environment designed for advanced healthcare learning."
+      }
+    },
+    "faculty": {
+      "title": "Faculty",
+      "vera": "Co-founder and director of NU.V.E.M Medicina. National reference in digestive motility testing, pioneer in new H₂/CH₄/H₂S breath testing protocols and trainer of specialists across Brazil.",
+      "eliane": "Co-founder of NU.V.E.M. Pediatric surgeon at FHEMIG, specialist in high-resolution anorectal manometry and functional disorders of the pelvic floor.",
+      "wanderley": "Gastroenterologist from UFRJ, Professor at FAMINAS-Muriaé Medical School, Gastroenterology Specialist from FBG and Full Member of SOBED.",
+      "felipe": "Reference in esophageal motility studies, 24-hour pHmetry and impedance-pHmetry, with years of clinical experience.",
+      "anna": "Physiotherapist specializing in pelvic floor dysfunction, with clinical practice in pelvic assessment and rehabilitation."
+    },
+    "cta": {
+      "title": "Ready to advance your training?",
+      "description": "Explore the NU.V.E.M Ensino catalog and find the right course for your specialty.",
+      "button": "View all courses"
     }
   },
   "instructors": {
@@ -298,13 +366,144 @@
     },
     "title": "Frequently Asked Questions",
     "subtitle": "Find answers about our courses and platform.",
-    "noResults": "No questions found."
+    "noResults": "No questions found.",
+    "badge": "FAQ",
+    "contactPrompt": "Didn't find what you need?",
+    "contactLink": "Contact us",
+    "stillHaveQuestions": "Still have questions? Our team is ready to help.",
+    "sendEmail": "Send email",
+    "items": [
+      {
+        "q": "How does enrollment work?",
+        "a": "After choosing a course, click 'Enroll'. You'll be directed to checkout, where you can pay by credit card, bank slip (boleto), or Pix. After payment confirmation, access is immediately granted in your student area."
+      },
+      {
+        "q": "Are courses scheduled at fixed times?",
+        "a": "Online (recorded) courses are available 24 hours a day and you watch at your own pace. Hands-on in-person courses have specific dates — check each course page for available sessions."
+      },
+      {
+        "q": "How long do I have access to the content?",
+        "a": "Access to online courses is unlimited after enrollment. For in-person courses, the digital support materials remain permanently available on the platform."
+      },
+      {
+        "q": "How do I receive my certificate?",
+        "a": "The certificate is issued digitally after completing all lessons and/or course activities. It's available in the 'Certificates' section of your student area, with a unique verification code."
+      },
+      {
+        "q": "Can I pay in installments?",
+        "a": "Yes, we accept up to 3 installments on credit card. For upfront payment via Pix, a discount may apply. Check the course page for details."
+      },
+      {
+        "q": "What is the refund policy?",
+        "a": "We offer a full refund within 7 calendar days of purchase, provided less than 20% of course content has been accessed. For in-person courses, check the specific conditions on the course page."
+      },
+      {
+        "q": "Is there support after the course ends?",
+        "a": "Yes. After the course, you can ask questions by email to the instructor for up to 30 days. Hands-on courses include post-course support as described on each training page."
+      },
+      {
+        "q": "How does the in-person course work?",
+        "a": "Hands-on courses are held at NU.V.E.M Medicina in Belo Horizonte, MG. Classes are small (maximum 2 to 14 students depending on the course) to ensure individualized attention. After purchase, our team will contact you to confirm the date."
+      },
+      {
+        "q": "Are there discounts for groups or institutions?",
+        "a": "Yes, we offer special conditions for groups of 3 or more people or for healthcare institutions. Contact us at cursos@nuvemensino.com.br or via WhatsApp at +55 (31) 99726-1029."
+      },
+      {
+        "q": "How do I contact the team?",
+        "a": "You can reach us by email at cursos@nuvemensino.com.br, by phone at +55 (31) 2537-3131, or via WhatsApp at +55 (31) 99726-1029."
+      }
+    ]
   },
   "privacy": {
-    "title": "Privacy Policy"
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: May 2026 · NUVEM ENSINO · CNPJ 42.679.051/0001-31",
+    "sections": [
+      {
+        "title": "1. Data collected",
+        "text": "We collect name, email, phone and payment data provided voluntarily at the time of registration or purchase. We may also collect browsing data (cookies and access logs) for platform improvement purposes."
+      },
+      {
+        "title": "2. Purpose of processing",
+        "text": "Data is used exclusively for: (a) creation and management of the user account; (b) payment processing and invoice issuance; (c) sending communications related to purchased courses; (d) continuous platform improvement."
+      },
+      {
+        "title": "3. Data sharing",
+        "text": "We do not sell or share your data with third parties, except when necessary for service provision (e.g., payment processors Stripe and Mercado Pago) or by legal obligation."
+      },
+      {
+        "title": "4. Storage and security",
+        "text": "Data is stored on secure servers with in-transit encryption (HTTPS/TLS). We adopt appropriate technical and organizational measures to protect information against unauthorized access."
+      },
+      {
+        "title": "5. Rights of the data subject",
+        "text": "Under the Brazilian General Data Protection Law (Lei nº 13.709/2018 — LGPD), you may at any time request: access to your data, correction, deletion, portability or withdrawal of consent. Simply send an email to cursos@nuvemensino.com.br."
+      },
+      {
+        "title": "6. Cookies",
+        "text": "We use essential cookies for platform operation (authentication and preferences) and analytical cookies to understand site usage. You can disable cookies in your browser settings, which may affect some features."
+      },
+      {
+        "title": "7. Data retention",
+        "text": "Data is retained while the account is active. After closure, data is deleted within 90 days, unless a longer legal retention obligation applies."
+      },
+      {
+        "title": "8. Contact",
+        "text": "For questions about this policy or to exercise your rights, please contact us: cursos@nuvemensino.com.br | +55 (31) 2537-3131."
+      }
+    ]
   },
   "terms": {
-    "title": "Terms of Use"
+    "title": "Terms of Use",
+    "lastUpdated": "Last updated: May 2026 · NUVEM ENSINO · CNPJ 42.679.051/0001-31",
+    "privacyLink": "→ Privacy Policy",
+    "faqLink": "→ FAQ",
+    "sections": [
+      {
+        "title": "1. Acceptance of Terms",
+        "text": "By accessing and using the NU.V.E.M Ensino platform, you agree to these Terms of Use. If you do not agree with any provision, we recommend that you do not use the services. NU.V.E.M Ensino reserves the right to update these terms at any time, with prior notice to registered users."
+      },
+      {
+        "title": "2. Description of Services",
+        "text": "NU.V.E.M Ensino is an online and in-person medical education platform, operated by NUVEM ENSINO (CNPJ 42.679.051/0001-31), offering courses in gastroenterology, digestive motility and pelvic physiotherapy, taught by qualified professionals."
+      },
+      {
+        "title": "3. Registration and Account",
+        "text": "To purchase courses, you must create an account with accurate information. You are responsible for the confidentiality of your password and for all activities carried out in your account. In case of unauthorized use, immediately notify cursos@nuvemensino.com.br."
+      },
+      {
+        "title": "4. Course Purchases",
+        "text": "Courses are purchased upon payment according to the prices indicated on the platform. Access is granted after payment confirmation. For in-person (hands-on) courses, date and time will be confirmed by our team after registration."
+      },
+      {
+        "title": "5. Refund Policy",
+        "text": "Under the Brazilian Consumer Protection Code (Lei nº 8.078/1990), you have the right to cancel within 7 calendar days of purchase, provided less than 20% of online content has been accessed. For in-person courses, cancellation must be made at least 72 hours in advance for a full refund."
+      },
+      {
+        "title": "6. Intellectual Property",
+        "text": "All platform content (video lessons, teaching materials, texts, images and trademarks) is the exclusive property of NU.V.E.M Ensino or its instructors. Reproduction, distribution or commercialization of any content without express written authorization is prohibited."
+      },
+      {
+        "title": "7. Permitted Use",
+        "text": "Access to the platform is personal and non-transferable. It is prohibited to share access credentials, record or redistribute lessons, use content for commercial purposes, or perform any act that harms the platform or other users."
+      },
+      {
+        "title": "8. Educational Content",
+        "text": "The content provided is exclusively for educational purposes for healthcare professionals. It does not constitute medical prescription, diagnosis or replacement of professional consultation, in accordance with Federal Council of Medicine regulations (Res. CFM nº 1.974/2011)."
+      },
+      {
+        "title": "9. Limitation of Liability",
+        "text": "NU.V.E.M Ensino is not responsible for damages arising from technical interruptions, system errors or improper use of the platform by the user. Our commitment is to ensure service availability at a reasonable level of continuity."
+      },
+      {
+        "title": "10. Jurisdiction and Legislation",
+        "text": "These terms are governed by the laws of the Federative Republic of Brazil. The jurisdiction of Belo Horizonte, MG is elected to resolve any disputes arising from this instrument."
+      },
+      {
+        "title": "11. Contact",
+        "text": "For questions or requests related to these Terms, please contact us: cursos@nuvemensino.com.br | +55 (31) 2537-3131 | Belo Horizonte, MG."
+      }
+    ]
   },
   "common": {
     "loading": "Loading...",

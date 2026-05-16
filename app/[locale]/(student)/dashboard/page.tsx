@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
 import { BookOpen, Award, Clock, ChevronRight, TrendingUp } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 async function getDashboardData(userId: string) {
   const [enrollments, certificates] = await Promise.all([
@@ -35,54 +36,42 @@ function calcProgress(
   return Math.round((done / totalLessons) * 100);
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "dashboard" });
+
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard");
   const { enrollments, certificatesCount } = await getDashboardData(session.user.id);
 
   const activeEnrollments = enrollments.filter((e) => e.status === "ACTIVE");
   const completedEnrollments = enrollments.filter((e) => e.status === "COMPLETED");
-
   const totalHours = enrollments.reduce((sum, e) => sum + e.course.hours, 0);
+
+  const firstName = session.user?.name?.split(" ")[0] ?? "";
 
   return (
     <div>
       <div className="mb-8">
         <h1 className="font-serif text-3xl font-light text-foreground">
-          Olá, {session.user?.name?.split(" ")[0]}!
+          {t("greeting", { name: firstName })}
         </h1>
         <p className="font-sans text-sm text-muted mt-1">
-          Bem-vindo de volta à sua área de aprendizado.
+          {t("welcome")}
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         {[
-          {
-            label: "Cursos ativos",
-            value: activeEnrollments.length,
-            icon: BookOpen,
-            color: "text-primary",
-          },
-          {
-            label: "Concluídos",
-            value: completedEnrollments.length,
-            icon: TrendingUp,
-            color: "text-green-600",
-          },
-          {
-            label: "Certificados",
-            value: certificatesCount,
-            icon: Award,
-            color: "text-amber-500",
-          },
-          {
-            label: "Horas de estudo",
-            value: totalHours,
-            icon: Clock,
-            color: "text-primary/70",
-          },
+          { label: t("stats.activeCourses"),  value: activeEnrollments.length,    icon: BookOpen,    color: "text-primary" },
+          { label: t("stats.completed"),       value: completedEnrollments.length, icon: TrendingUp,  color: "text-green-600" },
+          { label: t("stats.certificates"),    value: certificatesCount,            icon: Award,       color: "text-amber-500" },
+          { label: t("stats.studyHours"),      value: totalHours,                  icon: Clock,       color: "text-primary/70" },
         ].map(({ label, value, icon: Icon, color }) => (
           <div
             key={label}
@@ -101,12 +90,12 @@ export default async function DashboardPage() {
       {activeEnrollments.length > 0 ? (
         <section>
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-serif text-xl font-medium text-foreground">Em andamento</h2>
+            <h2 className="font-serif text-xl font-medium text-foreground">{t("inProgress.title")}</h2>
             <Link
               href="/dashboard/cursos"
               className="font-sans text-xs text-primary hover:text-primary-light transition-colors flex items-center gap-1"
             >
-              Ver todos <ChevronRight className="w-3 h-3" />
+              {t("inProgress.viewAll")} <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
 
@@ -146,7 +135,7 @@ export default async function DashboardPage() {
 
                     <div className="mt-2">
                       <div className="flex justify-between font-sans text-[10px] text-muted mb-1">
-                        <span>Progresso</span>
+                        <span>{t("inProgress.progress")}</span>
                         <span>{pct}%</span>
                       </div>
                       <div className="h-1.5 bg-border rounded-full overflow-hidden">
@@ -166,16 +155,16 @@ export default async function DashboardPage() {
         <section className="bg-surface border border-border rounded-2xl p-12 text-center">
           <BookOpen className="w-10 h-10 text-muted/40 mx-auto mb-4" />
           <h2 className="font-serif text-xl font-medium text-foreground mb-2">
-            Nenhum curso ainda
+            {t("empty.title")}
           </h2>
           <p className="font-sans text-sm text-muted mb-6">
-            Explore nosso catálogo e comece sua formação.
+            {t("empty.description")}
           </p>
           <Link
             href="/cursos"
             className="inline-block font-sans text-sm font-semibold px-6 py-3 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
           >
-            Ver Cursos
+            {t("empty.cta")}
           </Link>
         </section>
       )}

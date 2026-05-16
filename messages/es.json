@@ -279,6 +279,74 @@
     "meta": {
       "title": "Sobre",
       "description": "Conoce NU.V.E.M Ensino, plataforma especializada de formación médica."
+    },
+    "hero": {
+      "badge": "Sobre la NU.V.E.M",
+      "title": "Una nueva forma de cuidar. Una nueva forma de enseñar.",
+      "description": "NU.V.E.M nació de la visión de dos médicas que creyeron que era posible hacer las cosas de manera diferente, con más precisión, más cuidado y más propósito."
+    },
+    "founders": {
+      "badge": "Fundada por quienes viven la medicina todos los días",
+      "title": "Clínica y enseñanza bajo el mismo techo",
+      "p1": "NU.V.E.M Medicina y NU.V.E.M Ensino fueron fundadas por la Dra. Vera Ângelo y la Dra. Eliane Basques, especialistas apasionadas por la medicina y el poder transformador del conocimiento compartido.",
+      "p2": "Juntas, crearon un ecosistema único que une clínica y enseñanza bajo el mismo techo, donde cada paciente atendido inspira un nuevo contenido, y cada profesional formado eleva el estándar del cuidado en salud.",
+      "p3": "NU.V.E.M Medicina es referencia en Gastroenterología, Motilidad Digestiva, Fisioterapia Pélvica y Diagnóstico Avanzado en Belo Horizonte, con equipos de última generación y un equipo multidisciplinario altamente especializado.",
+      "p4": "NU.V.E.M Ensino nació como extensión natural de esa excelencia clínica, formando médicos, fisioterapeutas y especialistas a través de cursos teórico-prácticos, inmersiones hands-on y metodología basada en casos reales de la propia clínica."
+    },
+    "iso": {
+      "badge": "Certificación ISO 9001",
+      "title": "El estándar internacional de calidad",
+      "text": "Somos la única clínica del segmento en Belo Horizonte con Certificación ISO 9001. Esto significa que cada proceso, desde la programación hasta el diagnóstico, desde la enseñanza hasta la emisión del certificado, sigue protocolos rigurosos de calidad, trazabilidad y mejora continua, auditados por organismos certificadores independientes.",
+      "quote": "No es solo un sello. Es el compromiso de entregar excelencia en cada detalle, todos los días.",
+      "link": "Más información sobre nuestra certificación"
+    },
+    "numbers": {
+      "title": "Nuestros números",
+      "googleReviews": "Reseñas en Google",
+      "professionals": "Profesionales formados",
+      "specialties": "Especialidades médicas",
+      "certification": "Certificación internacional",
+      "students": "Alumnos en todo el mundo"
+    },
+    "meaning": {
+      "badge": "¿Qué significa NU.V.E.M?",
+      "title": "Más que un nombre, una filosofía",
+      "p1": "Es un nuevo clima que une ideas, personas y sueños, donde los profesionales de la salud se encuentran para aprender, crecer y transformar vidas.",
+      "p2": "Es el cuidado del paciente llevado a un nuevo nivel. Es la certeza de que la medicina practicada con rigor científico, humanidad y propósito marca toda la diferencia.",
+      "quote": "Trajimos una nueva forma de atender y enseñar. Un ambiente que inspira, que acoge, que forma. Por encima de todo, el cuidado de tu salud.",
+      "quoteAuthor": "Dra. Vera Ângelo & Dra. Eliane Basques, fundadoras"
+    },
+    "differentials": {
+      "title": "Por qué NU.V.E.M Ensino",
+      "iso": {
+        "title": "ISO 9001 Certificada",
+        "desc": "La única clínica del segmento en Belo Horizonte con certificación ISO 9001. Cada proceso, desde la programación hasta el certificado, sigue protocolos rigurosos auditados por organismos independientes."
+      },
+      "realCases": {
+        "title": "Formación basada en casos reales",
+        "desc": "Los cursos se realizan en la propia clínica, con equipos de última generación y metodología basada en casos clínicos reales, uniendo teoría y práctica de forma consistente."
+      },
+      "specialists": {
+        "title": "Fundada por especialistas",
+        "desc": "Creada por la Dra. Vera Ângelo y la Dra. Eliane Basques, médicas apasionadas por la medicina y el poder transformador del conocimiento compartido."
+      },
+      "location": {
+        "title": "Belo Horizonte, MG",
+        "desc": "Infraestructura completa para cursos presenciales hands-on, con laboratorios equipados y ambiente diseñado para el aprendizaje avanzado en salud."
+      }
+    },
+    "faculty": {
+      "title": "Cuerpo docente",
+      "vera": "Cofundadora y directora de NU.V.E.M Medicina. Referencia nacional en estudios de motilidad digestiva, pionera en los nuevos protocolos de pruebas respiratorias H₂/CH₄/H₂S y formadora de especialistas en todo Brasil.",
+      "eliane": "Cofundadora de NU.V.E.M. Cirujana pediátrica de FHEMIG, especialista en manometría anorrectal de alta resolución y trastornos funcionales del suelo pélvico.",
+      "wanderley": "Gastroenterólogo por la UFRJ, Profesor de la Facultad de Medicina de FAMINAS-Muriaé, Especialista en Gastroenterología por la FBG y Miembro Titular de la SOBED.",
+      "felipe": "Referencia en estudios de motilidad esofágica, pHmetría de 24 horas e impedancio-pHmetría, con años de experiencia clínica.",
+      "anna": "Fisioterapeuta especialista en disfunciones del suelo pélvico, con práctica clínica en evaluación y rehabilitación pélvica."
+    },
+    "cta": {
+      "title": "¿Listo para avanzar en tu formación?",
+      "description": "Explora el catálogo de NU.V.E.M Ensino y encuentra el curso adecuado para tu especialidad.",
+      "button": "Ver todos los cursos"
     }
   },
   "instructors": {
@@ -298,13 +366,144 @@
     },
     "title": "Preguntas Frecuentes",
     "subtitle": "Resuelve tus dudas sobre nuestros cursos y plataforma.",
-    "noResults": "No se encontraron preguntas."
+    "noResults": "No se encontraron preguntas.",
+    "badge": "Preguntas frecuentes",
+    "contactPrompt": "¿No encontraste lo que necesitas?",
+    "contactLink": "Contáctanos",
+    "stillHaveQuestions": "¿Aún tienes dudas? Nuestro equipo está listo para ayudarte.",
+    "sendEmail": "Enviar correo",
+    "items": [
+      {
+        "q": "¿Cómo funciona la inscripción?",
+        "a": "Después de elegir el curso, haz clic en 'Inscribirse'. Serás dirigido al checkout, donde podrás pagar con tarjeta de crédito, boleto bancario o Pix. Tras la confirmación del pago, el acceso se habilitará de inmediato en tu área de estudiante."
+      },
+      {
+        "q": "¿Los cursos tienen horario fijo?",
+        "a": "Los cursos en línea (grabados) están disponibles las 24 horas del día y los ves a tu propio ritmo. Los cursos hands-on presenciales tienen fechas específicas; consulta la página de cada curso para ver las sesiones disponibles."
+      },
+      {
+        "q": "¿Cuánto tiempo tengo acceso al contenido?",
+        "a": "El acceso a los cursos en línea es por tiempo ilimitado tras la inscripción. Para cursos presenciales, los materiales de apoyo digital permanecen disponibles permanentemente en la plataforma."
+      },
+      {
+        "q": "¿Cómo recibo el certificado?",
+        "a": "El certificado se emite digitalmente tras completar todas las clases y/o actividades del curso. Está disponible en la sección 'Certificados' de tu área de estudiante, con un código de verificación único."
+      },
+      {
+        "q": "¿Puedo pagar en cuotas?",
+        "a": "Sí, aceptamos hasta 3 cuotas en tarjeta de crédito. Para pago al contado vía Pix puede haber descuento. Consulta la página del curso."
+      },
+      {
+        "q": "¿Cuál es la política de reembolso?",
+        "a": "Ofrecemos reembolso total hasta 7 días corridos después de la compra, siempre que se haya accedido a menos del 20% del contenido del curso. Para cursos presenciales, consulta las condiciones específicas en la página del curso."
+      },
+      {
+        "q": "¿Hay soporte después de finalizar el curso?",
+        "a": "Sí. Después del curso, puedes hacer preguntas por correo electrónico al instructor durante hasta 30 días. Los cursos hands-on incluyen soporte posterior al curso según se describe en cada página de capacitación."
+      },
+      {
+        "q": "¿Cómo funcionan los cursos presenciales?",
+        "a": "Los cursos hands-on se realizan en NU.V.E.M Medicina en Belo Horizonte, MG. Los grupos son pequeños (máximo 2 a 14 alumnos según el curso) para garantizar atención individualizada. Tras la compra, nuestro equipo te contactará para confirmar la fecha."
+      },
+      {
+        "q": "¿Hay descuentos para grupos o instituciones?",
+        "a": "Sí, ofrecemos condiciones especiales para grupos de 3 o más personas o para instituciones de salud. Contáctanos en cursos@nuvemensino.com.br o por WhatsApp al +55 (31) 99726-1029."
+      },
+      {
+        "q": "¿Cómo me comunico con el equipo?",
+        "a": "Puedes contactarnos por correo en cursos@nuvemensino.com.br, por teléfono al +55 (31) 2537-3131 o por WhatsApp al +55 (31) 99726-1029."
+      }
+    ]
   },
   "privacy": {
-    "title": "Política de Privacidad"
+    "title": "Política de Privacidad",
+    "lastUpdated": "Última actualización: mayo de 2026 · NUVEM ENSINO · CNPJ 42.679.051/0001-31",
+    "sections": [
+      {
+        "title": "1. Datos recopilados",
+        "text": "Recopilamos nombre, correo electrónico, teléfono y datos de pago proporcionados voluntariamente al momento del registro o compra. También podemos recopilar datos de navegación (cookies y registros de acceso) para mejorar la plataforma."
+      },
+      {
+        "title": "2. Finalidad del tratamiento",
+        "text": "Los datos se utilizan exclusivamente para: (a) creación y gestión de la cuenta de usuario; (b) procesamiento de pagos y emisión de factura; (c) envío de comunicaciones relacionadas con los cursos adquiridos; (d) mejora continua de la plataforma."
+      },
+      {
+        "title": "3. Compartición de datos",
+        "text": "No vendemos ni compartimos tus datos con terceros, excepto cuando sea necesario para la prestación de los servicios (ej.: procesadores de pago Stripe y Mercado Pago) o por obligación legal."
+      },
+      {
+        "title": "4. Almacenamiento y seguridad",
+        "text": "Los datos se almacenan en servidores seguros con cifrado en tránsito (HTTPS/TLS). Adoptamos medidas técnicas y organizativas adecuadas para proteger la información contra accesos no autorizados."
+      },
+      {
+        "title": "5. Derechos del titular",
+        "text": "Conforme a la Ley General de Protección de Datos de Brasil (Lei nº 13.709/2018 — LGPD), puedes en cualquier momento solicitar: acceso a tus datos, corrección, eliminación, portabilidad o revocación del consentimiento. Envía un correo a cursos@nuvemensino.com.br."
+      },
+      {
+        "title": "6. Cookies",
+        "text": "Utilizamos cookies esenciales para el funcionamiento de la plataforma (autenticación y preferencias) y cookies analíticas para entender el uso del sitio. Puedes desactivar las cookies en la configuración de tu navegador, lo que puede afectar algunas funcionalidades."
+      },
+      {
+        "title": "7. Retención de datos",
+        "text": "Los datos se conservan mientras la cuenta esté activa. Tras el cierre, los datos se eliminan en un plazo de 90 días, salvo obligación legal de retención por un período mayor."
+      },
+      {
+        "title": "8. Contacto",
+        "text": "Para dudas sobre esta política o para ejercer tus derechos, contáctanos: cursos@nuvemensino.com.br | +55 (31) 2537-3131."
+      }
+    ]
   },
   "terms": {
-    "title": "Términos de Uso"
+    "title": "Términos de Uso",
+    "lastUpdated": "Última actualización: mayo de 2026 · NUVEM ENSINO · CNPJ 42.679.051/0001-31",
+    "privacyLink": "→ Política de Privacidad",
+    "faqLink": "→ Preguntas Frecuentes",
+    "sections": [
+      {
+        "title": "1. Aceptación de los Términos",
+        "text": "Al acceder y utilizar la plataforma NU.V.E.M Ensino, aceptas estos Términos de Uso. Si no estás de acuerdo con alguna disposición, recomendamos que no utilices los servicios. NU.V.E.M Ensino se reserva el derecho de actualizar estos términos en cualquier momento, con aviso previo a los usuarios registrados."
+      },
+      {
+        "title": "2. Descripción de los Servicios",
+        "text": "NU.V.E.M Ensino es una plataforma de enseñanza médica en línea y presencial, operada por NUVEM ENSINO (CNPJ 42.679.051/0001-31), que ofrece cursos en las áreas de gastroenterología, motilidad digestiva y fisioterapia pélvica, impartidos por profesionales habilitados."
+      },
+      {
+        "title": "3. Registro y Cuenta",
+        "text": "Para adquirir cursos es necesario crear una cuenta con datos verídicos. Eres responsable de la confidencialidad de tu contraseña y de todas las actividades realizadas en tu cuenta. En caso de uso no autorizado, notifica de inmediato a cursos@nuvemensino.com.br."
+      },
+      {
+        "title": "4. Adquisición de Cursos",
+        "text": "Los cursos se adquieren mediante pago según los valores indicados en la plataforma. El acceso se habilita tras la confirmación del pago. Para cursos presenciales (hands-on), la fecha y el horario serán confirmados por nuestro equipo tras la inscripción."
+      },
+      {
+        "title": "5. Política de Reembolso",
+        "text": "Conforme al Código de Defensa del Consumidor de Brasil (Lei nº 8.078/1990), tienes derecho a desistir en hasta 7 días corridos desde la compra, siempre que se haya accedido a menos del 20% del contenido en línea. Para cursos presenciales, la cancelación debe realizarse con al menos 72 horas de antelación para obtener el reembolso total."
+      },
+      {
+        "title": "6. Propiedad Intelectual",
+        "text": "Todo el contenido de la plataforma (videoclases, materiales didácticos, textos, imágenes y marcas) es propiedad exclusiva de NU.V.E.M Ensino o de sus instructores. Está prohibida la reproducción, distribución o comercialización de cualquier contenido sin autorización expresa y por escrito."
+      },
+      {
+        "title": "7. Uso Permitido",
+        "text": "El acceso a la plataforma es personal e intransferible. Está prohibido compartir credenciales de acceso, grabar o redistribuir clases, utilizar el contenido con fines comerciales o realizar cualquier acto que perjudique la plataforma u otros usuarios."
+      },
+      {
+        "title": "8. Contenido Educativo",
+        "text": "El contenido disponible tiene una finalidad exclusivamente educativa para profesionales de la salud. No constituye prescripción médica, diagnóstico ni sustitución de consulta profesional, conforme a las normas del Consejo Federal de Medicina de Brasil (Res. CFM nº 1.974/2011)."
+      },
+      {
+        "title": "9. Limitación de Responsabilidad",
+        "text": "NU.V.E.M Ensino no se responsabiliza por daños derivados de interrupciones técnicas, errores del sistema o uso indebido de la plataforma por parte del usuario. Nuestro compromiso es garantizar la disponibilidad del servicio con un nivel razonable de continuidad."
+      },
+      {
+        "title": "10. Jurisdicción y Legislación",
+        "text": "Estos términos se rigen por las leyes de la República Federativa de Brasil. Se elige el fuero de la Comarca de Belo Horizonte, MG para resolver cualquier controversia derivada de este instrumento."
+      },
+      {
+        "title": "11. Contacto",
+        "text": "Para dudas o solicitudes relacionadas con estos Términos, contáctanos: cursos@nuvemensino.com.br | +55 (31) 2537-3131 | Belo Horizonte, MG."
+      }
+    ]
   },
   "common": {
     "loading": "Cargando...",

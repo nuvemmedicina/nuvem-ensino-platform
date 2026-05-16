@@ -2,20 +2,30 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { LayoutDashboard, BookOpen, Award, User, Video, LogOut, Menu } from "lucide-react";
+import { LayoutDashboard, BookOpen, Award, User, Video } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
+import { getTranslations } from "next-intl/server";
 
-const navLinks = [
-  { label: "Painel", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Meus Cursos",   href: "/dashboard/cursos",        icon: BookOpen },
-  { label: "Aulas ao Vivo", href: "/dashboard/aulas-ao-vivo", icon: Video },
-  { label: "Certificados",  href: "/dashboard/certificados",  icon: Award },
-  { label: "Perfil", href: "/dashboard/perfil", icon: User },
-];
+export default async function StudentLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "dashboard.nav" });
 
-export default async function StudentLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   if (!session) redirect("/entrar?callbackUrl=/dashboard");
+
+  const navLinks = [
+    { label: t("panel"),       href: "/dashboard",                icon: LayoutDashboard },
+    { label: t("myCourses"),   href: "/dashboard/cursos",         icon: BookOpen },
+    { label: t("liveLessons"), href: "/dashboard/aulas-ao-vivo",  icon: Video },
+    { label: t("certificates"),href: "/dashboard/certificados",   icon: Award },
+    { label: t("profile"),     href: "/dashboard/perfil",         icon: User },
+  ];
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -89,7 +99,6 @@ export default async function StudentLayout({ children }: { children: React.Reac
               className="h-8 w-auto brightness-0 invert opacity-90"
             />
           </Link>
-          <Menu className="w-5 h-5 text-white/60" />
         </div>
 
         <div className="p-6 lg:p-8">{children}</div>
