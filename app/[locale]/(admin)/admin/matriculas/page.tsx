@@ -63,7 +63,6 @@ export default async function AdminMatriculasPage({
                         <Link
                           href={`/admin/cursos/${e.course.slug}/inscritos`}
                           className="font-sans text-sm text-foreground hover:text-primary transition-colors line-clamp-1"
-                          onClick={(ev) => ev.stopPropagation()}
                         >
                           {e.course.title}
                         </Link>
