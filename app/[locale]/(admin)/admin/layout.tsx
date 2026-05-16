@@ -2,7 +2,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, ClipboardList, LayoutDashboard, Users, BarChart2 } from "lucide-react";
+import { BookOpen, ClipboardList, LayoutDashboard, Users, BarChart2, Video } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
 import { getTranslations } from "next-intl/server";
 
@@ -10,8 +10,9 @@ const navItems = [
   { key: "overview" as const, href: "/admin",            icon: LayoutDashboard },
   { key: "courses"   as const, href: "/admin/cursos",    icon: BookOpen },
   { key: "enrollments" as const, href: "/admin/matriculas", icon: ClipboardList },
-  { key: "users"     as const, href: "/admin/usuarios",  icon: Users },
-  { key: "reports"   as const, href: "/admin/relatorios", icon: BarChart2 },
+  { key: "users"       as const, href: "/admin/usuarios",       icon: Users },
+  { key: "liveSessions" as const, href: "/admin/aulas-ao-vivo", icon: Video },
+  { key: "reports"     as const, href: "/admin/relatorios",     icon: BarChart2 },
 ];
 
 export default async function AdminLayout({
