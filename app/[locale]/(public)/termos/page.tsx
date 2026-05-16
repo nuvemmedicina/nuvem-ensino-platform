@@ -12,8 +12,15 @@ export async function generateMetadata({
   return {
     title: t("title"),
     description: t("lastUpdated"),
-    alternates: { canonical: "/termos" },
-    robots: { index: false, follow: false },
+    alternates: {
+      canonical: locale === "en" ? "/en/terms" : locale === "es" ? "/es/terminos" : "/termos",
+      languages: {
+        pt: "/termos",
+        en: "/en/terms",
+        es: "/es/terminos",
+        "x-default": "/termos",
+      },
+    },
   };
 }
 

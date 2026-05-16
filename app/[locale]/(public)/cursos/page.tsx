@@ -16,11 +16,20 @@ export async function generateMetadata({
   return {
     title: t("title"),
     description: t("description"),
-    alternates: { canonical: "/cursos" },
+    alternates: {
+      canonical: locale === "en" ? "/en/courses" : locale === "es" ? "/es/cursos" : "/cursos",
+      languages: {
+        pt: "/cursos",
+        en: "/en/courses",
+        es: "/es/cursos",
+        "x-default": "/cursos",
+      },
+    },
     openGraph: {
       title: `${t("title")} | NU.V.E.M Ensino`,
       description: t("description"),
-      url: "/cursos",
+      url: locale === "en" ? "/en/courses" : locale === "es" ? "/es/cursos" : "/cursos",
+      locale: locale === "en" ? "en_US" : locale === "es" ? "es_ES" : "pt_BR",
     },
   };
 }

@@ -24,11 +24,20 @@ export async function generateMetadata({
   return {
     title: t("title"),
     description: t("description"),
-    alternates: { canonical: "/instrutores" },
+    alternates: {
+      canonical: locale === "en" ? "/en/instructors" : locale === "es" ? "/es/instructores" : "/instrutores",
+      languages: {
+        pt: "/instrutores",
+        en: "/en/instructors",
+        es: "/es/instructores",
+        "x-default": "/instrutores",
+      },
+    },
     openGraph: {
       title: `${t("title")} | NU.V.E.M Ensino`,
       description: t("description"),
-      url: "/instrutores",
+      url: locale === "en" ? "/en/instructors" : locale === "es" ? "/es/instructores" : "/instrutores",
+      locale: locale === "en" ? "en_US" : locale === "es" ? "es_ES" : "pt_BR",
     },
   };
 }

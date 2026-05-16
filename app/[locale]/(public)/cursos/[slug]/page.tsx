@@ -400,7 +400,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const course = await prisma.course.findFirst({
     where: { slug, status: "PUBLISHED" },
     include: { instructor: { include: { user: true } } },
@@ -416,16 +416,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? { url: course.thumbnailUrl, width: 1200, height: 630, alt: course.title }
     : { url: `/cursos/${slug}/opengraph-image`, width: 1200, height: 630, alt: course.title };
 
+  const canonicalPt = `/cursos/${slug}`;
+  const canonicalEn = `/en/courses/${slug}`;
+  const canonicalEs = `/es/cursos/${slug}`;
+  const canonical = locale === "en" ? canonicalEn : locale === "es" ? canonicalEs : canonicalPt;
+
   return {
     title: course.metaTitle ?? `${course.title} | NU.V.E.M Ensino`,
     description,
-    alternates: { canonical: `/cursos/${slug}` },
+    alternates: {
+      canonical,
+      languages: {
+        pt: canonicalPt,
+        en: canonicalEn,
+        es: canonicalEs,
+        "x-default": canonicalPt,
+      },
+    },
     openGraph: {
       type: "website",
       title: course.title,
       description,
-      url: `/cursos/${slug}`,
+      url: canonical,
       images: [ogImage],
+      locale: locale === "en" ? "en_US" : locale === "es" ? "es_ES" : "pt_BR",
     },
     twitter: {
       card: "summary_large_image",

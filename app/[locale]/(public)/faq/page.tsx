@@ -12,11 +12,20 @@ export async function generateMetadata({
   return {
     title: t("title"),
     description: t("description"),
-    alternates: { canonical: "/faq" },
+    alternates: {
+      canonical: locale === "en" ? "/en/faq" : locale === "es" ? "/es/faq" : "/faq",
+      languages: {
+        pt: "/faq",
+        en: "/en/faq",
+        es: "/es/faq",
+        "x-default": "/faq",
+      },
+    },
     openGraph: {
       title: `${t("title")} | NU.V.E.M Ensino`,
       description: t("description"),
-      url: "/faq",
+      url: locale === "en" ? "/en/faq" : locale === "es" ? "/es/faq" : "/faq",
+      locale: locale === "en" ? "en_US" : locale === "es" ? "es_ES" : "pt_BR",
     },
   };
 }

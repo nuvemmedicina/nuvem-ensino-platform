@@ -11,8 +11,15 @@ export async function generateMetadata({
   return {
     title: t("title"),
     description: t("lastUpdated"),
-    alternates: { canonical: "/privacidade" },
-    robots: { index: false, follow: false },
+    alternates: {
+      canonical: locale === "en" ? "/en/privacy" : locale === "es" ? "/es/privacidad" : "/privacidade",
+      languages: {
+        pt: "/privacidade",
+        en: "/en/privacy",
+        es: "/es/privacidad",
+        "x-default": "/privacidade",
+      },
+    },
   };
 }
 

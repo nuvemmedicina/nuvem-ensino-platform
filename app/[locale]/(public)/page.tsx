@@ -20,13 +20,20 @@ export async function generateMetadata({
           ? "Medical education platform with hands-on and online courses in Gastroenterology, Digestive Motility, Breath Tests and Pelvic Physiotherapy. ISO 9001 certified in Belo Horizonte, MG."
           : "Plataforma de formación médica con cursos prácticos y en línea en Gastroenterología, Motilidad Digestiva, Pruebas Respiratorias y Fisioterapia Pélvica. Certificación ISO 9001 en Belo Horizonte, MG.",
     alternates: {
-      canonical: "/",
+      canonical: locale === "en" ? "/en/" : locale === "es" ? "/es/" : "/",
+      languages: {
+        pt: "/",
+        en: "/en/",
+        es: "/es/",
+        "x-default": "/",
+      },
     },
     openGraph: {
       title: `NU.V.E.M Ensino — ${t("hero.title")} ${t("hero.titleHighlight")}`,
       description: t("hero.description"),
-      url: "/",
+      url: locale === "en" ? "/en/" : locale === "es" ? "/es/" : "/",
       type: "website",
+      locale: locale === "en" ? "en_US" : locale === "es" ? "es_ES" : "pt_BR",
     },
   };
 }

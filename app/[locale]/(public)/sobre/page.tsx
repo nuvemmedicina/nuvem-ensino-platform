@@ -14,8 +14,21 @@ export async function generateMetadata({
   return {
     title: t("title"),
     description: t("description"),
-    alternates: { canonical: "/sobre" },
-    openGraph: { title: t("title"), description: t("description"), url: "/sobre" },
+    alternates: {
+      canonical: locale === "en" ? "/en/about" : locale === "es" ? "/es/sobre" : "/sobre",
+      languages: {
+        pt: "/sobre",
+        en: "/en/about",
+        es: "/es/sobre",
+        "x-default": "/sobre",
+      },
+    },
+    openGraph: {
+      title: t("title"),
+      description: t("description"),
+      url: locale === "en" ? "/en/about" : locale === "es" ? "/es/sobre" : "/sobre",
+      locale: locale === "en" ? "en_US" : locale === "es" ? "es_ES" : "pt_BR",
+    },
   };
 }
 
