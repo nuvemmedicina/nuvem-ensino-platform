@@ -1,42 +1,53 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+import { localizedCourse } from "@/lib/i18n-content";
 import CheckoutClient from "./CheckoutClient";
-
-const coursePrices: Record<string, { name: string; price: number; hours: number }> = {
-  "manometria-phmetria-impedancia": { name: "Manometria, pHmetria e Impedância", price: 6500, hours: 16 },
-
-  "testes-respiratorios": { name: "Aperfeiçoamento Teórico em Teste Respiratório Hidrogênio e Metano – Novos Protocolos", price: 450, hours: 3 },
-  "fisioterapia-respiratoria": { name: "Fisioterapia nas Disfunções do Assoalho Pélvico", price: 3500, hours: 30 },
-  "desvendando-a-constipacao-intestinal": { name: "Desvendando a Constipação Intestinal, Classificação Roma IV, Tempo de Trânsito Colônico e Manometria Anorretal", price: 380, hours: 3 },
-  "testes-respiratorios-h2-ch4-h2s-junho": { name: "Turma de Junho: Testes Respiratórios de H₂, CH₄ e H₂S", price: 2200, hours: 8 },
-  "doencas-da-cavidade-oral-halimetria-e-sialometria": { name: "Doenças da Cavidade Oral, Halimetria e Sialometria", price: 450, hours: 3 },
-};
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const course = coursePrices[slug];
+  const { slug, locale } = await params;
+  const course = await prisma.course.findFirst({
+    where: { slug, status: "PUBLISHED" },
+    select: {
+      title: true,
+      titleEn: true, titleEs: true,
+      shortDesc: true, shortDescEn: true, shortDescEs: true,
+      description: true, descriptionEn: true, descriptionEs: true,
+    },
+  });
   if (!course) return {};
-  return { title: `Inscrição — ${course.name} | Nuvem Ensino` };
+  const lc = localizedCourse(course, locale);
+  return { title: `Inscrição — ${lc.title} | Nuvem Ensino` };
 }
 
 export default async function CheckoutPage({ params }: Props) {
-  const { slug } = await params;
-  const course = coursePrices[slug];
+  const { slug, locale } = await params;
+
+  const course = await prisma.course.findFirst({
+    where: { slug, status: "PUBLISHED" },
+    select: {
+      title: true, price: true, hours: true,
+      titleEn: true, titleEs: true,
+      shortDesc: true, shortDescEn: true, shortDescEs: true,
+      description: true, descriptionEn: true, descriptionEs: true,
+    },
+  });
   if (!course) notFound();
 
   const session = await auth();
   if (!session) redirect(`/entrar?callbackUrl=/checkout/${slug}`);
 
+  const lc = localizedCourse(course, locale);
   const hasPayment = !!(process.env.STRIPE_SECRET_KEY && process.env.MP_ACCESS_TOKEN);
 
   return (
     <CheckoutClient
       slug={slug}
-      courseName={course.name}
-      price={course.price}
+      courseName={lc.title}
+      price={Number(course.price)}
       hours={course.hours}
       userEmail={session.user?.email ?? ""}
       userName={session.user?.name ?? ""}

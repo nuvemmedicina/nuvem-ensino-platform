@@ -4,16 +4,6 @@ import { MercadoPagoConfig, Payment as MPPayment, Preference } from "mercadopago
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
-const courseData: Record<string, { name: string; price: number; hours: number }> = {
-  "manometria-phmetria-impedancia": { name: "Manometria, pHmetria e Impedância", price: 6500, hours: 16 },
-
-  "testes-respiratorios": { name: "Aperfeiçoamento Teórico em Teste Respiratório Hidrogênio e Metano – Novos Protocolos", price: 450, hours: 3 },
-  "fisioterapia-respiratoria": { name: "Fisioterapia nas Disfunções do Assoalho Pélvico", price: 3500, hours: 30 },
-  "desvendando-a-constipacao-intestinal": { name: "Desvendando a Constipação Intestinal, Classificação Roma IV, Tempo de Trânsito Colônico e Manometria Anorretal", price: 380, hours: 3 },
-  "testes-respiratorios-h2-ch4-h2s-junho": { name: "Turma de Junho: Testes Respiratórios de H₂, CH₄ e H₂S", price: 2200, hours: 8 },
-  "doencas-da-cavidade-oral-halimetria-e-sialometria": { name: "Doenças da Cavidade Oral, Halimetria e Sialometria", price: 450, hours: 3 },
-};
-
 export async function POST(req: Request) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
   const mp = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN! });
@@ -25,10 +15,7 @@ export async function POST(req: Request) {
 
   const { courseSlug, method, couponCode } = await req.json();
 
-  const course = courseData[courseSlug as string];
-  if (!course) {
-    return NextResponse.json({ error: "Curso não encontrado." }, { status: 404 });
-  }
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
   // Validate coupon
   let discountPct = 0;
@@ -39,19 +26,18 @@ export async function POST(req: Request) {
     if (coupon?.discountPct) discountPct = coupon.discountPct;
   }
 
-  const finalPrice = Math.round(course.price * (1 - discountPct / 100) * 100) / 100;
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-
   // Find course + reserve seat atomically
   // eslint-disable-next-line prefer-const
-  let dbCourse!: { id: string };
+  let dbCourse!: { id: string; title: string; price: number; hours: number };
   // eslint-disable-next-line prefer-const
   let enrollment!: { id: string };
+  let finalPrice!: number;
+
   try {
     const result = await prisma.$transaction(async (tx) => {
       const c = await tx.course.findFirst({
-        where: { slug: courseSlug },
-        select: { id: true, totalSeats: true, reservedSeats: true },
+        where: { slug: courseSlug, status: "PUBLISHED" },
+        select: { id: true, title: true, price: true, hours: true, totalSeats: true, reservedSeats: true },
       });
       if (!c) throw Object.assign(new Error("Curso não cadastrado no banco."), { status: 404 });
 
@@ -89,8 +75,9 @@ export async function POST(req: Request) {
       return { course: c, enrollment: enr };
     });
 
-    dbCourse = result.course;
+    dbCourse = { ...result.course, price: Number(result.course.price) };
     enrollment = result.enrollment;
+    finalPrice = Math.round(dbCourse.price * (1 - discountPct / 100) * 100) / 100;
   } catch (err: unknown) {
     const e = err as Error & { status?: number };
     return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
@@ -106,8 +93,8 @@ export async function POST(req: Request) {
           price_data: {
             currency: "brl",
             product_data: {
-              name: course.name,
-              description: `${course.hours}h de formação, NU.V.E.M Ensino`,
+              name: dbCourse.title,
+              description: `${dbCourse.hours}h de formação, NU.V.E.M Ensino`,
             },
             unit_amount: Math.round(finalPrice * 100),
           },
@@ -140,7 +127,7 @@ export async function POST(req: Request) {
         items: [
           {
             id: dbCourse.id,
-            title: course.name,
+            title: dbCourse.title,
             unit_price: finalPrice,
             quantity: 1,
             currency_id: "BRL",
