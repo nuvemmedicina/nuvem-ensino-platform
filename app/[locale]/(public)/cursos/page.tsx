@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import NativeLink from "next/link";
 import { Filter, Search } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
@@ -79,6 +80,9 @@ export default async function CursosPage({
     orderBy: { user: { name: "asc" } },
   });
 
+  const coursesBase =
+    locale === "en" ? "/en/courses" : locale === "es" ? "/es/cursos" : "/cursos";
+
   function buildUrl(overrides: Record<string, string>) {
     const next: Record<string, string> = {
       ...(categoria && { categoria }),
@@ -87,8 +91,12 @@ export default async function CursosPage({
       ...(busca && { busca }),
       ...overrides,
     };
+    // Remove empty-string values (e.g. clearing a filter)
+    for (const key of Object.keys(next)) {
+      if (next[key] === "") delete next[key];
+    }
     const q = new URLSearchParams(next).toString();
-    return `/cursos${q ? `?${q}` : ""}`;
+    return `${coursesBase}${q ? `?${q}` : ""}`;
   }
 
   const categoryLabel = (cat: string) =>
@@ -124,7 +132,7 @@ export default async function CursosPage({
               </div>
 
               {/* Busca */}
-              <form method="GET" action="/cursos" className="mb-6">
+              <form method="GET" action={coursesBase} className="mb-6">
                 <label className="font-sans text-[11px] font-bold uppercase tracking-widest text-muted mb-2 block">
                   {t("filters.search")}
                 </label>
@@ -153,7 +161,7 @@ export default async function CursosPage({
                     { val: "hands_on", label: t("filters.handsOn") },
                     { val: "online", label: t("filters.online") },
                   ].map(({ val, label }) => (
-                    <Link
+                    <NativeLink
                       key={val}
                       href={buildUrl({ categoria: val })}
                       className={`font-sans text-sm px-3 py-1.5 rounded-lg transition-colors ${
@@ -163,7 +171,7 @@ export default async function CursosPage({
                       }`}
                     >
                       {label}
-                    </Link>
+                    </NativeLink>
                   ))}
                 </div>
               </div>
@@ -175,7 +183,7 @@ export default async function CursosPage({
                 </p>
                 <div className="flex flex-col gap-2">
                   {[{ slug: "", name: t("filters.allSpecialties") }, ...allTags].map((tag) => (
-                    <Link
+                    <NativeLink
                       key={tag.slug}
                       href={buildUrl({ especialidade: tag.slug })}
                       className={`font-sans text-sm px-3 py-1.5 rounded-lg transition-colors ${
@@ -185,7 +193,7 @@ export default async function CursosPage({
                       }`}
                     >
                       {tag.name}
-                    </Link>
+                    </NativeLink>
                   ))}
                 </div>
               </div>
@@ -197,7 +205,7 @@ export default async function CursosPage({
                 </p>
                 <div className="flex flex-col gap-2">
                   {[{ slug: "", name: t("filters.allInstructors") }, ...allInstructors.map((i) => ({ slug: i.slug, name: i.user.name ?? i.slug }))].map((inst) => (
-                    <Link
+                    <NativeLink
                       key={inst.slug}
                       href={buildUrl({ instrutor: inst.slug })}
                       className={`font-sans text-sm px-3 py-1.5 rounded-lg transition-colors ${
@@ -207,19 +215,19 @@ export default async function CursosPage({
                       }`}
                     >
                       {inst.name}
-                    </Link>
+                    </NativeLink>
                   ))}
                 </div>
               </div>
 
               {/* Limpar filtros */}
               {(categoria || tagSlug || instructorSlug || busca) && (
-                <Link
-                  href="/cursos"
+                <NativeLink
+                  href={coursesBase}
                   className="block font-sans text-xs text-center text-primary/70 hover:text-primary transition-colors mt-2"
                 >
                   {t("filters.clearFilters")}
-                </Link>
+                </NativeLink>
               )}
             </div>
           </aside>
@@ -231,9 +239,9 @@ export default async function CursosPage({
                 <p className="font-serif text-2xl text-foreground/40 mb-2">{t("empty.title")}</p>
                 <p className="font-sans text-sm text-muted">
                   {t("empty.description")}{" "}
-                  <Link href="/cursos" className="text-primary hover:underline">
+                  <NativeLink href={coursesBase} className="text-primary hover:underline">
                     {t("empty.viewAll")}
-                  </Link>
+                  </NativeLink>
                   .
                 </p>
               </div>
