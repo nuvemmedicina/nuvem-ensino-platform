@@ -62,6 +62,17 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
     progressMap[p.lessonId] = p.completed;
   }
 
+  // Busca anotações do aluno para todas as aulas deste curso
+  const allLessonIds = course.modules.flatMap((m) => m.lessons.map((l) => l.id));
+  const notesData = await prisma.note.findMany({
+    where: { userId: session.user.id, lessonId: { in: allLessonIds } },
+    select: { lessonId: true, content: true },
+  });
+  const notesMap: Record<string, string> = {};
+  for (const n of notesData) {
+    notesMap[n.lessonId] = n.content;
+  }
+
   const nextLiveSession = await prisma.liveSession.findFirst({
     where: { courseId: course.id, startAt: { gte: new Date() } },
     orderBy: { startAt: "asc" },
@@ -156,6 +167,7 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
         modules={course.modules}
         initialProgress={progressMap}
         initialLessonId={aula ?? null}
+        initialNotes={notesMap}
       />
     </div>
   );

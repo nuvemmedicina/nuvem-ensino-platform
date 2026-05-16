@@ -290,7 +290,11 @@
       "percentCompleted": "% completed",
       "courseContent": "Course content",
       "lessonsCompleted": "{done}/{total} lessons completed",
-      "free": "Free"
+      "free": "Free",
+      "notes": "Notes",
+      "notesPlaceholder": "Take notes about this lesson…",
+      "notesSaving": "Saving…",
+      "notesSaved": "Saved"
     },
     "certificates": {
       "title": "Certificates",

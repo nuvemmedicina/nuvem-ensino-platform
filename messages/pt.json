@@ -290,7 +290,11 @@
       "percentCompleted": "% concluído",
       "courseContent": "Conteúdo do curso",
       "lessonsCompleted": "{done}/{total} aulas concluídas",
-      "free": "Grátis"
+      "free": "Grátis",
+      "notes": "Anotações",
+      "notesPlaceholder": "Faça suas anotações sobre esta aula…",
+      "notesSaving": "Salvando…",
+      "notesSaved": "Salvo"
     },
     "certificates": {
       "title": "Certificados",

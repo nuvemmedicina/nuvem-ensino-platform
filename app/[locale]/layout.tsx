@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { PostHogProvider } from "@/components/PostHogProvider";
+import ServiceWorkerRegistrar from "@/components/ServiceWorkerRegistrar";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -117,6 +118,7 @@ export default async function LocaleLayout({
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider messages={messages}>
           <PostHogProvider>{children}</PostHogProvider>
+          <ServiceWorkerRegistrar />
         </NextIntlClientProvider>
       </body>
     </html>

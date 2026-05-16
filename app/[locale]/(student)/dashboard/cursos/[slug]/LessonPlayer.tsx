@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect, useRef } from "react";
 import MuxPlayer from "@mux/mux-player-react";
-import { CheckCircle, Circle, PlayCircle, ChevronDown, ChevronRight } from "lucide-react";
+import { CheckCircle, Circle, PlayCircle, ChevronDown, ChevronRight, NotebookPen, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { saveNote } from "./noteActions";
+import QuizPanel from "./QuizPanel";
 
 type Lesson = {
   id: string;
@@ -24,11 +26,33 @@ type Module = {
 
 type ProgressMap = Record<string, boolean>;
 
+type QuizOption = {
+  id: string;
+  text: string;
+  order: number;
+};
+
+type QuizQuestion = {
+  id: string;
+  text: string;
+  order: number;
+  options: QuizOption[];
+};
+
+type QuizData = {
+  id: string;
+  title: string;
+  questions: QuizQuestion[];
+};
+
 type Props = {
   courseId: string;
   modules: Module[];
   initialProgress: ProgressMap;
   initialLessonId: string | null;
+  initialNotes: Record<string, string>;
+  quizzes: Record<string, QuizData>;
+  previousAttempts: Record<string, { score: number; total: number }>;
 };
 
 function extractYoutubeId(url: string): string | null {
@@ -49,7 +73,7 @@ function formatDuration(mins: number): string {
   return `${Math.floor(mins / 60)}h${mins % 60 > 0 ? ` ${mins % 60}min` : ""}`;
 }
 
-export default function LessonPlayer({ courseId, modules, initialProgress, initialLessonId }: Props) {
+export default function LessonPlayer({ courseId, modules, initialProgress, initialLessonId, initialNotes, quizzes, previousAttempts }: Props) {
   const t = useTranslations("dashboard.courses");
 
   const allLessons = modules.flatMap((m) => m.lessons);
@@ -64,6 +88,35 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
     return initial;
   });
   const [isPending, startTransition] = useTransition();
+
+  // ── Notepad ──────────────────────────────────────────────────────────────
+  const [notes, setNotes] = useState<Record<string, string>>(initialNotes);
+  const [noteContent, setNoteContent] = useState(
+    initialNotes[initialLessonId ?? allLessons[0]?.id ?? ""] ?? ""
+  );
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Restore note when switching lessons
+  useEffect(() => {
+    setNoteContent(notes[currentLesson?.id ?? ""] ?? "");
+    setSaveStatus("idle");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentLesson?.id]);
+
+  function handleNoteChange(value: string) {
+    if (!currentLesson) return;
+    setNoteContent(value);
+    setNotes((prev) => ({ ...prev, [currentLesson.id]: value }));
+    setSaveStatus("idle");
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(async () => {
+      setSaveStatus("saving");
+      await saveNote(currentLesson.id, value);
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 2000);
+    }, 1500);
+  }
 
   const completedCount = Object.values(progress).filter(Boolean).length;
   const totalCount = allLessons.length;
@@ -197,6 +250,49 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
+
+        {/* ── Quiz ── */}
+        {currentLesson && quizzes[currentLesson.id] && (
+          <QuizPanel
+            key={currentLesson.id}
+            quiz={quizzes[currentLesson.id]}
+            previousAttempt={previousAttempts[quizzes[currentLesson.id].id] ?? null}
+          />
+        )}
+
+        {/* ── Bloco de notas ── */}
+        {currentLesson && (
+          <div className="px-6 pb-6">
+            <div className="border border-border rounded-2xl overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-background">
+                <div className="flex items-center gap-2">
+                  <NotebookPen className="w-3.5 h-3.5 text-muted" />
+                  <span className="font-sans text-xs font-semibold text-muted uppercase tracking-wider">
+                    {t("notes")}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {saveStatus === "saving" && (
+                    <span className="font-sans text-[10px] text-muted animate-pulse">{t("notesSaving")}</span>
+                  )}
+                  {saveStatus === "saved" && (
+                    <span className="flex items-center gap-1 font-sans text-[10px] text-green-600">
+                      <Check className="w-3 h-3" />
+                      {t("notesSaved")}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <textarea
+                value={noteContent}
+                onChange={(e) => handleNoteChange(e.target.value)}
+                placeholder={t("notesPlaceholder")}
+                rows={5}
+                className="w-full px-4 py-3 font-sans text-sm text-foreground bg-surface placeholder:text-muted/40 resize-none focus:outline-none"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── Sidebar — lista de aulas ── */}
