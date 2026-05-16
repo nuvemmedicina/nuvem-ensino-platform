@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -103,6 +104,13 @@ export async function deleteModule(moduleId: string, courseSlug: string) {
   await requireAdmin();
   await prisma.module.delete({ where: { id: moduleId } });
   revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
+export async function deleteCourse(courseId: string) {
+  await requireAdmin();
+  await prisma.course.delete({ where: { id: courseId } });
+  revalidatePath("/admin/cursos");
+  redirect("/admin/cursos");
 }
 
 // Chamado pelo MuxUploader após upload concluído

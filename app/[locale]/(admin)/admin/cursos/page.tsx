@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { DeleteButton } from "./[slug]/DeleteButton";
+import { deleteCourse } from "./[slug]/actions";
 
 export default async function AdminCursosPage({
   params,
@@ -47,53 +49,73 @@ export default async function AdminCursosPage({
           const totalLessons = course.modules.reduce((s, m) => s + m.lessons.length, 0);
           const statusKey = course.status === "PUBLISHED" ? "statusPublished" : course.status === "ARCHIVED" ? "statusArchived" : "statusDraft";
           const statusColor = statusColors[course.status] ?? statusColors.DRAFT;
+          const deleteAction = deleteCourse.bind(null, course.id);
+          const hasEnrollments = course._count.enrollments > 0;
 
           return (
-            <Link
+            <div
               key={course.id}
-              href={`/admin/cursos/${course.slug}`}
-              className="flex items-center justify-between gap-4 bg-surface border border-border rounded-2xl px-6 py-4 hover:border-primary/40 hover:shadow-sm transition-all group"
+              className="flex items-center gap-2 bg-surface border border-border rounded-2xl hover:border-primary/40 hover:shadow-sm transition-all group"
             >
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-3 mb-1 flex-wrap">
-                  <span className={`font-sans text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${statusColor}`}>
-                    {t(statusKey)}
-                  </span>
-                  <span className="font-sans text-[10px] text-muted uppercase tracking-wider">
-                    {course.instructor.user.name}
-                  </span>
+              {/* Área clicável → editar curso */}
+              <Link
+                href={`/admin/cursos/${course.slug}`}
+                className="flex flex-1 items-center justify-between gap-4 px-6 py-4 min-w-0"
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 mb-1 flex-wrap">
+                    <span className={`font-sans text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${statusColor}`}>
+                      {t(statusKey)}
+                    </span>
+                    <span className="font-sans text-[10px] text-muted uppercase tracking-wider">
+                      {course.instructor.user.name}
+                    </span>
+                  </div>
+                  <h2 className="font-serif text-base font-medium text-foreground leading-snug group-hover:text-primary transition-colors line-clamp-1">
+                    {course.title}
+                  </h2>
                 </div>
-                <h2 className="font-serif text-base font-medium text-foreground leading-snug group-hover:text-primary transition-colors line-clamp-1">
-                  {course.title}
-                </h2>
-              </div>
 
-              <div className="flex items-center gap-6 shrink-0 text-right">
-                <div className="hidden sm:block">
-                  <p className="font-sans text-xs text-muted">{t("lessons")}</p>
-                  <p className="font-sans text-sm font-semibold text-foreground">{totalLessons}</p>
-                </div>
-                <div className="hidden sm:block">
-                  <p className="font-sans text-xs text-muted">{t("enrollments")}</p>
-                  <p className="font-sans text-sm font-semibold text-foreground">{course._count.enrollments}</p>
-                </div>
-                {course.totalSeats !== null && (
+                <div className="flex items-center gap-6 shrink-0 text-right">
                   <div className="hidden sm:block">
-                    <p className="font-sans text-xs text-muted">{t("seats")}</p>
-                    <p className="font-sans text-sm font-semibold text-foreground">
-                      {course.totalSeats - course.reservedSeats}
-                      <span className="text-muted font-normal">/{course.totalSeats}</span>
+                    <p className="font-sans text-xs text-muted">{t("lessons")}</p>
+                    <p className="font-sans text-sm font-semibold text-foreground">{totalLessons}</p>
+                  </div>
+                  <div className="hidden sm:block">
+                    <p className="font-sans text-xs text-muted">{t("enrollments")}</p>
+                    <p className="font-sans text-sm font-semibold text-foreground">{course._count.enrollments}</p>
+                  </div>
+                  {course.totalSeats !== null && (
+                    <div className="hidden sm:block">
+                      <p className="font-sans text-xs text-muted">{t("seats")}</p>
+                      <p className="font-sans text-sm font-semibold text-foreground">
+                        {course.totalSeats - course.reservedSeats}
+                        <span className="text-muted font-normal">/{course.totalSeats}</span>
+                      </p>
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-sans text-xs text-muted">{t("price")}</p>
+                    <p className="font-serif text-sm font-semibold text-primary">
+                      {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(course.price))}
                     </p>
                   </div>
-                )}
-                <div>
-                  <p className="font-sans text-xs text-muted">{t("price")}</p>
-                  <p className="font-serif text-sm font-semibold text-primary">
-                    {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(course.price))}
-                  </p>
                 </div>
+              </Link>
+
+              {/* Botão excluir — separado do Link para não conflitar com navegação */}
+              <div className="pr-4 shrink-0">
+                <DeleteButton
+                  action={deleteAction}
+                  confirm={
+                    hasEnrollments
+                      ? `⚠️ "${course.title}" tem ${course._count.enrollments} matrícula(s). Excluir removerá TODOS os dados do curso permanentemente. Confirma?`
+                      : `Excluir o curso "${course.title}"? Esta ação não pode ser desfeita.`
+                  }
+                  className="p-2 rounded-lg text-muted/40 hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                />
               </div>
-            </Link>
+            </div>
           );
         })}
       </div>
