@@ -14,6 +14,10 @@
       "platform": "Plataforma",
       "institutional": "Institucional"
     },
+    "categories": {
+      "handsOn": "Presencial",
+      "online": "Online"
+    },
     "links": {
       "about": "Sobre",
       "instructors": "Instrutores",

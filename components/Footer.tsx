@@ -47,13 +47,16 @@ const socialLinks = [
 export default async function Footer() {
   const t = await getTranslations("footer");
 
-  const cursosLinks = [
+  const cursosPresenciais = [
     { label: "Manometria, pHmetria e Impedância", href: "/cursos/manometria-phmetria-impedancia" },
-    { label: "Testes Respiratórios, Online", href: "/cursos/testes-respiratorios" },
     { label: "Fisioterapia Pélvica", href: "/cursos/fisioterapia-respiratoria" },
-    { label: "Desvendando a Constipação Intestinal", href: "/cursos/desvendando-a-constipacao-intestinal" },
-    { label: "Testes Respiratórios H₂/CH₄/H₂S, Presencial", href: "/cursos/testes-respiratorios-h2-ch4-h2s-junho" },
+    { label: "Testes Respiratórios H₂/CH₄/H₂S", href: "/cursos/testes-respiratorios-h2-ch4-h2s-junho" },
+  ];
+
+  const cursosOnline = [
+    { label: "Testes Respiratórios", href: "/cursos/testes-respiratorios" },
     { label: "Doenças da Cavidade Oral, Halimetria e Sialometria", href: "/cursos/doencas-da-cavidade-oral-halimetria-e-sialometria" },
+    { label: "Desvendando a Constipação Intestinal", href: "/cursos/desvendando-a-constipacao-intestinal" },
   ];
 
   const plataformaLinks = [
@@ -71,28 +74,70 @@ export default async function Footer() {
     { label: t("links.terms"), href: "/termos" },
   ];
 
+  function NavLinks({ links }: { links: { label: string; href: string }[] }) {
+    return (
+      <ul className="flex flex-col gap-2.5">
+        {links.map((link) => {
+          const isExternal = link.href.startsWith("http");
+          return (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="font-sans text-sm text-white/70 hover:text-white transition-colors"
+              >
+                {link.label}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  }
+
   function NavColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
     return (
       <div className="flex flex-col gap-3">
         <h3 className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-white/50 pb-2 border-b border-white/10">
           {title}
         </h3>
-        <ul className="flex flex-col gap-2.5">
-          {links.map((link) => {
-            const isExternal = link.href.startsWith("http");
-            return (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className="font-sans text-sm text-white/70 hover:text-white transition-colors"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <NavLinks links={links} />
+      </div>
+    );
+  }
+
+  function CursosColumn({
+    title,
+    handsOnLabel,
+    onlineLabel,
+    handsOnLinks,
+    onlineLinks,
+  }: {
+    title: string;
+    handsOnLabel: string;
+    onlineLabel: string;
+    handsOnLinks: { label: string; href: string }[];
+    onlineLinks: { label: string; href: string }[];
+  }) {
+    return (
+      <div className="flex flex-col gap-3">
+        <h3 className="font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-white/50 pb-2 border-b border-white/10">
+          {title}
+        </h3>
+        <div className="flex flex-col gap-5">
+          <div>
+            <p className="font-sans text-[10px] font-bold uppercase tracking-widest text-accent/60 mb-2.5">
+              {handsOnLabel}
+            </p>
+            <NavLinks links={handsOnLinks} />
+          </div>
+          <div>
+            <p className="font-sans text-[10px] font-bold uppercase tracking-widest text-accent/60 mb-2.5">
+              {onlineLabel}
+            </p>
+            <NavLinks links={onlineLinks} />
+          </div>
+        </div>
       </div>
     );
   }
@@ -164,7 +209,13 @@ export default async function Footer() {
           </div>
 
           {/* Colunas de navegação */}
-          <NavColumn title={t("columns.courses")} links={cursosLinks} />
+          <CursosColumn
+            title={t("columns.courses")}
+            handsOnLabel={t("categories.handsOn")}
+            onlineLabel={t("categories.online")}
+            handsOnLinks={cursosPresenciais}
+            onlineLinks={cursosOnline}
+          />
           <NavColumn title={t("columns.platform")} links={plataformaLinks} />
           <NavColumn title={t("columns.institutional")} links={institucionalLinks} />
         </div>
