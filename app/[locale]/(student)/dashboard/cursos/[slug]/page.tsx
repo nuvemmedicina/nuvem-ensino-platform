@@ -36,6 +36,19 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
               muxPlaybackId: true,
               isFree: true,
               order: true,
+              quiz: {
+                include: {
+                  questions: {
+                    include: {
+                      options: {
+                        select: { id: true, text: true, order: true },
+                        orderBy: { order: "asc" },
+                      },
+                    },
+                    orderBy: { order: "asc" },
+                  },
+                },
+              },
             },
           },
         },
@@ -60,6 +73,33 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
   const progressMap: Record<string, boolean> = {};
   for (const p of enrollment.progress) {
     progressMap[p.lessonId] = p.completed;
+  }
+
+  // Monta mapa lessonId → quiz (sem isCorrect para o aluno)
+  const quizzesMap: Record<string, { id: string; title: string; questions: Array<{ id: string; text: string; order: number; options: Array<{ id: string; text: string; order: number }> }> }> = {};
+  for (const mod of course.modules) {
+    for (const lesson of mod.lessons) {
+      if (lesson.quiz) {
+        quizzesMap[lesson.id] = lesson.quiz;
+      }
+    }
+  }
+
+  // Busca tentativas anteriores do aluno
+  const allQuizIds = Object.values(quizzesMap).map((q) => q.id);
+  const rawAttempts = allQuizIds.length > 0
+    ? await prisma.quizAttempt.findMany({
+        where: { userId: session.user.id, quizId: { in: allQuizIds } },
+        orderBy: { createdAt: "desc" },
+      })
+    : [];
+
+  // Deduplica: mantém apenas a tentativa mais recente por quizId
+  const previousAttemptsMap: Record<string, { score: number; total: number }> = {};
+  for (const attempt of rawAttempts) {
+    if (!previousAttemptsMap[attempt.quizId]) {
+      previousAttemptsMap[attempt.quizId] = { score: attempt.score, total: attempt.total };
+    }
   }
 
   // Busca anotações do aluno para todas as aulas deste curso
@@ -168,6 +208,8 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
         initialProgress={progressMap}
         initialLessonId={aula ?? null}
         initialNotes={notesMap}
+        quizzes={quizzesMap}
+        previousAttempts={previousAttemptsMap}
       />
     </div>
   );

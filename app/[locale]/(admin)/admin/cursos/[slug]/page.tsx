@@ -10,6 +10,13 @@ import {
   deleteLesson,
   deleteModule,
 } from "./actions";
+import {
+  createQuiz,
+  addQuestion,
+  addOption,
+  deleteQuiz,
+  deleteQuestion,
+} from "./quizActions";
 import { DeleteButton } from "./DeleteButton";
 import { MuxUploader } from "./MuxUploader";
 
@@ -33,7 +40,21 @@ export default async function AdminCursoEditPage({ params }: Props) {
     include: {
       modules: {
         orderBy: { order: "asc" },
-        include: { lessons: { orderBy: { order: "asc" } } },
+        include: {
+            lessons: {
+              orderBy: { order: "asc" },
+              include: {
+                quiz: {
+                  include: {
+                    questions: {
+                      include: { options: true },
+                      orderBy: { order: "asc" },
+                    },
+                  },
+                },
+              },
+            },
+          },
       },
     },
   });
@@ -334,6 +355,102 @@ export default async function AdminCursoEditPage({ params }: Props) {
                             </div>
                           ) : (
                             <MuxUploader lessonId={lesson.id} />
+                          )}
+                        </div>
+
+                        {/* Quiz section */}
+                        <div className="mt-3 pt-3 border-t border-border/50">
+                          <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted mb-2">
+                            Quiz
+                          </p>
+                          {!lesson.quiz ? (
+                            <form action={createQuiz.bind(null, lesson.id, slug)} className="flex gap-2">
+                              <input
+                                name="title"
+                                placeholder="Título do quiz (ex: Quiz da aula)"
+                                required
+                                className={`${inputClass} flex-1 text-xs`}
+                              />
+                              <button type="submit" className={btnGhost}>
+                                <Plus className="w-3.5 h-3.5 inline mr-1" />
+                                Criar Quiz
+                              </button>
+                            </form>
+                          ) : (
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <span className="font-sans text-xs font-semibold text-foreground">
+                                  {lesson.quiz.title}
+                                </span>
+                                <DeleteButton
+                                  action={deleteQuiz.bind(null, lesson.quiz.id, slug)}
+                                  confirm={`Excluir o quiz "${lesson.quiz.title}" e todas as perguntas?`}
+                                  className={btnDanger}
+                                />
+                              </div>
+
+                              {/* Questions */}
+                              {lesson.quiz.questions.map((question) => (
+                                <div key={question.id} className="border border-border/60 rounded-lg p-3 space-y-2">
+                                  <div className="flex items-start justify-between gap-2">
+                                    <span className="font-sans text-xs text-foreground leading-snug flex-1">
+                                      {question.order}. {question.text}
+                                    </span>
+                                    <DeleteButton
+                                      action={deleteQuestion.bind(null, question.id, slug)}
+                                      confirm={`Excluir pergunta "${question.text}"?`}
+                                      className={btnDanger}
+                                    />
+                                  </div>
+
+                                  {/* Options */}
+                                  <div className="pl-3 space-y-1">
+                                    {question.options.map((opt) => (
+                                      <div key={opt.id} className="flex items-center gap-2">
+                                        <span className={`font-sans text-[11px] ${opt.isCorrect ? "text-green-600 font-semibold" : "text-muted"}`}>
+                                          {opt.isCorrect ? "✓" : "○"} {opt.text}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+
+                                  {/* Add option form */}
+                                  <form action={addOption.bind(null, question.id, slug)} className="flex gap-2 pt-1">
+                                    <input
+                                      name="text"
+                                      placeholder="Texto da opção"
+                                      required
+                                      className={`${inputClass} flex-1 text-xs`}
+                                    />
+                                    <label className="flex items-center gap-1.5 font-sans text-xs text-muted cursor-pointer shrink-0">
+                                      <input
+                                        type="checkbox"
+                                        name="isCorrect"
+                                        className="accent-primary"
+                                      />
+                                      Correta
+                                    </label>
+                                    <button type="submit" className={btnGhost}>
+                                      + Opção
+                                    </button>
+                                  </form>
+                                </div>
+                              ))}
+
+                              {/* Add question form */}
+                              <form action={addQuestion.bind(null, lesson.quiz.id, slug)} className="flex gap-2">
+                                <input
+                                  name="text"
+                                  placeholder="Texto da pergunta"
+                                  required
+                                  className={`${inputClass} flex-1 text-xs`}
+                                />
+                                <button type="submit" className={btnGhost}>
+                                  <Plus className="w-3.5 h-3.5 inline mr-1" />
+                                  Pergunta
+                                </button>
+                              </form>
+                            </div>
                           )}
                         </div>
                       </div>
