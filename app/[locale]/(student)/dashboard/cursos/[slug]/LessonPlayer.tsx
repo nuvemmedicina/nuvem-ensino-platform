@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import { CheckCircle, Circle, PlayCircle, ChevronDown, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type Lesson = {
   id: string;
@@ -49,6 +50,8 @@ function formatDuration(mins: number): string {
 }
 
 export default function LessonPlayer({ courseId, modules, initialProgress, initialLessonId }: Props) {
+  const t = useTranslations("dashboard.courses");
+
   const allLessons = modules.flatMap((m) => m.lessons);
   const firstLesson = allLessons[0] ?? null;
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(
@@ -131,7 +134,7 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-white/40">
               <PlayCircle className="w-16 h-16" />
-              <p className="font-sans text-sm">Vídeo será adicionado em breve</p>
+              <p className="font-sans text-sm">{t("videoComingSoon")}</p>
             </div>
           )}
         </div>
@@ -144,7 +147,7 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
                 {modules.find((m) => m.lessons.some((l) => l.id === currentLesson?.id))?.title}
               </p>
               <h1 className="font-serif text-xl font-medium text-foreground">
-                {currentLesson?.title ?? "Selecione uma aula"}
+                {currentLesson?.title ?? t("selectLesson")}
               </h1>
             </div>
             {currentLesson && (
@@ -158,9 +161,9 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
                 }`}
               >
                 {progress[currentLesson.id] ? (
-                  <><CheckCircle className="w-4 h-4" /> Concluída</>
+                  <><CheckCircle className="w-4 h-4" /> {t("lessonDone")}</>
                 ) : (
-                  <><Circle className="w-4 h-4" /> Marcar como concluída</>
+                  <><Circle className="w-4 h-4" /> {t("markComplete")}</>
                 )}
               </button>
             )}
@@ -175,11 +178,11 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
             className="flex items-center gap-2 font-sans text-sm text-muted hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             <ChevronDown className="w-4 h-4 rotate-90" />
-            Anterior
+            {t("previous")}
           </button>
 
           <div className="text-center">
-            <p className="font-sans text-xs text-muted">{pct}% concluído</p>
+            <p className="font-sans text-xs text-muted">{pct}{t("percentCompleted")}</p>
             <div className="w-32 h-1.5 bg-border rounded-full overflow-hidden mt-1">
               <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${pct}%` }} />
             </div>
@@ -190,7 +193,7 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
             disabled={!nextLesson}
             className="flex items-center gap-2 font-sans text-sm text-muted hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            Próxima
+            {t("next")}
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -200,10 +203,10 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
       <aside className="lg:w-80 shrink-0 border-t lg:border-t-0 lg:border-l border-border bg-surface overflow-y-auto lg:max-h-[calc(100vh-4rem)]">
         <div className="p-4 border-b border-border">
           <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted">
-            Conteúdo do curso
+            {t("courseContent")}
           </p>
           <p className="font-sans text-xs text-muted mt-1">
-            {completedCount}/{totalCount} aulas concluídas
+            {t("lessonsCompleted", { done: completedCount, total: totalCount })}
           </p>
         </div>
 
@@ -259,7 +262,7 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
                         </div>
                         {lesson.isFree && !isDone && (
                           <span className="font-sans text-[9px] font-semibold uppercase tracking-wider text-accent bg-accent/10 px-1.5 py-0.5 rounded shrink-0">
-                            Grátis
+                            {t("free")}
                           </span>
                         )}
                       </button>

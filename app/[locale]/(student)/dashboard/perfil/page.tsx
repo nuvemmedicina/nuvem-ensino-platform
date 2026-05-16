@@ -2,13 +2,21 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { User } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 const inputClass =
   "w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-primary/50";
 const labelClass =
   "block font-sans text-xs font-semibold text-muted uppercase tracking-wider mb-1.5";
 
-export default async function PerfilPage() {
+export default async function PerfilPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "dashboard.profile" });
+
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard/perfil");
 
@@ -22,8 +30,8 @@ export default async function PerfilPage() {
   return (
     <div className="max-w-xl">
       <div className="mb-8">
-        <h1 className="font-serif text-2xl font-medium text-foreground">Perfil</h1>
-        <p className="font-sans text-sm text-muted mt-1">Suas informações de cadastro.</p>
+        <h1 className="font-serif text-2xl font-medium text-foreground">{t("title")}</h1>
+        <p className="font-sans text-sm text-muted mt-1">{t("subtitle")}</p>
       </div>
 
       <div className="bg-surface border border-border rounded-2xl p-6">
@@ -41,35 +49,38 @@ export default async function PerfilPage() {
 
         <div className="space-y-4">
           <div>
-            <label className={labelClass}>Nome completo</label>
+            <label className={labelClass}>{t("name")}</label>
             <input readOnly value={user.name ?? ""} className={`${inputClass} bg-background/50 cursor-default`} />
           </div>
           <div>
-            <label className={labelClass}>E-mail</label>
+            <label className={labelClass}>{t("email")}</label>
             <input readOnly value={user.email} className={`${inputClass} bg-background/50 cursor-default`} />
           </div>
           {user.phone && (
             <div>
-              <label className={labelClass}>Telefone</label>
+              <label className={labelClass}>{t("phone")}</label>
               <input readOnly value={user.phone} className={`${inputClass} bg-background/50 cursor-default`} />
             </div>
           )}
           {user.specialty && (
             <div>
-              <label className={labelClass}>Especialidade</label>
+              <label className={labelClass}>{t("specialty")}</label>
               <input readOnly value={user.specialty} className={`${inputClass} bg-background/50 cursor-default`} />
             </div>
           )}
           {user.crm && (
             <div>
-              <label className={labelClass}>CRM</label>
+              <label className={labelClass}>{t("crm")}</label>
               <input readOnly value={user.crm} className={`${inputClass} bg-background/50 cursor-default`} />
             </div>
           )}
         </div>
 
         <p className="font-sans text-xs text-muted mt-6">
-          Para alterar seus dados, entre em contato: <a href="mailto:cursos@nuvemensino.com.br" className="text-primary hover:underline">cursos@nuvemensino.com.br</a>
+          {t("changeContact")}{" "}
+          <a href="mailto:cursos@nuvemensino.com.br" className="text-primary hover:underline">
+            cursos@nuvemensino.com.br
+          </a>
         </p>
       </div>
     </div>

@@ -4,13 +4,21 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
 import { BookOpen, ChevronRight } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 function calcProgress(progress: { completed: boolean }[], totalLessons: number) {
   if (totalLessons === 0) return 0;
   return Math.round((progress.filter((p) => p.completed).length / totalLessons) * 100);
 }
 
-export default async function MeusCursosPage() {
+export default async function MeusCursosPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "dashboard.courses" });
+
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard/cursos");
 
@@ -28,29 +36,30 @@ export default async function MeusCursosPage() {
     orderBy: { enrolledAt: "desc" },
   });
 
+  const subtitle =
+    enrollments.length === 0
+      ? t("notEnrolled")
+      : enrollments.length === 1
+      ? t("countOne")
+      : t("countPlural", { count: enrollments.length });
+
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-serif text-2xl font-medium text-foreground">Meus Cursos</h1>
-        <p className="font-sans text-sm text-muted mt-1">
-          {enrollments.length === 0
-            ? "Você ainda não está matriculado em nenhum curso."
-            : `${enrollments.length} curso${enrollments.length > 1 ? "s" : ""} matriculado${enrollments.length > 1 ? "s" : ""}`}
-        </p>
+        <h1 className="font-serif text-2xl font-medium text-foreground">{t("title")}</h1>
+        <p className="font-sans text-sm text-muted mt-1">{subtitle}</p>
       </div>
 
       {enrollments.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center bg-surface border border-border rounded-2xl">
           <BookOpen className="w-12 h-12 text-muted/30 mb-4" />
-          <p className="font-serif text-xl text-foreground/40 mb-2">Nenhum curso ainda</p>
-          <p className="font-sans text-sm text-muted mb-6">
-            Explore nosso catálogo e comece sua formação.
-          </p>
+          <p className="font-serif text-xl text-foreground/40 mb-2">{t("emptyTitle")}</p>
+          <p className="font-sans text-sm text-muted mb-6">{t("emptyDesc")}</p>
           <Link
             href="/cursos"
             className="inline-block font-sans text-sm font-semibold px-6 py-3 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
           >
-            Ver Cursos
+            {t("viewCourses")}
           </Link>
         </div>
       ) : (
@@ -91,13 +100,13 @@ export default async function MeusCursosPage() {
                       {enrollment.course.title}
                     </h2>
                     <p className="font-sans text-xs text-muted mt-1">
-                      {enrollment.course.hours}h · {totalLessons} aulas
+                      {enrollment.course.hours}h · {totalLessons} {t("lessons")}
                     </p>
                   </div>
 
                   <div className="mt-3">
                     <div className="flex justify-between font-sans text-[10px] text-muted mb-1">
-                      <span>{completed ? "Concluído" : "Progresso"}</span>
+                      <span>{completed ? t("completedLabel") : t("progressLabel")}</span>
                       <span>{pct}%</span>
                     </div>
                     <div className="h-1.5 bg-border rounded-full overflow-hidden">

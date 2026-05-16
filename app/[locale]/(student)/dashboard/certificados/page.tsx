@@ -1,9 +1,17 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { Award, Download, ExternalLink } from "lucide-react";
+import { Award, Download } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
-export default async function CertificadosPage() {
+export default async function CertificadosPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "dashboard.certificates" });
+
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard/certificados");
 
@@ -13,24 +21,27 @@ export default async function CertificadosPage() {
     orderBy: { issueDate: "desc" },
   });
 
+  const dateLocale = locale === "pt" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US";
+
+  const subtitle =
+    certificates.length === 0
+      ? t("completeCourseDesc")
+      : certificates.length === 1
+      ? t("countOne")
+      : t("countPlural", { count: certificates.length });
+
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-serif text-2xl font-medium text-foreground">Certificados</h1>
-        <p className="font-sans text-sm text-muted mt-1">
-          {certificates.length === 0
-            ? "Seus certificados aparecerão aqui após concluir um curso."
-            : `${certificates.length} certificado${certificates.length > 1 ? "s" : ""} emitido${certificates.length > 1 ? "s" : ""}`}
-        </p>
+        <h1 className="font-serif text-2xl font-medium text-foreground">{t("title")}</h1>
+        <p className="font-sans text-sm text-muted mt-1">{subtitle}</p>
       </div>
 
       {certificates.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center bg-surface border border-border rounded-2xl">
           <Award className="w-12 h-12 text-muted/30 mb-4" />
-          <p className="font-serif text-xl text-foreground/40 mb-2">Nenhum certificado ainda</p>
-          <p className="font-sans text-sm text-muted max-w-xs">
-            Conclua todas as aulas de um curso para receber seu certificado de participação.
-          </p>
+          <p className="font-serif text-xl text-foreground/40 mb-2">{t("none")}</p>
+          <p className="font-sans text-sm text-muted max-w-xs">{t("emptyDesc")}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -45,8 +56,8 @@ export default async function CertificadosPage() {
                     {cert.enrollment.course.title}
                   </h2>
                   <p className="font-sans text-xs text-muted mt-1">
-                    {cert.enrollment.course.hours}h · Emitido em{" "}
-                    {new Intl.DateTimeFormat("pt-BR").format(new Date(cert.issueDate))}
+                    {cert.enrollment.course.hours}h · {t("issued")}{" "}
+                    {new Intl.DateTimeFormat(dateLocale).format(new Date(cert.issueDate))}
                   </p>
                 </div>
               </div>
@@ -63,7 +74,7 @@ export default async function CertificadosPage() {
                     className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-primary hover:text-primary-dark transition-colors"
                   >
                     <Download className="w-3.5 h-3.5" />
-                    Baixar PDF
+                    {t("download")}
                   </a>
                 </div>
               </div>

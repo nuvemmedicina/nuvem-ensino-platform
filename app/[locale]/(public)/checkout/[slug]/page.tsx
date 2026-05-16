@@ -13,7 +13,7 @@ const coursePrices: Record<string, { name: string; price: number; hours: number 
   "doencas-da-cavidade-oral-halimetria-e-sialometria": { name: "Doenças da Cavidade Oral, Halimetria e Sialometria", price: 450, hours: 3 },
 };
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ slug: string; locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;

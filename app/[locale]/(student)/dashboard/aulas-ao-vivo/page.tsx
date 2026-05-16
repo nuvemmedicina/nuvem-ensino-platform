@@ -3,14 +3,9 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Video, MapPin, Calendar, CalendarX } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
-
-const fmtDate = new Intl.DateTimeFormat("pt-BR", {
-  dateStyle: "full",
-  timeStyle: "short",
-  timeZone: "America/Sao_Paulo",
-});
 
 function makeCalendarUrl(s: {
   title: string;
@@ -48,11 +43,22 @@ type SessionData = {
 function SessionCard({
   session: s,
   past = false,
+  joinMeetLabel,
+  addToCalendarLabel,
+  dateLocale,
 }: {
   session: SessionData;
   past?: boolean;
+  joinMeetLabel: string;
+  addToCalendarLabel: string;
+  dateLocale: string;
 }) {
   const calUrl = makeCalendarUrl(s);
+  const fmtDate = new Intl.DateTimeFormat(dateLocale, {
+    dateStyle: "full",
+    timeStyle: "short",
+    timeZone: "America/Sao_Paulo",
+  });
 
   return (
     <div
@@ -110,7 +116,7 @@ function SessionCard({
                 rel="noopener noreferrer"
                 className="font-sans text-xs font-semibold px-4 py-2 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors whitespace-nowrap"
               >
-                Entrar no Meet
+                {joinMeetLabel}
               </a>
             )}
             <a
@@ -119,7 +125,7 @@ function SessionCard({
               rel="noopener noreferrer"
               className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-primary/30 text-primary hover:bg-primary/10 transition-colors whitespace-nowrap"
             >
-              + Google Agenda
+              {addToCalendarLabel}
             </a>
           </div>
         )}
@@ -140,9 +146,18 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 // ── Page ──────────────────────────────────────────────────────────────────
 
-export default async function AulasAoVivoPage() {
+export default async function AulasAoVivoPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "dashboard.liveLessons" });
+
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard/aulas-ao-vivo");
+
+  const dateLocale = locale === "pt" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US";
 
   // Busca matrículas do aluno
   const enrollments = await prisma.enrollment.findMany({
@@ -167,34 +182,36 @@ export default async function AulasAoVivoPage() {
     .filter((s) => new Date(s.startAt) < now)
     .reverse();
 
+  const upcomingSubtitle =
+    upcoming.length === 0
+      ? t("noUpcoming")
+      : upcoming.length === 1
+      ? t("oneUpcoming")
+      : t("manyUpcoming", { count: upcoming.length });
+
+  const joinMeetLabel = t("joinMeet");
+  const addToCalendarLabel = t("addToCalendar");
+
   return (
     <div>
       {/* Cabeçalho */}
       <div className="mb-8">
         <h1 className="font-serif text-3xl font-light text-foreground">
-          Aulas ao Vivo
+          {t("title")}
         </h1>
-        <p className="font-sans text-sm text-muted mt-1">
-          {upcoming.length === 0
-            ? "Nenhuma aula ao vivo agendada"
-            : upcoming.length === 1
-            ? "1 aula próxima"
-            : `${upcoming.length} aulas próximas`}
-        </p>
+        <p className="font-sans text-sm text-muted mt-1">{upcomingSubtitle}</p>
       </div>
 
       {/* Empty state: sem matrículas */}
       {courseIds.length === 0 && (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
           <CalendarX className="w-10 h-10 text-muted/40" />
-          <p className="font-sans text-sm text-muted">
-            Você não está matriculado em nenhum curso.
-          </p>
+          <p className="font-sans text-sm text-muted">{t("noEnrollment")}</p>
           <Link
             href="/cursos"
             className="font-sans text-xs font-semibold px-4 py-2 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors mt-1"
           >
-            Ver cursos disponíveis
+            {t("browseCourses")}
           </Link>
         </div>
       )}
@@ -203,19 +220,23 @@ export default async function AulasAoVivoPage() {
       {courseIds.length > 0 && liveSessions.length === 0 && (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
           <CalendarX className="w-10 h-10 text-muted/40" />
-          <p className="font-sans text-sm text-muted">
-            Nenhuma aula ao vivo agendada para seus cursos ainda.
-          </p>
+          <p className="font-sans text-sm text-muted">{t("noScheduled")}</p>
         </div>
       )}
 
       {/* Próximas */}
       {upcoming.length > 0 && (
         <section className="mb-10">
-          <SectionLabel>Próximas</SectionLabel>
+          <SectionLabel>{t("upcomingSection")}</SectionLabel>
           <div className="flex flex-col gap-3">
             {upcoming.map((s) => (
-              <SessionCard key={s.id} session={s} />
+              <SessionCard
+                key={s.id}
+                session={s}
+                joinMeetLabel={joinMeetLabel}
+                addToCalendarLabel={addToCalendarLabel}
+                dateLocale={dateLocale}
+              />
             ))}
           </div>
         </section>
@@ -224,10 +245,17 @@ export default async function AulasAoVivoPage() {
       {/* Anteriores */}
       {past.length > 0 && (
         <section>
-          <SectionLabel>Anteriores</SectionLabel>
+          <SectionLabel>{t("pastSection")}</SectionLabel>
           <div className="flex flex-col gap-3">
             {past.map((s) => (
-              <SessionCard key={s.id} session={s} past />
+              <SessionCard
+                key={s.id}
+                session={s}
+                past
+                joinMeetLabel={joinMeetLabel}
+                addToCalendarLabel={addToCalendarLabel}
+                dateLocale={dateLocale}
+              />
             ))}
           </div>
         </section>

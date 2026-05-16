@@ -4,15 +4,17 @@ import { ChevronLeft, Award } from "lucide-react";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import LessonPlayer from "./LessonPlayer";
+import { getTranslations } from "next-intl/server";
 
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<{ aula?: string; sucesso?: string }>;
 };
 
 export default async function CoursePlayerPage({ params, searchParams }: Props) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const { aula, sucesso } = await searchParams;
+  const t = await getTranslations({ locale, namespace: "dashboard.courses" });
 
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard");
@@ -65,17 +67,19 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
     orderBy: { startAt: "asc" },
   });
 
+  const dateLocale = locale === "pt" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US";
+
   const calendarUrl = nextLiveSession
     ? (() => {
         const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-        const params = new URLSearchParams({
+        const p = new URLSearchParams({
           action: "TEMPLATE",
           text: nextLiveSession.title,
           dates: `${fmt(nextLiveSession.startAt)}/${fmt(nextLiveSession.endAt)}`,
           details: nextLiveSession.meetUrl ? `Link: ${nextLiveSession.meetUrl}` : course.title,
           location: nextLiveSession.location ?? nextLiveSession.meetUrl ?? "",
         });
-        return `https://calendar.google.com/calendar/render?${params.toString()}`;
+        return `https://calendar.google.com/calendar/render?${p.toString()}`;
       })()
     : null;
 
@@ -89,7 +93,7 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
             className="flex items-center gap-1.5 font-sans text-sm text-muted hover:text-foreground transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
-            Meus cursos
+            {t("title")}
           </Link>
           <span className="text-border">/</span>
           <span className="font-sans text-sm text-foreground font-medium line-clamp-1">
@@ -103,7 +107,7 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
             className="flex items-center gap-1.5 font-sans text-xs font-semibold text-amber-600 hover:text-amber-500 transition-colors"
           >
             <Award className="w-4 h-4" />
-            Ver certificado
+            {t("viewCertificate")}
           </Link>
         )}
       </div>
@@ -112,7 +116,7 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
       {sucesso && (
         <div className="mx-4 lg:mx-6 mt-4 flex items-center gap-3 bg-green-500/10 border border-green-500/20 text-green-700 rounded-xl px-4 py-3 font-sans text-sm">
           <Award className="w-4 h-4 shrink-0" />
-          Matrícula confirmada! Bem-vindo ao curso.
+          {t("enrollmentConfirmed")}
         </div>
       )}
 
@@ -122,24 +126,24 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <p className="font-sans text-[10px] font-bold uppercase tracking-widest text-primary mb-0.5">
-                Próxima aula ao vivo
+                {t("nextLive")}
               </p>
               <p className="font-sans text-sm font-semibold text-foreground">{nextLiveSession.title}</p>
               <p className="font-sans text-xs text-muted mt-0.5">
-                {new Intl.DateTimeFormat("pt-BR", { dateStyle: "full", timeStyle: "short", timeZone: "America/Sao_Paulo" }).format(new Date(nextLiveSession.startAt))}
+                {new Intl.DateTimeFormat(dateLocale, { dateStyle: "full", timeStyle: "short", timeZone: "America/Sao_Paulo" }).format(new Date(nextLiveSession.startAt))}
               </p>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               {nextLiveSession.meetUrl && (
                 <a href={nextLiveSession.meetUrl} target="_blank" rel="noopener noreferrer"
                   className="font-sans text-xs font-semibold px-4 py-2 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors">
-                  Entrar no Meet
+                  {t("joinMeet")}
                 </a>
               )}
               {calendarUrl && (
                 <a href={calendarUrl} target="_blank" rel="noopener noreferrer"
                   className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-primary/30 text-primary hover:bg-primary/10 transition-colors">
-                  + Google Agenda
+                  {t("addToCalendar")}
                 </a>
               )}
             </div>
