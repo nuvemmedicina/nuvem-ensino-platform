@@ -142,9 +142,28 @@ export default async function AdminCursoEditPage({ params }: Props) {
             <input name="location" defaultValue={course.location ?? ""} placeholder="Ex: NU.V.E.M Medicina · Belo Horizonte" className={inputClass} />
           </div>
 
-          <div>
-            <label className={labelClass}>URL da miniatura</label>
-            <input name="thumbnailUrl" defaultValue={course.thumbnailUrl ?? ""} placeholder="https://..." className={inputClass} />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelClass}>Vagas totais</label>
+              <input
+                name="totalSeats"
+                type="number"
+                min="1"
+                defaultValue={course.totalSeats ?? ""}
+                placeholder="Deixe em branco = ilimitado"
+                className={inputClass}
+              />
+              <p className="font-sans text-[10px] text-muted mt-1">
+                Reservadas: <strong>{course.reservedSeats}</strong>
+                {course.totalSeats !== null && (
+                  <> · Disponíveis: <strong>{course.totalSeats - course.reservedSeats}</strong></>
+                )}
+              </p>
+            </div>
+            <div>
+              <label className={labelClass}>URL da miniatura</label>
+              <input name="thumbnailUrl" defaultValue={course.thumbnailUrl ?? ""} placeholder="https://..." className={inputClass} />
+            </div>
           </div>
 
           <div className="pt-2">
