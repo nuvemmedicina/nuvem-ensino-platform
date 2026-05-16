@@ -2,24 +2,27 @@ import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { UserFilters } from "./UserFilters";
 import { CheckCircle, XCircle } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 type Role = "STUDENT" | "INSTRUCTOR" | "ADMIN";
 
-const roleLabel: Record<Role, { label: string; color: string }> = {
-  STUDENT:    { label: "Aluno",     color: "text-blue-600 bg-blue-500/10 border-blue-500/20" },
-  INSTRUCTOR: { label: "Instrutor", color: "text-teal-600 bg-teal-500/10 border-teal-500/20" },
-  ADMIN:      { label: "Admin",     color: "text-amber-600 bg-amber-500/10 border-amber-500/20" },
+const roleColors: Record<Role, string> = {
+  STUDENT:    "text-blue-600 bg-blue-500/10 border-blue-500/20",
+  INSTRUCTOR: "text-teal-600 bg-teal-500/10 border-teal-500/20",
+  ADMIN:      "text-amber-600 bg-amber-500/10 border-amber-500/20",
 };
 
-const fmt = new Intl.DateTimeFormat("pt-BR", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
+type Props = {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ q?: string; role?: string }>;
+};
 
-type Props = { searchParams: Promise<{ q?: string; role?: string }> };
+export default async function AdminUsuariosPage({ params, searchParams }: Props) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "admin.users" });
+  const dateLocale = locale === "en" ? "en-US" : locale === "es" ? "es-ES" : "pt-BR";
+  const fmt = new Intl.DateTimeFormat(dateLocale, { day: "2-digit", month: "2-digit", year: "numeric" });
 
-export default async function AdminUsuariosPage({ searchParams }: Props) {
   const { q = "", role = "ALL" } = await searchParams;
 
   const where = {
@@ -62,11 +65,11 @@ export default async function AdminUsuariosPage({ searchParams }: Props) {
       {/* Cabeçalho */}
       <div className="flex items-start justify-between gap-4 mb-6 flex-wrap">
         <div>
-          <h1 className="font-serif text-3xl font-light text-foreground">Usuários</h1>
+          <h1 className="font-serif text-3xl font-light text-foreground">{t("title")}</h1>
           <p className="font-sans text-sm text-muted mt-1">
             {users.length === 200
-              ? "200+ resultados — refine a busca para ver mais"
-              : `${users.length} ${users.length === 1 ? "usuário" : "usuários"}${q || role !== "ALL" ? " encontrados" : " cadastrados"}`}
+              ? t("limit200")
+              : `${users.length === 1 ? t("countOne", { count: 1 }) : t("countPlural", { count: users.length })}${q || role !== "ALL" ? t("found") : t("registered")}`}
           </p>
         </div>
         <Suspense fallback={null}>
@@ -78,10 +81,10 @@ export default async function AdminUsuariosPage({ searchParams }: Props) {
       {!q && role === "ALL" && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           {[
-            { label: "Total",        value: totalAll },
-            { label: "Alunos",       value: totalStudents },
-            { label: "Instrutores",  value: totalInst },
-            { label: "Administradores", value: totals.find((t) => t.role === "ADMIN")?._count._all ?? 0 },
+            { label: t("totalLabel"),       value: totalAll },
+            { label: t("studentsLabel"),    value: totalStudents },
+            { label: t("instructorsLabel"), value: totalInst },
+            { label: t("adminsLabel"),      value: totals.find((tot) => tot.role === "ADMIN")?._count._all ?? 0 },
           ].map(({ label, value }) => (
             <div key={label} className="bg-surface border border-border rounded-2xl px-5 py-4">
               <p className="font-sans text-2xl font-semibold text-foreground">{value}</p>
@@ -93,32 +96,33 @@ export default async function AdminUsuariosPage({ searchParams }: Props) {
 
       {/* Tabela */}
       {users.length === 0 ? (
-        <p className="font-sans text-sm text-muted">Nenhum usuário encontrado.</p>
+        <p className="font-sans text-sm text-muted">{t("none")}</p>
       ) : (
         <div className="bg-surface border border-border rounded-2xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-background">
                 <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">
-                  Usuário
+                  {t("colUser")}
                 </th>
                 <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">
-                  Tipo
+                  {t("colType")}
                 </th>
                 <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden sm:table-cell">
-                  E-mail verificado
+                  {t("colEmailVerified")}
                 </th>
                 <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden md:table-cell">
-                  Matrículas
+                  {t("colEnrollments")}
                 </th>
                 <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden lg:table-cell">
-                  Cadastro
+                  {t("colRegistered")}
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {users.map((u) => {
-                const rl = roleLabel[u.role as Role] ?? roleLabel.STUDENT;
+                const roleKey = u.role === "INSTRUCTOR" ? "roleInstructor" : u.role === "ADMIN" ? "roleAdmin" : "roleStudent";
+                const roleColor = roleColors[u.role as Role] ?? roleColors.STUDENT;
                 return (
                   <tr key={u.id} className="hover:bg-background/50 transition-colors">
                     {/* Nome + email */}
@@ -131,10 +135,8 @@ export default async function AdminUsuariosPage({ searchParams }: Props) {
 
                     {/* Role badge */}
                     <td className="px-5 py-3.5">
-                      <span
-                        className={`font-sans text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${rl.color}`}
-                      >
-                        {rl.label}
+                      <span className={`font-sans text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${roleColor}`}>
+                        {t(roleKey)}
                       </span>
                     </td>
 

@@ -3,10 +3,12 @@
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useTransition } from "react";
 import { Download, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type Course = { id: string; title: string };
 
 export function RelatorioFilters({ courses }: { courses: Course[] }) {
+  const t = useTranslations("admin.reports");
   const router      = useRouter();
   const pathname    = usePathname();
   const searchParams = useSearchParams();
@@ -36,7 +38,7 @@ export function RelatorioFilters({ courses }: { courses: Course[] }) {
     <div className="flex flex-wrap items-center gap-3">
       {/* De */}
       <div className="flex flex-col gap-1">
-        <label className="font-sans text-[10px] text-muted uppercase tracking-wider">De</label>
+        <label className="font-sans text-[10px] text-muted uppercase tracking-wider">{t("filterFrom")}</label>
         <input
           type="date"
           defaultValue={from}
@@ -47,7 +49,7 @@ export function RelatorioFilters({ courses }: { courses: Course[] }) {
 
       {/* Até */}
       <div className="flex flex-col gap-1">
-        <label className="font-sans text-[10px] text-muted uppercase tracking-wider">Até</label>
+        <label className="font-sans text-[10px] text-muted uppercase tracking-wider">{t("filterTo")}</label>
         <input
           type="date"
           defaultValue={to}
@@ -58,13 +60,13 @@ export function RelatorioFilters({ courses }: { courses: Course[] }) {
 
       {/* Curso */}
       <div className="flex flex-col gap-1">
-        <label className="font-sans text-[10px] text-muted uppercase tracking-wider">Curso</label>
+        <label className="font-sans text-[10px] text-muted uppercase tracking-wider">{t("filterCourse")}</label>
         <select
           defaultValue={courseId}
           onChange={(e) => applyFilter("courseId", e.target.value)}
           className={`${inputClass} cursor-pointer max-w-56`}
         >
-          <option value="">Todos os cursos</option>
+          <option value="">{t("filterAllCourses")}</option>
           {courses.map((c) => (
             <option key={c.id} value={c.id}>{c.title}</option>
           ))}
@@ -81,7 +83,7 @@ export function RelatorioFilters({ courses }: { courses: Course[] }) {
         className="flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors self-end"
       >
         <Download className="w-4 h-4" />
-        Exportar CSV
+        {t("exportCSV")}
       </a>
     </div>
   );

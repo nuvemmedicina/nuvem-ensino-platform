@@ -2,18 +2,28 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, ClipboardList, LayoutDashboard, Users, BarChart2, LogOut } from "lucide-react";
+import { BookOpen, ClipboardList, LayoutDashboard, Users, BarChart2 } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
+import { getTranslations } from "next-intl/server";
 
-const navLinks = [
-  { label: "Visão geral", href: "/admin", icon: LayoutDashboard },
-  { label: "Cursos",     href: "/admin/cursos",     icon: BookOpen },
-  { label: "Matrículas", href: "/admin/matriculas", icon: ClipboardList },
-  { label: "Usuários",   href: "/admin/usuarios",   icon: Users },
-  { label: "Relatórios", href: "/admin/relatorios", icon: BarChart2 },
+const navItems = [
+  { key: "overview" as const, href: "/admin",            icon: LayoutDashboard },
+  { key: "courses"   as const, href: "/admin/cursos",    icon: BookOpen },
+  { key: "enrollments" as const, href: "/admin/matriculas", icon: ClipboardList },
+  { key: "users"     as const, href: "/admin/usuarios",  icon: Users },
+  { key: "reports"   as const, href: "/admin/relatorios", icon: BarChart2 },
 ];
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "admin.nav" });
+
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/admin");
 
@@ -39,14 +49,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
 
         <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
-          {navLinks.map(({ label, href, icon: Icon }) => (
+          {navItems.map(({ key, href, icon: Icon }) => (
             <Link
               key={href}
               href={href}
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl font-sans text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all"
             >
               <Icon className="w-4 h-4 shrink-0" />
-              {label}
+              {t(key)}
             </Link>
           ))}
         </nav>

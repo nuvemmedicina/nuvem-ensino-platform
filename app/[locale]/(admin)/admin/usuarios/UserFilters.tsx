@@ -3,19 +3,21 @@
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useTransition, useCallback } from "react";
 import { Search, Loader2 } from "lucide-react";
-
-const roles = [
-  { value: "ALL",        label: "Todos os tipos" },
-  { value: "STUDENT",    label: "Aluno" },
-  { value: "INSTRUCTOR", label: "Instrutor" },
-  { value: "ADMIN",      label: "Admin" },
-];
+import { useTranslations } from "next-intl";
 
 export function UserFilters() {
+  const t = useTranslations("admin.users");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+
+  const roles = [
+    { value: "ALL",        label: t("filterAll") },
+    { value: "STUDENT",    label: t("roleStudent") },
+    { value: "INSTRUCTOR", label: t("roleInstructor") },
+    { value: "ADMIN",      label: t("roleAdmin") },
+  ];
 
   const q    = searchParams.get("q")    ?? "";
   const role = searchParams.get("role") ?? "ALL";
@@ -46,7 +48,7 @@ export function UserFilters() {
         <input
           type="search"
           defaultValue={q}
-          placeholder="Buscar por nome ou e-mail…"
+          placeholder={t("searchPlaceholder")}
           onChange={(e) => update("q", e.target.value)}
           className="pl-9 pr-4 py-2 rounded-xl bg-surface border border-border text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary/50 w-64 transition-colors"
         />

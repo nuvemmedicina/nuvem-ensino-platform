@@ -2,6 +2,7 @@
 
 import { deleteLiveSession } from "./actions";
 import { Trash2, Video, MapPin } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type Session = {
   id: string;
@@ -16,6 +17,7 @@ type Session = {
 };
 
 export default function LiveSessionList({ sessions }: { sessions: Session[] }) {
+  const t = useTranslations("admin.liveSessions");
   const upcoming = sessions.filter((s) => s.startAt > new Date());
   const past = sessions.filter((s) => s.startAt <= new Date());
 
@@ -23,22 +25,22 @@ export default function LiveSessionList({ sessions }: { sessions: Session[] }) {
     <div className="flex flex-col gap-6">
       <div>
         <h2 className="font-sans text-sm font-semibold text-foreground mb-3">
-          Próximas sessões ({upcoming.length})
+          {t("upcoming", { count: upcoming.length })}
         </h2>
         {upcoming.length === 0 ? (
-          <p className="font-sans text-sm text-muted">Nenhuma sessão agendada.</p>
+          <p className="font-sans text-sm text-muted">{t("noUpcoming")}</p>
         ) : (
           <div className="flex flex-col gap-3">
-            {upcoming.map((s) => <SessionCard key={s.id} session={s} />)}
+            {upcoming.map((s) => <SessionCard key={s.id} session={s} untilLabel={t("until")} pendingLabel={t("pending")} deleteLabel={t("delete")} />)}
           </div>
         )}
       </div>
 
       {past.length > 0 && (
         <div>
-          <h2 className="font-sans text-sm font-semibold text-muted mb-3">Realizadas ({past.length})</h2>
+          <h2 className="font-sans text-sm font-semibold text-muted mb-3">{t("past", { count: past.length })}</h2>
           <div className="flex flex-col gap-3 opacity-60">
-            {past.map((s) => <SessionCard key={s.id} session={s} />)}
+            {past.map((s) => <SessionCard key={s.id} session={s} untilLabel={t("until")} pendingLabel={t("pending")} deleteLabel={t("delete")} />)}
           </div>
         </div>
       )}
@@ -46,8 +48,18 @@ export default function LiveSessionList({ sessions }: { sessions: Session[] }) {
   );
 }
 
-function SessionCard({ session: s }: { session: Session }) {
-  const fmt = (d: Date) => new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date(d));
+function SessionCard({
+  session: s,
+  untilLabel,
+  pendingLabel,
+  deleteLabel,
+}: {
+  session: Session;
+  untilLabel: string;
+  pendingLabel: string;
+  deleteLabel: string;
+}) {
+  const fmt = (d: Date) => new Intl.DateTimeFormat(undefined, { dateStyle: "short", timeStyle: "short" }).format(new Date(d));
 
   return (
     <div className="bg-surface border border-border rounded-xl p-4 flex items-start justify-between gap-4">
@@ -55,7 +67,7 @@ function SessionCard({ session: s }: { session: Session }) {
         <p className="font-sans text-[10px] text-primary font-semibold uppercase tracking-wide mb-0.5">{s.course.title}</p>
         <p className="font-sans text-sm font-medium text-foreground">{s.title}</p>
         <p className="font-sans text-xs text-muted mt-1">
-          {fmt(s.startAt)} até {fmt(s.endAt)}
+          {fmt(s.startAt)} {untilLabel} {fmt(s.endAt)}
         </p>
         <div className="flex items-center gap-3 mt-2 flex-wrap">
           {s.meetUrl && (
@@ -70,17 +82,17 @@ function SessionCard({ session: s }: { session: Session }) {
             </span>
           )}
           <span className={`font-sans text-[10px] px-2 py-0.5 rounded-full ${s.reminder24h ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
-            24h {s.reminder24h ? "✓" : "pendente"}
+            24h {s.reminder24h ? "✓" : pendingLabel}
           </span>
           <span className={`font-sans text-[10px] px-2 py-0.5 rounded-full ${s.reminder1h ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
-            1h {s.reminder1h ? "✓" : "pendente"}
+            1h {s.reminder1h ? "✓" : pendingLabel}
           </span>
         </div>
       </div>
       <button
         onClick={() => deleteLiveSession(s.id)}
         className="text-muted hover:text-red-500 transition-colors shrink-0 mt-0.5"
-        aria-label="Excluir"
+        aria-label={deleteLabel}
       >
         <Trash2 className="w-4 h-4" />
       </button>

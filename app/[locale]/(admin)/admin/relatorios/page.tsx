@@ -1,17 +1,7 @@
 import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { RelatorioFilters } from "./RelatorioFilters";
-
-const fmtBRL  = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
-const fmtDate = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
-
-const methodLabel: Record<string, string> = {
-  STRIPE:              "Stripe",
-  MERCADO_PAGO_PIX:    "PIX",
-  MERCADO_PAGO_BOLETO: "Boleto",
-  MERCADO_PAGO_CARD:   "Cartão",
-  FREE:                "Grátis",
-};
+import { getTranslations } from "next-intl/server";
 
 const methodColor: Record<string, string> = {
   STRIPE:              "text-blue-600 bg-blue-500/10 border-blue-500/20",
@@ -21,13 +11,22 @@ const methodColor: Record<string, string> = {
   FREE:                "text-muted bg-border/50 border-border",
 };
 
-type Props = { searchParams: Promise<{ from?: string; to?: string; courseId?: string }> };
+type Props = {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ from?: string; to?: string; courseId?: string }>;
+};
 
 function toNum(v: unknown): number {
   return v === null || v === undefined ? 0 : Number(v);
 }
 
-export default async function RelatoriosPage({ searchParams }: Props) {
+export default async function RelatoriosPage({ params, searchParams }: Props) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "admin.reports" });
+  const dateLocale = locale === "en" ? "en-US" : locale === "es" ? "es-ES" : "pt-BR";
+  const fmtBRL  = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+  const fmtDate = new Intl.DateTimeFormat(dateLocale, { day: "2-digit", month: "2-digit", year: "numeric" });
+
   const { from, to, courseId } = await searchParams;
 
   // Converte datas dos filtros
@@ -104,8 +103,8 @@ export default async function RelatoriosPage({ searchParams }: Props) {
     <div>
       {/* Cabeçalho */}
       <div className="mb-6">
-        <h1 className="font-serif text-3xl font-light text-foreground">Relatórios</h1>
-        <p className="font-sans text-sm text-muted mt-1">Faturamento por curso e período</p>
+        <h1 className="font-serif text-3xl font-light text-foreground">{t("title")}</h1>
+        <p className="font-sans text-sm text-muted mt-1">{t("subtitle")}</p>
       </div>
 
       {/* Filtros */}
@@ -118,15 +117,15 @@ export default async function RelatoriosPage({ searchParams }: Props) {
       {/* KPI resumo do período filtrado */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         <div className="bg-surface border border-border rounded-2xl px-5 py-4">
-          <p className="font-sans text-xs text-muted uppercase tracking-wider mb-1">Total do período</p>
+          <p className="font-sans text-xs text-muted uppercase tracking-wider mb-1">{t("periodTotal")}</p>
           <p className="font-serif text-2xl font-medium text-foreground">{fmtBRL.format(totalReceita)}</p>
         </div>
         <div className="bg-surface border border-border rounded-2xl px-5 py-4">
-          <p className="font-sans text-xs text-muted uppercase tracking-wider mb-1">Pagamentos</p>
+          <p className="font-sans text-xs text-muted uppercase tracking-wider mb-1">{t("payments")}</p>
           <p className="font-serif text-2xl font-medium text-foreground">{totalPagamentos}</p>
         </div>
         <div className="bg-surface border border-border rounded-2xl px-5 py-4">
-          <p className="font-sans text-xs text-muted uppercase tracking-wider mb-1">Valor médio</p>
+          <p className="font-sans text-xs text-muted uppercase tracking-wider mb-1">{t("avgValue")}</p>
           <p className="font-serif text-2xl font-medium text-foreground">{fmtBRL.format(mediaValor)}</p>
         </div>
       </div>
@@ -134,34 +133,32 @@ export default async function RelatoriosPage({ searchParams }: Props) {
       {/* Tabela */}
       {payments.length === 0 ? (
         <div className="bg-surface border border-border rounded-2xl px-5 py-12 text-center">
-          <p className="font-sans text-sm text-muted">Nenhum pagamento encontrado para os filtros selecionados.</p>
+          <p className="font-sans text-sm text-muted">{t("none")}</p>
         </div>
       ) : (
         <div className="bg-surface border border-border rounded-2xl overflow-hidden">
           {payments.length === 1000 && (
             <div className="px-5 py-2.5 bg-amber-500/10 border-b border-amber-500/20">
-              <p className="font-sans text-xs text-amber-600">
-                Exibindo os 1.000 primeiros resultados — use os filtros de data para refinar.
-              </p>
+              <p className="font-sans text-xs text-amber-600">{t("limit1000")}</p>
             </div>
           )}
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-background">
-                  <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">Data</th>
-                  <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">Aluno</th>
-                  <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden md:table-cell">Curso</th>
-                  <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden sm:table-cell">Método</th>
-                  <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden lg:table-cell">Cupom</th>
-                  <th className="px-5 py-3 text-right font-sans text-xs font-semibold text-muted uppercase tracking-wider">Valor</th>
+                  <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">{t("colDate")}</th>
+                  <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">{t("colStudent")}</th>
+                  <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden md:table-cell">{t("colCourse")}</th>
+                  <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden sm:table-cell">{t("colMethod")}</th>
+                  <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden lg:table-cell">{t("colCoupon")}</th>
+                  <th className="px-5 py-3 text-right font-sans text-xs font-semibold text-muted uppercase tracking-wider">{t("colValue")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
                 {payments.map((p) => {
                   const coupon = couponMap.get(`${p.enrollment.userId}:${p.enrollment.courseId}`);
                   const mc = methodColor[p.method] ?? methodColor.FREE;
-                  const ml = methodLabel[p.method] ?? p.method;
+                  const ml = p.method;
 
                   return (
                     <tr key={p.id} className="hover:bg-background/50 transition-colors">
@@ -229,7 +226,7 @@ export default async function RelatoriosPage({ searchParams }: Props) {
               <tfoot>
                 <tr className="border-t-2 border-border bg-background">
                   <td colSpan={5} className="px-5 py-3 font-sans text-sm font-semibold text-muted">
-                    Total ({totalPagamentos} pagamento{totalPagamentos !== 1 ? "s" : ""})
+                    {totalPagamentos === 1 ? t("totalOne", { count: 1 }) : t("totalPlural", { count: totalPagamentos })}
                   </td>
                   <td className="px-5 py-3 text-right font-sans text-sm font-bold text-foreground">
                     {fmtBRL.format(totalReceita)}

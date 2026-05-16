@@ -1,15 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
-
-// ── Formatadores ─────────────────────────────────────────────────────────────
-
-const fmtBRL   = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
-const fmtDate  = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
-const fmtMonth = new Intl.DateTimeFormat("pt-BR", { month: "short" });
+import { getTranslations } from "next-intl/server";
 
 // ── Badges de método de pagamento ─────────────────────────────────────────────
 
-const methodLabel: Record<string, { label: string; color: string }> = {
+const methodBadge: Record<string, { label: string; color: string }> = {
   STRIPE:              { label: "Stripe",  color: "text-blue-600 bg-blue-500/10 border-blue-500/20" },
   MERCADO_PAGO_PIX:    { label: "PIX",     color: "text-green-600 bg-green-500/10 border-green-500/20" },
   MERCADO_PAGO_BOLETO: { label: "Boleto",  color: "text-amber-600 bg-amber-500/10 border-amber-500/20" },
@@ -51,7 +46,13 @@ function toNum(val: unknown): number {
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
-export default async function AdminOverviewPage() {
+export default async function AdminOverviewPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "admin.overview" });
   const now             = new Date();
   const startThisMonth  = new Date(now.getFullYear(), now.getMonth(), 1);
   const startLastMonth  = new Date(now.getFullYear(), now.getMonth() - 1, 1);
@@ -141,6 +142,13 @@ export default async function AdminOverviewPage() {
     }),
   ]);
 
+  // ── Formatadores ─────────────────────────────────────────────────────────────
+
+  const dateLocale = locale === "en" ? "en-US" : locale === "es" ? "es-ES" : "pt-BR";
+  const fmtBRL   = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+  const fmtDate  = new Intl.DateTimeFormat(dateLocale, { day: "2-digit", month: "2-digit", year: "numeric" });
+  const fmtMonth = new Intl.DateTimeFormat(dateLocale, { month: "short" });
+
   // ── Cálculos JS ──────────────────────────────────────────────────────────────
 
   const revThisMonthVal = toNum(revThisMonth._sum.amount);
@@ -182,7 +190,7 @@ export default async function AdminOverviewPage() {
   }));
 
   const totalPaidForMethod = paymentsByMethod.reduce((s, m) => s + m._count._all, 0) || 1;
-  const currentMonthLabel  = new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" }).format(now);
+  const currentMonthLabel  = new Intl.DateTimeFormat(dateLocale, { month: "long", year: "numeric" }).format(now);
 
   // ── Render ────────────────────────────────────────────────────────────────────
 
@@ -191,11 +199,11 @@ export default async function AdminOverviewPage() {
       {/* Cabeçalho */}
       <div className="flex items-baseline justify-between mb-8 flex-wrap gap-2">
         <div>
-          <h1 className="font-serif text-3xl font-light text-foreground">Visão Geral</h1>
+          <h1 className="font-serif text-3xl font-light text-foreground">{t("title")}</h1>
           <p className="font-sans text-sm text-muted mt-1 capitalize">{currentMonthLabel}</p>
         </div>
         <p className="font-sans text-xs text-muted">
-          Receita total acumulada:{" "}
+          {t("totalRevenueLabel")}{" "}
           <span className="font-semibold text-foreground">{fmtBRL.format(revTotalVal)}</span>
         </p>
       </div>
@@ -203,28 +211,28 @@ export default async function AdminOverviewPage() {
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-surface border border-border rounded-2xl px-5 py-5">
-          <p className="font-sans text-xs text-muted uppercase tracking-wider mb-2">Receita do mês</p>
+          <p className="font-sans text-xs text-muted uppercase tracking-wider mb-2">{t("monthRevenue")}</p>
           <p className="font-serif text-2xl font-medium text-foreground">{fmtBRL.format(revThisMonthVal)}</p>
           <div className="mt-1.5"><Delta value={deltaRev} /></div>
         </div>
 
         <div className="bg-surface border border-border rounded-2xl px-5 py-5">
-          <p className="font-sans text-xs text-muted uppercase tracking-wider mb-2">Matrículas ativas</p>
+          <p className="font-sans text-xs text-muted uppercase tracking-wider mb-2">{t("activeEnrollments")}</p>
           <p className="font-serif text-2xl font-medium text-foreground">{activeEnrollments}</p>
         </div>
 
         <div className="bg-surface border border-border rounded-2xl px-5 py-5">
-          <p className="font-sans text-xs text-muted uppercase tracking-wider mb-2">Novos alunos (30d)</p>
+          <p className="font-sans text-xs text-muted uppercase tracking-wider mb-2">{t("newStudents30d")}</p>
           <p className="font-serif text-2xl font-medium text-foreground">{newStudents30d}</p>
           <div className="mt-1.5"><Delta value={deltaStudents} /></div>
         </div>
 
         <div className="bg-surface border border-border rounded-2xl px-5 py-5">
-          <p className="font-sans text-xs text-muted uppercase tracking-wider mb-2">Taxa de conversão</p>
+          <p className="font-sans text-xs text-muted uppercase tracking-wider mb-2">{t("conversionRate")}</p>
           <p className="font-serif text-2xl font-medium text-foreground">
             {conversionRate !== null ? `${conversionRate.toFixed(0)}%` : "—"}
           </p>
-          <p className="font-sans text-xs text-muted mt-1">pago / tentativas</p>
+          <p className="font-sans text-xs text-muted mt-1">{t("conversionDesc")}</p>
         </div>
       </div>
 
@@ -234,7 +242,7 @@ export default async function AdminOverviewPage() {
         {/* Receita por mês */}
         <div className="lg:col-span-2 bg-surface border border-border rounded-2xl p-6">
           <p className="font-sans text-xs font-semibold text-muted uppercase tracking-wider mb-6">
-            Receita por mês — últimos 6 meses
+            {t("revenueChart")}
           </p>
           <div className="flex items-end gap-2 h-28">
             {monthlyData.map(({ label, value }) => (
@@ -258,17 +266,17 @@ export default async function AdminOverviewPage() {
         {/* Por método de pagamento */}
         <div className="bg-surface border border-border rounded-2xl p-6">
           <p className="font-sans text-xs font-semibold text-muted uppercase tracking-wider mb-5">
-            Por método
+            {t("byMethod")}
           </p>
           {paymentsByMethod.length === 0 ? (
-            <p className="font-sans text-sm text-muted">Nenhum pagamento ainda.</p>
+            <p className="font-sans text-sm text-muted">{t("noPayments")}</p>
           ) : (
             <div className="flex flex-col gap-4">
               {paymentsByMethod
                 .sort((a, b) => b._count._all - a._count._all)
                 .map((m) => {
                   const pct = (m._count._all / totalPaidForMethod) * 100;
-                  const ml  = methodLabel[m.method] ?? methodLabel.FREE;
+                  const ml  = methodBadge[m.method] ?? methodBadge.FREE;
                   return (
                     <div key={m.method}>
                       <div className="flex items-center justify-between mb-1.5">
@@ -295,11 +303,11 @@ export default async function AdminOverviewPage() {
         <div className="bg-surface border border-border rounded-2xl overflow-hidden">
           <div className="px-5 py-4 border-b border-border">
             <p className="font-sans text-xs font-semibold text-muted uppercase tracking-wider">
-              Cursos mais vendidos
+              {t("topCourses")}
             </p>
           </div>
           {topCoursesData.length === 0 ? (
-            <p className="font-sans text-sm text-muted px-5 py-4">Nenhum curso publicado.</p>
+            <p className="font-sans text-sm text-muted px-5 py-4">{t("noCourses")}</p>
           ) : (
             <table className="w-full text-sm">
               <tbody className="divide-y divide-border">
@@ -309,7 +317,7 @@ export default async function AdminOverviewPage() {
                       <p className="font-sans text-sm font-medium text-foreground line-clamp-1">{c.title}</p>
                     </td>
                     <td className="px-4 py-3.5 text-right whitespace-nowrap">
-                      <span className="font-sans text-xs text-muted">{c.enrollments} mat.</span>
+                      <span className="font-sans text-xs text-muted">{c.enrollments} {t("enrollmentAbbr")}</span>
                     </td>
                     <td className="px-5 py-3.5 text-right whitespace-nowrap">
                       <span className="font-sans text-sm font-semibold text-foreground">{fmtBRL.format(c.revenue)}</span>
@@ -325,15 +333,15 @@ export default async function AdminOverviewPage() {
         <div className="bg-surface border border-border rounded-2xl overflow-hidden">
           <div className="px-5 py-4 border-b border-border">
             <p className="font-sans text-xs font-semibold text-muted uppercase tracking-wider">
-              Últimos pagamentos
+              {t("recentPayments")}
             </p>
           </div>
           {recentPayments.length === 0 ? (
-            <p className="font-sans text-sm text-muted px-5 py-4">Nenhum pagamento ainda.</p>
+            <p className="font-sans text-sm text-muted px-5 py-4">{t("noPayments")}</p>
           ) : (
             <div className="divide-y divide-border">
               {recentPayments.map((p, i) => {
-                const ml = methodLabel[p.method] ?? methodLabel.FREE;
+                const ml = methodBadge[p.method] ?? methodBadge.FREE;
                 return (
                   <div key={i} className="flex items-center gap-3 px-5 py-3 hover:bg-background/50 transition-colors">
                     <div className="flex-1 min-w-0">

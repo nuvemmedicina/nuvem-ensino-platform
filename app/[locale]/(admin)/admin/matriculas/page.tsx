@@ -1,14 +1,22 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { getTranslations } from "next-intl/server";
 
-const statusLabel: Record<string, { label: string; color: string }> = {
-  ACTIVE:    { label: "Ativa",      color: "text-green-600 bg-green-500/10 border-green-500/20" },
-  COMPLETED: { label: "Concluída",  color: "text-blue-600 bg-blue-500/10 border-blue-500/20" },
-  CANCELLED: { label: "Cancelada",  color: "text-muted bg-border/50 border-border" },
-  REFUNDED:  { label: "Reembolsada", color: "text-amber-600 bg-amber-500/10 border-amber-500/20" },
+const statusColors: Record<string, string> = {
+  ACTIVE:    "text-green-600 bg-green-500/10 border-green-500/20",
+  COMPLETED: "text-blue-600 bg-blue-500/10 border-blue-500/20",
+  CANCELLED: "text-muted bg-border/50 border-border",
+  REFUNDED:  "text-amber-600 bg-amber-500/10 border-amber-500/20",
 };
 
-export default async function AdminMatriculasPage() {
+export default async function AdminMatriculasPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "admin.enrollments" });
+
   const enrollments = await prisma.enrollment.findMany({
     include: {
       user:   { select: { name: true, email: true } },
@@ -21,27 +29,29 @@ export default async function AdminMatriculasPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-serif text-3xl font-light text-foreground">Matrículas</h1>
-        <p className="font-sans text-sm text-muted mt-1">{enrollments.length} matrículas no total</p>
+        <h1 className="font-serif text-3xl font-light text-foreground">{t("title")}</h1>
+        <p className="font-sans text-sm text-muted mt-1">{t("count", { count: enrollments.length })}</p>
       </div>
 
       {enrollments.length === 0 ? (
-        <p className="font-sans text-sm text-muted">Nenhuma matrícula ainda.</p>
+        <p className="font-sans text-sm text-muted">{t("none")}</p>
       ) : (
         <div className="bg-surface border border-border rounded-2xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-background">
-                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">Aluno</th>
-                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">Curso</th>
-                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden sm:table-cell">Data</th>
-                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden md:table-cell">Presenças</th>
-                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">Status</th>
+                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">{t("colStudent")}</th>
+                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">{t("colCourse")}</th>
+                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden sm:table-cell">{t("colDate")}</th>
+                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden md:table-cell">{t("colAttendances")}</th>
+                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">{t("colStatus")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {enrollments.map((e) => {
-                const st = statusLabel[e.status] ?? statusLabel.ACTIVE;
+                const statusKey = e.status === "ACTIVE" ? "statusActive" : e.status === "COMPLETED" ? "statusCompleted" : e.status === "CANCELLED" ? "statusCancelled" : "statusRefunded";
+                const statusColor = statusColors[e.status] ?? statusColors.ACTIVE;
+                const dateLocale = locale === "en" ? "en-US" : locale === "es" ? "es-ES" : "pt-BR";
                 return (
                   <tr key={e.id} className="hover:bg-background/50 transition-colors">
                     <td className="px-5 py-3.5">
@@ -63,21 +73,21 @@ export default async function AdminMatriculasPage() {
                     </td>
                     <td className="px-5 py-3.5 hidden sm:table-cell">
                       <span className="font-sans text-xs text-muted">
-                        {new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(e.enrolledAt))}
+                        {new Intl.DateTimeFormat(dateLocale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(e.enrolledAt))}
                       </span>
                     </td>
                     <td className="px-5 py-3.5 hidden md:table-cell">
                       {e.course.totalSeats !== null ? (
                         <span className="font-sans text-xs text-foreground">
-                          {e._count.attendances} dia{e._count.attendances !== 1 ? "s" : ""}
+                          {e._count.attendances === 1 ? t("attendanceDay", { count: 1 }) : t("attendanceDays", { count: e._count.attendances })}
                         </span>
                       ) : (
                         <span className="font-sans text-xs text-muted">—</span>
                       )}
                     </td>
                     <td className="px-5 py-3.5">
-                      <span className={`font-sans text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${st.color}`}>
-                        {st.label}
+                      <span className={`font-sans text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${statusColor}`}>
+                        {t(statusKey)}
                       </span>
                     </td>
                   </tr>
