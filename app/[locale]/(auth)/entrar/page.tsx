@@ -1,19 +1,21 @@
 "use client";
 
 import { Suspense, useState, useTransition } from "react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 function EntrarForm() {
+  const t = useTranslations("auth.login");
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
   const errorParam = searchParams.get("error");
 
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(
-    errorParam === "CredentialsSignin" ? "Email ou senha incorretos." : ""
+    errorParam === "CredentialsSignin" ? t("error") : ""
   );
   const [isPending, startTransition] = useTransition();
 
@@ -30,7 +32,7 @@ function EntrarForm() {
       });
 
       if (result?.error) {
-        setError("Email ou senha incorretos.");
+        setError(t("error"));
       } else {
         window.location.href = callbackUrl;
       }
@@ -46,9 +48,9 @@ function EntrarForm() {
       className="rounded-2xl border border-white/10 p-8"
       style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(12px)" }}
     >
-      <h1 className="font-serif text-3xl font-light text-white mb-1">Entrar</h1>
+      <h1 className="font-serif text-3xl font-light text-white mb-1">{t("title")}</h1>
       <p className="font-sans text-sm text-white/50 mb-8">
-        Acesse sua conta para continuar.
+        {t("subtitle")}
       </p>
 
       {/* Google */}
@@ -63,19 +65,19 @@ function EntrarForm() {
           <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
           <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
         </svg>
-        Continuar com Google
+        {t("googleButton")}
       </button>
 
       <div className="flex items-center gap-3 mb-6">
         <div className="flex-1 h-px bg-white/10" />
-        <span className="font-sans text-xs text-white/30">ou</span>
+        <span className="font-sans text-xs text-white/30">{t("or")}</span>
         <div className="flex-1 h-px bg-white/10" />
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="email" className="font-sans text-xs font-medium text-white/60">
-            Email
+            {t("emailLabel")}
           </label>
           <input
             id="email"
@@ -83,7 +85,7 @@ function EntrarForm() {
             type="email"
             required
             autoComplete="email"
-            placeholder="seu@email.com"
+            placeholder={t("emailPlaceholder")}
             className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/25 text-sm focus:outline-none focus:border-accent/50 transition-colors"
           />
         </div>
@@ -91,13 +93,13 @@ function EntrarForm() {
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center justify-between">
             <label htmlFor="password" className="font-sans text-xs font-medium text-white/60">
-              Senha
+              {t("passwordLabel")}
             </label>
             <Link
               href="/esqueci-senha"
               className="font-sans text-xs text-accent/70 hover:text-accent transition-colors"
             >
-              Esqueceu?
+              {t("forgot")}
             </Link>
           </div>
           <div className="relative">
@@ -114,7 +116,7 @@ function EntrarForm() {
               type="button"
               onClick={() => setShowPassword((v) => !v)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60"
-              aria-label="Ver senha"
+              aria-label={t("forgot")}
             >
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
@@ -133,14 +135,14 @@ function EntrarForm() {
           className="w-full flex items-center justify-center gap-2 font-sans text-sm font-semibold px-4 py-3 rounded-xl bg-accent text-accent-foreground hover:bg-accent-light disabled:opacity-60 transition-colors mt-1"
         >
           {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-          Entrar
+          {t("submitButton")}
         </button>
       </form>
 
       <p className="font-sans text-xs text-white/40 text-center mt-6">
-        Não tem uma conta?{" "}
+        {t("noAccount")}{" "}
         <Link href="/cadastro" className="text-accent/80 hover:text-accent transition-colors">
-          Criar conta
+          {t("createAccount")}
         </Link>
       </p>
     </div>
