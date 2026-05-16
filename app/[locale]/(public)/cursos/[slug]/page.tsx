@@ -14,6 +14,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { localizedCourse } from "@/lib/i18n-content";
 
 // Rich static content (objectives, modules, audience) not yet in DB
 const staticContent: Record<
@@ -407,14 +408,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
   if (!course) return {};
 
+  const lc = localizedCourse(course, locale);
   const description =
     course.metaDesc ??
-    course.shortDesc ??
-    `Curso ${course.title} — ${course.hours}h de formação prática com especialistas. Certificação ISO 9001 pela NU.V.E.M Ensino.`;
+    lc.shortDesc ??
+    `Curso ${lc.title} — ${course.hours}h de formação prática com especialistas. Certificação ISO 9001 pela NU.V.E.M Ensino.`;
 
   const ogImage = course.thumbnailUrl
-    ? { url: course.thumbnailUrl, width: 1200, height: 630, alt: course.title }
-    : { url: `/cursos/${slug}/opengraph-image`, width: 1200, height: 630, alt: course.title };
+    ? { url: course.thumbnailUrl, width: 1200, height: 630, alt: lc.title }
+    : { url: `/cursos/${slug}/opengraph-image`, width: 1200, height: 630, alt: lc.title };
 
   const canonicalPt = `/cursos/${slug}`;
   const canonicalEn = `/en/courses/${slug}`;
@@ -422,7 +424,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const canonical = locale === "en" ? canonicalEn : locale === "es" ? canonicalEs : canonicalPt;
 
   return {
-    title: course.metaTitle ?? `${course.title} | NU.V.E.M Ensino`,
+    title: course.metaTitle ?? `${lc.title} | NU.V.E.M Ensino`,
     description,
     alternates: {
       canonical,
@@ -435,7 +437,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     openGraph: {
       type: "website",
-      title: course.title,
+      title: lc.title,
       description,
       url: canonical,
       images: [ogImage],
@@ -443,7 +445,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: course.title,
+      title: lc.title,
       description,
       images: [ogImage.url],
     },
@@ -465,14 +467,15 @@ export default async function CoursePage({ params }: Props) {
 
   if (!course) notFound();
 
+  const lc = localizedCourse(course, locale);
   const content = staticContent[slug] ?? null;
 
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br";
   const courseJsonLd = {
     "@context": "https://schema.org",
     "@type": "Course",
-    name: course.title,
-    description: course.description,
+    name: lc.title,
+    description: lc.description,
     url: `${APP_URL}/cursos/${course.slug}`,
     image: course.thumbnailUrl ?? `${APP_URL}/og-image.png`,
     provider: {
@@ -529,7 +532,7 @@ export default async function CoursePage({ params }: Props) {
             <ChevronRight className="w-3 h-3" />
             <Link href="/cursos" className="hover:text-white/70 transition-colors">{tNav("courses")}</Link>
             <ChevronRight className="w-3 h-3" />
-            <span className="text-white/60">{course.title}</span>
+            <span className="text-white/60">{lc.title}</span>
           </nav>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 items-start">
@@ -547,10 +550,10 @@ export default async function CoursePage({ params }: Props) {
               </div>
 
               <h1 className="font-serif text-4xl sm:text-5xl font-light text-white leading-tight mb-4">
-                {course.title}
+                {lc.title}
               </h1>
               <p className="font-sans text-base text-white/60 leading-relaxed max-w-2xl mb-8">
-                {course.description}
+                {lc.description}
               </p>
 
               <div className="flex flex-wrap gap-6 text-white/70">
@@ -641,7 +644,7 @@ export default async function CoursePage({ params }: Props) {
             <div className="relative w-full rounded-2xl overflow-hidden border border-white/10" style={{ paddingTop: "56.25%" }}>
               <iframe
                 src={course.previewUrl}
-                title={course.title}
+                title={lc.title}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="absolute inset-0 w-full h-full"

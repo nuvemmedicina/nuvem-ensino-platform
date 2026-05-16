@@ -4,6 +4,7 @@ import NativeLink from "next/link";
 import { Filter, Search } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
+import { localizedCourse } from "@/lib/i18n-content";
 import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata({
@@ -257,6 +258,7 @@ export default async function CursosPage({
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {courses.map((course) => {
+                  const lc = localizedCourse(course, locale);
                   const reservedPct =
                     course.totalSeats && course.totalSeats > 0
                       ? Math.round(((course.reservedSeats ?? 0) / course.totalSeats) * 100)
@@ -275,7 +277,7 @@ export default async function CursosPage({
                         {course.thumbnailUrl ? (
                           <Image
                             src={course.thumbnailUrl}
-                            alt={course.instructor.user.name ?? course.title}
+                            alt={course.instructor.user.name ?? lc.title}
                             fill
                             className="object-cover object-top"
                             sizes="(max-width: 640px) 100vw, 50vw"
@@ -301,12 +303,12 @@ export default async function CursosPage({
                             {course.tags.length > 0 && ` · ${course.tags[0].tag.name}`}
                           </p>
                           <h2 className="font-serif text-xl font-medium text-foreground leading-snug">
-                            {course.title}
+                            {lc.title}
                           </h2>
                         </div>
 
                         <p className="font-sans text-xs text-muted leading-relaxed flex-1">
-                          {course.shortDesc ?? course.description}
+                          {lc.shortDesc ?? lc.description}
                         </p>
 
                         {course.totalSeats && (

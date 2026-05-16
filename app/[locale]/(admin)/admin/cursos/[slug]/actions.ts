@@ -12,18 +12,34 @@ async function requireAdmin() {
 
 export async function updateCourse(courseId: string, slug: string, formData: FormData) {
   await requireAdmin();
+
+  const str = (key: string) => (formData.get(key) as string) || null;
+
   await prisma.course.update({
     where: { id: courseId },
     data: {
+      // PT-BR (authoritative)
       title:       formData.get("title") as string,
-      shortDesc:   (formData.get("shortDesc") as string) || null,
+      shortDesc:   str("shortDesc"),
       description: formData.get("description") as string,
+
+      // EN translations
+      titleEn:       str("titleEn"),
+      shortDescEn:   str("shortDescEn"),
+      descriptionEn: str("descriptionEn"),
+
+      // ES translations
+      titleEs:       str("titleEs"),
+      shortDescEs:   str("shortDescEs"),
+      descriptionEs: str("descriptionEs"),
+
+      // Other fields
       price:       parseFloat(formData.get("price") as string),
       hours:       parseInt(formData.get("hours") as string),
       status:      formData.get("status") as "DRAFT" | "PUBLISHED" | "ARCHIVED",
       category:    formData.get("category") as "HANDS_ON" | "ONLINE" | "HYBRID",
-      location:    (formData.get("location") as string) || null,
-      thumbnailUrl: (formData.get("thumbnailUrl") as string) || null,
+      location:    str("location"),
+      thumbnailUrl: str("thumbnailUrl"),
     },
   });
   revalidatePath(`/admin/cursos/${slug}`);

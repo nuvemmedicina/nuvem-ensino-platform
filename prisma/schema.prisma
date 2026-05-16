@@ -166,6 +166,15 @@ model Course {
   location      String?
   metaTitle     String?
   metaDesc      String?
+
+  // Translations (nullable — fill only when a translation is available)
+  titleEn        String?
+  shortDescEn    String?
+  descriptionEn  String?   @db.Text
+  titleEs        String?
+  shortDescEs    String?
+  descriptionEs  String?   @db.Text
+
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 

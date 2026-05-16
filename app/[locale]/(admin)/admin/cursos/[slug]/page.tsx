@@ -13,7 +13,7 @@ import {
 import { DeleteButton } from "./DeleteButton";
 import { MuxUploader } from "./MuxUploader";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ slug: string; locale: string }> };
 
 const inputClass =
   "w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-primary/50";
@@ -151,6 +151,68 @@ export default async function AdminCursoEditPage({ params }: Props) {
             <button type="submit" className={btnPrimary}>Salvar dados do curso</button>
           </div>
         </form>
+      </section>
+
+      {/* ── Traduções ── */}
+      <section className="bg-surface border border-border rounded-2xl p-6 mb-6">
+        <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-1">
+          Traduções de Conteúdo
+        </h2>
+        <p className="font-sans text-xs text-muted mb-5">
+          Deixe em branco para usar o texto em português como fallback automático.
+        </p>
+
+        {/* Both EN and ES sections are always visible — a single submit saves all 6 fields */}
+        <form action={updateCourseAction} className="space-y-4">
+            {/* Hidden marker so the action knows this is a translations submit */}
+            <input type="hidden" name="_translationsOnly" value="1" />
+
+            {/* EN section */}
+            <div className="border border-border rounded-xl overflow-hidden">
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-background border-b border-border">
+                <span className="font-sans text-xs font-bold text-muted uppercase tracking-widest">🇺🇸 English</span>
+              </div>
+              <div className="p-4 space-y-3">
+                <div>
+                  <label className={labelClass}>Título (EN)</label>
+                  <input name="titleEn" defaultValue={course.titleEn ?? ""} placeholder={course.title} className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Descrição curta (EN)</label>
+                  <input name="shortDescEn" defaultValue={course.shortDescEn ?? ""} placeholder={course.shortDesc ?? ""} className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Descrição completa (EN)</label>
+                  <textarea name="descriptionEn" defaultValue={course.descriptionEn ?? ""} placeholder={course.description} rows={4} className={`${inputClass} resize-none`} />
+                </div>
+              </div>
+            </div>
+
+            {/* ES section */}
+            <div className="border border-border rounded-xl overflow-hidden">
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-background border-b border-border">
+                <span className="font-sans text-xs font-bold text-muted uppercase tracking-widest">🇪🇸 Español</span>
+              </div>
+              <div className="p-4 space-y-3">
+                <div>
+                  <label className={labelClass}>Título (ES)</label>
+                  <input name="titleEs" defaultValue={course.titleEs ?? ""} placeholder={course.title} className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Descrição curta (ES)</label>
+                  <input name="shortDescEs" defaultValue={course.shortDescEs ?? ""} placeholder={course.shortDesc ?? ""} className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Descrição completa (ES)</label>
+                  <textarea name="descriptionEs" defaultValue={course.descriptionEs ?? ""} placeholder={course.description} rows={4} className={`${inputClass} resize-none`} />
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <button type="submit" className={btnPrimary}>Salvar traduções</button>
+            </div>
+          </form>
       </section>
 
       {/* ── Módulos & Aulas ── */}
