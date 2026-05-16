@@ -121,6 +121,8 @@
     "level": "Level",
     "certificate": "Certificate",
     "about": "About this course",
+    "objectives": "What you'll learn",
+    "includes": "What's included",
     "curriculum": "Curriculum",
     "prerequisites": "Prerequisites",
     "targetAudience": "Target audience",

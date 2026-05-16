@@ -1,22 +1,35 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 
-export const metadata: Metadata = {
-  title: "NU.V.E.M Ensino — Formação Médica de Excelência",
-  description:
-    "Plataforma de formação médica com cursos hands-on e online de Gastroenterologia, Motilidade Digestiva, Testes Respiratórios e Fisioterapia Pélvica. Certificação ISO 9001 em Belo Horizonte, MG.",
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    title: "NU.V.E.M Ensino — Formação Médica de Excelência",
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "home" });
+
+  return {
+    title: `NU.V.E.M Ensino — ${t("hero.title")} ${t("hero.titleHighlight")}`,
     description:
-      "Cursos hands-on e online para profissionais de saúde. Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica com especialistas de referência nacional.",
-    url: "/",
-    type: "website",
-  },
-};
+      locale === "pt"
+        ? "Plataforma de formação médica com cursos hands-on e online de Gastroenterologia, Motilidade Digestiva, Testes Respiratórios e Fisioterapia Pélvica. Certificação ISO 9001 em Belo Horizonte, MG."
+        : locale === "en"
+          ? "Medical education platform with hands-on and online courses in Gastroenterology, Digestive Motility, Breath Tests and Pelvic Physiotherapy. ISO 9001 certified in Belo Horizonte, MG."
+          : "Plataforma de formación médica con cursos prácticos y en línea en Gastroenterología, Motilidad Digestiva, Pruebas Respiratorias y Fisioterapia Pélvica. Certificación ISO 9001 en Belo Horizonte, MG.",
+    alternates: {
+      canonical: "/",
+    },
+    openGraph: {
+      title: `NU.V.E.M Ensino — ${t("hero.title")} ${t("hero.titleHighlight")}`,
+      description: t("hero.description"),
+      url: "/",
+      type: "website",
+    },
+  };
+}
 
 const courses = [
   {
@@ -25,7 +38,7 @@ const courses = [
     description:
       "Domine os principais exames de motilidade digestiva: manometria de alta resolução, pHmetria e impedância em ambiente clínico supervisionado.",
     price: "R$ 6.500",
-    hours: "40h",
+    hours: "40",
     category: "Hands-On",
     instructorName: "Dr. Felipe Nelson",
     instructorPhoto: "/instructors/felipe-nelson.jpg",
@@ -36,7 +49,7 @@ const courses = [
     description:
       "Turma de Junho: formação presencial com teoria e prática supervisionada em testes respiratórios nos dias 19 e 20 de junho de 2026.",
     price: "R$ 2.200",
-    hours: "8h",
+    hours: "8",
     category: "Hands-On",
     instructorName: "Dra. Vera Ângelo",
     instructorPhoto: "/instructors/dra-vera.jpg",
@@ -47,7 +60,7 @@ const courses = [
     description:
       "Treinamento teórico-prático em fisioterapia pélvica: avaliação, tratamento e prática supervisionada com Dra. Anna Karoline.",
     price: "R$ 3.500",
-    hours: "30h",
+    hours: "30",
     category: "Hands-On",
     instructorName: "Dra. Anna Karoline",
     instructorPhoto: "/instructors/anna-karoline.jpg",
@@ -86,31 +99,6 @@ const instructors = [
     bio: "Gastroenterologista pela USP-Ribeirão Preto, doutor pela USP. Especialista em manometria esofágica de alta resolução, pHmetria e impedancio-pHmetria, com anos de experiência clínica.",
     photo: "/instructors/felipe-nelson.jpg",
     slug: "dr-felipe-nelson",
-  },
-];
-
-const categories = [
-  {
-    label: "Hands-On",
-    href: "/cursos?categoria=hands-on",
-    description:
-      "Treinamento presencial em ambiente controlado com equipamentos reais e supervisão especializada.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
-      </svg>
-    ),
-  },
-  {
-    label: "Online",
-    href: "/cursos?categoria=online",
-    description:
-      "Aulas ao vivo e gravadas com acesso flexível, material didático e certificação reconhecida.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3" />
-      </svg>
-    ),
   },
 ];
 
@@ -165,7 +153,37 @@ const jsonLd = {
   ],
 };
 
-export default function Home() {
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "home" });
+
+  const modalities = [
+    {
+      label: "Hands-On",
+      href: "/cursos" as const,
+      description: t("modalities.handsOnDescription"),
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+        </svg>
+      ),
+    },
+    {
+      label: "Online",
+      href: "/cursos" as const,
+      description: t("modalities.onlineDescription"),
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3" />
+        </svg>
+      ),
+    },
+  ];
+
   return (
     <div className="flex flex-col min-h-full bg-background">
       <script
@@ -209,20 +227,18 @@ export default function Home() {
         </div>
 
         <span className="relative font-sans text-xs font-semibold tracking-[0.25em] uppercase text-accent mb-6 opacity-80">
-          Plataforma de Formação Médica
+          {t("hero.badge")}
         </span>
 
         <h1 className="relative font-serif text-5xl sm:text-6xl lg:text-7xl font-light text-white leading-tight max-w-3xl mb-6">
-          Formação Médica de{" "}
+          {t("hero.title")}{" "}
           <em className="not-italic italic text-accent font-medium">
-            Excelência
+            {t("hero.titleHighlight")}
           </em>
         </h1>
 
         <p className="relative font-sans text-base sm:text-lg text-white/60 max-w-xl leading-relaxed mb-10">
-          Cursos hands-on e online desenvolvidos por especialistas, para
-          profissionais de saúde que buscam dominar procedimentos clínicos com
-          rigor científico.
+          {t("hero.description")}
         </p>
 
         <div className="relative flex flex-col sm:flex-row gap-4 items-center">
@@ -230,13 +246,13 @@ export default function Home() {
             href="/cursos"
             className="font-sans text-sm font-semibold px-8 py-3.5 rounded-full bg-accent text-accent-foreground hover:bg-accent-light transition-colors"
           >
-            Ver Cursos
+            {t("hero.cta")}
           </Link>
           <Link
             href="/sobre"
             className="font-sans text-sm font-semibold px-8 py-3.5 rounded-full border border-accent text-accent hover:bg-accent/10 transition-colors"
           >
-            Conhecer a Plataforma
+            {t("hero.ctaSecondary")}
           </Link>
         </div>
 
@@ -251,14 +267,14 @@ export default function Home() {
       <section className="bg-background py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <h2 className="font-serif text-3xl sm:text-4xl font-light text-foreground text-center mb-3">
-            Modalidades de Ensino
+            {t("modalities.title")}
           </h2>
           <p className="font-sans text-sm text-muted text-center mb-12">
-            Escolha o formato que melhor se adapta à sua rotina
+            {t("modalities.subtitle")}
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {categories.map((cat) => (
+            {modalities.map((cat) => (
               <Link
                 key={cat.label}
                 href={cat.href}
@@ -276,7 +292,7 @@ export default function Home() {
                   </p>
                 </div>
                 <span className="font-sans text-xs font-semibold text-primary group-hover:text-primary-light transition-colors tracking-wider uppercase">
-                  Explorar cursos →
+                  {t("modalities.explore")}
                 </span>
               </Link>
             ))}
@@ -290,17 +306,17 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
             <div>
               <h2 className="font-serif text-3xl sm:text-4xl font-light text-foreground mb-2">
-                Cursos em Destaque
+                {t("featured.title")}
               </h2>
               <p className="font-sans text-sm text-muted">
-                Formações de alto impacto para a sua prática clínica
+                {t("featured.subtitle")}
               </p>
             </div>
             <Link
               href="/cursos"
               className="font-sans text-xs font-semibold text-primary hover:text-primary-light transition-colors tracking-wider uppercase shrink-0"
             >
-              Ver todos →
+              {t("featured.viewAll")}
             </Link>
           </div>
 
@@ -344,14 +360,14 @@ export default function Home() {
                         {course.price}
                       </span>
                       <span className="font-sans text-[10px] text-muted/70 tracking-wide">
-                        {course.hours} de formação
+                        {t("featured.training", { hours: course.hours })}
                       </span>
                     </div>
                     <Link
-                      href={`/cursos/${course.slug}`}
+                      href={{ pathname: "/cursos/[slug]", params: { slug: course.slug } }}
                       className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition-all"
                     >
-                      Saiba mais
+                      {t("featured.learnMore")}
                     </Link>
                   </div>
                 </div>
@@ -369,13 +385,13 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
             <span className="font-sans text-xs font-semibold tracking-[0.25em] uppercase text-accent opacity-80 mb-4 block">
-              Corpo docente
+              {t("instructors.badge")}
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl font-light text-white mb-3">
-              Especialistas de referência nacional
+              {t("instructors.title")}
             </h2>
             <p className="font-sans text-sm text-white/50 max-w-xl mx-auto">
-              Médicos e fisioterapeutas com formação de alto nível e atuação clínica ativa nas suas especialidades
+              {t("instructors.subtitle")}
             </p>
           </div>
 
@@ -418,7 +434,7 @@ export default function Home() {
               href="/instrutores"
               className="inline-flex items-center gap-2 font-sans text-sm font-semibold text-white/60 hover:text-white transition-colors"
             >
-              Ver perfil completo dos instrutores
+              {t("instructors.viewProfiles")}
               <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
                 <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
               </svg>
@@ -444,17 +460,16 @@ export default function Home() {
           style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(8px)" }}
         >
           <h2 className="font-serif text-3xl sm:text-4xl font-light text-primary mb-4">
-            Pronto para evoluir na sua carreira?
+            {t("cta.title")}
           </h2>
           <p className="font-sans text-sm text-primary/70 mb-8 leading-relaxed">
-            Junte-se a centenas de profissionais de saúde que já transformaram
-            sua prática clínica com a NU.V.E.M Ensino.
+            {t("cta.description")}
           </p>
           <Link
             href="/cursos"
             className="inline-block font-sans text-sm font-semibold px-10 py-4 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
           >
-            Começar agora
+            {t("cta.button")}
           </Link>
         </div>
       </section>

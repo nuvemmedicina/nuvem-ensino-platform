@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -13,18 +14,24 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-export const metadata: Metadata = {
-  title: "Instrutores",
-  description:
-    "Conheça o corpo docente da NU.V.E.M Ensino: Dra. Vera Ângelo, Dra. Eliane Basques, Dr. Felipe Nelson e outros especialistas de referência nacional em Gastroenterologia e Fisioterapia Pélvica.",
-  alternates: { canonical: "/instrutores" },
-  openGraph: {
-    title: "Instrutores | NU.V.E.M Ensino",
-    description:
-      "Especialistas de referência nacional em Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Conheça quem vai te formar.",
-    url: "/instrutores",
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "instructors.meta" });
+  return {
+    title: t("title"),
+    description: t("description"),
+    alternates: { canonical: "/instrutores" },
+    openGraph: {
+      title: `${t("title")} | NU.V.E.M Ensino`,
+      description: t("description"),
+      url: "/instrutores",
+    },
+  };
+}
 
 const profiles: Record<
   string,
@@ -103,7 +110,13 @@ const profiles: Record<
   },
 };
 
-export default async function InstrutoresPage() {
+export default async function InstrutoresPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "instructors" });
   const instructors = await prisma.instructor.findMany({
     include: {
       user: { select: { name: true } },
@@ -120,9 +133,9 @@ export default async function InstrutoresPage() {
       <section className="bg-canvas px-4 py-16">
         <div className="max-w-5xl mx-auto">
           <span className="font-sans text-xs font-semibold tracking-[0.25em] uppercase text-accent opacity-80 mb-4 block">
-            Corpo docente
+            {t("badge")}
           </span>
-          <h1 className="font-serif text-4xl font-light text-white">Instrutores</h1>
+          <h1 className="font-serif text-4xl font-light text-white">{t("title")}</h1>
         </div>
       </section>
 
@@ -196,7 +209,7 @@ export default async function InstrutoresPage() {
                         {inst.courses.map((c) => (
                           <Link
                             key={c.id}
-                            href={`/cursos/${c.slug}`}
+                            href={{ pathname: "/cursos/[slug]", params: { slug: c.slug } }}
                             className="font-sans text-[11px] font-semibold px-3 py-1 rounded-full border border-primary/30 text-primary hover:bg-primary hover:text-white transition-colors"
                           >
                             {c.title.length > 40 ? c.title.slice(0, 40) + "…" : c.title}

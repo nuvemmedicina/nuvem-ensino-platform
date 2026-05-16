@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import {
   Clock,
   Users,
@@ -387,7 +388,7 @@ const staticContent: Record<
 };
 
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 };
 
 export async function generateStaticParams() {
@@ -436,7 +437,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CoursePage({ params }: Props) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
+  const t = await getTranslations({ locale, namespace: "coursePage" });
+  const tNav = await getTranslations({ locale, namespace: "nav" });
 
   const course = await prisma.course.findFirst({
     where: { slug, status: "PUBLISHED" },
@@ -508,9 +511,9 @@ export default async function CoursePage({ params }: Props) {
         <div className="max-w-5xl mx-auto">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-1.5 font-sans text-xs text-white/40 mb-8">
-            <Link href="/" className="hover:text-white/70 transition-colors">Início</Link>
+            <Link href="/" className="hover:text-white/70 transition-colors">{locale === "en" ? "Home" : locale === "es" ? "Inicio" : "Início"}</Link>
             <ChevronRight className="w-3 h-3" />
-            <Link href="/cursos" className="hover:text-white/70 transition-colors">Cursos</Link>
+            <Link href="/cursos" className="hover:text-white/70 transition-colors">{tNav("courses")}</Link>
             <ChevronRight className="w-3 h-3" />
             <span className="text-white/60">{course.title}</span>
           </nav>
@@ -539,12 +542,14 @@ export default async function CoursePage({ params }: Props) {
               <div className="flex flex-wrap gap-6 text-white/70">
                 <span className="flex items-center gap-2 font-sans text-sm">
                   <Clock className="w-4 h-4 text-accent/70" />
-                  {course.hours}h de formação
+                  {course.hours}{t("hours")}
                 </span>
                 {availableSeats !== null && (
                   <span className="flex items-center gap-2 font-sans text-sm">
                     <Users className="w-4 h-4 text-accent/70" />
-                    {availableSeats} vagas disponíveis
+                    {availableSeats === 1
+                      ? t("availableSeats", { count: availableSeats })
+                      : t("availableSeatsPlural", { count: availableSeats })}
                   </span>
                 )}
                 {course.location && (
@@ -596,10 +601,10 @@ export default async function CoursePage({ params }: Props) {
                 )}
 
                 <Link
-                  href={`/checkout/${course.slug}`}
+                  href={{ pathname: "/checkout/[slug]", params: { slug: course.slug } }}
                   className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full bg-accent text-accent-foreground hover:bg-accent-light transition-colors mb-3"
                 >
-                  Inscrever-se agora
+                  {t("checkoutButton")}
                 </Link>
                 <a
                   href="https://wa.me/5531997261029"
@@ -607,7 +612,7 @@ export default async function CoursePage({ params }: Props) {
                   rel="noopener noreferrer"
                   className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full border border-white/20 text-white/80 hover:border-white/50 hover:text-white transition-all"
                 >
-                  Tirar dúvidas no WhatsApp
+                  {locale === "en" ? "Ask on WhatsApp" : locale === "es" ? "Consultar por WhatsApp" : "Tirar dúvidas no WhatsApp"}
                 </a>
               </div>
             </div>
@@ -640,7 +645,7 @@ export default async function CoursePage({ params }: Props) {
             <section>
               <h2 className="font-serif text-2xl font-medium text-foreground mb-6 flex items-center gap-3">
                 <BookOpen className="w-5 h-5 text-primary/60" />
-                O que você vai aprender
+                {t("objectives")}
               </h2>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {content.objectives.map((obj) => (
@@ -657,7 +662,7 @@ export default async function CoursePage({ params }: Props) {
           {content?.modules && (
             <section>
               <h2 className="font-serif text-2xl font-medium text-foreground mb-6">
-                Conteúdo do Curso
+                {t("curriculum")}
               </h2>
               <div className="flex flex-col gap-3">
                 {content.modules.map((mod, i) => (
@@ -691,7 +696,7 @@ export default async function CoursePage({ params }: Props) {
           {content?.targetAudience && (
             <section>
               <h2 className="font-serif text-2xl font-medium text-foreground mb-6">
-                Para quem é este curso
+                {t("targetAudience")}
               </h2>
               <ul className="flex flex-col gap-2">
                 {content.targetAudience.map((target) => (
@@ -709,7 +714,7 @@ export default async function CoursePage({ params }: Props) {
             <section>
               <h2 className="font-serif text-2xl font-medium text-foreground mb-6 flex items-center gap-3">
                 <Award className="w-5 h-5 text-primary/60" />
-                O que está incluído
+                {t("includes")}
               </h2>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {content.includes.map((item) => (
@@ -727,7 +732,7 @@ export default async function CoursePage({ params }: Props) {
         <div className="lg:sticky lg:top-24 space-y-6">
           <div className="bg-surface border border-border rounded-2xl p-6">
             <p className="font-sans text-[11px] font-bold uppercase tracking-widest text-muted mb-4">
-              Instrutor
+              {t("instructor")}
             </p>
             <div className="flex items-start gap-4 mb-4">
               <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20 shrink-0">
@@ -769,13 +774,13 @@ export default async function CoursePage({ params }: Props) {
               }).format(Number(course.price))}
             </p>
             <p className="font-sans text-xs text-muted mb-5">
-              {course.hours}h de formação
+              {course.hours}{t("hours")}
             </p>
             <Link
-              href={`/checkout/${course.slug}`}
+              href={{ pathname: "/checkout/[slug]", params: { slug: course.slug } }}
               className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
             >
-              Inscrever-se agora
+              {t("checkoutButton")}
             </Link>
           </div>
         </div>

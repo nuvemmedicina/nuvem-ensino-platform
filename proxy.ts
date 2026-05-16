@@ -16,7 +16,7 @@ function stripLocale(pathname: string): string {
 }
 
 // Paths that require an active session (locale-stripped)
-const protectedPrefixes = ["/dashboard", "/admin", "/instrutor"];
+const protectedPrefixes = ["/dashboard", "/admin", "/instrutor/"];
 
 // Paths that should redirect to /dashboard when already logged in (locale-stripped)
 const authRoutes = [

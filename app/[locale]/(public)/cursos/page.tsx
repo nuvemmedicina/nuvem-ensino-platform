@@ -1,29 +1,40 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Image from "next/image";
 import { Filter, Search } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 
-export const metadata: Metadata = {
-  title: "Cursos",
-  description:
-    "Catálogo completo de cursos hands-on e online em Gastroenterologia, Manometria Esofágica, Testes Respiratórios, pHmetria e Fisioterapia Pélvica. Formação prática com especialistas em Belo Horizonte.",
-  alternates: { canonical: "/cursos" },
-  openGraph: {
-    title: "Cursos | NU.V.E.M Ensino",
-    description:
-      "Cursos hands-on e online de Gastroenterologia, Manometria, Testes Respiratórios e Fisioterapia Pélvica. Turmas reduzidas com especialistas.",
-    url: "/cursos",
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "courses.meta" });
+  return {
+    title: t("title"),
+    description: t("description"),
+    alternates: { canonical: "/cursos" },
+    openGraph: {
+      title: `${t("title")} | NU.V.E.M Ensino`,
+      description: t("description"),
+      url: "/cursos",
+    },
+  };
+}
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
 export default async function CursosPage({
+  params: pageParams,
   searchParams,
 }: {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<SearchParams>;
 }) {
+  const { locale } = await pageParams;
+  const t = await getTranslations({ locale, namespace: "courses" });
   const params = await searchParams;
 
   const categoria = typeof params.categoria === "string" ? params.categoria : "";
@@ -89,13 +100,15 @@ export default async function CursosPage({
       <section className="bg-canvas px-4 py-14">
         <div className="max-w-5xl mx-auto">
           <span className="font-sans text-xs font-semibold tracking-[0.25em] uppercase text-accent mb-4 block opacity-80">
-            Catálogo
+            {t("badge")}
           </span>
           <h1 className="font-serif text-4xl sm:text-5xl font-light text-white mb-3">
-            Todos os Cursos
+            {t("title")}
           </h1>
           <p className="font-sans text-sm text-white/60 max-w-lg">
-            {courses.length} curso{courses.length !== 1 ? "s" : ""} encontrado{courses.length !== 1 ? "s" : ""}
+            {courses.length === 1
+              ? t("found", { count: courses.length })
+              : t("foundPlural", { count: courses.length })}
           </p>
         </div>
       </section>
@@ -107,20 +120,20 @@ export default async function CursosPage({
             <div className="bg-surface border border-border rounded-2xl p-6 sticky top-24">
               <div className="flex items-center gap-2 mb-6">
                 <Filter className="w-4 h-4 text-primary" />
-                <h2 className="font-sans text-sm font-semibold text-foreground">Filtros</h2>
+                <h2 className="font-sans text-sm font-semibold text-foreground">{t("filters.title")}</h2>
               </div>
 
               {/* Busca */}
               <form method="GET" action="/cursos" className="mb-6">
                 <label className="font-sans text-[11px] font-bold uppercase tracking-widest text-muted mb-2 block">
-                  Buscar
+                  {t("filters.search")}
                 </label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
                   <input
                     name="busca"
                     defaultValue={busca}
-                    placeholder="Nome ou conteúdo..."
+                    placeholder={t("filters.searchPlaceholder")}
                     className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted/50 focus:outline-none focus:border-primary/50"
                   />
                   {categoria && <input type="hidden" name="categoria" value={categoria} />}
@@ -132,13 +145,13 @@ export default async function CursosPage({
               {/* Categoria */}
               <div className="mb-6">
                 <p className="font-sans text-[11px] font-bold uppercase tracking-widest text-muted mb-3">
-                  Modalidade
+                  {t("filters.modality")}
                 </p>
                 <div className="flex flex-col gap-2">
                   {[
-                    { val: "", label: "Todos" },
-                    { val: "hands_on", label: "Hands-On" },
-                    { val: "online", label: "Online" },
+                    { val: "", label: t("filters.all") },
+                    { val: "hands_on", label: t("filters.handsOn") },
+                    { val: "online", label: t("filters.online") },
                   ].map(({ val, label }) => (
                     <Link
                       key={val}
@@ -158,10 +171,10 @@ export default async function CursosPage({
               {/* Especialidade / Tags */}
               <div className="mb-6">
                 <p className="font-sans text-[11px] font-bold uppercase tracking-widest text-muted mb-3">
-                  Especialidade
+                  {t("filters.specialty")}
                 </p>
                 <div className="flex flex-col gap-2">
-                  {[{ slug: "", name: "Todas" }, ...allTags].map((tag) => (
+                  {[{ slug: "", name: t("filters.allSpecialties") }, ...allTags].map((tag) => (
                     <Link
                       key={tag.slug}
                       href={buildUrl({ especialidade: tag.slug })}
@@ -180,10 +193,10 @@ export default async function CursosPage({
               {/* Instrutor */}
               <div className="mb-6">
                 <p className="font-sans text-[11px] font-bold uppercase tracking-widest text-muted mb-3">
-                  Instrutor
+                  {t("filters.instructor")}
                 </p>
                 <div className="flex flex-col gap-2">
-                  {[{ slug: "", name: "Todos" }, ...allInstructors.map((i) => ({ slug: i.slug, name: i.user.name ?? i.slug }))].map((inst) => (
+                  {[{ slug: "", name: t("filters.allInstructors") }, ...allInstructors.map((i) => ({ slug: i.slug, name: i.user.name ?? i.slug }))].map((inst) => (
                     <Link
                       key={inst.slug}
                       href={buildUrl({ instrutor: inst.slug })}
@@ -205,7 +218,7 @@ export default async function CursosPage({
                   href="/cursos"
                   className="block font-sans text-xs text-center text-primary/70 hover:text-primary transition-colors mt-2"
                 >
-                  Limpar filtros
+                  {t("filters.clearFilters")}
                 </Link>
               )}
             </div>
@@ -215,11 +228,11 @@ export default async function CursosPage({
           <div className="flex-1 min-w-0">
             {courses.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 text-center">
-                <p className="font-serif text-2xl text-foreground/40 mb-2">Nenhum curso encontrado</p>
+                <p className="font-serif text-2xl text-foreground/40 mb-2">{t("empty.title")}</p>
                 <p className="font-sans text-sm text-muted">
-                  Tente ajustar os filtros ou{" "}
+                  {t("empty.description")}{" "}
                   <Link href="/cursos" className="text-primary hover:underline">
-                    ver todos os cursos
+                    {t("empty.viewAll")}
                   </Link>
                   .
                 </p>
@@ -259,7 +272,7 @@ export default async function CursosPage({
                         </span>
                         {course.totalSeats && reservedPct > 0 && (
                           <span className="absolute bottom-3 right-4 font-sans text-[10px] font-semibold text-white/80">
-                            {reservedPct}% Reservado
+                            {t("card.reserved", { pct: reservedPct })}
                           </span>
                         )}
                       </div>
@@ -282,7 +295,7 @@ export default async function CursosPage({
                         {course.totalSeats && (
                           <div className="flex flex-col gap-1">
                             <div className="flex justify-between font-sans text-[11px] text-muted">
-                              <span>Vagas disponíveis</span>
+                              <span>{t("card.seats")}</span>
                               <span>{availableSeats}/{course.totalSeats}</span>
                             </div>
                             <div className="h-1.5 bg-border rounded-full overflow-hidden">
@@ -303,14 +316,14 @@ export default async function CursosPage({
                               }).format(Number(course.price))}
                             </span>
                             <span className="font-sans text-[10px] text-muted/70 tracking-wide">
-                              {course.hours}h de formação
+                              {t("card.training", { hours: course.hours })}
                             </span>
                           </div>
                           <Link
-                            href={`/cursos/${course.slug}`}
+                            href={{ pathname: "/cursos/[slug]", params: { slug: course.slug } }}
                             className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-primary text-primary hover:bg-primary hover:text-white transition-all"
                           >
-                            Saiba mais
+                            {t("card.learnMore")}
                           </Link>
                         </div>
                       </div>
