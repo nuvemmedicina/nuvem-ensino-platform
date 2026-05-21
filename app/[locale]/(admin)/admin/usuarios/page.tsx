@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 import { UserFilters } from "./UserFilters";
+import { RoleSelector } from "./RoleSelector";
 import { CheckCircle, XCircle } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
@@ -34,6 +36,9 @@ export default async function AdminUsuariosPage({ params, searchParams }: Props)
     }),
     ...(role && role !== "ALL" && { role: role as Role }),
   };
+
+  const session = await auth();
+  const selfId = session?.user?.id ?? "";
 
   const [users, totals] = await Promise.all([
     prisma.user.findMany({
@@ -133,11 +138,13 @@ export default async function AdminUsuariosPage({ params, searchParams }: Props)
                       <p className="font-sans text-xs text-muted">{u.email}</p>
                     </td>
 
-                    {/* Role badge */}
+                    {/* Role badge — clicável para alterar */}
                     <td className="px-5 py-3.5">
-                      <span className={`font-sans text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${roleColor}`}>
-                        {t(roleKey)}
-                      </span>
+                      <RoleSelector
+                        userId={u.id}
+                        currentRole={u.role as Role}
+                        isSelf={u.id === selfId}
+                      />
                     </td>
 
                     {/* E-mail verificado */}
