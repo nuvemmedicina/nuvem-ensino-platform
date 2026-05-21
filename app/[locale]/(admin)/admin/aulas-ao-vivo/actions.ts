@@ -30,12 +30,13 @@ export async function updateLiveSession(id: string, formData: FormData) {
   await prisma.liveSession.update({
     where: { id },
     data: {
-      title:       formData.get("title") as string,
-      description: (formData.get("description") as string) || null,
-      startAt:     new Date(formData.get("startAt") as string),
-      endAt:       new Date(formData.get("endAt") as string),
-      meetUrl:     (formData.get("meetUrl") as string) || null,
-      location:    (formData.get("location") as string) || null,
+      title:        formData.get("title") as string,
+      description:  (formData.get("description") as string) || null,
+      startAt:      new Date(formData.get("startAt") as string),
+      endAt:        new Date(formData.get("endAt") as string),
+      meetUrl:      (formData.get("meetUrl") as string) || null,
+      location:     (formData.get("location") as string) || null,
+      recordingUrl: (formData.get("recordingUrl") as string) || null,
     },
   });
 

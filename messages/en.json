@@ -332,7 +332,8 @@
       "upcomingSection": "Upcoming",
       "pastSection": "Past",
       "joinMeet": "Join Meet",
-      "addToCalendar": "+ Google Calendar"
+      "addToCalendar": "+ Google Calendar",
+      "watchRecording": "Watch recording"
     }
   },
   "admin": {

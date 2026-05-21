@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { deleteLiveSession, updateLiveSession } from "./actions";
-import { Trash2, Video, MapPin, Pencil, X, Check } from "lucide-react";
+import { Trash2, Video, MapPin, Pencil, X, Check, PlayCircle } from "lucide-react";
 
 type Session = {
   id: string;
@@ -12,6 +12,7 @@ type Session = {
   endAt: Date;
   meetUrl: string | null;
   location: string | null;
+  recordingUrl: string | null;
   reminder24h: boolean;
   reminder1h: boolean;
   course: { title: string; slug: string };
@@ -161,6 +162,22 @@ function SessionCard({ session: s }: { session: Session }) {
             />
           </div>
 
+          <div>
+            <label className="block font-sans text-[10px] font-semibold text-muted uppercase tracking-wider mb-1">
+              URL da gravação (após a aula)
+            </label>
+            <input
+              name="recordingUrl"
+              type="url"
+              defaultValue={s.recordingUrl ?? ""}
+              placeholder="https://drive.google.com/... ou YouTube..."
+              className={inputClass}
+            />
+            <p className="font-sans text-[10px] text-muted mt-1">
+              Cole aqui o link da gravação. Os alunos verão um botão "Assistir gravação".
+            </p>
+          </div>
+
           <div className="flex items-center gap-2 pt-1">
             <button
               type="submit"
@@ -203,6 +220,16 @@ function SessionCard({ session: s }: { session: Session }) {
               className="flex items-center gap-1 font-sans text-xs text-primary hover:underline"
             >
               <Video className="w-3 h-3" /> Google Meet
+            </a>
+          )}
+          {s.recordingUrl && (
+            <a
+              href={s.recordingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 font-sans text-xs text-green-600 hover:underline"
+            >
+              <PlayCircle className="w-3 h-3" /> Gravação salva
             </a>
           )}
           {s.location && (

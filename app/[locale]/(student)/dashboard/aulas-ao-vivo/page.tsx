@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { Video, MapPin, Calendar, CalendarX } from "lucide-react";
+import { Video, MapPin, Calendar, CalendarX, PlayCircle } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -37,6 +37,7 @@ type SessionData = {
   endAt: Date;
   meetUrl: string | null;
   location: string | null;
+  recordingUrl: string | null;
   course: { title: string; slug: string };
 };
 
@@ -45,12 +46,14 @@ function SessionCard({
   past = false,
   joinMeetLabel,
   addToCalendarLabel,
+  watchRecordingLabel,
   dateLocale,
 }: {
   session: SessionData;
   past?: boolean;
   joinMeetLabel: string;
   addToCalendarLabel: string;
+  watchRecordingLabel: string;
   dateLocale: string;
 }) {
   const calUrl = makeCalendarUrl(s);
@@ -106,19 +109,20 @@ function SessionCard({
           )}
         </div>
 
-        {/* Ações — só para lives futuras */}
-        {!past && (
-          <div className="flex items-center gap-2 flex-wrap sm:flex-col sm:items-end">
-            {s.meetUrl && (
-              <a
-                href={s.meetUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-sans text-xs font-semibold px-4 py-2 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors whitespace-nowrap"
-              >
-                {joinMeetLabel}
-              </a>
-            )}
+        {/* Ações */}
+        <div className="flex items-center gap-2 flex-wrap sm:flex-col sm:items-end">
+          {/* Aula futura: entrar no Meet + adicionar ao calendário */}
+          {!past && s.meetUrl && (
+            <a
+              href={s.meetUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-sans text-xs font-semibold px-4 py-2 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors whitespace-nowrap"
+            >
+              {joinMeetLabel}
+            </a>
+          )}
+          {!past && (
             <a
               href={calUrl}
               target="_blank"
@@ -127,8 +131,20 @@ function SessionCard({
             >
               {addToCalendarLabel}
             </a>
-          </div>
-        )}
+          )}
+          {/* Aula passada: assistir gravação */}
+          {past && s.recordingUrl && (
+            <a
+              href={s.recordingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 font-sans text-xs font-semibold px-4 py-2 rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors whitespace-nowrap"
+            >
+              <PlayCircle className="w-3.5 h-3.5" />
+              {watchRecordingLabel}
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -191,6 +207,7 @@ export default async function AulasAoVivoPage({
 
   const joinMeetLabel = t("joinMeet");
   const addToCalendarLabel = t("addToCalendar");
+  const watchRecordingLabel = t("watchRecording");
 
   return (
     <div>
@@ -235,6 +252,7 @@ export default async function AulasAoVivoPage({
                 session={s}
                 joinMeetLabel={joinMeetLabel}
                 addToCalendarLabel={addToCalendarLabel}
+                watchRecordingLabel={watchRecordingLabel}
                 dateLocale={dateLocale}
               />
             ))}
@@ -254,6 +272,7 @@ export default async function AulasAoVivoPage({
                 past
                 joinMeetLabel={joinMeetLabel}
                 addToCalendarLabel={addToCalendarLabel}
+                watchRecordingLabel={watchRecordingLabel}
                 dateLocale={dateLocale}
               />
             ))}

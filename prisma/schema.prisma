@@ -452,8 +452,9 @@ model LiveSession {
   description String?
   startAt     DateTime
   endAt       DateTime
-  meetUrl     String?
-  location    String?
+  meetUrl      String?
+  location     String?
+  recordingUrl String?
   reminder24h Boolean   @default(false)
   reminder1h  Boolean   @default(false)
   createdAt   DateTime  @default(now())
