@@ -5,9 +5,6 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-  const mp = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN! });
-
   const session = await auth();
   if (!session) {
     return NextResponse.json({ error: "Não autenticado." }, { status: 401 });
@@ -84,6 +81,10 @@ export async function POST(req: Request) {
   }
 
   if (method === "stripe") {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json({ error: "Stripe não configurado." }, { status: 503 });
+    }
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
@@ -120,6 +121,10 @@ export async function POST(req: Request) {
   }
 
   if (method === "pix" || method === "boleto" || method === "parcelado") {
+    if (!process.env.MP_ACCESS_TOKEN) {
+      return NextResponse.json({ error: "Mercado Pago não configurado." }, { status: 503 });
+    }
+    const mp = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
     const preference = new Preference(mp);
 
     const pref = await preference.create({

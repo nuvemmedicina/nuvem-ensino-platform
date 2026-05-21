@@ -41,7 +41,7 @@ export default async function CheckoutPage({ params }: Props) {
   if (!session) redirect(`/entrar?callbackUrl=/checkout/${slug}`);
 
   const lc = localizedCourse(course, locale);
-  const hasPayment = !!(process.env.STRIPE_SECRET_KEY && process.env.MP_ACCESS_TOKEN);
+  const hasPayment = !!(process.env.STRIPE_SECRET_KEY || process.env.MP_ACCESS_TOKEN);
 
   return (
     <CheckoutClient
