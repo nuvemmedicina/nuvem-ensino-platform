@@ -2,17 +2,10 @@ import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { UserFilters } from "./UserFilters";
-import { RoleSelector } from "./RoleSelector";
-import { CheckCircle, XCircle } from "lucide-react";
+import { UserEditRow } from "./UserEditRow";
 import { getTranslations } from "next-intl/server";
 
 type Role = "STUDENT" | "INSTRUCTOR" | "ADMIN";
-
-const roleColors: Record<Role, string> = {
-  STUDENT:    "text-blue-600 bg-blue-500/10 border-blue-500/20",
-  INSTRUCTOR: "text-teal-600 bg-teal-500/10 border-teal-500/20",
-  ADMIN:      "text-amber-600 bg-amber-500/10 border-amber-500/20",
-};
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -125,53 +118,14 @@ export default async function AdminUsuariosPage({ params, searchParams }: Props)
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {users.map((u) => {
-                const roleKey = u.role === "INSTRUCTOR" ? "roleInstructor" : u.role === "ADMIN" ? "roleAdmin" : "roleStudent";
-                const roleColor = roleColors[u.role as Role] ?? roleColors.STUDENT;
-                return (
-                  <tr key={u.id} className="hover:bg-background/50 transition-colors">
-                    {/* Nome + email */}
-                    <td className="px-5 py-3.5">
-                      <p className="font-sans text-sm font-medium text-foreground leading-tight">
-                        {u.name ?? "—"}
-                      </p>
-                      <p className="font-sans text-xs text-muted">{u.email}</p>
-                    </td>
-
-                    {/* Role badge — clicável para alterar */}
-                    <td className="px-5 py-3.5">
-                      <RoleSelector
-                        userId={u.id}
-                        currentRole={u.role as Role}
-                        isSelf={u.id === selfId}
-                      />
-                    </td>
-
-                    {/* E-mail verificado */}
-                    <td className="px-5 py-3.5 hidden sm:table-cell">
-                      {u.emailVerified ? (
-                        <CheckCircle className="w-4 h-4 text-green-500" />
-                      ) : (
-                        <XCircle className="w-4 h-4 text-red-400/70" />
-                      )}
-                    </td>
-
-                    {/* Matrículas */}
-                    <td className="px-5 py-3.5 hidden md:table-cell">
-                      <span className="font-sans text-sm text-foreground">
-                        {u._count.enrollments}
-                      </span>
-                    </td>
-
-                    {/* Data de cadastro */}
-                    <td className="px-5 py-3.5 hidden lg:table-cell">
-                      <span className="font-sans text-xs text-muted">
-                        {fmt.format(new Date(u.createdAt))}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
+              {users.map((u) => (
+                <UserEditRow
+                  key={u.id}
+                  user={{ ...u, role: u.role as Role }}
+                  isSelf={u.id === selfId}
+                  dateFormatted={fmt.format(new Date(u.createdAt))}
+                />
+              ))}
             </tbody>
           </table>
         </div>
