@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CreditCard, QrCode, FileText, Loader2, Shield, CheckCircle, Zap } from "lucide-react";
+import { CreditCard, QrCode, FileText, Loader2, Shield, CheckCircle, Zap, Copy, Check, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 type PaymentMethod = "stripe" | "pix" | "boleto" | "parcelado";
@@ -36,6 +36,8 @@ export default function CheckoutClient({
   const [isCouponLoading, setIsCouponLoading] = useState(false);
   const [isFreeEnrolling, setIsFreeEnrolling] = useState(false);
   const [paymentError, setPaymentError] = useState("");
+  const [pixData, setPixData] = useState<{ image: string; copyPaste: string } | null>(null);
+  const [pixCopied, setPixCopied] = useState(false);
 
   const methodLabels: Record<PaymentMethod, { label: string; desc: string; icon: React.ReactNode }> = {
     stripe: {
@@ -106,9 +108,8 @@ export default function CheckoutClient({
 
         if (data.url) {
           window.location.href = data.url;
-        } else if (data.pixCode) {
-          // TODO: show PIX QR code modal
-          alert("PIX: " + data.pixCode);
+        } else if (data.pixQrCodeImage) {
+          setPixData({ image: data.pixQrCodeImage, copyPaste: data.pixCopyPaste });
         } else if (data.error) {
           setPaymentError(data.error);
         }
@@ -133,6 +134,13 @@ export default function CheckoutClient({
     }
   }
 
+  async function copyPix() {
+    if (!pixData) return;
+    await navigator.clipboard.writeText(pixData.copyPaste);
+    setPixCopied(true);
+    setTimeout(() => setPixCopied(false), 3000);
+  }
+
   const submitLabel =
     method === "pix"
       ? t("generatePix")
@@ -142,6 +150,60 @@ export default function CheckoutClient({
 
   return (
     <div className="min-h-screen bg-background">
+
+      {/* PIX Modal */}
+      {pixData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-surface border border-border rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <h2 className="font-sans text-base font-semibold text-foreground">Pagar com PIX</h2>
+                <p className="font-sans text-xs text-muted mt-0.5">Escaneie o QR code ou copie o código</p>
+              </div>
+              <button
+                onClick={() => setPixData(null)}
+                className="p-1.5 rounded-lg text-muted hover:text-foreground hover:bg-border/50 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* QR Code */}
+            <div className="flex justify-center mb-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`data:image/png;base64,${pixData.image}`}
+                alt="QR Code PIX"
+                className="w-48 h-48 rounded-xl border border-border"
+              />
+            </div>
+
+            {/* Copy & paste */}
+            <div className="space-y-2">
+              <p className="font-sans text-xs text-muted text-center">ou copie o código PIX Copia e Cola</p>
+              <div className="flex gap-2">
+                <input
+                  readOnly
+                  value={pixData.copyPaste}
+                  className="flex-1 px-3 py-2 rounded-lg border border-border bg-background text-xs font-mono text-muted truncate"
+                />
+                <button
+                  onClick={copyPix}
+                  className="flex items-center gap-1.5 font-sans text-xs font-semibold px-3 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors shrink-0"
+                >
+                  {pixCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  {pixCopied ? "Copiado!" : "Copiar"}
+                </button>
+              </div>
+            </div>
+
+            <p className="font-sans text-[11px] text-muted/70 text-center mt-4">
+              Após o pagamento, seu acesso é liberado automaticamente.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="bg-canvas px-4 py-8">
         <div className="max-w-4xl mx-auto">

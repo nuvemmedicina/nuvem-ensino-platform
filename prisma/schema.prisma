@@ -46,6 +46,9 @@ enum PaymentMethod {
   MERCADO_PAGO_PIX
   MERCADO_PAGO_BOLETO
   MERCADO_PAGO_CARD
+  ASAAS_PIX
+  ASAAS_BOLETO
+  ASAAS_CARD
   FREE
 }
 
@@ -317,9 +320,10 @@ model Payment {
   status         PaymentStatus @default(PENDING)
   amount         Decimal       @db.Decimal(10, 2)
   currency       String        @default("BRL")
-  stripeIntentId String?
-  mpPaymentId    String?
-  mpOrderId      String?
+  stripeIntentId  String?
+  mpPaymentId     String?
+  mpOrderId       String?
+  asaasPaymentId  String?
   receiptUrl     String?
   nfseId         String?
   paidAt         DateTime?

@@ -16,8 +16,9 @@ export default async function PagamentosPage({ searchParams }: Props) {
     Promise.resolve(process.env.STRIPE_SECRET_KEY),
   ]);
 
-  const mpConnected = !!mpToken?.value;
+  const mpConnected   = !!mpToken?.value;
   const stripeConnected = !!stripeKey;
+  const asaasConnected  = !!process.env.ASAAS_API_KEY;
 
   return (
     <div>
@@ -61,7 +62,46 @@ export default async function PagamentosPage({ searchParams }: Props) {
           )}
         </div>
 
-        {/* Mercado Pago */}
+        {/* Asaas */}
+        <div className="bg-surface border border-border rounded-2xl p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-sans text-base font-semibold text-foreground">Asaas</h2>
+              <p className="font-sans text-xs text-muted mt-0.5">PIX · Boleto · Cartão nacional parcelado (até 3x)</p>
+            </div>
+            {asaasConnected ? (
+              <span className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-green-600 bg-green-500/10 border border-green-500/20 px-3 py-1 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                Configurado
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-muted bg-border/50 border border-border px-3 py-1 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-muted/50" />
+                Não configurado
+              </span>
+            )}
+          </div>
+          {asaasConnected ? (
+            <div className="mt-4 flex items-center gap-2 font-sans text-sm text-green-600">
+              <CheckCircle className="w-4 h-4" />
+              Chave configurada. PIX, Boleto e parcelado disponíveis no checkout.
+            </div>
+          ) : (
+            <div className="mt-4 space-y-2">
+              <p className="font-sans text-sm text-muted">
+                Adicione <code className="bg-background px-1 rounded text-xs">ASAAS_API_KEY</code> nas variáveis de ambiente da Vercel.
+              </p>
+              <ol className="font-sans text-xs text-muted list-decimal list-inside space-y-1">
+                <li>Acesse <strong>asaas.com</strong> → Minha Conta → Integrações</li>
+                <li>Copie a <strong>Chave de API</strong> (começa com <code>$aact_</code>)</li>
+                <li>Adicione como <code>ASAAS_API_KEY</code> na Vercel e faça redeploy</li>
+                <li>Opcionalmente: <code>ASAAS_SANDBOX=true</code> para testes, <code>ASAAS_WEBHOOK_TOKEN</code> para segurança</li>
+              </ol>
+            </div>
+          )}
+        </div>
+
+        {/* Mercado Pago (legado) */}
         <MercadoPagoConnect
           isConnected={mpConnected}
           mpUserId={mpUserId?.value ?? null}
