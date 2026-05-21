@@ -23,6 +23,25 @@ export async function createLiveSession(formData: FormData) {
   revalidatePath("/admin/aulas-ao-vivo");
 }
 
+export async function updateLiveSession(id: string, formData: FormData) {
+  const session = await auth();
+  if (session?.user?.role !== "ADMIN") throw new Error("Unauthorized");
+
+  await prisma.liveSession.update({
+    where: { id },
+    data: {
+      title:       formData.get("title") as string,
+      description: (formData.get("description") as string) || null,
+      startAt:     new Date(formData.get("startAt") as string),
+      endAt:       new Date(formData.get("endAt") as string),
+      meetUrl:     (formData.get("meetUrl") as string) || null,
+      location:    (formData.get("location") as string) || null,
+    },
+  });
+
+  revalidatePath("/admin/aulas-ao-vivo");
+}
+
 export async function deleteLiveSession(id: string) {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") throw new Error("Unauthorized");
