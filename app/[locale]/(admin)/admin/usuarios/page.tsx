@@ -121,7 +121,14 @@ export default async function AdminUsuariosPage({ params, searchParams }: Props)
               {users.map((u) => (
                 <UserEditRow
                   key={u.id}
-                  user={{ ...u, role: u.role as Role }}
+                  user={{
+                    id:            u.id,
+                    name:          u.name,
+                    email:         u.email,
+                    role:          u.role as Role,
+                    emailVerified: !!u.emailVerified,
+                    _count:        u._count,
+                  }}
                   isSelf={u.id === selfId}
                   dateFormatted={fmt.format(new Date(u.createdAt))}
                 />

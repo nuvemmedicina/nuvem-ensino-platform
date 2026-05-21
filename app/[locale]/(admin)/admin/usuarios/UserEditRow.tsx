@@ -13,8 +13,7 @@ type User = {
   name: string | null;
   email: string;
   role: Role;
-  emailVerified: Date | null;
-  createdAt: Date;
+  emailVerified: boolean;   // passed as boolean from server to avoid Date serialization
   _count: { enrollments: number };
 };
 
