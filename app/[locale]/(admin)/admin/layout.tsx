@@ -2,20 +2,9 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, ClipboardList, LayoutDashboard, Users, BarChart2, Video, GraduationCap } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
-import { SidebarNavLink } from "@/components/SidebarNavLink";
+import { AdminSidebarNav } from "@/components/AdminSidebarNav";
 import { getTranslations } from "next-intl/server";
-
-const navItems = [
-  { key: "overview"    as const, href: "/admin",               icon: LayoutDashboard, exact: true },
-  { key: "courses"     as const, href: "/admin/cursos",         icon: BookOpen },
-  { key: "enrollments" as const, href: "/admin/matriculas",     icon: ClipboardList },
-  { key: "users"       as const, href: "/admin/usuarios",       icon: Users },
-  { key: "instructors" as const, href: "/admin/instrutores",    icon: GraduationCap },
-  { key: "liveSessions"as const, href: "/admin/aulas-ao-vivo",  icon: Video },
-  { key: "reports"     as const, href: "/admin/relatorios",     icon: BarChart2 },
-];
 
 export default async function AdminLayout({
   children,
@@ -40,12 +29,23 @@ export default async function AdminLayout({
     .join("")
     .toUpperCase();
 
+  // Only serializable values passed to client component
+  const navItems = [
+    { key: "overview",     href: "/admin",               exact: true,  label: t("overview") },
+    { key: "courses",      href: "/admin/cursos",                       label: t("courses") },
+    { key: "enrollments",  href: "/admin/matriculas",                   label: t("enrollments") },
+    { key: "users",        href: "/admin/usuarios",                     label: t("users") },
+    { key: "instructors",  href: "/admin/instrutores",                  label: t("instructors") },
+    { key: "liveSessions", href: "/admin/aulas-ao-vivo",                label: t("liveSessions") },
+    { key: "reports",      href: "/admin/relatorios",                   label: t("reports") },
+  ];
+
   return (
     <div className="min-h-screen bg-background flex">
       {/* Sidebar */}
       <aside className="hidden md:flex flex-col w-64 bg-canvas shrink-0 sticky top-0 h-screen overflow-y-auto">
 
-        {/* Logo area */}
+        {/* Logo */}
         <div className="px-6 pt-7 pb-5">
           <Link href="/" className="block">
             <Image
@@ -56,7 +56,7 @@ export default async function AdminLayout({
               className="h-16 w-auto brightness-0 invert opacity-95"
             />
           </Link>
-          <div className="mt-3 flex items-center gap-2">
+          <div className="mt-3">
             <span className="inline-flex items-center font-sans text-[10px] font-bold uppercase tracking-widest text-accent bg-accent/15 border border-accent/20 px-2.5 py-1 rounded-md">
               Admin
             </span>
@@ -65,18 +65,8 @@ export default async function AdminLayout({
 
         <div className="mx-4 h-px bg-white/8" />
 
-        {/* Nav */}
-        <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5">
-          {navItems.map(({ key, href, icon, exact }) => (
-            <SidebarNavLink
-              key={href}
-              href={href}
-              icon={icon}
-              label={t(key)}
-              exact={exact}
-            />
-          ))}
-        </nav>
+        {/* Nav — client component, icons defined internally */}
+        <AdminSidebarNav items={navItems} />
 
         <div className="mx-4 h-px bg-white/8" />
 
@@ -84,17 +74,11 @@ export default async function AdminLayout({
         <div className="px-3 py-4">
           <div className="flex items-center gap-3 px-3 py-2.5 mb-1 rounded-xl">
             <div className="w-8 h-8 rounded-full bg-primary/50 flex items-center justify-center shrink-0 ring-1 ring-white/10">
-              <span className="font-sans text-xs font-semibold text-white">
-                {initials}
-              </span>
+              <span className="font-sans text-xs font-semibold text-white">{initials}</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-sans text-xs font-medium text-white/85 truncate">
-                {session.user?.name}
-              </p>
-              <p className="font-sans text-[10px] text-white/40 truncate">
-                {session.user?.email}
-              </p>
+              <p className="font-sans text-xs font-medium text-white/85 truncate">{session.user.name}</p>
+              <p className="font-sans text-[10px] text-white/40 truncate">{session.user.email}</p>
             </div>
           </div>
           <SignOutButton />
