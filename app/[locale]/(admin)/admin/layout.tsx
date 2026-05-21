@@ -2,7 +2,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, ClipboardList, LayoutDashboard, Users, BarChart2, Video } from "lucide-react";
+import { BookOpen, ClipboardList, LayoutDashboard, Users, BarChart2, Video, GraduationCap } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
 import { getTranslations } from "next-intl/server";
 
@@ -10,9 +10,10 @@ const navItems = [
   { key: "overview" as const, href: "/admin",            icon: LayoutDashboard },
   { key: "courses"   as const, href: "/admin/cursos",    icon: BookOpen },
   { key: "enrollments" as const, href: "/admin/matriculas", icon: ClipboardList },
-  { key: "users"       as const, href: "/admin/usuarios",       icon: Users },
+  { key: "users"        as const, href: "/admin/usuarios",       icon: Users },
+  { key: "instructors"  as const, href: "/admin/instrutores",   icon: GraduationCap },
   { key: "liveSessions" as const, href: "/admin/aulas-ao-vivo", icon: Video },
-  { key: "reports"     as const, href: "/admin/relatorios",     icon: BarChart2 },
+  { key: "reports"      as const, href: "/admin/relatorios",    icon: BarChart2 },
 ];
 
 export default async function AdminLayout({
@@ -34,17 +35,17 @@ export default async function AdminLayout({
   return (
     <div className="min-h-screen bg-background flex">
       <aside className="hidden md:flex flex-col w-60 bg-canvas shrink-0 sticky top-0 h-screen">
-        <div className="px-5 py-5 border-b border-white/10">
-          <Link href="/">
+        <div className="px-5 pt-6 pb-4 border-b border-white/10">
+          <Link href="/" className="block mb-3">
             <Image
               src="/logo.png"
               alt="NU.V.E.M Ensino"
-              width={100}
-              height={78}
-              className="h-9 w-auto brightness-0 invert opacity-90"
+              width={140}
+              height={110}
+              className="h-12 w-auto brightness-0 invert opacity-95"
             />
           </Link>
-          <span className="mt-2 inline-block font-sans text-[10px] font-bold uppercase tracking-widest text-accent/70 bg-accent/10 px-2 py-0.5 rounded">
+          <span className="inline-block font-sans text-[10px] font-bold uppercase tracking-widest text-accent/80 bg-accent/15 border border-accent/20 px-2.5 py-0.5 rounded-md">
             Admin
           </span>
         </div>
