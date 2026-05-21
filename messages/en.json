@@ -176,7 +176,7 @@
       "stripe": { "label": "International card", "desc": "Visa, Mastercard, Amex (USD/EUR)" },
       "pix": { "label": "PIX", "desc": "Instant approval" },
       "boleto": { "label": "Bank slip (Boleto)", "desc": "Expires in 3 business days" },
-      "parcelado": { "label": "Installment card", "desc": "Up to 12x on national card" }
+      "parcelado": { "label": "Installment card", "desc": "Up to 3x on national card" }
     }
   },
   "auth": {

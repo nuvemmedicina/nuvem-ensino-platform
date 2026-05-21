@@ -155,7 +155,7 @@ export async function POST(req: Request) {
             : method === "boleto"
             ? [{ id: "credit_card" }]
             : [],
-          installments: method === "parcelado" ? 12 : 1,
+          installments: method === "parcelado" ? 3 : 1,
         },
       },
     });

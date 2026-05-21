@@ -176,7 +176,7 @@
       "stripe": { "label": "Cartão internacional", "desc": "Visa, Mastercard, Amex (USD/EUR)" },
       "pix": { "label": "PIX", "desc": "Aprovação imediata" },
       "boleto": { "label": "Boleto bancário", "desc": "Vence em 3 dias úteis" },
-      "parcelado": { "label": "Cartão parcelado", "desc": "Até 12x no cartão nacional" }
+      "parcelado": { "label": "Cartão parcelado", "desc": "Até 3x no cartão nacional" }
     }
   },
   "auth": {

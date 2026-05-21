@@ -242,7 +242,7 @@ export default function CheckoutClient({
             {method === "parcelado" && (
               <div className="mt-4 bg-background rounded-xl p-4 font-sans text-sm text-muted">
                 <p className="font-semibold text-foreground mb-2">{t("installments")}</p>
-                {[1, 2, 3, 6, 12].map((n) => (
+                {[1, 2, 3].map((n) => (
                   <div key={n} className="flex justify-between py-1 border-b border-border last:border-0">
                     <span>{n}x</span>
                     <span className="font-medium text-foreground">
