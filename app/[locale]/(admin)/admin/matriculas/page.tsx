@@ -1,13 +1,6 @@
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
-
-const statusColors: Record<string, string> = {
-  ACTIVE:    "text-green-600 bg-green-500/10 border-green-500/20",
-  COMPLETED: "text-blue-600 bg-blue-500/10 border-blue-500/20",
-  CANCELLED: "text-muted bg-border/50 border-border",
-  REFUNDED:  "text-amber-600 bg-amber-500/10 border-amber-500/20",
-};
+import { EnrollmentRow } from "./EnrollmentRow";
 
 export default async function AdminMatriculasPage({
   params,
@@ -16,6 +9,7 @@ export default async function AdminMatriculasPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "admin.enrollments" });
+  const dateLocale = locale === "en" ? "en-US" : locale === "es" ? "es-ES" : "pt-BR";
 
   const enrollments = await prisma.enrollment.findMany({
     include: {
@@ -48,50 +42,13 @@ export default async function AdminMatriculasPage({
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {enrollments.map((e) => {
-                const statusKey = e.status === "ACTIVE" ? "statusActive" : e.status === "COMPLETED" ? "statusCompleted" : e.status === "CANCELLED" ? "statusCancelled" : "statusRefunded";
-                const statusColor = statusColors[e.status] ?? statusColors.ACTIVE;
-                const dateLocale = locale === "en" ? "en-US" : locale === "es" ? "es-ES" : "pt-BR";
-                return (
-                  <tr key={e.id} className="hover:bg-background/50 transition-colors">
-                    <td className="px-5 py-3.5">
-                      <p className="font-sans text-sm font-medium text-foreground">{e.user.name}</p>
-                      <p className="font-sans text-xs text-muted">{e.user.email}</p>
-                    </td>
-                    <td className="px-5 py-3.5">
-                      {e.course.totalSeats !== null ? (
-                        <Link
-                          href={`/admin/cursos/${e.course.slug}/inscritos`}
-                          className="font-sans text-sm text-foreground hover:text-primary transition-colors line-clamp-1"
-                        >
-                          {e.course.title}
-                        </Link>
-                      ) : (
-                        <span className="font-sans text-sm text-foreground line-clamp-1">{e.course.title}</span>
-                      )}
-                    </td>
-                    <td className="px-5 py-3.5 hidden sm:table-cell">
-                      <span className="font-sans text-xs text-muted">
-                        {new Intl.DateTimeFormat(dateLocale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(e.enrolledAt))}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3.5 hidden md:table-cell">
-                      {e.course.totalSeats !== null ? (
-                        <span className="font-sans text-xs text-foreground">
-                          {e._count.attendances === 1 ? t("attendanceDay", { count: 1 }) : t("attendanceDays", { count: e._count.attendances })}
-                        </span>
-                      ) : (
-                        <span className="font-sans text-xs text-muted">—</span>
-                      )}
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <span className={`font-sans text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${statusColor}`}>
-                        {t(statusKey)}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
+              {enrollments.map((e) => (
+                <EnrollmentRow
+                  key={e.id}
+                  enrollment={{ ...e, enrolledAt: e.enrolledAt.toISOString() }}
+                  dateLocale={dateLocale}
+                />
+              ))}
             </tbody>
           </table>
         </div>

@@ -35,6 +35,7 @@ export default function CheckoutClient({
   const [isPending, startTransition] = useTransition();
   const [isCouponLoading, setIsCouponLoading] = useState(false);
   const [isFreeEnrolling, setIsFreeEnrolling] = useState(false);
+  const [paymentError, setPaymentError] = useState("");
 
   const methodLabels: Record<PaymentMethod, { label: string; desc: string; icon: React.ReactNode }> = {
     stripe: {
@@ -89,23 +90,30 @@ export default function CheckoutClient({
   }
 
   async function handlePayment() {
+    setPaymentError("");
     startTransition(async () => {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          courseSlug: slug,
-          method,
-          couponCode: couponApplied ? couponCode : undefined,
-        }),
-      });
-      const data = await res.json();
+      try {
+        const res = await fetch("/api/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            courseSlug: slug,
+            method,
+            couponCode: couponApplied ? couponCode : undefined,
+          }),
+        });
+        const data = await res.json();
 
-      if (data.url) {
-        window.location.href = data.url;
-      } else if (data.pixCode) {
-        // TODO: show PIX QR code modal
-        alert("PIX: " + data.pixCode);
+        if (data.url) {
+          window.location.href = data.url;
+        } else if (data.pixCode) {
+          // TODO: show PIX QR code modal
+          alert("PIX: " + data.pixCode);
+        } else if (data.error) {
+          setPaymentError(data.error);
+        }
+      } catch {
+        setPaymentError("Erro ao processar pagamento. Tente novamente.");
       }
     });
   }
@@ -320,6 +328,10 @@ export default function CheckoutClient({
               )}
               {submitLabel}
             </button>
+
+            {paymentError && (
+              <p className="mt-3 font-sans text-xs text-red-500 text-center">{paymentError}</p>
+            )}
 
             <div className="flex items-center justify-center gap-2 mt-4 font-sans text-xs text-muted/60">
               <Shield className="w-3 h-3" />
