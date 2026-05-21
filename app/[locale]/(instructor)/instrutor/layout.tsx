@@ -2,12 +2,13 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, Video } from "lucide-react";
+import { BookOpen, Video, BarChart2 } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
 
 const navItems = [
   { label: "Meus Cursos",    href: "/instrutor/cursos",        icon: BookOpen },
   { label: "Aulas ao Vivo",  href: "/instrutor/aulas-ao-vivo", icon: Video },
+  { label: "Relatórios",     href: "/instrutor/relatorios",    icon: BarChart2 },
 ];
 
 export default async function InstructorLayout({
