@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
 import { InstructorCard } from "./InstructorCard";
 import { createInstructor } from "./actions";
+import { ImageUploader } from "@/components/ImageUploader";
 
 const inputClass =
   "w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-primary/50";
@@ -79,15 +80,19 @@ export default async function AdminInstrutoresPage({ params }: Props) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>RQE (opcional)</label>
-              <input name="rqe" placeholder="Ex: RQE 67890" className={inputClass} />
-            </div>
-            <div>
-              <label className={labelClass}>URL da foto (opcional)</label>
-              <input name="photoUrl" type="url" placeholder="https://..." className={inputClass} />
-            </div>
+          <div>
+            <label className={labelClass}>RQE (opcional)</label>
+            <input name="rqe" placeholder="Ex: RQE 67890" className={inputClass} />
+          </div>
+
+          <div>
+            <label className={labelClass}>Foto do instrutor (opcional)</label>
+            <ImageUploader
+              name="photoUrl"
+              folder="instructors"
+              aspectHint="1:1"
+              label="Foto do instrutor"
+            />
           </div>
 
           <div className="pt-2">

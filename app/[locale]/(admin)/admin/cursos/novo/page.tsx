@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { createCourse } from "./actions";
+import { ImageUploader } from "@/components/ImageUploader";
 
 const inputClass =
   "w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-primary/50";
@@ -80,6 +81,16 @@ export default async function NovoCursoPage() {
                 ))}
               </select>
             </div>
+          </div>
+
+          <div>
+            <label className={labelClass}>Imagem de capa (opcional)</label>
+            <ImageUploader
+              name="thumbnailUrl"
+              folder="courses"
+              aspectHint="16:9"
+              label="Imagem de capa"
+            />
           </div>
 
           <p className="font-sans text-xs text-muted pt-1">

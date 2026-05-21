@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { Pencil, Trash2, X, Check, BookOpen } from "lucide-react";
 import { updateInstructor, deleteInstructor } from "./actions";
+import { ImageUploader } from "@/components/ImageUploader";
 
 type Instructor = {
   id: string;
@@ -68,15 +69,19 @@ export function InstructorCard({ instructor: inst }: { instructor: Instructor })
               <input name="crm" defaultValue={inst.crm ?? ""} placeholder="CRM-MG 12345" className={inputClass} />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className={labelClass}>RQE</label>
-              <input name="rqe" defaultValue={inst.rqe ?? ""} placeholder="RQE 67890" className={inputClass} />
-            </div>
-            <div>
-              <label className={labelClass}>URL da foto</label>
-              <input name="photoUrl" type="url" defaultValue={inst.photoUrl ?? ""} placeholder="https://..." className={inputClass} />
-            </div>
+          <div>
+            <label className={labelClass}>RQE</label>
+            <input name="rqe" defaultValue={inst.rqe ?? ""} placeholder="RQE 67890" className={inputClass} />
+          </div>
+          <div>
+            <label className={labelClass}>Foto do instrutor</label>
+            <ImageUploader
+              name="photoUrl"
+              initialUrl={inst.photoUrl}
+              folder="instructors"
+              aspectHint="1:1"
+              label="Foto do instrutor"
+            />
           </div>
           <div className="flex gap-2 pt-1">
             <button

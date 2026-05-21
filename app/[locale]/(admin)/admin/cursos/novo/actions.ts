@@ -45,6 +45,7 @@ export async function createCourse(formData: FormData) {
       status:       "DRAFT",
       category:     (formData.get("category") as "HANDS_ON" | "ONLINE" | "HYBRID") || "ONLINE",
       instructorId: formData.get("instructorId") as string,
+      thumbnailUrl: (formData.get("thumbnailUrl") as string) || null,
     },
   });
 
