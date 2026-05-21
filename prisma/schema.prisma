@@ -443,6 +443,14 @@ model ChatMessage {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+// ─── PLATFORM SETTINGS ───────────────────────────────────────────────────────
+
+model PlatformSetting {
+  key       String   @id
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+}
+
 // ─── LIVE SESSIONS ────────────────────────────────────────────────────────────
 
 model LiveSession {

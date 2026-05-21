@@ -350,7 +350,8 @@
       "users": "Usuarios",
       "instructors": "Instructores",
       "liveSessions": "Clases en Vivo",
-      "reports": "Informes"
+      "reports": "Informes",
+      "settings": "Configuración"
     },
     "overview": {
       "title": "Resumen",

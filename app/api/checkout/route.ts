@@ -121,10 +121,13 @@ export async function POST(req: Request) {
   }
 
   if (method === "pix" || method === "boleto" || method === "parcelado") {
-    if (!process.env.MP_ACCESS_TOKEN) {
-      return NextResponse.json({ error: "Mercado Pago não configurado." }, { status: 503 });
+    // Token from DB (set via OAuth) takes precedence over env var
+    const mpTokenRecord = await prisma.platformSetting.findUnique({ where: { key: "mp_access_token" } });
+    const mpAccessToken = mpTokenRecord?.value ?? process.env.MP_ACCESS_TOKEN;
+    if (!mpAccessToken) {
+      return NextResponse.json({ error: "Mercado Pago não configurado. Conecte a conta em /admin/configuracoes/pagamentos." }, { status: 503 });
     }
-    const mp = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
+    const mp = new MercadoPagoConfig({ accessToken: mpAccessToken });
     const preference = new Preference(mp);
 
     const pref = await preference.create({

@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { localizedCourse } from "@/lib/i18n-content";
+import { prisma } from "@/lib/prisma";
 import CheckoutClient from "./CheckoutClient";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
@@ -41,7 +42,8 @@ export default async function CheckoutPage({ params }: Props) {
   if (!session) redirect(`/entrar?callbackUrl=/checkout/${slug}`);
 
   const lc = localizedCourse(course, locale);
-  const hasPayment = !!(process.env.STRIPE_SECRET_KEY || process.env.MP_ACCESS_TOKEN);
+  const mpTokenDb = await prisma.platformSetting.findUnique({ where: { key: "mp_access_token" } });
+  const hasPayment = !!(process.env.STRIPE_SECRET_KEY || process.env.MP_ACCESS_TOKEN || mpTokenDb?.value);
 
   return (
     <CheckoutClient

@@ -103,7 +103,17 @@
       "Bash(grep -v \"node_modules\\\\\\\\.cache\")",
       "Bash(npx dotenv -e .env -- npx tsx -e ' *)",
       "WebSearch",
-      "WebFetch(domain:next-intl.dev)"
+      "WebFetch(domain:next-intl.dev)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\.claude\\\\worktrees\\\\peaceful-easley-e3808e\\\\app\")",
+      "Bash(findstr /i \"dashboard\\\\|student\\\\|admin\")",
+      "Bash(grep -v \"//\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('next:', p.dependencies.next\\); console.log\\('node:', process.version\\)\")",
+      "Bash(findstr \"aulas-ao-vivo\")",
+      "Bash(xargs grep -l -i \"mux\")",
+      "Bash(node -e \"require\\('@vercel/blob'\\); console.log\\('ok'\\)\")",
+      "Bash(xargs grep -l \"reminder\\\\|lembrete\\\\|live.*session\\\\|liveSession\")",
+      "Bash(grep -v \"^$\")",
+      "Bash(2>&1)"
     ]
   }
 }

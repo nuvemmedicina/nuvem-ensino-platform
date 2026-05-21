@@ -350,7 +350,8 @@
       "users": "Users",
       "instructors": "Instructors",
       "liveSessions": "Live Sessions",
-      "reports": "Reports"
+      "reports": "Reports",
+      "settings": "Settings"
     },
     "overview": {
       "title": "Overview",

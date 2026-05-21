@@ -10,6 +10,7 @@ import {
   GraduationCap,
   Video,
   BarChart2,
+  Settings,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -21,6 +22,7 @@ const ICONS: Record<string, LucideIcon> = {
   instructors:  GraduationCap,
   liveSessions: Video,
   reports:      BarChart2,
+  settings:     Settings,
 };
 
 type NavItem = { key: string; href: string; exact?: boolean; label: string };
