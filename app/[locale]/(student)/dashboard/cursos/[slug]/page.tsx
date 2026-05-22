@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, Award } from "lucide-react";
+import { ChevronLeft, Award, Video, ExternalLink, Calendar } from "lucide-react";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import LessonPlayer from "./LessonPlayer";
@@ -23,6 +23,8 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
     where: { slug },
     include: {
       instructor: { include: { user: true } },
+      _count: { select: { modules: true } },
+      // contentUrl needed for Google Meet / external platform links
       modules: {
         orderBy: { order: "asc" },
         include: {
@@ -202,15 +204,80 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
         </div>
       )}
 
-      <LessonPlayer
-        courseId={course.id}
-        modules={course.modules}
-        initialProgress={progressMap}
-        initialLessonId={aula ?? null}
-        initialNotes={notesMap}
-        quizzes={quizzesMap}
-        previousAttempts={previousAttemptsMap}
-      />
+      {/* ── Link de aula externa (Google Meet / plataforma online) ── */}
+      {course.contentUrl && course.modules.flatMap((m) => m.lessons).length === 0 ? (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 py-16">
+          <div className="w-full max-w-lg">
+            {/* Player placeholder */}
+            <div className="relative w-full rounded-2xl overflow-hidden mb-8 bg-canvas"
+              style={{ aspectRatio: "16/9" }}>
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+                {/* Animated ring */}
+                <div className="relative w-20 h-20 flex items-center justify-center">
+                  <span className="absolute inset-0 rounded-full border-2 border-accent/30 animate-ping" />
+                  <span className="absolute inset-0 rounded-full border border-accent/20" />
+                  <div className="w-16 h-16 rounded-full bg-accent/15 border border-accent/20 flex items-center justify-center">
+                    <Video className="w-7 h-7 text-accent" />
+                  </div>
+                </div>
+                <div className="text-center">
+                  <p className="font-sans text-sm font-semibold text-white/80 mb-1">
+                    Aula ao vivo
+                  </p>
+                  <p className="font-sans text-xs text-white/40">
+                    Acesse pelo botão abaixo quando a aula começar
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Card de acesso */}
+            <div className="bg-surface border border-border rounded-2xl p-6 text-center space-y-5">
+              <div>
+                <h2 className="font-serif text-xl font-medium text-foreground mb-1">{course.title}</h2>
+                <p className="font-sans text-sm text-muted">
+                  Esta é uma aula online ao vivo. Clique no botão para entrar na sala.
+                </p>
+              </div>
+
+              <a
+                href={course.contentUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 font-sans text-sm font-semibold px-8 py-3.5 rounded-full bg-primary text-white hover:bg-primary-dark hover:shadow-[0_4px_20px_rgba(0,71,94,0.35)] transition-all duration-200"
+              >
+                <Video className="w-4 h-4" />
+                Entrar na aula
+                <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+              </a>
+
+              {nextLiveSession && calendarUrl && (
+                <div className="pt-2 border-t border-border">
+                  <a
+                    href={calendarUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 font-sans text-xs text-muted hover:text-foreground transition-colors"
+                  >
+                    <Calendar className="w-3.5 h-3.5" />
+                    Adicionar ao Google Calendar
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <LessonPlayer
+          courseId={course.id}
+          modules={course.modules}
+          initialProgress={progressMap}
+          initialLessonId={aula ?? null}
+          initialNotes={notesMap}
+          quizzes={quizzesMap}
+          previousAttempts={previousAttemptsMap}
+        />
+      )}
     </div>
   );
 }
