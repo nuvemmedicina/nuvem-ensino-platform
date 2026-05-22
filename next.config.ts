@@ -15,21 +15,15 @@ const nextConfig: NextConfig = {
   },
 };
 
-const hasSentryToken = Boolean(process.env.SENTRY_AUTH_TOKEN);
-
 const configWithIntl = withNextIntl(nextConfig);
 
-export default hasSentryToken
+// Only wrap with Sentry when the auth token is present (CI / Vercel with SENTRY_AUTH_TOKEN set)
+export default process.env.SENTRY_AUTH_TOKEN
   ? withSentryConfig(configWithIntl, {
       org: "nuvem-ensino",
       project: "javascript-nextjs",
-      silent: !process.env.CI,
+      silent: true,
       widenClientFileUpload: true,
-      webpack: {
-        automaticVercelMonitors: true,
-        treeshake: {
-          removeDebugLogging: true,
-        },
-      },
+      automaticVercelMonitors: true,
     })
   : configWithIntl;
