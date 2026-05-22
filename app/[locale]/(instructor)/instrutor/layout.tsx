@@ -18,7 +18,7 @@ export default async function InstructorLayout({
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/instrutor");
 
   const role = (session.user as { role?: string }).role;
-  if (role !== "INSTRUCTOR") redirect("/dashboard");
+  if (role !== "INSTRUCTOR" && role !== "ADMIN") redirect("/dashboard");
 
   const initials = (session.user.name ?? session.user.email ?? "I")
     .split(" ")

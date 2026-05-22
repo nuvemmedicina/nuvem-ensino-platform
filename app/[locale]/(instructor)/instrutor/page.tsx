@@ -32,16 +32,32 @@ export default async function InstructorOverviewPage({
   });
 
   if (!instructor) {
-    return (
-      <div className="max-w-2xl">
-        <h1 className="font-serif text-2xl font-medium text-foreground mb-4">
-          Perfil de instrutor não encontrado
-        </h1>
-        <p className="font-sans text-sm text-muted">
-          Entre em contato com o administrador para configurar seu perfil de instrutor.
-        </p>
-      </div>
-    );
+    // Auto-create a minimal instructor profile so the user can proceed
+    function slugify(name: string) {
+      return name
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+    }
+    const baseSlug = slugify(session.user.name ?? session.user.email?.split("@")[0] ?? "instrutor");
+    let slug = baseSlug;
+    let counter = 1;
+    while (await prisma.instructor.findUnique({ where: { slug } })) {
+      slug = `${baseSlug}-${counter++}`;
+    }
+    const created = await prisma.instructor.create({
+      data: { userId: session.user.id, slug },
+    });
+    // Ensure role is set to INSTRUCTOR
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { role: "INSTRUCTOR" },
+    });
+    redirect(`/instrutor`);
+    // satisfy type-checker — redirect() throws, so this is unreachable
+    return null as never;
   }
 
   const totalCourses = instructor.courses.length;
