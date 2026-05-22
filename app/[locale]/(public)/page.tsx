@@ -222,19 +222,20 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </Link>
         </div>
 
-        {/* Stats strip */}
-        <div className="relative w-full max-w-4xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-4 border-t border-white/8">
-            {stats.map((s, i) => (
-              <div key={s.label}
-                className={`flex flex-col items-center justify-center py-6 px-4 ${i < stats.length - 1 ? "border-r border-white/8" : ""}`}>
-                <span className="font-serif text-2xl sm:text-3xl font-semibold text-white">{s.value}</span>
-                <span className="font-sans text-[11px] text-white/40 mt-1 text-center leading-tight">{s.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
+
+      {/* ── Stats strip ──────────────────────────────────────────────────── */}
+      <div className="bg-canvas-card border-y border-white/8">
+        <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4">
+          {stats.map((s, i) => (
+            <div key={s.label}
+              className={`flex flex-col items-center justify-center py-7 px-4 ${i < stats.length - 1 ? "border-r border-white/8" : ""}`}>
+              <span className="font-serif text-2xl sm:text-3xl font-semibold text-white">{s.value}</span>
+              <span className="font-sans text-[11px] text-white/40 mt-1 text-center leading-tight">{s.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* ── Modalidades ──────────────────────────────────────────────────── */}
       <section className="bg-background py-24 px-4">
