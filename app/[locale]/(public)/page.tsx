@@ -152,7 +152,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         {/* Grid de fundo */}
         <div aria-hidden className="pointer-events-none absolute inset-0"
           style={{
-            backgroundImage: `linear-gradient(rgba(203,228,230,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(203,228,230,0.06) 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(rgba(203,228,230,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(203,228,230,0.025) 1px, transparent 1px)`,
             backgroundSize: "48px 48px",
           }}
         />
@@ -209,15 +209,24 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       </section>
 
       {/* ── Stats strip ──────────────────────────────────────────────────── */}
-      <div className="bg-canvas-card border-y border-white/8">
-        <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4">
-          {stats.map((s, i) => (
-            <div key={s.label}
-              className={`flex flex-col items-center justify-center py-7 px-4 ${i < stats.length - 1 ? "border-r border-white/8" : ""}`}>
-              <span className="font-serif text-2xl sm:text-3xl font-semibold text-white">{s.value}</span>
-              <span className="font-sans text-[11px] text-white/40 mt-1 text-center leading-tight">{s.label}</span>
-            </div>
-          ))}
+      <div className="bg-canvas-card border-y border-white/[0.06]">
+        <div className="max-w-4xl mx-auto px-6 py-7 sm:py-8">
+          <div className="flex items-center justify-around">
+            {stats.map((s, i) => (
+              <div key={s.label} className="relative flex flex-col items-center px-3 sm:px-8">
+                {/* Separador vertical */}
+                {i > 0 && (
+                  <span aria-hidden className="absolute -left-px top-1/2 -translate-y-1/2 h-7 w-px bg-white/[0.10]" />
+                )}
+                <span className="font-serif text-xl sm:text-3xl font-semibold text-white leading-none">
+                  {s.value}
+                </span>
+                <span className="font-sans text-[10px] sm:text-[11px] text-white/40 mt-1.5 text-center leading-snug max-w-[72px] sm:max-w-none">
+                  {s.label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
