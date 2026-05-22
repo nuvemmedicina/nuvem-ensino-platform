@@ -12,6 +12,7 @@ import {
   BookOpen,
   Award,
   ChevronRight,
+  ExternalLink,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { localizedCourse } from "@/lib/i18n-content";
@@ -789,9 +790,36 @@ export default async function CoursePage({ params }: Props) {
               </div>
             </div>
             {content.instructorBio && (
-              <p className="font-sans text-sm text-muted leading-relaxed">
+              <p className="font-sans text-sm text-muted leading-relaxed mb-3">
                 {content.instructorBio}
               </p>
+            )}
+            {/* Links sociais do instrutor */}
+            {(course.instructor.linkedin || course.instructor.instagram) && (
+              <div className="flex items-center gap-3 pt-1 border-t border-border mt-3">
+                {course.instructor.linkedin && (
+                  <a
+                    href={course.instructor.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 font-sans text-xs text-muted hover:text-primary transition-colors"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    LinkedIn
+                  </a>
+                )}
+                {course.instructor.instagram && (
+                  <a
+                    href={course.instructor.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 font-sans text-xs text-muted hover:text-primary transition-colors"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    Instagram
+                  </a>
+                )}
+              </div>
             )}
           </div>
 

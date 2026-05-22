@@ -15,7 +15,7 @@ type Instructor = {
   formation: string | null;
   institution: string | null;
   linkedin: string | null;
-  lattes: string | null;
+  instagram: string | null;
   slug: string;
   user: { id: string; name: string | null; email: string; image: string | null };
   _count: { courses: number };
@@ -109,8 +109,8 @@ export function InstructorCard({ instructor: inst }: { instructor: Instructor })
               <input name="linkedin" type="url" defaultValue={inst.linkedin ?? ""} placeholder="https://linkedin.com/in/..." className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Lattes CNPq (URL)</label>
-              <input name="lattes" type="url" defaultValue={inst.lattes ?? ""} placeholder="http://lattes.cnpq.br/..." className={inputClass} />
+              <label className={labelClass}>Instagram (URL)</label>
+              <input name="instagram" type="url" defaultValue={inst.instagram ?? ""} placeholder="https://instagram.com/..." className={inputClass} />
             </div>
           </div>
 

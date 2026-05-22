@@ -144,7 +144,7 @@ export default async function InstrutoresPage({
             // DB tem prioridade; fallback estático como segurança
             const photo       = inst.photoUrl ?? inst.user.image ?? fb.foto ?? null;
             const bio         = inst.bio ?? fb.bio ?? null;
-            const instagram   = fb.instagram ?? null;
+            const instagram   = inst.instagram ?? fb.instagram ?? null;
             const formacaoFb  = fb.formacao ?? [];
 
             // formation do DB vira o primeiro item da lista (se preenchido)
@@ -217,15 +217,6 @@ export default async function InstrutoresPage({
                             className="p-1.5 rounded-lg text-muted hover:text-primary hover:bg-primary/10 transition-colors"
                             title="LinkedIn">
                             <ExternalLink className="w-4 h-4" />
-                          </a>
-                        )}
-                        {inst.lattes && (
-                          <a href={inst.lattes} target="_blank" rel="noopener noreferrer"
-                            aria-label="Lattes"
-                            className="flex items-center gap-1 font-sans text-[10px] font-semibold text-muted hover:text-primary transition-colors"
-                            title="Currículo Lattes">
-                            <ExternalLink className="w-3 h-3" />
-                            Lattes
                           </a>
                         )}
                       </div>

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Award, BookOpen, Users, MapPin, ExternalLink, Star, GraduationCap, Microscope, Globe } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { prisma } from "@/lib/prisma";
 
 export async function generateMetadata({
   params,
@@ -32,37 +33,13 @@ export async function generateMetadata({
   };
 }
 
-const instructorPhotos: Record<string, { foto: string; crm: string; especialidade: string; bioKey: "vera" | "eliane" | "wanderley" | "felipe" | "anna" }> = {
-  "Dra. Vera Ângelo": {
-    foto: "/instructors/dra-vera.jpg",
-    crm: "CRM-MG 22284 · RQE 10411 · RQE 22736",
-    especialidade: "Gastroenterologia · Motilidade Digestiva",
-    bioKey: "vera",
-  },
-  "Dra. Eliane Basques": {
-    foto: "/instructors/dra-eliane.jpg",
-    crm: "",
-    especialidade: "Gastroenterologia · Manometria Anorretal",
-    bioKey: "eliane",
-  },
-  "Dr. Wanderley Bertoni": {
-    foto: "/instructors/wanderley-bertoni.jpg",
-    crm: "CRM-MG 26967 · RQE 24610/38052",
-    especialidade: "Gastroenterologia · Endoscopia Digestiva",
-    bioKey: "wanderley",
-  },
-  "Dr. Felipe Nelson": {
-    foto: "/instructors/felipe-nelson.jpg",
-    crm: "",
-    especialidade: "Gastroenterologia · Manometria · pHmetria",
-    bioKey: "felipe",
-  },
-  "Dra. Anna Karoline": {
-    foto: "/instructors/anna-karoline.jpg",
-    crm: "",
-    especialidade: "Fisioterapia Pélvica",
-    bioKey: "anna",
-  },
+// Fotos estáticas como fallback enquanto o upload não é feito
+const staticPhotos: Record<string, string> = {
+  "dra-vera-angelo": "/instructors/dra-vera.jpg",
+  "dra-eliane-basques": "/instructors/dra-eliane.jpg",
+  "dr-wanderley-bertoni": "/instructors/wanderley-bertoni.jpg",
+  "dr-felipe-nelson": "/instructors/felipe-nelson.jpg",
+  "dra-anna-karoline": "/instructors/anna-karoline.jpg",
 };
 
 export default async function SobrePage({
@@ -72,6 +49,12 @@ export default async function SobrePage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "about" });
+
+  // Instrutores do banco — com fallback de foto estática
+  const dbInstructors = await prisma.instructor.findMany({
+    include: { user: { select: { name: true, image: true } } },
+    orderBy: { createdAt: "asc" },
+  });
 
   const numeros = [
     { icon: Star,          valor: "+2.000",          label: t("numbers.googleReviews") },
@@ -227,34 +210,73 @@ export default async function SobrePage({
       </section>
 
       {/* Corpo docente */}
-      <section className="max-w-5xl mx-auto px-4 py-16">
-        <h2 className="font-serif text-2xl font-medium text-foreground text-center mb-10">
-          {t("faculty.title")}
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {Object.entries(instructorPhotos).map(([nome, { foto, crm, especialidade, bioKey }]) => (
-            <div key={nome} className="bg-surface border border-border rounded-2xl p-6 flex gap-5">
-              <div className="relative w-20 h-20 rounded-2xl overflow-hidden shrink-0">
-                <Image
-                  src={foto}
-                  alt={nome}
-                  fill
-                  className="object-cover object-top"
-                  sizes="80px"
-                />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-serif text-lg font-medium text-foreground">{nome}</h3>
-                <p className="font-sans text-xs text-primary font-semibold mt-0.5 mb-1">{especialidade}</p>
-                {crm && (
-                  <p className="font-sans text-[10px] text-muted mb-2">{crm}</p>
-                )}
-                <p className="font-sans text-xs text-muted leading-relaxed">{t(`faculty.${bioKey}`)}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {dbInstructors.length > 0 && (
+        <section className="max-w-5xl mx-auto px-4 py-16">
+          <h2 className="font-serif text-2xl font-medium text-foreground text-center mb-10">
+            {t("faculty.title")}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {dbInstructors.map((inst) => {
+              const photo = inst.photoUrl ?? inst.user.image ?? staticPhotos[inst.slug] ?? null;
+              const crm = [inst.crm, inst.rqe].filter(Boolean).join(" · ");
+              return (
+                <div key={inst.id} className="bg-surface border border-border rounded-2xl p-6 flex gap-5">
+                  <div className="relative w-20 h-20 rounded-2xl overflow-hidden shrink-0 bg-primary/10">
+                    {photo ? (
+                      <Image
+                        src={photo}
+                        alt={inst.user.name ?? ""}
+                        fill
+                        className="object-cover object-top"
+                        sizes="80px"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="font-serif text-2xl font-light text-primary/40">
+                          {(inst.user.name ?? "?")[0]}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-serif text-lg font-medium text-foreground">{inst.user.name}</h3>
+                    {inst.title && (
+                      <p className="font-sans text-xs text-primary font-semibold mt-0.5 mb-1">{inst.title}</p>
+                    )}
+                    {crm && (
+                      <p className="font-sans text-[10px] text-muted mb-1">{crm}</p>
+                    )}
+                    {inst.formation && (
+                      <p className="font-sans text-[10px] text-muted/70 mb-2">{inst.formation}</p>
+                    )}
+                    {inst.bio && (
+                      <p className="font-sans text-xs text-muted leading-relaxed line-clamp-3">{inst.bio}</p>
+                    )}
+                    {/* Links sociais */}
+                    {(inst.linkedin || inst.instagram) && (
+                      <div className="flex items-center gap-3 mt-2">
+                        {inst.linkedin && (
+                          <a href={inst.linkedin} target="_blank" rel="noopener noreferrer"
+                            className="font-sans text-[10px] text-muted hover:text-primary transition-colors flex items-center gap-1">
+                            <ExternalLink className="w-3 h-3" /> LinkedIn
+                          </a>
+                        )}
+                        {inst.instagram && (
+                          <a href={inst.instagram} target="_blank" rel="noopener noreferrer"
+                            className="font-sans text-[10px] text-muted hover:text-primary transition-colors flex items-center gap-1">
+                            <ExternalLink className="w-3 h-3" /> Instagram
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* CTA */}
       <section

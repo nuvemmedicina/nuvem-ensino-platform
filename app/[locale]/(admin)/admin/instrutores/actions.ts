@@ -77,12 +77,14 @@ export async function updateInstructor(instructorId: string, formData: FormData)
       formation:   str("formation"),
       institution: str("institution"),
       linkedin:    str("linkedin"),
-      lattes:      str("lattes"),
+      instagram:   str("instagram"),
     },
   });
 
   revalidatePath("/admin/instrutores");
   revalidatePath("/instrutores");
+  revalidatePath("/sobre");
+  revalidatePath("/cursos", "layout"); // revalida todas as páginas de curso
 }
 
 export async function deleteInstructor(instructorId: string) {
