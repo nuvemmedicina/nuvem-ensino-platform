@@ -10,6 +10,7 @@ import {
   deleteLesson,
   deleteModule,
 } from "./actions";
+import { ImageUploader } from "@/components/ImageUploader";
 import {
   createQuiz,
   addQuestion,
@@ -163,28 +164,47 @@ export default async function AdminCursoEditPage({ params }: Props) {
             <input name="location" defaultValue={course.location ?? ""} placeholder="Ex: NU.V.E.M Medicina · Belo Horizonte" className={inputClass} />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>Vagas totais</label>
-              <input
-                name="totalSeats"
-                type="number"
-                min="1"
-                defaultValue={course.totalSeats ?? ""}
-                placeholder="Deixe em branco = ilimitado"
-                className={inputClass}
-              />
-              <p className="font-sans text-[10px] text-muted mt-1">
-                Reservadas: <strong>{course.reservedSeats}</strong>
-                {course.totalSeats !== null && (
-                  <> · Disponíveis: <strong>{course.totalSeats - course.reservedSeats}</strong></>
-                )}
-              </p>
-            </div>
-            <div>
-              <label className={labelClass}>URL da miniatura</label>
-              <input name="thumbnailUrl" defaultValue={course.thumbnailUrl ?? ""} placeholder="https://..." className={inputClass} />
-            </div>
+          <div>
+            <label className={labelClass}>Vagas totais</label>
+            <input
+              name="totalSeats"
+              type="number"
+              min="1"
+              defaultValue={course.totalSeats ?? ""}
+              placeholder="Deixe em branco = ilimitado"
+              className={inputClass}
+            />
+            <p className="font-sans text-[10px] text-muted mt-1">
+              Reservadas: <strong>{course.reservedSeats}</strong>
+              {course.totalSeats !== null && (
+                <> · Disponíveis: <strong>{course.totalSeats - course.reservedSeats}</strong></>
+              )}
+            </p>
+          </div>
+
+          <div>
+            <label className={labelClass}>Link do conteúdo online (opcional)</label>
+            <input
+              name="contentUrl"
+              type="url"
+              defaultValue={course.contentUrl ?? ""}
+              placeholder="https://youtube.com/watch?v=... ou link da plataforma"
+              className={inputClass}
+            />
+            <p className="font-sans text-[11px] text-muted/60 mt-1">
+              Para cursos online — link da aula, playlist ou plataforma externa.
+            </p>
+          </div>
+
+          <div>
+            <label className={labelClass}>Imagem de capa</label>
+            <ImageUploader
+              name="thumbnailUrl"
+              folder="courses"
+              aspectHint="16:9"
+              label="Imagem de capa"
+              initialUrl={course.thumbnailUrl}
+            />
           </div>
 
           <div className="pt-2">
