@@ -122,7 +122,7 @@ export default async function InstrutoresPage({
         select: { id: true, title: true, slug: true },
       },
     },
-    orderBy: { user: { name: "asc" } },
+    orderBy: [{ displayOrder: "asc" }, { createdAt: "asc" }],
   });
 
   return (

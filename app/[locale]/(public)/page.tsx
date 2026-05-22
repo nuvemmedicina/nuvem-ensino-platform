@@ -81,11 +81,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     select: {
       slug: true, title: true, crm: true, rqe: true,
       photoUrl: true, bio: true, formation: true,
-      linkedin: true, instagram: true,
+      linkedin: true, instagram: true, displayOrder: true,
       user: { select: { name: true, image: true } },
       _count: { select: { courses: true } },
     },
-    orderBy: { user: { name: "asc" } },
+    orderBy: [{ displayOrder: "asc" }, { createdAt: "asc" }],
     take: 4,
   });
 

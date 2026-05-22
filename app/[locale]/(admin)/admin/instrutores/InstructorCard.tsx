@@ -16,6 +16,7 @@ type Instructor = {
   institution: string | null;
   linkedin: string | null;
   instagram: string | null;
+  displayOrder: number;
   slug: string;
   user: { id: string; name: string | null; email: string; image: string | null };
   _count: { courses: number };
@@ -112,6 +113,18 @@ export function InstructorCard({ instructor: inst }: { instructor: Instructor })
               <label className={labelClass}>Instagram (URL)</label>
               <input name="instagram" type="url" defaultValue={inst.instagram ?? ""} placeholder="https://instagram.com/..." className={inputClass} />
             </div>
+          </div>
+
+          {/* Ordem */}
+          <div>
+            <label className={labelClass}>Ordem de exibição (menor = primeiro)</label>
+            <input
+              name="displayOrder"
+              type="number"
+              min="1"
+              defaultValue={inst.displayOrder}
+              className={inputClass}
+            />
           </div>
 
           {/* Foto */}

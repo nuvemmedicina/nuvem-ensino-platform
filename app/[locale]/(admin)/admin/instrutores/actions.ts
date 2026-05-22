@@ -76,8 +76,9 @@ export async function updateInstructor(instructorId: string, formData: FormData)
       bio:         str("bio"),
       formation:   str("formation"),
       institution: str("institution"),
-      linkedin:    str("linkedin"),
-      instagram:   str("instagram"),
+      linkedin:     str("linkedin"),
+      instagram:    str("instagram"),
+      displayOrder: formData.get("displayOrder") ? parseInt(formData.get("displayOrder") as string) : 99,
     },
   });
 

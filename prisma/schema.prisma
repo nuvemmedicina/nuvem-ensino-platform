@@ -142,9 +142,10 @@ model Instructor {
   bio         String?  @db.Text
   formation   String?  // Ex: "Doutora pela UFMG · Especialista em Gastroenterologia"
   institution String?  // Ex: "Hospital Albert Einstein"
-  linkedin    String?  // URL LinkedIn
-  instagram   String?  // URL Instagram
-  lattes      String?  // URL Lattes CNPq (mantido para retrocompatibilidade)
+  linkedin     String?  // URL LinkedIn
+  instagram    String?  // URL Instagram
+  lattes       String?  // URL Lattes CNPq (mantido para retrocompatibilidade)
+  displayOrder Int      @default(99)  // ordem de exibição nas páginas públicas
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

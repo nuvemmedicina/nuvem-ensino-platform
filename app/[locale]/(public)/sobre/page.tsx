@@ -53,7 +53,7 @@ export default async function SobrePage({
   // Instrutores do banco — com fallback de foto estática
   const dbInstructors = await prisma.instructor.findMany({
     include: { user: { select: { name: true, image: true } } },
-    orderBy: { createdAt: "asc" },
+    orderBy: [{ displayOrder: "asc" }, { createdAt: "asc" }],
   });
 
   const numeros = [
