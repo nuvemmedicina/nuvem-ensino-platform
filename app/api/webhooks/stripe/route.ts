@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
+import { sendEnrollmentConfirmation } from "@/lib/email";
 
 export async function POST(req: Request) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -34,7 +35,19 @@ export async function POST(req: Request) {
     const enrollment = await prisma.enrollment.update({
       where: { id: enrollmentId },
       data: { status: "ACTIVE" },
+      include: {
+        user: { select: { email: true, name: true } },
+        course: { select: { title: true, slug: true } },
+      },
     });
+
+    // Send confirmation email (fire-and-forget — don't fail webhook on email error)
+    sendEnrollmentConfirmation({
+      to: enrollment.user.email,
+      userName: enrollment.user.name ?? "Aluno",
+      courseName: enrollment.course.title,
+      courseSlug: enrollment.course.slug,
+    }).catch((err) => console.error("Email confirmation error:", err));
 
     // Issue certificate if course completed
     await prisma.certificate.upsert({
