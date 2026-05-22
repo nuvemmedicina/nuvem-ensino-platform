@@ -11,6 +11,11 @@ type Instructor = {
   crm: string | null;
   rqe: string | null;
   photoUrl: string | null;
+  bio: string | null;
+  formation: string | null;
+  institution: string | null;
+  linkedin: string | null;
+  lattes: string | null;
   slug: string;
   user: { id: string; name: string | null; email: string; image: string | null };
   _count: { courses: number };
@@ -59,6 +64,7 @@ export function InstructorCard({ instructor: inst }: { instructor: Instructor })
           </div>
         </div>
         <form action={handleUpdate} className="space-y-3">
+          {/* Identificação */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className={labelClass}>Título / Especialidade</label>
@@ -69,10 +75,46 @@ export function InstructorCard({ instructor: inst }: { instructor: Instructor })
               <input name="crm" defaultValue={inst.crm ?? ""} placeholder="CRM-MG 12345" className={inputClass} />
             </div>
           </div>
-          <div>
-            <label className={labelClass}>RQE</label>
-            <input name="rqe" defaultValue={inst.rqe ?? ""} placeholder="RQE 67890" className={inputClass} />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className={labelClass}>RQE</label>
+              <input name="rqe" defaultValue={inst.rqe ?? ""} placeholder="RQE 67890" className={inputClass} />
+            </div>
+            <div>
+              <label className={labelClass}>Instituição principal</label>
+              <input name="institution" defaultValue={inst.institution ?? ""} placeholder="Ex: Hospital Albert Einstein" className={inputClass} />
+            </div>
           </div>
+
+          {/* Currículo */}
+          <div>
+            <label className={labelClass}>Formação acadêmica</label>
+            <input name="formation" defaultValue={inst.formation ?? ""} placeholder="Ex: Doutora pela UFMG · Esp. Gastroenterologia" className={inputClass} />
+          </div>
+          <div>
+            <label className={labelClass}>Biografia / Currículo resumido</label>
+            <textarea
+              name="bio"
+              defaultValue={inst.bio ?? ""}
+              rows={4}
+              placeholder="Breve apresentação do instrutor para o site público — trajetória, áreas de atuação, conquistas..."
+              className={`${inputClass} resize-none`}
+            />
+          </div>
+
+          {/* Links */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className={labelClass}>LinkedIn (URL)</label>
+              <input name="linkedin" type="url" defaultValue={inst.linkedin ?? ""} placeholder="https://linkedin.com/in/..." className={inputClass} />
+            </div>
+            <div>
+              <label className={labelClass}>Lattes CNPq (URL)</label>
+              <input name="lattes" type="url" defaultValue={inst.lattes ?? ""} placeholder="http://lattes.cnpq.br/..." className={inputClass} />
+            </div>
+          </div>
+
+          {/* Foto */}
           <div>
             <label className={labelClass}>Foto do instrutor</label>
             <ImageUploader
@@ -83,6 +125,7 @@ export function InstructorCard({ instructor: inst }: { instructor: Instructor })
               label="Foto do instrutor"
             />
           </div>
+
           <div className="flex gap-2 pt-1">
             <button
               type="submit"
@@ -120,6 +163,12 @@ export function InstructorCard({ instructor: inst }: { instructor: Instructor })
           )}
         </div>
         <p className="font-sans text-xs text-muted">{inst.user.email}</p>
+        {inst.formation && (
+          <p className="font-sans text-[11px] text-muted/80 mt-0.5 line-clamp-1">{inst.formation}</p>
+        )}
+        {inst.bio && !inst.formation && (
+          <p className="font-sans text-[11px] text-muted/70 mt-0.5 line-clamp-1">{inst.bio}</p>
+        )}
         <div className="flex items-center gap-3 mt-1.5 flex-wrap">
           {inst.crm && (
             <span className="font-sans text-[10px] text-muted bg-border/40 px-2 py-0.5 rounded">

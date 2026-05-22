@@ -64,17 +64,25 @@ export async function createInstructor(formData: FormData) {
 export async function updateInstructor(instructorId: string, formData: FormData) {
   await requireAdmin();
 
+  const str = (key: string) => (formData.get(key) as string) || null;
+
   await prisma.instructor.update({
     where: { id: instructorId },
     data: {
-      title:    (formData.get("title") as string) || null,
-      crm:      (formData.get("crm") as string) || null,
-      rqe:      (formData.get("rqe") as string) || null,
-      photoUrl: (formData.get("photoUrl") as string) || null,
+      title:       str("title"),
+      crm:         str("crm"),
+      rqe:         str("rqe"),
+      photoUrl:    str("photoUrl"),
+      bio:         str("bio"),
+      formation:   str("formation"),
+      institution: str("institution"),
+      linkedin:    str("linkedin"),
+      lattes:      str("lattes"),
     },
   });
 
   revalidatePath("/admin/instrutores");
+  revalidatePath("/instrutores");
 }
 
 export async function deleteInstructor(instructorId: string) {
