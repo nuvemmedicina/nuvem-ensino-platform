@@ -24,16 +24,6 @@ export async function updateCourse(courseId: string, slug: string, formData: For
       shortDesc:   str("shortDesc"),
       description: formData.get("description") as string,
 
-      // EN translations
-      titleEn:       str("titleEn"),
-      shortDescEn:   str("shortDescEn"),
-      descriptionEn: str("descriptionEn"),
-
-      // ES translations
-      titleEs:       str("titleEs"),
-      shortDescEs:   str("shortDescEs"),
-      descriptionEs: str("descriptionEs"),
-
       // Other fields
       price:       parseFloat(formData.get("price") as string),
       hours:       parseInt(formData.get("hours") as string),
@@ -42,10 +32,6 @@ export async function updateCourse(courseId: string, slug: string, formData: For
       location:    str("location"),
       thumbnailUrl:   str("thumbnailUrl"),
       contentUrl:     str("contentUrl"),
-      objectives:     str("objectives"),
-      targetAudience: str("targetAudience"),
-      includes:       str("includes"),
-      startDateLabel: str("startDateLabel"),
       totalSeats:     formData.get("totalSeats") ? parseInt(formData.get("totalSeats") as string) : null,
     },
   });
@@ -116,6 +102,42 @@ export async function deleteCourse(courseId: string) {
   await prisma.course.delete({ where: { id: courseId } });
   revalidatePath("/admin/cursos");
   redirect("/admin/cursos");
+}
+
+// Atualiza apenas os campos de conteúdo de página (segundo formulário — não inclui title/price/etc.)
+export async function updateCourseContent(courseId: string, slug: string, formData: FormData) {
+  await requireAdmin();
+  const str = (key: string) => (formData.get(key) as string) || null;
+  await prisma.course.update({
+    where: { id: courseId },
+    data: {
+      startDateLabel: str("startDateLabel"),
+      objectives:     str("objectives"),
+      targetAudience: str("targetAudience"),
+      includes:       str("includes"),
+    },
+  });
+  revalidatePath(`/admin/cursos/${slug}`);
+  revalidatePath(`/cursos/${slug}`);
+}
+
+// Atualiza apenas as traduções EN/ES (terceiro formulário)
+export async function updateCourseTranslations(courseId: string, slug: string, formData: FormData) {
+  await requireAdmin();
+  const str = (key: string) => (formData.get(key) as string) || null;
+  await prisma.course.update({
+    where: { id: courseId },
+    data: {
+      titleEn:       str("titleEn"),
+      shortDescEn:   str("shortDescEn"),
+      descriptionEn: str("descriptionEn"),
+      titleEs:       str("titleEs"),
+      shortDescEs:   str("shortDescEs"),
+      descriptionEs: str("descriptionEs"),
+    },
+  });
+  revalidatePath(`/admin/cursos/${slug}`);
+  revalidatePath(`/cursos/${slug}`);
 }
 
 // Chamado pelo MuxUploader após upload concluído

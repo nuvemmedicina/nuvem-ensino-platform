@@ -4,6 +4,8 @@ import { ChevronLeft, Plus, CheckCircle, Users } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import {
   updateCourse,
+  updateCourseContent,
+  updateCourseTranslations,
   updateLesson,
   createModule,
   createLesson,
@@ -63,6 +65,8 @@ export default async function AdminCursoEditPage({ params }: Props) {
   if (!course) notFound();
 
   const updateCourseAction = updateCourse.bind(null, course.id, slug);
+  const updateCourseContentAction = updateCourseContent.bind(null, course.id, slug);
+  const updateCourseTranslationsAction = updateCourseTranslations.bind(null, course.id, slug);
 
   return (
     <div className="max-w-3xl">
@@ -221,8 +225,7 @@ export default async function AdminCursoEditPage({ params }: Props) {
         <p className="font-sans text-xs text-muted mb-5">
           Cada linha vira um item com ✓ na página pública. Deixe em branco para ocultar a seção.
         </p>
-        <form action={updateCourseAction} className="space-y-4">
-          <input type="hidden" name="_contentOnly" value="1" />
+        <form action={updateCourseContentAction} className="space-y-4">
 
           <div>
             <label className={labelClass}>Data / Período (presencial)</label>
@@ -286,9 +289,7 @@ export default async function AdminCursoEditPage({ params }: Props) {
         </p>
 
         {/* Both EN and ES sections are always visible — a single submit saves all 6 fields */}
-        <form action={updateCourseAction} className="space-y-4">
-            {/* Hidden marker so the action knows this is a translations submit */}
-            <input type="hidden" name="_translationsOnly" value="1" />
+        <form action={updateCourseTranslationsAction} className="space-y-4">
 
             {/* EN section */}
             <div className="border border-border rounded-xl overflow-hidden">
