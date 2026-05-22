@@ -163,7 +163,8 @@ model Course {
   shortDesc     String?
   thumbnailUrl  String?
   previewUrl    String?
-  contentUrl    String?   // link do conteúdo online (YouTube, Vimeo, plataforma externa)
+  contentUrl          String?   // link do conteúdo online (YouTube, Vimeo, plataforma externa)
+  externalCheckoutUrl String?   // quando preenchido, o botão de compra redireciona para URL externa
   price         Decimal        @db.Decimal(10, 2)
   salePrice     Decimal?       @db.Decimal(10, 2)
   hours         Int

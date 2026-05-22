@@ -631,12 +631,29 @@ export default async function CoursePage({ params }: Props) {
                   </div>
                 )}
 
-                <Link
-                  href={{ pathname: "/checkout/[slug]", params: { slug: course.slug } }}
-                  className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full bg-accent text-accent-foreground hover:bg-accent-light transition-colors mb-3"
-                >
-                  {t("checkoutButton")}
-                </Link>
+                {course.externalCheckoutUrl ? (
+                  <>
+                    <a
+                      href={course.externalCheckoutUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full bg-accent text-accent-foreground hover:bg-accent-light transition-colors mb-3"
+                    >
+                      {locale === "en" ? "Buy on partner site" : locale === "es" ? "Comprar en el sitio del socio" : "Comprar no site parceiro"}
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                    <p className="font-sans text-[11px] text-white/40 text-center mb-3">
+                      {locale === "en" ? "You will be redirected to a partner platform." : locale === "es" ? "Será redirigido a una plataforma asociada." : "Você será redirecionado para a plataforma parceira."}
+                    </p>
+                  </>
+                ) : (
+                  <Link
+                    href={{ pathname: "/checkout/[slug]", params: { slug: course.slug } }}
+                    className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full bg-accent text-accent-foreground hover:bg-accent-light transition-colors mb-3"
+                  >
+                    {t("checkoutButton")}
+                  </Link>
+                )}
                 <a
                   href="https://wa.me/5531997261029"
                   target="_blank"
@@ -834,12 +851,24 @@ export default async function CoursePage({ params }: Props) {
             <p className="font-sans text-xs text-muted mb-5">
               {course.hours}{t("hours")}
             </p>
-            <Link
-              href={{ pathname: "/checkout/[slug]", params: { slug: course.slug } }}
-              className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
-            >
-              {t("checkoutButton")}
-            </Link>
+            {course.externalCheckoutUrl ? (
+              <a
+                href={course.externalCheckoutUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
+              >
+                {locale === "en" ? "Buy on partner site" : "Comprar no site parceiro"}
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            ) : (
+              <Link
+                href={{ pathname: "/checkout/[slug]", params: { slug: course.slug } }}
+                className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
+              >
+                {t("checkoutButton")}
+              </Link>
+            )}
           </div>
         </div>
       </div>

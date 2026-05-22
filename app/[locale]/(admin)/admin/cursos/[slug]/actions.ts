@@ -30,8 +30,9 @@ export async function updateCourse(courseId: string, slug: string, formData: For
       status:      formData.get("status") as "DRAFT" | "PUBLISHED" | "ARCHIVED",
       category:    formData.get("category") as "HANDS_ON" | "ONLINE" | "HYBRID",
       location:    str("location"),
-      thumbnailUrl:   str("thumbnailUrl"),
-      contentUrl:     str("contentUrl"),
+      thumbnailUrl:        str("thumbnailUrl"),
+      contentUrl:          str("contentUrl"),
+      externalCheckoutUrl: str("externalCheckoutUrl"),
       totalSeats:     formData.get("totalSeats") ? parseInt(formData.get("totalSeats") as string) : null,
     },
   });

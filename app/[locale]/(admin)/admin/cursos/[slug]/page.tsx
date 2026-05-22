@@ -201,6 +201,20 @@ export default async function AdminCursoEditPage({ params }: Props) {
           </div>
 
           <div>
+            <label className={labelClass}>Link de compra externo (opcional)</label>
+            <input
+              name="externalCheckoutUrl"
+              type="url"
+              defaultValue={course.externalCheckoutUrl ?? ""}
+              placeholder="https://parceiro.com.br/produto/..."
+              className={inputClass}
+            />
+            <p className="font-sans text-[11px] text-muted/60 mt-1">
+              Quando preenchido, o botão &ldquo;Matricular-se&rdquo; redireciona para este link externo — a compra não passa pelo checkout interno.
+            </p>
+          </div>
+
+          <div>
             <label className={labelClass}>Imagem de capa</label>
             <ImageUploader
               name="thumbnailUrl"

@@ -33,9 +33,13 @@ export default async function CheckoutPage({ params }: Props) {
       titleEn: true, titleEs: true,
       shortDesc: true, shortDescEn: true, shortDescEs: true,
       description: true, descriptionEn: true, descriptionEs: true,
+      externalCheckoutUrl: true,
     },
   });
   if (!course) notFound();
+
+  // Curso com checkout externo → redireciona imediatamente
+  if (course.externalCheckoutUrl) redirect(course.externalCheckoutUrl);
 
   const session = await auth();
   if (!session) redirect(`/entrar?callbackUrl=/checkout/${slug}`);
