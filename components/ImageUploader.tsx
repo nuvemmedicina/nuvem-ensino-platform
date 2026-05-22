@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { ImagePlus, Loader2, X, AlertCircle } from "lucide-react";
+import { ImagePlus, Loader2, X, AlertCircle, Link as LinkIcon } from "lucide-react";
 
 type Props = {
   /** name of the hidden input that stores the final URL */
@@ -26,6 +26,8 @@ export function ImageUploader({
   const [url, setUrl] = useState<string>(initialUrl ?? "");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [urlInputVal, setUrlInputVal] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   async function handleFile(file: File) {
@@ -125,6 +127,52 @@ export function ImageUploader({
         <div className="flex items-center gap-2 mt-2 text-red-500">
           <AlertCircle className="w-3.5 h-3.5 shrink-0" />
           <span className="font-sans text-xs">{error}</span>
+        </div>
+      )}
+
+      {/* Opção de colar URL diretamente */}
+      {!url && (
+        <div className="mt-2">
+          {!showUrlInput ? (
+            <button
+              type="button"
+              onClick={() => setShowUrlInput(true)}
+              className="flex items-center gap-1.5 font-sans text-xs text-muted hover:text-foreground transition-colors"
+            >
+              <LinkIcon className="w-3 h-3" />
+              Ou cole uma URL de imagem
+            </button>
+          ) : (
+            <div className="flex gap-2">
+              <input
+                type="url"
+                value={urlInputVal}
+                onChange={(e) => setUrlInputVal(e.target.value)}
+                placeholder="https://..."
+                className="flex-1 px-3 py-1.5 rounded-lg border border-border bg-background text-xs text-foreground focus:outline-none focus:border-primary/50"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  if (urlInputVal.trim()) {
+                    setUrl(urlInputVal.trim());
+                    setShowUrlInput(false);
+                    setUrlInputVal("");
+                  }
+                }}
+                className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors"
+              >
+                Usar
+              </button>
+              <button
+                type="button"
+                onClick={() => { setShowUrlInput(false); setUrlInputVal(""); }}
+                className="font-sans text-xs px-2 py-1.5 rounded-lg border border-border text-muted hover:text-foreground transition-colors"
+              >
+                Cancelar
+              </button>
+            </div>
+          )}
         </div>
       )}
 
