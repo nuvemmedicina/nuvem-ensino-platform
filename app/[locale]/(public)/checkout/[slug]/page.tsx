@@ -3,7 +3,6 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { localizedCourse } from "@/lib/i18n-content";
-import { prisma } from "@/lib/prisma";
 import CheckoutClient from "./CheckoutClient";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
