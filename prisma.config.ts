@@ -12,4 +12,9 @@ export default defineConfig({
   datasource: {
     url: process.env["DATABASE_URL"],
   },
+  migrate: {
+    // DIRECT_URL bypasses PgBouncer pooling — required for advisory locks
+    // Set this env var in Vercel to the Neon "direct" connection string (without -pooler)
+    url: process.env["DIRECT_URL"] ?? process.env["DATABASE_URL"],
+  },
 });
