@@ -110,11 +110,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       slug: true, title: true, shortDesc: true, description: true,
       price: true, hours: true, thumbnailUrl: true, category: true,
       instructor: {
-        select: { user: { select: { name: true } }, photoUrl: true },
+        select: { user: { select: { name: true, image: true } }, photoUrl: true },
       },
     },
     orderBy: { createdAt: "desc" },
-    take: 6,
+    take: 3,
   });
 
   // Cursos online publicados
@@ -123,10 +123,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     select: {
       slug: true, title: true, shortDesc: true, description: true,
       price: true, hours: true, thumbnailUrl: true, contentUrl: true,
-      instructor: { select: { user: { select: { name: true } } } },
+      instructor: {
+        select: { user: { select: { name: true, image: true } }, photoUrl: true },
+      },
     },
     orderBy: { createdAt: "desc" },
-    take: 6,
+    take: 3,
   });
 
   const modalities = [
@@ -303,7 +305,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 const price = Number(course.price);
                 const instructorName = course.instructor.user.name ?? "";
                 const desc = course.shortDesc ?? course.description?.slice(0, 120) ?? "";
-                const thumb = course.thumbnailUrl ?? course.instructor.photoUrl ?? null;
+                const thumb = course.thumbnailUrl ?? course.instructor.photoUrl ?? course.instructor.user.image ?? null;
                 const categoryLabel = course.category === "HANDS_ON" ? "Hands-On" : "Híbrido";
 
                 return (
@@ -412,24 +414,28 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 const instructorName = course.instructor.user.name ?? "";
                 const desc = course.shortDesc ?? course.description.slice(0, 120);
 
+                const onlineThumb = course.thumbnailUrl ?? course.instructor.photoUrl ?? course.instructor.user.image ?? null;
+
                 return (
                   <Link key={course.slug}
                     href={{ pathname: "/cursos/[slug]", params: { slug: course.slug } }}
-                    className="shimmer-card group flex flex-col rounded-2xl border border-white/8 bg-white/[0.03] hover:bg-white/[0.07] hover:border-accent/25 transition-all duration-300 hover:-translate-y-1.5 overflow-hidden">
+                    className="shimmer-card group flex flex-col rounded-2xl border border-white/12 bg-white/[0.07] hover:bg-white/[0.11] hover:border-accent/30 transition-all duration-300 hover:-translate-y-1.5 overflow-hidden">
 
                     {/* Thumbnail ou placeholder */}
                     <div className="relative h-44 overflow-hidden bg-canvas-card">
-                      {course.thumbnailUrl ? (
+                      {onlineThumb ? (
                         <Image
-                          src={course.thumbnailUrl}
+                          src={onlineThumb}
                           alt={course.title}
                           fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          unoptimized
                         />
                       ) : (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <Monitor className="w-12 h-12 text-white/10" />
+                        <div className="absolute inset-0 flex items-center justify-center"
+                          style={{ background: "linear-gradient(135deg, rgba(203,228,230,0.08) 0%, rgba(203,228,230,0.02) 100%)" }}>
+                          <Monitor className="w-12 h-12 text-accent/20" />
                         </div>
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
@@ -441,22 +447,22 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
                     <div className="flex flex-col flex-1 p-5 gap-3">
                       <div>
-                        <p className="font-sans text-[11px] text-white/35 mb-1">{instructorName}</p>
+                        <p className="font-sans text-[11px] text-white/50 mb-1">{instructorName}</p>
                         <h3 className="font-serif text-lg font-medium text-white leading-snug group-hover:text-accent transition-colors duration-200">
                           {course.title}
                         </h3>
                       </div>
 
-                      <p className="font-sans text-xs text-white/40 leading-relaxed flex-1 line-clamp-2">{desc}</p>
+                      <p className="font-sans text-xs text-white/55 leading-relaxed flex-1 line-clamp-2">{desc}</p>
 
-                      <div className="flex items-center justify-between pt-3 border-t border-white/8">
+                      <div className="flex items-center justify-between pt-3 border-t border-white/12">
                         <div>
                           <span className="font-serif text-lg font-semibold text-white">
                             {price === 0 ? "Gratuito" : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(price)}
                           </span>
                           <div className="flex items-center gap-1 mt-0.5">
-                            <Clock className="w-3 h-3 text-white/25" />
-                            <span className="font-sans text-[10px] text-white/30">{course.hours}h</span>
+                            <Clock className="w-3 h-3 text-white/40" />
+                            <span className="font-sans text-[10px] text-white/45">{course.hours}h</span>
                           </div>
                         </div>
                         <span className="font-sans text-xs font-semibold px-3.5 py-1.5 rounded-full border border-accent/30 text-accent group-hover:bg-accent group-hover:text-accent-foreground group-hover:border-accent transition-all duration-200">
