@@ -176,6 +176,12 @@ model Course {
   metaTitle     String?
   metaDesc      String?
 
+  // Conteúdo detalhado da página do curso (uma entrada por linha, separadas por \n)
+  objectives     String?   @db.Text  // O que você vai aprender
+  targetAudience String?   @db.Text  // Público-alvo
+  includes       String?   @db.Text  // O que está incluído
+  startDateLabel String?             // Ex: "15–19 de junho de 2026"
+
   // Translations (nullable — fill only when a translation is available)
   titleEn        String?
   shortDescEn    String?

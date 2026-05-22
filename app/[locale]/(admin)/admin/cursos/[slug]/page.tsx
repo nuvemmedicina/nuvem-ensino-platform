@@ -213,6 +213,69 @@ export default async function AdminCursoEditPage({ params }: Props) {
         </form>
       </section>
 
+      {/* ── Conteúdo da Página ── */}
+      <section className="bg-surface border border-border rounded-2xl p-6 mb-6">
+        <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-1">
+          Conteúdo da Página do Curso
+        </h2>
+        <p className="font-sans text-xs text-muted mb-5">
+          Cada linha vira um item com ✓ na página pública. Deixe em branco para ocultar a seção.
+        </p>
+        <form action={updateCourseAction} className="space-y-4">
+          <input type="hidden" name="_contentOnly" value="1" />
+
+          <div>
+            <label className={labelClass}>Data / Período (presencial)</label>
+            <input
+              name="startDateLabel"
+              defaultValue={course.startDateLabel ?? ""}
+              placeholder="Ex: 15–19 de junho de 2026"
+              className={inputClass}
+            />
+            <p className="font-sans text-[10px] text-muted mt-1">
+              Aparece como destaque no topo da página do curso.
+            </p>
+          </div>
+
+          <div>
+            <label className={labelClass}>O que você vai aprender (objetivos)</label>
+            <textarea
+              name="objectives"
+              defaultValue={course.objectives ?? ""}
+              rows={5}
+              placeholder={"Realizar manometria esofágica com autonomia\nInterpretar laudos de pHmetria de 24 horas\nClassificar padrões segundo a Classificação de Chicago 4.0"}
+              className={`${inputClass} resize-none font-mono text-xs`}
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Público-alvo</label>
+            <textarea
+              name="targetAudience"
+              defaultValue={course.targetAudience ?? ""}
+              rows={4}
+              placeholder={"Médicos gastroenterologistas\nClínicos gerais e internistas\nResidentes em Gastroenterologia"}
+              className={`${inputClass} resize-none font-mono text-xs`}
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>O que está incluído</label>
+            <textarea
+              name="includes"
+              defaultValue={course.includes ?? ""}
+              rows={5}
+              placeholder={"40h de treinamento presencial supervisionado\nMaterial didático digital\nCertificado digital com QR Code\nCoffee break\nGrupo de suporte pós-curso"}
+              className={`${inputClass} resize-none font-mono text-xs`}
+            />
+          </div>
+
+          <div className="pt-2">
+            <button type="submit" className={btnPrimary}>Salvar conteúdo da página</button>
+          </div>
+        </form>
+      </section>
+
       {/* ── Traduções ── */}
       <section className="bg-surface border border-border rounded-2xl p-6 mb-6">
         <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-1">

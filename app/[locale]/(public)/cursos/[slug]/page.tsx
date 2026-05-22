@@ -468,7 +468,20 @@ export default async function CoursePage({ params }: Props) {
   if (!course) notFound();
 
   const lc = localizedCourse(course, locale);
-  const content = staticContent[slug] ?? null;
+  const staticFb = staticContent[slug] ?? null;
+
+  // DB tem prioridade; fallback para o conteúdo estático existente
+  const splitLines = (s: string | null | undefined) =>
+    s ? s.split("\n").map((l) => l.trim()).filter(Boolean) : null;
+
+  const content = {
+    startDate:      course.startDateLabel ?? staticFb?.startDate ?? null,
+    objectives:     splitLines(course.objectives)    ?? staticFb?.objectives    ?? null,
+    targetAudience: splitLines(course.targetAudience)?? staticFb?.targetAudience?? null,
+    includes:       splitLines(course.includes)      ?? staticFb?.includes      ?? null,
+    modules:        staticFb?.modules ?? null,       // módulos/aulas vêm do DB (modules do curso) ou do estático
+    instructorBio:  course.instructor.bio            ?? staticFb?.instructorBio ?? null,
+  };
 
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br";
   const courseJsonLd = {
@@ -575,7 +588,7 @@ export default async function CoursePage({ params }: Props) {
                     {course.location}
                   </span>
                 )}
-                {content?.startDate && (
+                {content.startDate && (
                   <span className="flex items-center gap-2 font-sans text-sm">
                     <Calendar className="w-4 h-4 text-accent/70" />
                     {content.startDate}
@@ -658,7 +671,7 @@ export default async function CoursePage({ params }: Props) {
       <div className="max-w-5xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 items-start">
         <div className="space-y-14">
           {/* O que você vai aprender */}
-          {content?.objectives && (
+          {content.objectives && (
             <section>
               <h2 className="font-serif text-2xl font-medium text-foreground mb-6 flex items-center gap-3">
                 <BookOpen className="w-5 h-5 text-primary/60" />
@@ -676,7 +689,7 @@ export default async function CoursePage({ params }: Props) {
           )}
 
           {/* Ementa */}
-          {content?.modules && (
+          {content.modules && (
             <section>
               <h2 className="font-serif text-2xl font-medium text-foreground mb-6">
                 {t("curriculum")}
@@ -710,7 +723,7 @@ export default async function CoursePage({ params }: Props) {
           )}
 
           {/* Público-alvo */}
-          {content?.targetAudience && (
+          {content.targetAudience && (
             <section>
               <h2 className="font-serif text-2xl font-medium text-foreground mb-6">
                 {t("targetAudience")}
@@ -727,7 +740,7 @@ export default async function CoursePage({ params }: Props) {
           )}
 
           {/* O que está incluído */}
-          {content?.includes && (
+          {content.includes && (
             <section>
               <h2 className="font-serif text-2xl font-medium text-foreground mb-6 flex items-center gap-3">
                 <Award className="w-5 h-5 text-primary/60" />
@@ -775,7 +788,7 @@ export default async function CoursePage({ params }: Props) {
                 </p>
               </div>
             </div>
-            {content?.instructorBio && (
+            {content.instructorBio && (
               <p className="font-sans text-sm text-muted leading-relaxed">
                 {content.instructorBio}
               </p>

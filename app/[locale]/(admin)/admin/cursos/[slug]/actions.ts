@@ -40,9 +40,13 @@ export async function updateCourse(courseId: string, slug: string, formData: For
       status:      formData.get("status") as "DRAFT" | "PUBLISHED" | "ARCHIVED",
       category:    formData.get("category") as "HANDS_ON" | "ONLINE" | "HYBRID",
       location:    str("location"),
-      thumbnailUrl: str("thumbnailUrl"),
-      contentUrl:  str("contentUrl"),
-      totalSeats:  formData.get("totalSeats") ? parseInt(formData.get("totalSeats") as string) : null,
+      thumbnailUrl:   str("thumbnailUrl"),
+      contentUrl:     str("contentUrl"),
+      objectives:     str("objectives"),
+      targetAudience: str("targetAudience"),
+      includes:       str("includes"),
+      startDateLabel: str("startDateLabel"),
+      totalSeats:     formData.get("totalSeats") ? parseInt(formData.get("totalSeats") as string) : null,
     },
   });
   revalidatePath(`/admin/cursos/${slug}`);
