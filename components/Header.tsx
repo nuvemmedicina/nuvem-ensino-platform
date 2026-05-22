@@ -23,16 +23,16 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="w-full bg-surface border-b border-border sticky top-0 z-50">
+    <header className="w-full sticky top-0 z-50 border-b border-border" style={{ background: "rgba(255,255,255,0.85)", backdropFilter: "blur(16px)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="shrink-0">
+          <Link href="/" className="shrink-0 group">
             <Image
               src="/logo.png"
               alt="NU.V.E.M Ensino"
               width={120}
               height={94}
-              className="h-11 w-auto"
+              className="h-11 w-auto transition-opacity duration-200 group-hover:opacity-80"
               priority
             />
           </Link>
@@ -42,9 +42,10 @@ export default function Header() {
               <Link
                 key={href}
                 href={href}
-                className="font-sans text-sm font-medium text-foreground hover:text-primary-light transition-colors"
+                className="relative group font-sans text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
               >
                 {t(labelKey)}
+                <span className="absolute -bottom-0.5 left-0 w-0 h-[1.5px] bg-primary group-hover:w-full transition-all duration-300 rounded-full" />
               </Link>
             ))}
             {externalLinks.map(({ labelKey, href }) => (
@@ -53,9 +54,10 @@ export default function Header() {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-sans text-sm font-medium text-foreground hover:text-primary-light transition-colors"
+                className="relative group font-sans text-sm font-medium text-foreground hover:text-primary transition-colors duration-200"
               >
                 {t(labelKey)}
+                <span className="absolute -bottom-0.5 left-0 w-0 h-[1.5px] bg-primary group-hover:w-full transition-all duration-300 rounded-full" />
               </a>
             ))}
           </nav>
@@ -64,9 +66,10 @@ export default function Header() {
             <LocaleSwitcher />
             <Link
               href="/entrar"
-              className="font-sans text-sm font-medium px-5 py-2 rounded-full bg-primary text-primary-foreground hover:bg-primary-dark transition-colors"
+              className="group relative overflow-hidden font-sans text-sm font-medium px-5 py-2 rounded-full bg-primary text-primary-foreground hover:shadow-[0_4px_20px_rgba(0,71,94,0.35)] hover:scale-[1.03] transition-all duration-200"
             >
-              {t("signIn")}
+              <span className="relative z-10">{t("signIn")}</span>
+              <span className="absolute inset-0 -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-500 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
             </Link>
           </div>
 
