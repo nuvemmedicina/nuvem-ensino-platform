@@ -45,9 +45,10 @@ export async function POST(req: NextRequest) {
     const blob = await put(filename, file, { access: "public", contentType: file.type });
     return NextResponse.json({ url: blob.url });
   } catch (err) {
-    console.error("Blob upload error:", err);
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("Blob upload error:", msg);
     return NextResponse.json(
-      { error: "Falha ao enviar imagem. Verifique o BLOB_READ_WRITE_TOKEN na Vercel." },
+      { error: `Falha ao enviar imagem: ${msg}` },
       { status: 500 },
     );
   }
