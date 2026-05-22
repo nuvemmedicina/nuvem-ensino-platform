@@ -35,38 +35,6 @@ export async function generateMetadata({
   };
 }
 
-const courses = [
-  {
-    slug: "manometria-phmetria-impedancia",
-    name: "Manometria, pHmetria e Impedância",
-    description: "Domine os principais exames de motilidade digestiva: manometria de alta resolução, pHmetria e impedância em ambiente clínico supervisionado.",
-    price: "R$ 6.500",
-    hours: "40",
-    category: "Hands-On",
-    instructorName: "Dr. Felipe Nelson",
-    instructorPhoto: "/instructors/felipe-nelson.jpg",
-  },
-  {
-    slug: "testes-respiratorios-h2-ch4-h2s-junho",
-    name: "Testes Respiratórios de H₂, CH₄ e H₂S",
-    description: "Turma de Junho: formação presencial com teoria e prática supervisionada em testes respiratórios nos dias 19 e 20 de junho de 2026.",
-    price: "R$ 2.200",
-    hours: "8",
-    category: "Hands-On",
-    instructorName: "Dra. Vera Ângelo",
-    instructorPhoto: "/instructors/dra-vera.jpg",
-  },
-  {
-    slug: "fisioterapia-respiratoria",
-    name: "Fisioterapia nas Disfunções do Assoalho Pélvico",
-    description: "Treinamento teórico-prático em fisioterapia pélvica: avaliação, tratamento e prática supervisionada com Dra. Anna Karoline.",
-    price: "R$ 3.500",
-    hours: "30",
-    category: "Hands-On",
-    instructorName: "Dra. Anna Karoline",
-    instructorPhoto: "/instructors/anna-karoline.jpg",
-  },
-];
 
 const instructors = [
   {
@@ -134,6 +102,20 @@ const jsonLd = {
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
+
+  // Cursos presenciais publicados (Hands-On e Híbrido)
+  const presentialCourses = await prisma.course.findMany({
+    where: { status: "PUBLISHED", category: { in: ["HANDS_ON", "HYBRID"] } },
+    select: {
+      slug: true, title: true, shortDesc: true, description: true,
+      price: true, hours: true, thumbnailUrl: true, category: true,
+      instructor: {
+        select: { user: { select: { name: true } }, photoUrl: true },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 6,
+  });
 
   // Cursos online publicados
   const onlineCourses = await prisma.course.findMany({
@@ -296,78 +278,97 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
-      {/* ── Cursos em Destaque ───────────────────────────────────────────── */}
-      <section className="bg-background py-4 pb-24 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
-            <div>
-              <h2 className="font-serif text-3xl sm:text-4xl font-light text-foreground mb-2">
-                {t("featured.title")}
-              </h2>
-              <p className="font-sans text-sm text-muted">{t("featured.subtitle")}</p>
-            </div>
-            <Link href="/cursos"
-              className="group inline-flex items-center gap-2 font-sans text-xs font-semibold text-primary hover:text-primary-light tracking-wider uppercase shrink-0 transition-colors">
-              {t("featured.viewAll")}
-              <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1">
-                <path fillRule="evenodd" d="M2 8a.5.5 0 01.5-.5h9.293L9.146 4.854a.5.5 0 11.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L11.793 8.5H2.5A.5.5 0 012 8z" />
-              </svg>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {courses.map((course) => (
-              <div key={course.slug}
-                className="shimmer-card group flex flex-col rounded-2xl bg-surface border border-border overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(0,71,94,0.15)] hover:border-primary/40">
-
-                {/* Imagem */}
-                <div className="relative h-52 overflow-hidden">
-                  <Image
-                    src={course.instructorPhoto}
-                    alt={course.instructorName}
-                    fill
-                    className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
-                  {/* Overlay que escurece levemente no hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent transition-opacity duration-300" />
-                  <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300" />
-
-                  {/* Badge categoria */}
-                  <span className="absolute bottom-3 left-4 font-sans text-[10px] font-bold uppercase tracking-widest text-white/90 bg-primary/70 backdrop-blur-sm px-2.5 py-1 rounded-full border border-white/10 group-hover:bg-primary/90 transition-colors">
-                    {course.category}
-                  </span>
-                </div>
-
-                <div className="flex flex-col flex-1 p-6 gap-4">
-                  <div>
-                    <p className="font-sans text-[11px] text-muted/70 mb-1.5 tracking-wide">{course.instructorName}</p>
-                    <h3 className="font-serif text-xl font-medium text-foreground leading-snug group-hover:text-primary transition-colors duration-200">
-                      {course.name}
-                    </h3>
-                  </div>
-
-                  <p className="font-sans text-xs text-muted leading-relaxed flex-1">{course.description}</p>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-border">
-                    <div>
-                      <span className="font-serif text-xl font-semibold text-primary">{course.price}</span>
-                      <p className="font-sans text-[10px] text-muted/60 mt-0.5">
-                        {t("featured.training", { hours: course.hours })}
-                      </p>
-                    </div>
-                    <Link
-                      href={{ pathname: "/cursos/[slug]", params: { slug: course.slug } }}
-                      className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-primary text-primary hover:bg-primary hover:text-white hover:shadow-[0_4px_14px_rgba(0,71,94,0.3)] transition-all duration-200">
-                      {t("featured.learnMore")}
-                    </Link>
-                  </div>
-                </div>
+      {/* ── Cursos Presenciais (Hands-On / Híbrido) ─────────────────────── */}
+      {presentialCourses.length > 0 && (
+        <section className="bg-background py-4 pb-24 px-4">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
+              <div>
+                <h2 className="font-serif text-3xl sm:text-4xl font-light text-foreground mb-2">
+                  {t("featured.title")}
+                </h2>
+                <p className="font-sans text-sm text-muted">{t("featured.subtitle")}</p>
               </div>
-            ))}
+              <Link href="/cursos"
+                className="group inline-flex items-center gap-2 font-sans text-xs font-semibold text-primary hover:text-primary-light tracking-wider uppercase shrink-0 transition-colors">
+                {t("featured.viewAll")}
+                <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1">
+                  <path fillRule="evenodd" d="M2 8a.5.5 0 01.5-.5h9.293L9.146 4.854a.5.5 0 11.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L11.793 8.5H2.5A.5.5 0 012 8z" />
+                </svg>
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {presentialCourses.map((course) => {
+                const price = Number(course.price);
+                const instructorName = course.instructor.user.name ?? "";
+                const desc = course.shortDesc ?? course.description?.slice(0, 120) ?? "";
+                const thumb = course.thumbnailUrl ?? course.instructor.photoUrl ?? null;
+                const categoryLabel = course.category === "HANDS_ON" ? "Hands-On" : "Híbrido";
+
+                return (
+                  <div key={course.slug}
+                    className="shimmer-card group flex flex-col rounded-2xl bg-surface border border-border overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(0,71,94,0.15)] hover:border-primary/40">
+
+                    {/* Imagem */}
+                    <div className="relative h-52 overflow-hidden bg-surface">
+                      {thumb ? (
+                        <Image
+                          src={thumb}
+                          alt={course.title}
+                          fill
+                          className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          unoptimized
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center"
+                          style={{ background: "linear-gradient(135deg, rgba(0,71,94,0.15) 0%, rgba(0,71,94,0.05) 100%)" }}>
+                          <svg viewBox="0 0 24 24" fill="none" className="w-12 h-12 text-primary/20" stroke="currentColor" strokeWidth={1}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                          </svg>
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                      <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300" />
+                      <span className="absolute bottom-3 left-4 font-sans text-[10px] font-bold uppercase tracking-widest text-white/90 bg-primary/70 backdrop-blur-sm px-2.5 py-1 rounded-full border border-white/10 group-hover:bg-primary/90 transition-colors">
+                        {categoryLabel}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col flex-1 p-6 gap-4">
+                      <div>
+                        <p className="font-sans text-[11px] text-muted/70 mb-1.5 tracking-wide">{instructorName}</p>
+                        <h3 className="font-serif text-xl font-medium text-foreground leading-snug group-hover:text-primary transition-colors duration-200">
+                          {course.title}
+                        </h3>
+                      </div>
+
+                      <p className="font-sans text-xs text-muted leading-relaxed flex-1 line-clamp-3">{desc}</p>
+
+                      <div className="flex items-center justify-between pt-4 border-t border-border">
+                        <div>
+                          <span className="font-serif text-xl font-semibold text-primary">
+                            {price === 0 ? "Gratuito" : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(price)}
+                          </span>
+                          <p className="font-sans text-[10px] text-muted/60 mt-0.5">
+                            {t("featured.training", { hours: String(course.hours) })}
+                          </p>
+                        </div>
+                        <Link
+                          href={{ pathname: "/cursos/[slug]", params: { slug: course.slug } }}
+                          className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-primary text-primary hover:bg-primary hover:text-white hover:shadow-[0_4px_14px_rgba(0,71,94,0.3)] transition-all duration-200">
+                          {t("featured.learnMore")}
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── Cursos Online ────────────────────────────────────────────────── */}
       {onlineCourses.length > 0 && (
