@@ -474,7 +474,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       )}
 
       {/* ── Instrutores ──────────────────────────────────────────────────── */}
-      <section className="relative bg-canvas py-24 px-4 overflow-hidden">
+      <section className="relative py-24 px-4 overflow-hidden"
+        style={{ background: "linear-gradient(160deg, #0a2a35 0%, #061e28 50%, #071f2b 100%)" }}
+      >
         {/* Nuvem decorativa */}
         <div aria-hidden className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 opacity-[0.04] w-[600px]">
           <Image src="/icone-nuvem.svg" alt="" width={600} height={428} className="w-full h-auto" />
