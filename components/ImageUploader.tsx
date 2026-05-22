@@ -37,9 +37,11 @@ export function ImageUploader({
       form.append("folder", folder);
 
       const res = await fetch("/api/upload/image", { method: "POST", body: form });
-      const data = await res.json();
+      let data: { url?: string; error?: string } = {};
+      try { data = await res.json(); } catch { /* empty body */ }
 
-      if (!res.ok) throw new Error(data.error ?? "Erro ao fazer upload.");
+      if (!res.ok) throw new Error(data.error ?? `Erro ao fazer upload (HTTP ${res.status}).`);
+      if (!data.url) throw new Error("URL não retornada pelo servidor.");
       setUrl(data.url);
     } catch (err) {
       setError((err as Error).message);

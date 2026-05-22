@@ -84,6 +84,19 @@ export default async function NovoCursoPage() {
           </div>
 
           <div>
+            <label className={labelClass}>Link do conteúdo online (opcional)</label>
+            <input
+              name="contentUrl"
+              type="url"
+              className={inputClass}
+              placeholder="https://youtube.com/watch?v=... ou link da plataforma"
+            />
+            <p className="font-sans text-[11px] text-muted/60 mt-1">
+              Para cursos online — link da aula, playlist ou plataforma externa.
+            </p>
+          </div>
+
+          <div>
             <label className={labelClass}>Imagem de capa (opcional)</label>
             <ImageUploader
               name="thumbnailUrl"

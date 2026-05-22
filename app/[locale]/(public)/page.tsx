@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { prisma } from "@/lib/prisma";
+import { Monitor, Clock, ArrowRight } from "lucide-react";
 
 export async function generateMetadata({
   params,
@@ -132,6 +134,18 @@ const jsonLd = {
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
+
+  // Cursos online publicados
+  const onlineCourses = await prisma.course.findMany({
+    where: { status: "PUBLISHED", category: "ONLINE" },
+    select: {
+      slug: true, title: true, shortDesc: true, description: true,
+      price: true, hours: true, thumbnailUrl: true, contentUrl: true,
+      instructor: { select: { user: { select: { name: true } } } },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 6,
+  });
 
   const modalities = [
     {
@@ -354,6 +368,108 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </div>
         </div>
       </section>
+
+      {/* ── Cursos Online ────────────────────────────────────────────────── */}
+      {onlineCourses.length > 0 && (
+        <section className="bg-canvas py-24 px-4 relative overflow-hidden">
+          {/* Grid sutil */}
+          <div aria-hidden className="pointer-events-none absolute inset-0"
+            style={{
+              backgroundImage: `linear-gradient(rgba(203,228,230,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(203,228,230,0.04) 1px, transparent 1px)`,
+              backgroundSize: "48px 48px",
+            }}
+          />
+
+          <div className="max-w-5xl mx-auto relative">
+            {/* Header da seção */}
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-accent/15 border border-accent/20 flex items-center justify-center">
+                    <Monitor className="w-4 h-4 text-accent" />
+                  </div>
+                  <span className="font-sans text-xs font-semibold tracking-widest uppercase text-accent/70">Online</span>
+                </div>
+                <h2 className="font-serif text-3xl sm:text-4xl font-light text-white mb-2">
+                  Aprenda no seu ritmo
+                </h2>
+                <p className="font-sans text-sm text-white/45">
+                  Aulas ao vivo e gravadas com acesso flexível, onde você estiver.
+                </p>
+              </div>
+              <Link href="/cursos"
+                className="group inline-flex items-center gap-2 font-sans text-xs font-semibold text-white/50 hover:text-white transition-colors shrink-0">
+                Ver todos
+                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </div>
+
+            {/* Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {onlineCourses.map((course) => {
+                const price = Number(course.price);
+                const instructorName = course.instructor.user.name ?? "";
+                const desc = course.shortDesc ?? course.description.slice(0, 120);
+
+                return (
+                  <Link key={course.slug}
+                    href={{ pathname: "/cursos/[slug]", params: { slug: course.slug } }}
+                    className="shimmer-card group flex flex-col rounded-2xl border border-white/8 bg-white/[0.03] hover:bg-white/[0.07] hover:border-accent/25 transition-all duration-300 hover:-translate-y-1.5 overflow-hidden">
+
+                    {/* Thumbnail ou placeholder */}
+                    <div className="relative h-44 overflow-hidden bg-canvas-card">
+                      {course.thumbnailUrl ? (
+                        <Image
+                          src={course.thumbnailUrl}
+                          alt={course.title}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Monitor className="w-12 h-12 text-white/10" />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                      {/* Badge ONLINE */}
+                      <span className="absolute bottom-3 left-4 font-sans text-[10px] font-bold uppercase tracking-widest text-accent bg-accent/15 backdrop-blur-sm px-2.5 py-1 rounded-full border border-accent/20">
+                        Online
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col flex-1 p-5 gap-3">
+                      <div>
+                        <p className="font-sans text-[11px] text-white/35 mb-1">{instructorName}</p>
+                        <h3 className="font-serif text-lg font-medium text-white leading-snug group-hover:text-accent transition-colors duration-200">
+                          {course.title}
+                        </h3>
+                      </div>
+
+                      <p className="font-sans text-xs text-white/40 leading-relaxed flex-1 line-clamp-2">{desc}</p>
+
+                      <div className="flex items-center justify-between pt-3 border-t border-white/8">
+                        <div>
+                          <span className="font-serif text-lg font-semibold text-white">
+                            {price === 0 ? "Gratuito" : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(price)}
+                          </span>
+                          <div className="flex items-center gap-1 mt-0.5">
+                            <Clock className="w-3 h-3 text-white/25" />
+                            <span className="font-sans text-[10px] text-white/30">{course.hours}h</span>
+                          </div>
+                        </div>
+                        <span className="font-sans text-xs font-semibold px-3.5 py-1.5 rounded-full border border-accent/30 text-accent group-hover:bg-accent group-hover:text-accent-foreground group-hover:border-accent transition-all duration-200">
+                          Saiba mais
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── Instrutores ──────────────────────────────────────────────────── */}
       <section className="relative bg-canvas py-24 px-4 overflow-hidden">

@@ -156,6 +156,7 @@ model Course {
   shortDesc     String?
   thumbnailUrl  String?
   previewUrl    String?
+  contentUrl    String?   // link do conteúdo online (YouTube, Vimeo, plataforma externa)
   price         Decimal        @db.Decimal(10, 2)
   salePrice     Decimal?       @db.Decimal(10, 2)
   hours         Int
