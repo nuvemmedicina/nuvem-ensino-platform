@@ -60,7 +60,7 @@
     "featured": {
       "title": "Cursos Destacados",
       "subtitle": "Formaciones de alto impacto para tu práctica clínica",
-      "viewAll": "Ver todos →",
+      "viewAll": "Ver todos",
       "training": "{hours}h de formación",
       "learnMore": "Saber más"
     },

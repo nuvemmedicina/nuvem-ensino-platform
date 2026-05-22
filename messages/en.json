@@ -60,7 +60,7 @@
     "featured": {
       "title": "Featured Courses",
       "subtitle": "High-impact training for your clinical practice",
-      "viewAll": "View all →",
+      "viewAll": "View all",
       "training": "{hours}h of training",
       "learnMore": "Learn more"
     },
