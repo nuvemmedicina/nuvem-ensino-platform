@@ -36,40 +36,13 @@ export async function generateMetadata({
 }
 
 
-const instructors = [
-  {
-    name: "Dra. Vera Ângelo",
-    specialty: "Gastroenterologia · Motilidade Digestiva",
-    crm: "CRM-MG 22284",
-    bio: "Diretora técnica da NU.V.E.M Medicina, referência nacional em testes respiratórios e motilidade digestiva. Doutora pela UFMG e professora convidada do Hospital Israelita Albert Einstein.",
-    photo: "/instructors/dra-vera.jpg",
-    slug: "dra-vera-angelo",
-  },
-  {
-    name: "Dra. Eliane Basques",
-    specialty: "Gastroenterologia · Manometria Anorretal",
-    crm: "CRM-MG 27601",
-    bio: "Cirurgiã Pediatra e especialista em manometria anorretal de alta resolução. Sócia proprietária da Clínica NU.V.E.M Medicina em Belo Horizonte.",
-    photo: "/instructors/dra-eliane.jpg",
-    slug: "dra-eliane-basques",
-  },
-  {
-    name: "Dra. Anna Karoline",
-    specialty: "Fisioterapia Pélvica",
-    crm: "",
-    bio: "Fisioterapeuta especialista em disfunções do assoalho pélvico. Doutoranda pela UNICAMP, alia rigor científico e experiência clínica na formação de profissionais.",
-    photo: "/instructors/anna-karoline.jpg",
-    slug: "dra-anna-karoline",
-  },
-  {
-    name: "Dr. Felipe Nelson",
-    specialty: "Gastroenterologia · Motilidade Digestiva",
-    crm: "CRM-MG",
-    bio: "Gastroenterologista pela USP-Ribeirão Preto, doutor pela USP. Especialista em manometria esofágica de alta resolução, pHmetria e impedancio-pHmetria, com anos de experiência clínica.",
-    photo: "/instructors/felipe-nelson.jpg",
-    slug: "dr-felipe-nelson",
-  },
-];
+// Fallback de bio/foto para instrutores sem dados no banco ainda
+const instructorFallback: Record<string, { photo?: string; bio?: string }> = {
+  "dra-vera-angelo":    { photo: "/instructors/dra-vera.jpg",         bio: "Diretora técnica da NU.V.E.M Medicina, referência nacional em testes respiratórios e motilidade digestiva. Doutora pela UFMG e professora convidada do Hospital Israelita Albert Einstein." },
+  "dra-eliane-basques": { photo: "/instructors/dra-eliane.jpg",       bio: "Cirurgiã Pediatra e especialista em manometria anorretal de alta resolução. Sócia proprietária da Clínica NU.V.E.M Medicina em Belo Horizonte." },
+  "dra-anna-karoline":  { photo: "/instructors/anna-karoline.jpg",    bio: "Fisioterapeuta especialista em disfunções do assoalho pélvico. Doutoranda pela UNICAMP, alia rigor científico e experiência clínica na formação de profissionais." },
+  "dr-felipe-nelson":   { photo: "/instructors/felipe-nelson.jpg",    bio: "Gastroenterologista pela USP-Ribeirão Preto, doutor pela USP. Especialista em manometria esofágica de alta resolução, pHmetria e impedancio-pHmetria, com anos de experiência clínica." },
+};
 
 const stats = [
   { value: "+500", label: "Médicos formados" },
@@ -102,6 +75,18 @@ const jsonLd = {
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
+
+  // Instrutores do banco
+  const dbInstructors = await prisma.instructor.findMany({
+    select: {
+      slug: true, title: true, crm: true, rqe: true,
+      photoUrl: true, bio: true, formation: true,
+      user: { select: { name: true, image: true } },
+      _count: { select: { courses: true } },
+    },
+    orderBy: { user: { name: "asc" } },
+    take: 4,
+  });
 
   // Cursos presenciais publicados (Hands-On e Híbrido)
   const presentialCourses = await prisma.course.findMany({
@@ -502,40 +487,62 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {instructors.map((instructor) => (
-              <Link key={instructor.name} href="/instrutores"
-                className="group flex gap-5 rounded-2xl p-5 border border-white/8 bg-white/[0.03] hover:bg-white/[0.07] hover:border-accent/20 transition-all duration-300 hover:-translate-y-0.5">
+            {dbInstructors.map((instructor) => {
+              const fb = instructorFallback[instructor.slug] ?? {};
+              const photo = instructor.photoUrl ?? instructor.user.image ?? fb.photo ?? null;
+              const bio   = instructor.bio ?? fb.bio ?? null;
+              const crm   = [instructor.crm, instructor.rqe].filter(Boolean).join(" · ");
 
-                {/* Foto com anel luminoso */}
-                <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shrink-0 ring-1 ring-white/10 group-hover:ring-accent/30 transition-all duration-300">
-                  <Image
-                    src={instructor.photo}
-                    alt={instructor.name}
-                    fill
-                    className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                    sizes="96px"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent group-hover:from-black/10 transition-all duration-300" />
-                </div>
+              return (
+                <Link key={instructor.slug} href="/instrutores"
+                  className="group flex gap-5 rounded-2xl p-5 border border-white/8 bg-white/[0.03] hover:bg-white/[0.07] hover:border-accent/20 transition-all duration-300 hover:-translate-y-0.5">
 
-                <div className="flex-1 min-w-0">
-                  {/* Linha accent no hover */}
-                  <div className="w-0 group-hover:w-8 h-0.5 bg-accent mb-2 transition-all duration-300 rounded-full" />
-                  <p className="font-serif text-base sm:text-lg font-medium text-white leading-tight">
-                    {instructor.name}
-                  </p>
-                  <p className="font-sans text-xs text-accent font-semibold mt-0.5 mb-2">
-                    {instructor.specialty}
-                  </p>
-                  {instructor.crm && (
-                    <p className="font-sans text-[10px] text-white/25 mb-2">{instructor.crm}</p>
-                  )}
-                  <p className="font-sans text-xs text-white/45 leading-relaxed line-clamp-2">
-                    {instructor.bio}
-                  </p>
-                </div>
-              </Link>
-            ))}
+                  {/* Foto com anel luminoso */}
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shrink-0 ring-1 ring-white/10 group-hover:ring-accent/30 transition-all duration-300 bg-primary/10">
+                    {photo ? (
+                      <>
+                        <Image
+                          src={photo}
+                          alt={instructor.user.name ?? ""}
+                          fill
+                          className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                          sizes="96px"
+                          unoptimized
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent group-hover:from-black/10 transition-all duration-300" />
+                      </>
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="font-serif text-2xl font-light text-white/30">
+                          {(instructor.user.name ?? "?")[0]}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    {/* Linha accent no hover */}
+                    <div className="w-0 group-hover:w-8 h-0.5 bg-accent mb-2 transition-all duration-300 rounded-full" />
+                    <p className="font-serif text-base sm:text-lg font-medium text-white leading-tight">
+                      {instructor.user.name}
+                    </p>
+                    {instructor.title && (
+                      <p className="font-sans text-xs text-accent font-semibold mt-0.5 mb-2">
+                        {instructor.title}
+                      </p>
+                    )}
+                    {crm && (
+                      <p className="font-sans text-[10px] text-white/25 mb-2">{crm}</p>
+                    )}
+                    {bio && (
+                      <p className="font-sans text-xs text-white/45 leading-relaxed line-clamp-2">
+                        {bio}
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
           </div>
 
           <div className="text-center mt-10">
