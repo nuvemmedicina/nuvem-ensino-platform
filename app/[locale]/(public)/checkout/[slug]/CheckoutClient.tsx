@@ -148,6 +148,83 @@ export default function CheckoutClient({
       ? t("generateBoleto")
       : t("finishPayment");
 
+  // ── Curso gratuito: tela simplificada ──────────────────────────────────────
+  if (price === 0) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        {/* Header */}
+        <div className="bg-canvas px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            <p className="font-sans text-xs font-semibold uppercase tracking-widest text-accent/70 mb-2">
+              {t("badge")}
+            </p>
+            <h1 className="font-serif text-3xl font-light text-white">{courseName}</h1>
+          </div>
+        </div>
+
+        {/* Conteúdo */}
+        <div className="flex-1 flex items-start justify-center px-4 py-16">
+          <div className="w-full max-w-md space-y-6">
+            <div className="bg-surface border border-border rounded-2xl p-8 text-center">
+              {/* Badge gratuito */}
+              <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-full px-4 py-1.5 mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 block" />
+                <span className="font-sans text-xs font-semibold text-green-600 uppercase tracking-wider">
+                  Acesso gratuito
+                </span>
+              </div>
+
+              <h2 className="font-serif text-2xl font-medium text-foreground mb-2">
+                {courseName}
+              </h2>
+              <p className="font-sans text-sm text-muted mb-1">
+                Olá, <strong>{userName}</strong>! Este curso é gratuito.
+              </p>
+              <p className="font-sans text-sm text-muted mb-8">
+                Clique abaixo para se inscrever e acessar as aulas imediatamente.
+              </p>
+
+              <button
+                onClick={handleFreeEnroll}
+                disabled={isFreeEnrolling}
+                className="w-full flex items-center justify-center gap-2 font-sans text-sm font-semibold px-4 py-4 rounded-xl bg-primary text-white hover:bg-primary-dark disabled:opacity-60 transition-colors"
+              >
+                {isFreeEnrolling ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <CheckCircle className="w-4 h-4" />
+                )}
+                {isFreeEnrolling ? "Inscrevendo…" : "Acessar gratuitamente →"}
+              </button>
+
+              <div className="flex items-center justify-center gap-2 mt-4 font-sans text-xs text-muted/60">
+                <Shield className="w-3 h-3" />
+                Sua vaga é confirmada na hora
+              </div>
+            </div>
+
+            {/* Info do aluno */}
+            <div className="bg-surface border border-border rounded-2xl p-5">
+              <p className="font-sans text-xs font-semibold text-muted uppercase tracking-wider mb-3">
+                Seus dados
+              </p>
+              <div className="space-y-2 font-sans text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted">Nome</span>
+                  <span className="text-foreground">{userName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted">E-mail</span>
+                  <span className="text-foreground truncate max-w-[200px]">{userEmail}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
 
