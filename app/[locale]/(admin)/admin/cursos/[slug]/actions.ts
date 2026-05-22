@@ -141,6 +141,23 @@ export async function updateCourseTranslations(courseId: string, slug: string, f
   revalidatePath(`/cursos/${slug}`);
 }
 
+// Atualiza dados do co-instrutor (quarto formulário)
+export async function updateCourseCoInstructor(courseId: string, slug: string, formData: FormData) {
+  await requireAdmin();
+  const str = (key: string) => (formData.get(key) as string) || null;
+  await prisma.course.update({
+    where: { id: courseId },
+    data: {
+      coInstructorName:       str("coInstructorName"),
+      coInstructorCredential: str("coInstructorCredential"),
+      coInstructorPhotoUrl:   str("coInstructorPhotoUrl"),
+      coInstructorBio:        str("coInstructorBio"),
+    },
+  });
+  revalidatePath(`/admin/cursos/${slug}`);
+  revalidatePath(`/cursos/${slug}`);
+}
+
 // Chamado pelo MuxUploader após upload concluído
 export async function saveMuxAsset(lessonId: string, muxAssetId: string, courseSlug: string) {
   await requireAdmin();

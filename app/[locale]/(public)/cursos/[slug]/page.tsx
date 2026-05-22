@@ -840,6 +840,45 @@ export default async function CoursePage({ params }: Props) {
             )}
           </div>
 
+          {/* ── Co-instrutor (quando preenchido) ── */}
+          {course.coInstructorName && (
+            <div className="bg-surface border border-border rounded-2xl p-6">
+              <p className="font-sans text-[11px] font-bold uppercase tracking-widest text-muted mb-4">
+                Co-instrutor
+              </p>
+              <div className="flex items-start gap-4 mb-4">
+                <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20 shrink-0">
+                  {course.coInstructorPhotoUrl ? (
+                    <Image
+                      src={course.coInstructorPhotoUrl}
+                      alt={course.coInstructorName}
+                      fill
+                      className="object-cover object-top"
+                      sizes="64px"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-canvas" />
+                  )}
+                </div>
+                <div>
+                  <p className="font-serif text-lg font-medium text-foreground leading-tight">
+                    {course.coInstructorName}
+                  </p>
+                  {course.coInstructorCredential && (
+                    <p className="font-sans text-xs text-muted mt-1 leading-snug">
+                      {course.coInstructorCredential}
+                    </p>
+                  )}
+                </div>
+              </div>
+              {course.coInstructorBio && (
+                <p className="font-sans text-sm text-muted leading-relaxed">
+                  {course.coInstructorBio}
+                </p>
+              )}
+            </div>
+          )}
+
           {/* CTA mobile */}
           <div className="lg:hidden bg-surface border border-border rounded-2xl p-6">
             <p className="font-serif text-3xl font-semibold text-primary mb-1">

@@ -6,6 +6,7 @@ import {
   updateCourse,
   updateCourseContent,
   updateCourseTranslations,
+  updateCourseCoInstructor,
   updateLesson,
   createModule,
   createLesson,
@@ -67,6 +68,7 @@ export default async function AdminCursoEditPage({ params }: Props) {
   const updateCourseAction = updateCourse.bind(null, course.id, slug);
   const updateCourseContentAction = updateCourseContent.bind(null, course.id, slug);
   const updateCourseTranslationsAction = updateCourseTranslations.bind(null, course.id, slug);
+  const updateCourseCoInstructorAction = updateCourseCoInstructor.bind(null, course.id, slug);
 
   return (
     <div className="max-w-3xl">
@@ -289,6 +291,59 @@ export default async function AdminCursoEditPage({ params }: Props) {
 
           <div className="pt-2">
             <button type="submit" className={btnPrimary}>Salvar conteúdo da página</button>
+          </div>
+        </form>
+      </section>
+
+      {/* ── Co-instrutor ── */}
+      <section className="bg-surface border border-border rounded-2xl p-6 mb-6">
+        <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-1">
+          Co-instrutor (opcional)
+        </h2>
+        <p className="font-sans text-xs text-muted mb-5">
+          Para cursos em parceria. Aparece como segundo card de instrutor na página do curso.
+        </p>
+        <form action={updateCourseCoInstructorAction} className="space-y-4">
+          <div>
+            <label className={labelClass}>Nome</label>
+            <input
+              name="coInstructorName"
+              defaultValue={course.coInstructorName ?? ""}
+              placeholder="Ex: Dr. Dan Linetzky Waitzberg"
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Credencial / Especialidade</label>
+            <input
+              name="coInstructorCredential"
+              defaultValue={course.coInstructorCredential ?? ""}
+              placeholder="Ex: Médico | CRM – 22052"
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Foto (URL)</label>
+            <ImageUploader
+              name="coInstructorPhotoUrl"
+              folder="instructors"
+              aspectHint="1:1"
+              label="Foto do co-instrutor"
+              initialUrl={course.coInstructorPhotoUrl}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Bio</label>
+            <textarea
+              name="coInstructorBio"
+              defaultValue={course.coInstructorBio ?? ""}
+              rows={6}
+              placeholder="Breve apresentação do co-instrutor…"
+              className={`${inputClass} resize-none`}
+            />
+          </div>
+          <div className="pt-2">
+            <button type="submit" className={btnPrimary}>Salvar co-instrutor</button>
           </div>
         </form>
       </section>

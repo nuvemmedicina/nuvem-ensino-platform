@@ -185,6 +185,12 @@ model Course {
   includes       String?   @db.Text  // O que está incluído
   startDateLabel String?             // Ex: "15–19 de junho de 2026"
 
+  // Co-instrutor (opcional — para cursos em parceria com convidados externos)
+  coInstructorName       String?
+  coInstructorCredential String?           // Ex: "Médico | CRM – 22052"
+  coInstructorPhotoUrl   String?
+  coInstructorBio        String?   @db.Text
+
   // Translations (nullable — fill only when a translation is available)
   titleEn        String?
   shortDescEn    String?
