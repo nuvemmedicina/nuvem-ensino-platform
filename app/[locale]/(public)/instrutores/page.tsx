@@ -3,7 +3,7 @@ import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { Linkedin, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 // ── Fallback estático (usado enquanto os campos não forem preenchidos no admin) ─
 const fallback: Record<string, {
@@ -216,7 +216,7 @@ export default async function InstrutoresPage({
                             aria-label="LinkedIn"
                             className="p-1.5 rounded-lg text-muted hover:text-primary hover:bg-primary/10 transition-colors"
                             title="LinkedIn">
-                            <Linkedin className="w-4 h-4" />
+                            <ExternalLink className="w-4 h-4" />
                           </a>
                         )}
                         {inst.lattes && (
