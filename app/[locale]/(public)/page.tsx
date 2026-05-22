@@ -373,7 +373,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           {/* Grid sutil */}
           <div aria-hidden className="pointer-events-none absolute inset-0"
             style={{
-              backgroundImage: `linear-gradient(rgba(203,228,230,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(203,228,230,0.04) 1px, transparent 1px)`,
+              backgroundImage: `linear-gradient(rgba(203,228,230,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(203,228,230,0.015) 1px, transparent 1px)`,
               backgroundSize: "48px 48px",
             }}
           />
@@ -414,7 +414,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 return (
                   <Link key={course.slug}
                     href={{ pathname: "/cursos/[slug]", params: { slug: course.slug } }}
-                    className="shimmer-card group flex flex-col rounded-2xl border border-white/12 bg-white/[0.07] hover:bg-white/[0.11] hover:border-accent/30 transition-all duration-300 hover:-translate-y-1.5 overflow-hidden">
+                    className="shimmer-card group flex flex-col rounded-2xl border border-white/15 bg-white/[0.10] hover:bg-white/[0.15] hover:border-accent/40 transition-all duration-300 hover:-translate-y-1.5 overflow-hidden">
 
                     {/* Thumbnail ou placeholder */}
                     <div className="relative h-44 overflow-hidden bg-canvas-card">
