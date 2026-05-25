@@ -342,6 +342,16 @@ export default async function AdminCursoEditPage({ params }: Props) {
               className={`${inputClass} resize-none`}
             />
           </div>
+          <div>
+            <label className={labelClass}>Instagram (URL completa)</label>
+            <input
+              name="coInstructorInstagram"
+              type="url"
+              defaultValue={/* eslint-disable-next-line @typescript-eslint/no-explicit-any */ (course as any).coInstructorInstagram ?? ""}
+              placeholder="https://www.instagram.com/username/"
+              className={inputClass}
+            />
+          </div>
           <div className="pt-2">
             <button type="submit" className={btnPrimary}>Salvar co-instrutor</button>
           </div>

@@ -152,6 +152,7 @@ export async function updateCourseCoInstructor(courseId: string, slug: string, f
       coInstructorCredential: str("coInstructorCredential"),
       coInstructorPhotoUrl:   str("coInstructorPhotoUrl"),
       coInstructorBio:        str("coInstructorBio"),
+      coInstructorInstagram:  str("coInstructorInstagram"),
     },
   });
   revalidatePath(`/admin/cursos/${slug}`);

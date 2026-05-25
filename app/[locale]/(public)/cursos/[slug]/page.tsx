@@ -779,9 +779,6 @@ export default async function CoursePage({ params }: Props) {
         {/* ── Sidebar — Instrutor ── */}
         <div className="lg:sticky lg:top-24 space-y-6">
           <div className="bg-surface border border-border rounded-2xl p-6">
-            <p className="font-sans text-[11px] font-bold uppercase tracking-widest text-muted mb-4">
-              {t("instructor")}
-            </p>
             <div className="flex items-start gap-4 mb-4">
               <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20 shrink-0">
                 {course.instructor.photoUrl ? (
@@ -843,9 +840,6 @@ export default async function CoursePage({ params }: Props) {
           {/* ── Co-instrutor (quando preenchido) ── */}
           {course.coInstructorName && (
             <div className="bg-surface border border-border rounded-2xl p-6">
-              <p className="font-sans text-[11px] font-bold uppercase tracking-widest text-muted mb-4">
-                Co-instrutor
-              </p>
               <div className="flex items-start gap-4 mb-4">
                 <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20 shrink-0">
                   {course.coInstructorPhotoUrl ? (
@@ -872,9 +866,23 @@ export default async function CoursePage({ params }: Props) {
                 </div>
               </div>
               {course.coInstructorBio && (
-                <p className="font-sans text-sm text-muted leading-relaxed">
+                <p className="font-sans text-sm text-muted leading-relaxed mb-3">
                   {course.coInstructorBio}
                 </p>
+              )}
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {(course as any).coInstructorInstagram && (
+                <div className="flex items-center gap-3 pt-3 border-t border-border">
+                  <a
+                    href={(course as any).coInstructorInstagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 font-sans text-xs text-muted hover:text-primary transition-colors"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    Instagram
+                  </a>
+                </div>
               )}
             </div>
           )}

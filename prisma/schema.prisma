@@ -190,6 +190,7 @@ model Course {
   coInstructorCredential String?           // Ex: "Médico | CRM – 22052"
   coInstructorPhotoUrl   String?
   coInstructorBio        String?   @db.Text
+  coInstructorInstagram  String?
 
   // Translations (nullable — fill only when a translation is available)
   titleEn        String?
