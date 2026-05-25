@@ -14,14 +14,14 @@ export default function manifest(): MetadataRoute.Manifest {
     categories: ["education", "medical"],
     icons: [
       {
-        src: "/logo.png",
+        src: "/icone-nuvem.png",
         sizes: "any",
         type: "image/png",
       },
       {
-        src: "/icone-nuvem.svg",
+        src: "/icone-nuvem.png",
         sizes: "any",
-        type: "image/svg+xml",
+        type: "image/png",
         purpose: "maskable",
       },
     ],
