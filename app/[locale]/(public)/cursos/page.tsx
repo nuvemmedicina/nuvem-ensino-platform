@@ -273,13 +273,13 @@ export default async function CursosPage({
                       key={course.slug}
                       className="flex flex-col rounded-2xl bg-surface border border-border overflow-hidden hover:border-primary/40 hover:shadow-md transition-all duration-300"
                     >
-                      <div className="relative h-52 overflow-hidden">
+                      <div className="relative h-64 sm:h-56 overflow-hidden">
                         {course.thumbnailUrl ? (
                           <Image
                             src={course.thumbnailUrl}
                             alt={course.instructor.user.name ?? lc.title}
                             fill
-                            className="object-cover object-top"
+                            className="object-cover object-[center_15%]"
                             sizes="(max-width: 640px) 100vw, 50vw"
                           />
                         ) : (

@@ -308,13 +308,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     className="shimmer-card group flex flex-col rounded-2xl bg-surface border border-border overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(0,71,94,0.15)] hover:border-primary/40">
 
                     {/* Imagem */}
-                    <div className="relative h-52 overflow-hidden bg-surface">
+                    <div className="relative h-64 sm:h-56 overflow-hidden bg-surface">
                       {thumb ? (
                         <Image
                           src={thumb}
                           alt={course.title}
                           fill
-                          className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                          className="object-cover object-[center_15%] transition-transform duration-500 group-hover:scale-105"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           unoptimized
                         />
@@ -417,13 +417,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     className="shimmer-card group flex flex-col rounded-2xl border border-white/15 bg-white/[0.10] hover:bg-white/[0.15] hover:border-accent/40 transition-all duration-300 hover:-translate-y-1.5 overflow-hidden">
 
                     {/* Thumbnail ou placeholder */}
-                    <div className="relative h-44 overflow-hidden bg-canvas-card">
+                    <div className="relative h-56 sm:h-48 overflow-hidden bg-canvas-card">
                       {onlineThumb ? (
                         <Image
                           src={onlineThumb}
                           alt={course.title}
                           fill
-                          className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                          className="object-cover object-[center_15%] transition-transform duration-500 group-hover:scale-105"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           unoptimized
                         />
