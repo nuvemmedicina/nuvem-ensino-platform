@@ -120,7 +120,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const modalities = [
     {
       label: "Hands-On",
-      href: "/cursos" as const,
+      href: "/cursos?categoria=hands-on" as const,
       description: t("modalities.handsOnDescription"),
       accentColor: "from-teal-500/20 to-transparent",
       icon: (
@@ -131,7 +131,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     },
     {
       label: "Online",
-      href: "/cursos" as const,
+      href: "/cursos?categoria=online" as const,
       description: t("modalities.onlineDescription"),
       accentColor: "from-teal-500/20 to-transparent",
       icon: (
