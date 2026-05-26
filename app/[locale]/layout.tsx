@@ -91,6 +91,9 @@ export const metadata: Metadata = {
     canonical: APP_URL,
   },
   category: "education",
+  verification: {
+    google: "4uvseus2L5dSqz1irnL5_X0AE9souRF6j0d9gzFyWL8",
+  },
 };
 
 export function generateStaticParams() {
