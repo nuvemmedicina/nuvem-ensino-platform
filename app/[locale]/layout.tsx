@@ -3,10 +3,13 @@ import { Cormorant_Garamond, Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
+import Script from "next/script";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import ServiceWorkerRegistrar from "@/components/ServiceWorkerRegistrar";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
+
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -116,6 +119,23 @@ export default async function LocaleLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+        {/* Google Analytics */}
+        {GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA_ID}');
+              `}
+            </Script>
+          </>
+        )}
         <NextIntlClientProvider messages={messages}>
           <PostHogProvider>{children}</PostHogProvider>
           <ServiceWorkerRegistrar />
