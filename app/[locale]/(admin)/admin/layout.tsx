@@ -87,7 +87,40 @@ export default async function AdminLayout({
       </aside>
 
       {/* Main */}
-      <main className="flex-1 min-w-0">
+      <main className="flex-1 min-w-0 flex flex-col">
+        {/* Mobile header */}
+        <header className="md:hidden sticky top-0 z-40 bg-canvas border-b border-white/10 shrink-0">
+          <div className="flex items-center justify-between px-4 h-14">
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/logo.png"
+                alt="NU.V.E.M Ensino"
+                width={100}
+                height={78}
+                className="h-8 w-auto brightness-0 invert opacity-95"
+              />
+            </Link>
+            <div className="flex items-center gap-2">
+              <span className="font-sans text-[10px] font-bold uppercase tracking-widest text-accent bg-accent/15 border border-accent/20 px-2 py-1 rounded-md">
+                Admin
+              </span>
+              <SignOutButton />
+            </div>
+          </div>
+          {/* Nav row */}
+          <nav className="flex overflow-x-auto gap-1 px-3 pb-2 scrollbar-none">
+            {navItems.map((item) => (
+              <Link
+                key={item.key}
+                href={item.href as "/admin" | "/admin/cursos" | "/admin/matriculas" | "/admin/usuarios" | "/admin/instrutores" | "/admin/aulas-ao-vivo" | "/admin/relatorios" | "/admin/configuracoes/pagamentos"}
+                className="shrink-0 font-sans text-xs text-white/60 hover:text-white/90 px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors whitespace-nowrap"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </header>
+
         <div className="p-6 lg:p-10">{children}</div>
       </main>
     </div>

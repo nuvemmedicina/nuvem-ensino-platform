@@ -87,19 +87,34 @@ export default async function StudentLayout({
       </aside>
 
       {/* ── Main content ── */}
-      <main className="flex-1 min-w-0">
+      <main className="flex-1 min-w-0 flex flex-col">
         {/* Mobile header */}
-        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-canvas border-b border-white/10 sticky top-0 z-10">
-          <Link href="/">
-            <Image
-              src="/logo.png"
-              alt="NU.V.E.M Ensino"
-              width={80}
-              height={62}
-              className="h-8 w-auto brightness-0 invert opacity-90"
-            />
-          </Link>
-        </div>
+        <header className="md:hidden sticky top-0 z-40 bg-canvas border-b border-white/10 shrink-0">
+          <div className="flex items-center justify-between px-4 h-14">
+            <Link href="/">
+              <Image
+                src="/logo.png"
+                alt="NU.V.E.M Ensino"
+                width={100}
+                height={78}
+                className="h-8 w-auto brightness-0 invert opacity-90"
+              />
+            </Link>
+            <SignOutButton />
+          </div>
+          {/* Nav row */}
+          <nav className="flex overflow-x-auto gap-1 px-3 pb-2 scrollbar-none">
+            {navLinks.map(({ label, href }) => (
+              <Link
+                key={href}
+                href={href as "/dashboard" | "/dashboard/cursos" | "/dashboard/aulas-ao-vivo" | "/dashboard/certificados" | "/dashboard/perfil"}
+                className="shrink-0 font-sans text-xs text-white/60 hover:text-white/90 px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors whitespace-nowrap"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+        </header>
 
         <div className="p-6 lg:p-8">{children}</div>
       </main>
