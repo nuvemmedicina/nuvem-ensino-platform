@@ -43,10 +43,10 @@ export default async function InscritosPage({ params }: Props) {
   const enrollments = await prisma.enrollment.findMany({
     where: { courseId: course.id },
     include: {
-      user: { select: { name: true, email: true, image: true } },
+      user: { select: { name: true, email: true } },
       payments: { select: { status: true, amount: true, method: true, paidAt: true }, orderBy: { createdAt: "desc" }, take: 1 },
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { enrolledAt: "desc" },
   });
 
   const fmt = (d: Date) =>
@@ -120,7 +120,7 @@ export default async function InscritosPage({ params }: Props) {
                       )}
                     </td>
                     <td className="px-6 py-4 hidden lg:table-cell">
-                      <p className="font-sans text-sm text-muted">{fmt(enr.createdAt)}</p>
+                      <p className="font-sans text-sm text-muted">{fmt(enr.enrolledAt)}</p>
                     </td>
                   </tr>
                 );
