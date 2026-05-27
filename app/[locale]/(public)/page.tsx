@@ -170,14 +170,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <Image src="/selo-iso-9001.png" alt="" width={520} height={520} className="w-[520px]" />
         </div>
 
-        {/* Selo ISO visível — topo centralizado */}
-        <div className="absolute top-6 sm:top-8 left-1/2 -translate-x-1/2 z-10">
+        {/* Selo ISO visível — acima do badge, no fluxo do conteúdo */}
+        <div className="relative mb-6">
           <Image
             src="/selo-iso-9001.png"
             alt="Certificação ISO 9001"
             width={80}
             height={80}
-            className="w-14 h-14 sm:w-20 sm:h-20 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]"
+            className="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]"
           />
         </div>
 
