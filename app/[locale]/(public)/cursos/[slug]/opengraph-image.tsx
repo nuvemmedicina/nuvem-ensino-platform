@@ -1,10 +1,10 @@
-import { ImageResponse } from "next/og";
+﻿import { ImageResponse } from "next/og";
 import { prisma } from "@/lib/prisma";
 import fs from "fs";
 import path from "path";
 
 export const runtime = "nodejs";
-export const alt = "Curso — NU.V.E.M Ensino";
+export const alt = "Curso — NU.V.E.M ENSINO";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -18,9 +18,9 @@ export default async function Image({ params }: Props) {
     include: { instructor: { include: { user: true } } },
   });
 
-  const title       = course?.title       ?? "Curso — NU.V.E.M Ensino";
+  const title       = course?.title       ?? "Curso — NU.V.E.M ENSINO";
   const shortDesc   = course?.shortDesc   ?? "Formação médica hands-on e online com especialistas.";
-  const instructor  = course?.instructor?.user?.name ?? "NU.V.E.M Ensino";
+  const instructor  = course?.instructor?.user?.name ?? "NU.V.E.M ENSINO";
   const hours       = course?.hours       ?? 0;
   const thumbnail   = course?.thumbnailUrl ?? null;
 

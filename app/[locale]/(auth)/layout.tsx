@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import Image from "next/image";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
@@ -8,7 +8,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <Link href="/" className="inline-block">
           <Image
             src="/logo.png"
-            alt="NU.V.E.M Ensino"
+            alt="NU.V.E.M ENSINO"
             width={120}
             height={94}
             className="h-10 w-auto brightness-0 invert opacity-90"
@@ -19,7 +19,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         {children}
       </div>
       <p className="text-center font-sans text-xs text-white/30 pb-8">
-        © {new Date().getFullYear()} NU.V.E.M Ensino · CNPJ 42.679.051/0001-31
+        © {new Date().getFullYear()} NU.V.E.M ENSINO · CNPJ 42.679.051/0001-31
       </p>
     </div>
   );

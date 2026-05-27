@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
@@ -98,7 +98,7 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `${t("title")} | NU.V.E.M Ensino`,
+      title: `${t("title")} | NU.V.E.M ENSINO`,
       description: t("description"),
       url: locale === "en" ? "/en/instructors" : locale === "es" ? "/es/instructores" : "/instrutores",
       locale: locale === "en" ? "en_US" : locale === "es" ? "es_ES" : "pt_BR",

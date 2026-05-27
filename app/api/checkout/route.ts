@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
@@ -90,7 +90,7 @@ export async function POST(req: Request) {
             currency: "brl",
             product_data: {
               name: dbCourse.title,
-              description: `${dbCourse.hours}h de formação, NU.V.E.M Ensino`,
+              description: `${dbCourse.hours}h de formação, NU.V.E.M ENSINO`,
             },
             unit_amount: Math.round(finalPrice * 100),
           },
@@ -134,7 +134,7 @@ export async function POST(req: Request) {
       customerId:        customer.id,
       billingType,
       value:             finalPrice,
-      description:       `${dbCourse.title} — NU.V.E.M Ensino`,
+      description:       `${dbCourse.title} — NU.V.E.M ENSINO`,
       externalReference: enrollment.id,
       installmentCount:  method === "parcelado" ? 3 : 1,
       successUrl:        `${appUrl}/dashboard/cursos/${courseSlug}?sucesso=1`,

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
@@ -27,8 +27,8 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br";
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: "NU.V.E.M Ensino — Formação Médica de Excelência",
-    template: "%s | NU.V.E.M Ensino",
+    default: "NU.V.E.M ENSINO — Formação Médica de Excelência",
+    template: "%s | NU.V.E.M ENSINO",
   },
   description:
     "Cursos hands-on e online de Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Formação prática supervisionada por especialistas em Belo Horizonte, MG. Certificação ISO 9001.",
@@ -48,9 +48,9 @@ export const metadata: Metadata = {
     "dra vera angelo",
     "manometria de alta resolução",
   ],
-  authors: [{ name: "NU.V.E.M Ensino", url: APP_URL }],
-  creator: "NU.V.E.M Ensino",
-  publisher: "NU.V.E.M Ensino",
+  authors: [{ name: "NU.V.E.M ENSINO", url: APP_URL }],
+  creator: "NU.V.E.M ENSINO",
+  publisher: "NU.V.E.M ENSINO",
   robots: {
     index: true,
     follow: true,
@@ -66,8 +66,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     url: APP_URL,
-    siteName: "NU.V.E.M Ensino",
-    title: "NU.V.E.M Ensino — Formação Médica de Excelência",
+    siteName: "NU.V.E.M ENSINO",
+    title: "NU.V.E.M ENSINO — Formação Médica de Excelência",
     description:
       "Cursos hands-on e online de Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Certificação ISO 9001.",
     images: [
@@ -75,13 +75,13 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "NU.V.E.M Ensino — Formação Médica de Excelência",
+        alt: "NU.V.E.M ENSINO — Formação Médica de Excelência",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NU.V.E.M Ensino — Formação Médica de Excelência",
+    title: "NU.V.E.M ENSINO — Formação Médica de Excelência",
     description:
       "Cursos hands-on e online de Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Certificação ISO 9001.",
     images: ["/opengraph-image"],

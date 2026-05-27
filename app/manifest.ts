@@ -1,8 +1,8 @@
-import type { MetadataRoute } from "next";
+﻿import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "NU.V.E.M Ensino",
+    name: "NU.V.E.M ENSINO",
     short_name: "NU.V.E.M",
     description:
       "Plataforma de formação médica com excelência em ensino clínico para profissionais de saúde.",

@@ -1,4 +1,4 @@
-{
+﻿{
   "nav": {
     "courses": "Cursos",
     "about": "Sobre",
@@ -34,7 +34,7 @@
       "subtitle": "Única clínica do segmento em BH"
     },
     "legal": {
-      "copyright": "© {year} NU.V.E.M Ensino · CNPJ 42.679.051/0001-31",
+      "copyright": "© {year} NU.V.E.M ENSINO · CNPJ 42.679.051/0001-31",
       "crm": "NU.V.E.M MEDICINA · CRM-MG 20532",
       "director": "Dra. Vera Ângelo · CRM-MG 22284 · RQE 10411 · RQE 22736",
       "disclaimer": "As informações neste site têm caráter educacional e não substituem consulta médica profissional, em conformidade com as normas do Conselho Federal de Medicina (Res. CFM n° 1.974/2011).",
@@ -72,7 +72,7 @@
     },
     "cta": {
       "title": "Pronto para evoluir na sua carreira?",
-      "description": "Junte-se a centenas de profissionais de saúde que já transformaram sua prática clínica com a NU.V.E.M Ensino.",
+      "description": "Junte-se a centenas de profissionais de saúde que já transformaram sua prática clínica com a NU.V.E.M ENSINO.",
       "button": "Começar agora"
     }
   },
@@ -461,7 +461,7 @@
   "about": {
     "meta": {
       "title": "Sobre",
-      "description": "Conheça a NU.V.E.M Ensino, plataforma de formação médica especializada."
+      "description": "Conheça a NU.V.E.M ENSINO, plataforma de formação médica especializada."
     },
     "hero": {
       "badge": "Sobre a NU.V.E.M",
@@ -471,10 +471,10 @@
     "founders": {
       "badge": "Fundada por quem vive a medicina todos os dias",
       "title": "Clínica e ensino sob o mesmo teto",
-      "p1": "A NU.V.E.M Medicina e a NU.V.E.M Ensino foram fundadas pela Dra. Vera Ângelo e pela Dra. Eliane Basques, especialistas apaixonadas pela medicina e pelo poder transformador do conhecimento compartilhado.",
+      "p1": "A NU.V.E.M Medicina e a NU.V.E.M ENSINO foram fundadas pela Dra. Vera Ângelo e pela Dra. Eliane Basques, especialistas apaixonadas pela medicina e pelo poder transformador do conhecimento compartilhado.",
       "p2": "Juntas, criaram um ecossistema único que une clínica e ensino sob o mesmo teto, onde cada paciente atendido inspira um novo conteúdo, e cada profissional formado eleva o padrão do cuidado em saúde.",
       "p3": "A NU.V.E.M Medicina é referência em Gastroenterologia, Motilidade Digestiva, Fisioterapia Pélvica e Diagnóstico Avançado em Belo Horizonte, com equipamentos de última geração e uma equipe multidisciplinar altamente especializada.",
-      "p4": "A NU.V.E.M Ensino nasceu como extensão natural dessa excelência clínica, formando médicos, fisioterapeutas e especialistas por meio de cursos teórico-práticos, imersões hands-on e metodologia baseada em casos reais da própria clínica."
+      "p4": "A NU.V.E.M ENSINO nasceu como extensão natural dessa excelência clínica, formando médicos, fisioterapeutas e especialistas por meio de cursos teórico-práticos, imersões hands-on e metodologia baseada em casos reais da própria clínica."
     },
     "iso": {
       "badge": "Certificação ISO 9001",
@@ -500,7 +500,7 @@
       "quoteAuthor": "Dra. Vera Ângelo & Dra. Eliane Basques, fundadoras"
     },
     "differentials": {
-      "title": "Por que a NU.V.E.M Ensino",
+      "title": "Por que a NU.V.E.M ENSINO",
       "iso": {
         "title": "ISO 9001 Certificada",
         "desc": "Única clínica do segmento em Belo Horizonte com certificação ISO 9001. Cada processo, do agendamento ao certificado, segue protocolos rigorosos auditados por organismos independentes."
@@ -528,14 +528,14 @@
     },
     "cta": {
       "title": "Pronto para avançar na sua formação?",
-      "description": "Explore o catálogo da NU.V.E.M Ensino e encontre o curso certo para a sua especialidade.",
+      "description": "Explore o catálogo da NU.V.E.M ENSINO e encontre o curso certo para a sua especialidade.",
       "button": "Ver todos os cursos"
     }
   },
   "instructors": {
     "meta": {
       "title": "Instrutores",
-      "description": "Conheça os especialistas que ministram os cursos da NU.V.E.M Ensino."
+      "description": "Conheça os especialistas que ministram os cursos da NU.V.E.M ENSINO."
     },
     "badge": "Corpo Docente",
     "title": "Nossos Instrutores",
@@ -545,7 +545,7 @@
   "faq": {
     "meta": {
       "title": "Perguntas Frequentes",
-      "description": "Tire suas dúvidas sobre os cursos da NU.V.E.M Ensino."
+      "description": "Tire suas dúvidas sobre os cursos da NU.V.E.M ENSINO."
     },
     "title": "Perguntas Frequentes",
     "subtitle": "Tire suas dúvidas sobre nossos cursos e plataforma.",
@@ -644,11 +644,11 @@
     "sections": [
       {
         "title": "1. Aceitação dos Termos",
-        "text": "Ao acessar e utilizar a plataforma NU.V.E.M Ensino, você concorda com estes Termos de Uso. Caso não concorde com alguma disposição, recomendamos que não utilize os serviços. A NU.V.E.M Ensino reserva-se o direito de atualizar estes termos a qualquer momento, com aviso prévio aos usuários cadastrados."
+        "text": "Ao acessar e utilizar a plataforma NU.V.E.M ENSINO, você concorda com estes Termos de Uso. Caso não concorde com alguma disposição, recomendamos que não utilize os serviços. A NU.V.E.M ENSINO reserva-se o direito de atualizar estes termos a qualquer momento, com aviso prévio aos usuários cadastrados."
       },
       {
         "title": "2. Descrição dos Serviços",
-        "text": "A NU.V.E.M Ensino é uma plataforma de ensino médico online e presencial, operada por NUVEM ENSINO (CNPJ 42.679.051/0001-31), que oferece cursos nas áreas de gastroenterologia, motilidade digestiva e fisioterapia pélvica, ministrados por profissionais habilitados."
+        "text": "A NU.V.E.M ENSINO é uma plataforma de ensino médico online e presencial, operada por NUVEM ENSINO (CNPJ 42.679.051/0001-31), que oferece cursos nas áreas de gastroenterologia, motilidade digestiva e fisioterapia pélvica, ministrados por profissionais habilitados."
       },
       {
         "title": "3. Cadastro e Conta",
@@ -664,7 +664,7 @@
       },
       {
         "title": "6. Propriedade Intelectual",
-        "text": "Todo o conteúdo da plataforma (videoaulas, materiais didáticos, textos, imagens e marcas) é de propriedade exclusiva da NU.V.E.M Ensino ou de seus instrutores. É vedada a reprodução, distribuição ou comercialização de qualquer conteúdo sem autorização expressa e por escrito."
+        "text": "Todo o conteúdo da plataforma (videoaulas, materiais didáticos, textos, imagens e marcas) é de propriedade exclusiva da NU.V.E.M ENSINO ou de seus instrutores. É vedada a reprodução, distribuição ou comercialização de qualquer conteúdo sem autorização expressa e por escrito."
       },
       {
         "title": "7. Uso Permitido",
@@ -676,7 +676,7 @@
       },
       {
         "title": "9. Limitação de Responsabilidade",
-        "text": "A NU.V.E.M Ensino não se responsabiliza por danos decorrentes de interrupções técnicas, erros de sistema ou uso indevido da plataforma pelo usuário. Nosso compromisso é garantir a disponibilidade do serviço com razoável nível de continuidade."
+        "text": "A NU.V.E.M ENSINO não se responsabiliza por danos decorrentes de interrupções técnicas, erros de sistema ou uso indevido da plataforma pelo usuário. Nosso compromisso é garantir a disponibilidade do serviço com razoável nível de continuidade."
       },
       {
         "title": "10. Foro e Legislação",

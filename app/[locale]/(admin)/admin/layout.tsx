@@ -1,4 +1,4 @@
-import { auth } from "@/auth";
+﻿import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -51,7 +51,7 @@ export default async function AdminLayout({
           <Link href="/" className="block">
             <Image
               src="/logo.png"
-              alt="NU.V.E.M Ensino"
+              alt="NU.V.E.M ENSINO"
               width={160}
               height={125}
               className="h-16 w-auto brightness-0 invert opacity-95"
@@ -94,7 +94,7 @@ export default async function AdminLayout({
             <Link href="/" className="flex items-center gap-2">
               <Image
                 src="/logo.png"
-                alt="NU.V.E.M Ensino"
+                alt="NU.V.E.M ENSINO"
                 width={100}
                 height={78}
                 className="h-8 w-auto brightness-0 invert opacity-95"

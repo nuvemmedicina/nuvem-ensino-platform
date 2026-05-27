@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link as LocaleLink } from "@/i18n/navigation";
@@ -155,7 +155,7 @@ export default async function Footer() {
             <LocaleLink href="/" className="w-fit">
               <Image
                 src="/logo.png"
-                alt="NU.V.E.M Ensino"
+                alt="NU.V.E.M ENSINO"
                 width={120}
                 height={94}
                 className="h-12 w-auto brightness-0 invert opacity-90"

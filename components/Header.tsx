@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import { useState } from "react";
@@ -29,7 +29,7 @@ export default function Header() {
           <Link href="/" className="shrink-0 group">
             <Image
               src="/logo.png"
-              alt="NU.V.E.M Ensino"
+              alt="NU.V.E.M ENSINO"
               width={120}
               height={94}
               className="h-11 w-auto transition-opacity duration-200 group-hover:opacity-80"

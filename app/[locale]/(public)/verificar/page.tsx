@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { CheckCircle2, XCircle, Search, Shield } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Verificar Certificado — NU.V.E.M Ensino",
+  title: "Verificar Certificado — NU.V.E.M ENSINO",
   description:
-    "Verifique a autenticidade de um certificado emitido pela NU.V.E.M Ensino. Informe o código impresso no certificado para confirmar sua validade.",
+    "Verifique a autenticidade de um certificado emitido pela NU.V.E.M ENSINO. Informe o código impresso no certificado para confirmar sua validade.",
   alternates: { canonical: "/verificar" },
   openGraph: {
-    title: "Verificar Certificado — NU.V.E.M Ensino",
-    description: "Confirme a autenticidade de certificados emitidos pela NU.V.E.M Ensino.",
+    title: "Verificar Certificado — NU.V.E.M ENSINO",
+    description: "Confirme a autenticidade de certificados emitidos pela NU.V.E.M ENSINO.",
     url: "/verificar",
   },
 };
@@ -98,7 +98,7 @@ export default async function VerificarPage({ searchParams }: Props) {
                       Certificado válido
                     </p>
                     <p className="font-sans text-xs text-green-600/80">
-                      Emitido pela NU.V.E.M Ensino
+                      Emitido pela NU.V.E.M ENSINO
                     </p>
                   </div>
                 </div>
@@ -158,7 +158,7 @@ export default async function VerificarPage({ searchParams }: Props) {
             <InfoCard
               icon="🛡️"
               title="100% confiável"
-              body="Os certificados da NU.V.E.M Ensino possuem código único e são verificáveis a qualquer momento."
+              body="Os certificados da NU.V.E.M ENSINO possuem código único e são verificáveis a qualquer momento."
             />
           </div>
         </section>

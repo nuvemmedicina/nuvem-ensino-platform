@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import FaqClient from "./FaqClient";
 
@@ -22,7 +22,7 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `${t("title")} | NU.V.E.M Ensino`,
+      title: `${t("title")} | NU.V.E.M ENSINO`,
       description: t("description"),
       url: locale === "en" ? "/en/faq" : locale === "es" ? "/es/faq" : "/faq",
       locale: locale === "en" ? "en_US" : locale === "es" ? "es_ES" : "pt_BR",

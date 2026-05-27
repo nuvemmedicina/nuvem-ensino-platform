@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
@@ -413,7 +413,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description =
     course.metaDesc ??
     lc.shortDesc ??
-    `Curso ${lc.title} — ${course.hours}h de formação prática com especialistas. Certificação ISO 9001 pela NU.V.E.M Ensino.`;
+    `Curso ${lc.title} — ${course.hours}h de formação prática com especialistas. Certificação ISO 9001 pela NU.V.E.M ENSINO.`;
 
   const ogImage = course.thumbnailUrl
     ? { url: course.thumbnailUrl, width: 1200, height: 630, alt: lc.title }
@@ -425,7 +425,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const canonical = locale === "en" ? canonicalEn : locale === "es" ? canonicalEs : canonicalPt;
 
   return {
-    title: course.metaTitle ?? `${lc.title} | NU.V.E.M Ensino`,
+    title: course.metaTitle ?? `${lc.title} | NU.V.E.M ENSINO`,
     description,
     alternates: {
       canonical,
@@ -494,7 +494,7 @@ export default async function CoursePage({ params }: Props) {
     image: course.thumbnailUrl ?? `${APP_URL}/og-image.png`,
     provider: {
       "@type": "EducationalOrganization",
-      name: "NU.V.E.M Ensino",
+      name: "NU.V.E.M ENSINO",
       url: APP_URL,
       sameAs: APP_URL,
     },

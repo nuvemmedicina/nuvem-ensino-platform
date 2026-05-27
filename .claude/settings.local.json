@@ -113,7 +113,12 @@
       "Bash(node -e \"require\\('@vercel/blob'\\); console.log\\('ok'\\)\")",
       "Bash(xargs grep -l \"reminder\\\\|lembrete\\\\|live.*session\\\\|liveSession\")",
       "Bash(grep -v \"^$\")",
-      "Bash(2>&1)"
+      "Bash(2>&1)",
+      "Bash(node -e \"const l = require\\('lucide-react'\\); const keys = Object.keys\\(l\\).filter\\(k => k.toLowerCase\\(\\).includes\\('link'\\)\\); console.log\\(keys.join\\('\\\\n'\\)\\)\")",
+      "Bash(npx next *)",
+      "Bash(Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue)",
+      "Bash(Write-Host \"Cleaned .next\")",
+      "Bash(git rm *)"
     ]
   }
 }

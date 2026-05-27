@@ -1,9 +1,9 @@
-import { Resend } from "resend";
+﻿import { Resend } from "resend";
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY ?? "re_placeholder");
 }
-const FROM = process.env.EMAIL_FROM ?? "NU.V.E.M Ensino <cursos@nuvemensino.com.br>";
+const FROM = process.env.EMAIL_FROM ?? "NU.V.E.M ENSINO <cursos@nuvemensino.com.br>";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://cursos.nuvemmedicina.com.br";
 
 function baseLayout(title: string, body: string) {
@@ -20,7 +20,7 @@ function baseLayout(title: string, body: string) {
       <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
         <!-- Header -->
         <tr><td style="background:#00475e;padding:32px 40px;text-align:center;">
-          <p style="margin:0;color:#cbe4e6;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;">NU.V.E.M Ensino</p>
+          <p style="margin:0;color:#cbe4e6;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;">NU.V.E.M ENSINO</p>
           <p style="margin:6px 0 0;color:#ffffff;font-size:22px;font-weight:300;font-family:Georgia,serif;">${title}</p>
         </td></tr>
         <!-- Body -->
@@ -29,7 +29,7 @@ function baseLayout(title: string, body: string) {
         </td></tr>
         <!-- Footer -->
         <tr><td style="background:#f4f7f6;padding:24px 40px;text-align:center;border-top:1px solid #e5e7eb;">
-          <p style="margin:0;color:#9ca3af;font-size:11px;">NU.V.E.M Ensino · cursos@nuvemensino.com.br · (31) 99726-1029</p>
+          <p style="margin:0;color:#9ca3af;font-size:11px;">NU.V.E.M ENSINO · cursos@nuvemensino.com.br · (31) 99726-1029</p>
           <p style="margin:4px 0 0;color:#9ca3af;font-size:11px;">Belo Horizonte, MG</p>
         </td></tr>
       </table>
@@ -87,7 +87,7 @@ export async function sendPasswordResetEmail({
 
   const body = `
     <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
-    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Recebemos uma solicitação para redefinir a senha da sua conta NU.V.E.M Ensino.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Recebemos uma solicitação para redefinir a senha da sua conta NU.V.E.M ENSINO.</p>
     <div style="text-align:center;margin:32px 0;">
       <a href="${link}"
          style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
@@ -102,7 +102,7 @@ export async function sendPasswordResetEmail({
   return getResend().emails.send({
     from: FROM,
     to,
-    subject: "Redefina sua senha — NU.V.E.M Ensino",
+    subject: "Redefina sua senha — NU.V.E.M ENSINO",
     html: baseLayout("Redefinição de Senha", body),
   });
 }
@@ -120,7 +120,7 @@ export async function sendEmailVerificationEmail({
 
   const body = `
     <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
-    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Bem-vindo(a) à NU.V.E.M Ensino! Confirme seu endereço de e-mail para ativar sua conta.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Bem-vindo(a) à NU.V.E.M ENSINO! Confirme seu endereço de e-mail para ativar sua conta.</p>
     <div style="text-align:center;margin:32px 0;">
       <a href="${link}"
          style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
@@ -128,14 +128,14 @@ export async function sendEmailVerificationEmail({
       </a>
     </div>
     <p style="margin:0 0 8px;color:#6b7280;font-size:13px;">⏱ Este link expira em <strong>24 horas</strong>.</p>
-    <p style="margin:0 0 24px;color:#6b7280;font-size:13px;">Se você não criou uma conta na NU.V.E.M Ensino, ignore este e-mail.</p>
+    <p style="margin:0 0 24px;color:#6b7280;font-size:13px;">Se você não criou uma conta na NU.V.E.M ENSINO, ignore este e-mail.</p>
     <p style="margin:0;color:#9ca3af;font-size:12px;">Ou copie e cole este endereço no navegador:<br/><span style="color:#00475e;word-break:break-all;">${link}</span></p>
   `;
 
   return getResend().emails.send({
     from: FROM,
     to,
-    subject: "Confirme seu e-mail — NU.V.E.M Ensino",
+    subject: "Confirme seu e-mail — NU.V.E.M ENSINO",
     html: baseLayout("Confirmação de E-mail", body),
   });
 }

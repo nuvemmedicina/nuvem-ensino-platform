@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import NativeLink from "next/link";
 import { Filter, Search } from "lucide-react";
@@ -27,7 +27,7 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `${t("title")} | NU.V.E.M Ensino`,
+      title: `${t("title")} | NU.V.E.M ENSINO`,
       description: t("description"),
       url: locale === "en" ? "/en/courses" : locale === "es" ? "/es/cursos" : "/cursos",
       locale: locale === "en" ? "en_US" : locale === "es" ? "es_ES" : "pt_BR",

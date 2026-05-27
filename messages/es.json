@@ -1,4 +1,4 @@
-{
+﻿{
   "nav": {
     "courses": "Cursos",
     "about": "Sobre",
@@ -34,7 +34,7 @@
       "subtitle": "La única clínica certificada del segmento en BH"
     },
     "legal": {
-      "copyright": "© {year} NU.V.E.M Ensino · CNPJ 42.679.051/0001-31",
+      "copyright": "© {year} NU.V.E.M ENSINO · CNPJ 42.679.051/0001-31",
       "crm": "NU.V.E.M MEDICINA · CRM-MG 20532",
       "director": "Dra. Vera Ângelo · CRM-MG 22284 · RQE 10411 · RQE 22736",
       "disclaimer": "La información en este sitio tiene carácter educativo y no sustituye la consulta médica profesional, conforme a las normas del Consejo Federal de Medicina (Res. CFM n° 1.974/2011).",
@@ -72,7 +72,7 @@
     },
     "cta": {
       "title": "¿Listo para avanzar en tu carrera?",
-      "description": "Únete a cientos de profesionales de la salud que ya transformaron su práctica clínica con NU.V.E.M Ensino.",
+      "description": "Únete a cientos de profesionales de la salud que ya transformaron su práctica clínica con NU.V.E.M ENSINO.",
       "button": "Comenzar ahora"
     }
   },
@@ -461,7 +461,7 @@
   "about": {
     "meta": {
       "title": "Sobre",
-      "description": "Conoce NU.V.E.M Ensino, plataforma especializada de formación médica."
+      "description": "Conoce NU.V.E.M ENSINO, plataforma especializada de formación médica."
     },
     "hero": {
       "badge": "Sobre la NU.V.E.M",
@@ -471,10 +471,10 @@
     "founders": {
       "badge": "Fundada por quienes viven la medicina todos los días",
       "title": "Clínica y enseñanza bajo el mismo techo",
-      "p1": "NU.V.E.M Medicina y NU.V.E.M Ensino fueron fundadas por la Dra. Vera Ângelo y la Dra. Eliane Basques, especialistas apasionadas por la medicina y el poder transformador del conocimiento compartido.",
+      "p1": "NU.V.E.M Medicina y NU.V.E.M ENSINO fueron fundadas por la Dra. Vera Ângelo y la Dra. Eliane Basques, especialistas apasionadas por la medicina y el poder transformador del conocimiento compartido.",
       "p2": "Juntas, crearon un ecosistema único que une clínica y enseñanza bajo el mismo techo, donde cada paciente atendido inspira un nuevo contenido, y cada profesional formado eleva el estándar del cuidado en salud.",
       "p3": "NU.V.E.M Medicina es referencia en Gastroenterología, Motilidad Digestiva, Fisioterapia Pélvica y Diagnóstico Avanzado en Belo Horizonte, con equipos de última generación y un equipo multidisciplinario altamente especializado.",
-      "p4": "NU.V.E.M Ensino nació como extensión natural de esa excelencia clínica, formando médicos, fisioterapeutas y especialistas a través de cursos teórico-prácticos, inmersiones hands-on y metodología basada en casos reales de la propia clínica."
+      "p4": "NU.V.E.M ENSINO nació como extensión natural de esa excelencia clínica, formando médicos, fisioterapeutas y especialistas a través de cursos teórico-prácticos, inmersiones hands-on y metodología basada en casos reales de la propia clínica."
     },
     "iso": {
       "badge": "Certificación ISO 9001",
@@ -500,7 +500,7 @@
       "quoteAuthor": "Dra. Vera Ângelo & Dra. Eliane Basques, fundadoras"
     },
     "differentials": {
-      "title": "Por qué NU.V.E.M Ensino",
+      "title": "Por qué NU.V.E.M ENSINO",
       "iso": {
         "title": "ISO 9001 Certificada",
         "desc": "La única clínica del segmento en Belo Horizonte con certificación ISO 9001. Cada proceso, desde la programación hasta el certificado, sigue protocolos rigurosos auditados por organismos independientes."
@@ -528,14 +528,14 @@
     },
     "cta": {
       "title": "¿Listo para avanzar en tu formación?",
-      "description": "Explora el catálogo de NU.V.E.M Ensino y encuentra el curso adecuado para tu especialidad.",
+      "description": "Explora el catálogo de NU.V.E.M ENSINO y encuentra el curso adecuado para tu especialidad.",
       "button": "Ver todos los cursos"
     }
   },
   "instructors": {
     "meta": {
       "title": "Instructores",
-      "description": "Conoce los especialistas que imparten los cursos de NU.V.E.M Ensino."
+      "description": "Conoce los especialistas que imparten los cursos de NU.V.E.M ENSINO."
     },
     "badge": "Cuerpo Docente",
     "title": "Nuestros Instructores",
@@ -545,7 +545,7 @@
   "faq": {
     "meta": {
       "title": "Preguntas Frecuentes",
-      "description": "Resuelve tus dudas sobre los cursos de NU.V.E.M Ensino."
+      "description": "Resuelve tus dudas sobre los cursos de NU.V.E.M ENSINO."
     },
     "title": "Preguntas Frecuentes",
     "subtitle": "Resuelve tus dudas sobre nuestros cursos y plataforma.",
@@ -644,11 +644,11 @@
     "sections": [
       {
         "title": "1. Aceptación de los Términos",
-        "text": "Al acceder y utilizar la plataforma NU.V.E.M Ensino, aceptas estos Términos de Uso. Si no estás de acuerdo con alguna disposición, recomendamos que no utilices los servicios. NU.V.E.M Ensino se reserva el derecho de actualizar estos términos en cualquier momento, con aviso previo a los usuarios registrados."
+        "text": "Al acceder y utilizar la plataforma NU.V.E.M ENSINO, aceptas estos Términos de Uso. Si no estás de acuerdo con alguna disposición, recomendamos que no utilices los servicios. NU.V.E.M ENSINO se reserva el derecho de actualizar estos términos en cualquier momento, con aviso previo a los usuarios registrados."
       },
       {
         "title": "2. Descripción de los Servicios",
-        "text": "NU.V.E.M Ensino es una plataforma de enseñanza médica en línea y presencial, operada por NUVEM ENSINO (CNPJ 42.679.051/0001-31), que ofrece cursos en las áreas de gastroenterología, motilidad digestiva y fisioterapia pélvica, impartidos por profesionales habilitados."
+        "text": "NU.V.E.M ENSINO es una plataforma de enseñanza médica en línea y presencial, operada por NUVEM ENSINO (CNPJ 42.679.051/0001-31), que ofrece cursos en las áreas de gastroenterología, motilidad digestiva y fisioterapia pélvica, impartidos por profesionales habilitados."
       },
       {
         "title": "3. Registro y Cuenta",
@@ -664,7 +664,7 @@
       },
       {
         "title": "6. Propiedad Intelectual",
-        "text": "Todo el contenido de la plataforma (videoclases, materiales didácticos, textos, imágenes y marcas) es propiedad exclusiva de NU.V.E.M Ensino o de sus instructores. Está prohibida la reproducción, distribución o comercialización de cualquier contenido sin autorización expresa y por escrito."
+        "text": "Todo el contenido de la plataforma (videoclases, materiales didácticos, textos, imágenes y marcas) es propiedad exclusiva de NU.V.E.M ENSINO o de sus instructores. Está prohibida la reproducción, distribución o comercialización de cualquier contenido sin autorización expresa y por escrito."
       },
       {
         "title": "7. Uso Permitido",
@@ -676,7 +676,7 @@
       },
       {
         "title": "9. Limitación de Responsabilidad",
-        "text": "NU.V.E.M Ensino no se responsabiliza por daños derivados de interrupciones técnicas, errores del sistema o uso indebido de la plataforma por parte del usuario. Nuestro compromiso es garantizar la disponibilidad del servicio con un nivel razonable de continuidad."
+        "text": "NU.V.E.M ENSINO no se responsabiliza por daños derivados de interrupciones técnicas, errores del sistema o uso indebido de la plataforma por parte del usuario. Nuestro compromiso es garantizar la disponibilidad del servicio con un nivel razonable de continuidad."
       },
       {
         "title": "10. Jurisdicción y Legislación",

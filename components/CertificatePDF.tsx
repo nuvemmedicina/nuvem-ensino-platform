@@ -1,4 +1,4 @@
-import {
+﻿import {
   Document,
   Page,
   Text,
@@ -268,7 +268,7 @@ export function CertificatePDF({
   return (
     <Document
       title={`Certificado — ${courseTitle}`}
-      author="NU.V.E.M Ensino"
+      author="NU.V.E.M ENSINO"
       subject="Certificado de Conclusão"
     >
       <Page size="A4" orientation="landscape" style={s.page}>

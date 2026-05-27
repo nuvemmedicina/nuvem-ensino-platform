@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+﻿import { NextRequest } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { renderToBuffer } from "@react-pdf/renderer";
@@ -136,7 +136,7 @@ export async function GET(req: NextRequest, { params }: Props) {
       studentName:         cert.user.name ?? "Participante",
       courseTitle:         cert.enrollment.course.title,
       hours:               cert.enrollment.course.hours,
-      instructorName:      cert.enrollment.course.instructor?.user.name ?? "NU.V.E.M Ensino",
+      instructorName:      cert.enrollment.course.instructor?.user.name ?? "NU.V.E.M ENSINO",
       issueDate:           cert.issueDate,
       code:                cert.code,
       courseDescription:   cert.enrollment.course.shortDesc ?? undefined,

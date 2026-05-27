@@ -1,4 +1,4 @@
-import {
+﻿import {
   Document,
   Page,
   Text,
@@ -53,7 +53,7 @@ function SlideFooter({ page, total }: { page: number; total: number }) {
   return (
     <View style={{ position: "absolute", bottom: 18, left: 0, right: 0, flexDirection: "row", alignItems: "center", paddingHorizontal: 36 }}>
       <View style={{ flex: 1, height: 0.5, backgroundColor: C.gold, opacity: 0.4 }} />
-      <Text style={{ ...reg, fontSize: 7, color: C.gray, marginHorizontal: 10 }}>NU.V.E.M Ensino — Confidencial</Text>
+      <Text style={{ ...reg, fontSize: 7, color: C.gray, marginHorizontal: 10 }}>NU.V.E.M ENSINO — Confidencial</Text>
       <View style={{ flex: 1, height: 0.5, backgroundColor: C.gold, opacity: 0.4 }} />
       <Text style={{ ...reg, fontSize: 7, color: C.gray, marginLeft: 10 }}>{page}/{total}</Text>
     </View>
@@ -143,7 +143,7 @@ function SlideCover({ logoUri }: { logoUri?: string }) {
             Relatorio de Desenvolvimento
           </Text>
           <Text style={{ ...bold, fontSize: 28, color: C.white, lineHeight: 1.3, letterSpacing: 0.5, marginBottom: 20 }}>
-            {"Nova Plataforma\nNU.V.E.M Ensino"}
+            {"Nova Plataforma\nNU.V.E.M ENSINO"}
           </Text>
           <View style={{ width: 60, height: 2, backgroundColor: C.gold, marginBottom: 20 }} />
           <Text style={{ ...reg, fontSize: 12, color: C.white + "cc", lineHeight: 1.6 }}>Apresentado a Dra. Vera Angelo</Text>
@@ -185,7 +185,7 @@ function SlideMigracao() {
   const after = [
     ["Next.js 16 + React 19",    "Framework de ultima geracao, renderizacao hibrida e velocidade maxima"],
     ["Plataforma 100% proprietaria", "Codigo exclusivo, sem dependencia de plugins ou temas"],
-    ["Design personalizado",     "Layout criado do zero para a identidade da NU.V.E.M Ensino"],
+    ["Design personalizado",     "Layout criado do zero para a identidade da NU.V.E.M ENSINO"],
     ["Vercel Edge Network",      "CDN global com escala automatica e 99,9% de disponibilidade"],
     ["Mercado Pago + Stripe",    "Pagamentos nacionais e internacionais integrados nativamente"],
     ["Banco Neon serverless",    "PostgreSQL elastico, expansao automatica conforme crescimento"],
@@ -318,7 +318,7 @@ function SlideDesign() {
         <View style={{ flex: 1.2 }}>
           <Text style={{ ...reg, fontSize: 10, color: C.gray, lineHeight: 1.6, marginBottom: 16 }}>
             Todo o visual foi construido do zero, sem temas prontos ou templates genericos.
-            Cada detalhe reflete a identidade da NU.V.E.M Ensino.
+            Cada detalhe reflete a identidade da NU.V.E.M ENSINO.
           </Text>
           <BulletRow icon="I" title="Identidade visual exclusiva" desc="Tipografia, paleta, icones e espacamentos definidos na especificacao da marca e aplicados de forma consistente em todas as telas." color={C.teal} />
           <BulletRow icon="R" title="100% responsivo" desc="Layout adaptativo para desktop, tablet e celular. O aluno tem a mesma experiencia em qualquer dispositivo." color={C.tealMid} />
@@ -745,7 +745,7 @@ function SlideProximos({ logoUri }: { logoUri?: string }) {
           <View style={{ backgroundColor: C.teal, borderRadius: 12, padding: 18, marginBottom: 14 }}>
             <Text style={{ fontFamily: "GreatVibes", fontSize: 28, color: C.goldLight, marginBottom: 8 }}>Conclusao</Text>
             <Text style={{ ...reg, fontSize: 8.5, color: C.white + "dd", lineHeight: 1.7 }}>
-              A NU.V.E.M Ensino agora possui uma plataforma LMS proprietaria de alto nivel, construida com
+              A NU.V.E.M ENSINO agora possui uma plataforma LMS proprietaria de alto nivel, construida com
               as mesmas tecnologias utilizadas pelas maiores edtechs do mundo.
             </Text>
             <View style={{ height: 1, backgroundColor: C.gold + "66", marginVertical: 10 }} />
@@ -785,8 +785,8 @@ function SlideProximos({ logoUri }: { logoUri?: string }) {
 export function PresentationPDF({ logoUri, isoSeal }: Props) {
   return (
     <Document
-      title="Relatorio de Desenvolvimento — NU.V.E.M Ensino"
-      author="NU.V.E.M Ensino"
+      title="Relatorio de Desenvolvimento — NU.V.E.M ENSINO"
+      author="NU.V.E.M ENSINO"
       subject="Apresentacao da Nova Plataforma LMS"
     >
       <SlideCover logoUri={logoUri} />

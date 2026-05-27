@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -14,7 +14,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "home" });
 
   return {
-    title: `NU.V.E.M Ensino — ${t("hero.title")} ${t("hero.titleHighlight")}`,
+    title: `NU.V.E.M ENSINO — ${t("hero.title")} ${t("hero.titleHighlight")}`,
     description:
       locale === "pt"
         ? "Plataforma de formação médica com cursos hands-on e online de Gastroenterologia, Motilidade Digestiva, Testes Respiratórios e Fisioterapia Pélvica. Certificação ISO 9001 em Belo Horizonte, MG."
@@ -26,7 +26,7 @@ export async function generateMetadata({
       languages: { pt: "/", en: "/en/", es: "/es/", "x-default": "/" },
     },
     openGraph: {
-      title: `NU.V.E.M Ensino — ${t("hero.title")} ${t("hero.titleHighlight")}`,
+      title: `NU.V.E.M ENSINO — ${t("hero.title")} ${t("hero.titleHighlight")}`,
       description: t("hero.description"),
       url: locale === "en" ? "/en/" : locale === "es" ? "/es/" : "/",
       type: "website",
@@ -57,7 +57,7 @@ const jsonLd = {
     {
       "@type": "EducationalOrganization",
       "@id": "https://nuvemensino.com.br/#organization",
-      name: "NU.V.E.M Ensino",
+      name: "NU.V.E.M ENSINO",
       url: "https://nuvemensino.com.br",
       logo: "https://nuvemensino.com.br/logo.png",
       description: "Plataforma de formação médica especializada em Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Certificação ISO 9001.",
@@ -67,7 +67,7 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": "https://nuvemensino.com.br/#website",
       url: "https://nuvemensino.com.br",
-      name: "NU.V.E.M Ensino",
+      name: "NU.V.E.M ENSINO",
     },
   ],
 };

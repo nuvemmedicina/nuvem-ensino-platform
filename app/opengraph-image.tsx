@@ -1,9 +1,9 @@
-import { ImageResponse } from "next/og";
+﻿import { ImageResponse } from "next/og";
 import fs from "fs";
 import path from "path";
 
 export const runtime = "nodejs";
-export const alt = "NU.V.E.M Ensino — Formação Médica de Excelência";
+export const alt = "NU.V.E.M ENSINO — Formação Médica de Excelência";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
