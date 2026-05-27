@@ -47,8 +47,7 @@ const instructorFallback: Record<string, { photo?: string; bio?: string }> = {
 const stats = [
   { value: "+500", label: "Médicos formados" },
   { value: "6",    label: "Cursos especializados" },
-  { value: "ISO 9001", label: "Certificação de qualidade" },
-  { value: "10+", label: "Anos de experiência" },
+  { value: "10+",  label: "Anos de experiência" },
 ];
 
 const jsonLd = {
@@ -166,9 +165,20 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           style={{ background: "radial-gradient(circle, rgba(203,228,230,0.6) 0%, transparent 70%)" }}
         />
 
-        {/* Selo ISO decorativo */}
-        <div aria-hidden className="pointer-events-none absolute -right-16 top-1/2 -translate-y-1/2 opacity-[0.05]">
-          <Image src="/selo-iso-9001.png" alt="" width={520} height={520} className="w-[420px] sm:w-[520px]" />
+        {/* Selo ISO decorativo fundo (quase invisível) */}
+        <div aria-hidden className="pointer-events-none absolute -right-16 top-1/2 -translate-y-1/2 opacity-[0.04] hidden sm:block">
+          <Image src="/selo-iso-9001.png" alt="" width={520} height={520} className="w-[520px]" />
+        </div>
+
+        {/* Selo ISO visível — canto inferior direito do hero */}
+        <div className="absolute bottom-6 right-4 sm:bottom-8 sm:right-8 z-10">
+          <Image
+            src="/selo-iso-9001.png"
+            alt="Certificação ISO 9001"
+            width={80}
+            height={80}
+            className="w-14 h-14 sm:w-20 sm:h-20 drop-shadow-[0_2px_8px_rgba(203,228,230,0.35)]"
+          />
         </div>
 
         {/* Badge */}
