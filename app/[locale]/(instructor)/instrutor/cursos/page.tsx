@@ -2,6 +2,8 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { Plus } from "lucide-react";
+import { createCourse } from "./actions";
 
 export default async function InstructorCursosPage({
   params,
@@ -46,9 +48,33 @@ export default async function InstructorCursosPage({
         <div>
           <h1 className="font-serif text-3xl font-light text-foreground">Meus Cursos</h1>
           <p className="font-sans text-sm text-muted mt-1">
-            {courses.length} {courses.length === 1 ? "curso atribuído" : "cursos atribuídos"}
+            {courses.length} {courses.length === 1 ? "curso" : "cursos"}
           </p>
         </div>
+        {/* Create course form */}
+        <form action={createCourse} className="flex items-center gap-2">
+          <input
+            name="title"
+            required
+            placeholder="Título do novo curso"
+            className="px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-primary/50 w-52"
+          />
+          <select
+            name="category"
+            className="px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground focus:outline-none focus:border-primary/50"
+          >
+            <option value="ONLINE">Online</option>
+            <option value="HANDS_ON">Hands-On</option>
+            <option value="HYBRID">Híbrido</option>
+          </select>
+          <button
+            type="submit"
+            className="flex items-center gap-1.5 font-sans text-sm font-semibold px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            Criar curso
+          </button>
+        </form>
       </div>
 
       {courses.length === 0 ? (

@@ -8,7 +8,7 @@ async function requireInstructor() {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Não autenticado");
   const role = (session.user as { role?: string }).role;
-  if (role !== "INSTRUCTOR") throw new Error("Não autorizado");
+  if (role !== "INSTRUCTOR" && role !== "ADMIN") throw new Error("Não autorizado");
   const instructor = await prisma.instructor.findUnique({
     where: { userId: session.user.id },
     select: { id: true },
