@@ -109,7 +109,7 @@ export default async function InscritosPage({ params }: Props) {
                           <p className="font-sans text-sm text-foreground">
                             {payment.status === "PAID"
                               ? new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(payment.amount))
-                              : payment.amount === 0 ? "Gratuito" : payment.status}
+                              : Number(payment.amount) === 0 ? "Gratuito" : payment.status}
                           </p>
                           {payment.method && (
                             <p className="font-sans text-xs text-muted uppercase">{payment.method.replace("ASAAS_", "")}</p>
