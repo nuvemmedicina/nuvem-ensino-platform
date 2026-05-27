@@ -22,14 +22,18 @@ type Session = {
 const inputClass =
   "w-full px-3 py-1.5 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-primary/50";
 
-// Format a Date to the value expected by <input type="datetime-local">
-function toDatetimeLocal(d: Date): string {
-  const pad = (n: number) => String(n).padStart(2, "0");
+// Retorna a data local no formato YYYY-MM-DD (para input type="date")
+function toLocalDate(d: Date): string {
   const dt = new Date(d);
-  return (
-    `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}` +
-    `T${pad(dt.getHours())}:${pad(dt.getMinutes())}`
-  );
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
+}
+
+// Retorna o horário local no formato HH:MM (para input type="time")
+function toLocalTime(d: Date): string {
+  const dt = new Date(d);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
 }
 
 export default function LiveSessionList({ sessions }: { sessions: Session[] }) {
@@ -135,27 +139,40 @@ function SessionCard({
             />
           </div>
 
+          <div>
+            <label className="block font-sans text-[10px] font-semibold text-muted uppercase tracking-wider mb-1">
+              Data
+            </label>
+            <input
+              name="date"
+              type="date"
+              defaultValue={toLocalDate(new Date(s.startAt))}
+              required
+              className={inputClass}
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block font-sans text-[10px] font-semibold text-muted uppercase tracking-wider mb-1">
-                Início
+                Hora início (BRT)
               </label>
               <input
-                name="startAt"
-                type="datetime-local"
-                defaultValue={toDatetimeLocal(new Date(s.startAt))}
+                name="startTime"
+                type="time"
+                defaultValue={toLocalTime(new Date(s.startAt))}
                 required
                 className={inputClass}
               />
             </div>
             <div>
               <label className="block font-sans text-[10px] font-semibold text-muted uppercase tracking-wider mb-1">
-                Fim
+                Hora fim (BRT)
               </label>
               <input
-                name="endAt"
-                type="datetime-local"
-                defaultValue={toDatetimeLocal(new Date(s.endAt))}
+                name="endTime"
+                type="time"
+                defaultValue={toLocalTime(new Date(s.endAt))}
                 required
                 className={inputClass}
               />

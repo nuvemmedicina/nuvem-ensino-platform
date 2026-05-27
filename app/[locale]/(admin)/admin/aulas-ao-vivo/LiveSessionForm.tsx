@@ -5,6 +5,11 @@ import { createLiveSession } from "./actions";
 
 type Course = { id: string; title: string; slug: string };
 
+const inputClass =
+  "w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-primary/50";
+const labelClass =
+  "block font-sans text-xs font-semibold text-muted mb-1";
+
 export default function LiveSessionForm({ courses }: { courses: Course[] }) {
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -16,8 +21,8 @@ export default function LiveSessionForm({ courses }: { courses: Course[] }) {
   return (
     <form ref={formRef} action={handleSubmit} className="flex flex-col gap-4">
       <div>
-        <label className="block font-sans text-xs font-semibold text-muted mb-1">Curso</label>
-        <select name="courseId" required className="w-full text-sm border border-border rounded-lg px-3 py-2 bg-background text-foreground">
+        <label className={labelClass}>Curso</label>
+        <select name="courseId" required className={inputClass}>
           <option value="">Selecione...</option>
           {courses.map((c) => (
             <option key={c.id} value={c.id}>{c.title}</option>
@@ -26,34 +31,39 @@ export default function LiveSessionForm({ courses }: { courses: Course[] }) {
       </div>
 
       <div>
-        <label className="block font-sans text-xs font-semibold text-muted mb-1">Título da sessão</label>
-        <input name="title" required placeholder="Ex: Aula ao vivo — Módulo 1" className="w-full text-sm border border-border rounded-lg px-3 py-2 bg-background text-foreground" />
+        <label className={labelClass}>Título da sessão</label>
+        <input name="title" required placeholder="Ex: Aula ao vivo — Módulo 1" className={inputClass} />
       </div>
 
       <div>
-        <label className="block font-sans text-xs font-semibold text-muted mb-1">Descrição (opcional)</label>
-        <textarea name="description" rows={2} className="w-full text-sm border border-border rounded-lg px-3 py-2 bg-background text-foreground resize-none" />
+        <label className={labelClass}>Descrição (opcional)</label>
+        <textarea name="description" rows={2} className={`${inputClass} resize-none`} />
+      </div>
+
+      <div>
+        <label className={labelClass}>Data</label>
+        <input name="date" type="date" required className={inputClass} />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block font-sans text-xs font-semibold text-muted mb-1">Início</label>
-          <input name="startAt" type="datetime-local" required className="w-full text-sm border border-border rounded-lg px-3 py-2 bg-background text-foreground" />
+          <label className={labelClass}>Hora início (Horário de Brasília)</label>
+          <input name="startTime" type="time" required className={inputClass} />
         </div>
         <div>
-          <label className="block font-sans text-xs font-semibold text-muted mb-1">Fim</label>
-          <input name="endAt" type="datetime-local" required className="w-full text-sm border border-border rounded-lg px-3 py-2 bg-background text-foreground" />
+          <label className={labelClass}>Hora fim (Horário de Brasília)</label>
+          <input name="endTime" type="time" required className={inputClass} />
         </div>
       </div>
 
       <div>
-        <label className="block font-sans text-xs font-semibold text-muted mb-1">Link Google Meet (opcional)</label>
-        <input name="meetUrl" type="url" placeholder="https://meet.google.com/..." className="w-full text-sm border border-border rounded-lg px-3 py-2 bg-background text-foreground" />
+        <label className={labelClass}>Link Google Meet (opcional)</label>
+        <input name="meetUrl" type="url" placeholder="https://meet.google.com/..." className={inputClass} />
       </div>
 
       <div>
-        <label className="block font-sans text-xs font-semibold text-muted mb-1">Local (para presenciais)</label>
-        <input name="location" placeholder="Ex: NU.V.E.M Medicina, BH" className="w-full text-sm border border-border rounded-lg px-3 py-2 bg-background text-foreground" />
+        <label className={labelClass}>Local (para presenciais)</label>
+        <input name="location" placeholder="Ex: NU.V.E.M Medicina, BH" className={inputClass} />
       </div>
 
       <button type="submit" className="w-full font-sans text-sm font-semibold px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors mt-1">
