@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Não autenticado." }, { status: 401 });
   }
 
-  const { courseSlug, method, couponCode } = await req.json();
+  const { courseSlug, method, couponCode, installments } = await req.json();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br";
 
   // Validate coupon
@@ -136,7 +136,7 @@ export async function POST(req: Request) {
       value:             finalPrice,
       description:       `${dbCourse.title} — NU.V.E.M ENSINO`,
       externalReference: enrollment.id,
-      installmentCount:  method === "parcelado" ? 3 : 1,
+      installmentCount:  method === "parcelado" ? Math.min(Math.max(Number(installments) || 3, 1), 3) : 1,
       successUrl:        `${appUrl}/dashboard/cursos/${courseSlug}?sucesso=1`,
     });
 

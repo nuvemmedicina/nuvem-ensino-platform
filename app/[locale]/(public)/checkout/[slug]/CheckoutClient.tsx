@@ -38,6 +38,7 @@ export default function CheckoutClient({
   const [paymentError, setPaymentError] = useState("");
   const [pixData, setPixData] = useState<{ image: string; copyPaste: string } | null>(null);
   const [pixCopied, setPixCopied] = useState(false);
+  const [installments, setInstallments] = useState(3);
 
   const methodLabels: Record<PaymentMethod, { label: string; desc: string; icon: React.ReactNode }> = {
     stripe: {
@@ -102,6 +103,7 @@ export default function CheckoutClient({
             courseSlug: slug,
             method,
             couponCode: couponApplied ? couponCode : undefined,
+            installments: method === "parcelado" ? installments : 1,
           }),
         });
         const data = await res.json();
@@ -380,14 +382,23 @@ export default function CheckoutClient({
             {/* Info por método */}
             {method === "parcelado" && (
               <div className="mt-4 bg-background rounded-xl p-4 font-sans text-sm text-muted">
-                <p className="font-semibold text-foreground mb-2">{t("installments")}</p>
+                <p className="font-semibold text-foreground mb-3">{t("installments")}</p>
                 {[1, 2, 3].map((n) => (
-                  <div key={n} className="flex justify-between py-1 border-b border-border last:border-0">
-                    <span>{n}x</span>
-                    <span className="font-medium text-foreground">
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => setInstallments(n)}
+                    className={`w-full flex justify-between items-center py-2 px-3 rounded-lg border transition-colors mb-1.5 last:mb-0 ${
+                      installments === n
+                        ? "border-primary bg-primary/10 text-foreground"
+                        : "border-border hover:bg-border/30 text-muted"
+                    }`}
+                  >
+                    <span className="font-semibold">{n}x</span>
+                    <span className={`font-medium ${installments === n ? "text-primary" : "text-foreground"}`}>
                       {formatted(Math.ceil((finalPrice / n) * 100) / 100)}
                     </span>
-                  </div>
+                  </button>
                 ))}
               </div>
             )}
