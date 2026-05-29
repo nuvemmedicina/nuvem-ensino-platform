@@ -146,19 +146,47 @@ export default async function SobrePage({
       </section>
 
       {/* Nossos números */}
-      <section className="bg-canvas py-16 px-4">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="font-serif text-2xl font-medium text-white text-center mb-10">
+      <section className="relative bg-canvas py-20 px-4 overflow-hidden">
+        {/* Grade de fundo */}
+        <div aria-hidden className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: `linear-gradient(rgba(203,228,230,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(203,228,230,0.04) 1px, transparent 1px)`,
+            backgroundSize: "48px 48px",
+          }}
+        />
+        {/* Orb decorativo */}
+        <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full opacity-10 blur-3xl"
+          style={{ background: "radial-gradient(ellipse, rgba(203,228,230,0.6) 0%, transparent 70%)" }}
+        />
+
+        <div className="relative max-w-5xl mx-auto">
+          <p className="font-sans text-xs font-bold uppercase tracking-[0.25em] text-accent/70 text-center mb-3">
+            Em números
+          </p>
+          <h2 className="font-serif text-3xl font-light text-white text-center mb-12">
             {t("numbers.title")}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {numeros.map(({ icon: Icon, valor, label }) => (
-              <div key={label} className="flex flex-col items-center gap-3 p-6 rounded-2xl bg-surface border border-border text-center">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <Icon className="w-5 h-5 text-primary" />
+              <div
+                key={label}
+                className="group relative flex flex-col items-center gap-3 p-6 rounded-2xl text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)] cursor-default"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(203,228,230,0.12)",
+                  backdropFilter: "blur(12px)",
+                }}
+              >
+                {/* Brilho no hover */}
+                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ background: "linear-gradient(135deg, rgba(203,228,230,0.08) 0%, transparent 60%)" }}
+                />
+                <div className="relative w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors duration-300"
+                  style={{ background: "rgba(203,228,230,0.1)" }}>
+                  <Icon className="w-5 h-5 text-accent group-hover:text-accent/90 transition-colors" />
                 </div>
-                <p className="font-serif text-lg font-semibold text-foreground leading-tight">{valor}</p>
-                <p className="font-sans text-[11px] text-muted leading-snug">{label}</p>
+                <p className="relative font-serif text-xl font-semibold text-white leading-tight">{valor}</p>
+                <p className="relative font-sans text-[11px] text-white/45 leading-snug group-hover:text-white/60 transition-colors">{label}</p>
               </div>
             ))}
           </div>
