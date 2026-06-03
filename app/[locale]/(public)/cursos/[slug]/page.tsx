@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { localizedCourse } from "@/lib/i18n-content";
+import { auth } from "@/auth";
 
 // Rich static content (objectives, modules, audience) not yet in DB
 const staticContent: Record<
@@ -468,6 +469,19 @@ export default async function CoursePage({ params }: Props) {
 
   if (!course) notFound();
 
+  // Verificar se o usuário está matriculado (para liberar vídeo de aula)
+  const session = await auth();
+  const isEnrolled = session?.user?.id
+    ? !!(await prisma.enrollment.findFirst({
+        where: {
+          userId: session.user.id,
+          courseId: course.id,
+          status: { in: ["ACTIVE", "COMPLETED"] },
+        },
+        select: { id: true },
+      }))
+    : false;
+
   const lc = localizedCourse(course, locale);
   const staticFb = staticContent[slug] ?? null;
 
@@ -668,10 +682,13 @@ export default async function CoursePage({ params }: Props) {
         </div>
       </section>
 
-      {/* ── Preview do curso (YouTube) ── */}
-      {course.previewUrl && (
+      {/* ── Aula (YouTube) — apenas para matriculados ── */}
+      {course.previewUrl && isEnrolled && (
         <section className="bg-canvas/50 border-b border-white/5 py-10 px-4">
           <div className="max-w-3xl mx-auto">
+            <p className="font-sans text-xs font-semibold text-accent/70 uppercase tracking-widest text-center mb-4">
+              Acesso exclusivo — aluno matriculado
+            </p>
             <div className="relative w-full rounded-2xl overflow-hidden border border-white/10" style={{ paddingTop: "56.25%" }}>
               <iframe
                 src={course.previewUrl}
