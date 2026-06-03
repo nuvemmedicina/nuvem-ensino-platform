@@ -17,6 +17,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { localizedCourse } from "@/lib/i18n-content";
 import { auth } from "@/auth";
+import ShareButton from "./ShareButton";
 
 // Rich static content (objectives, modules, audience) not yet in DB
 const staticContent: Record<
@@ -554,14 +555,20 @@ export default async function CoursePage({ params }: Props) {
       {/* ── Hero do curso ── */}
       <section className="bg-canvas px-4 py-16">
         <div className="max-w-5xl mx-auto">
-          {/* Breadcrumb */}
-          <nav className="flex items-center gap-1.5 font-sans text-xs text-white/40 mb-8">
-            <Link href="/" className="hover:text-white/70 transition-colors">{locale === "en" ? "Home" : locale === "es" ? "Inicio" : "Início"}</Link>
-            <ChevronRight className="w-3 h-3" />
-            <Link href="/cursos" className="hover:text-white/70 transition-colors">{tNav("courses")}</Link>
-            <ChevronRight className="w-3 h-3" />
-            <span className="text-white/60">{lc.title}</span>
-          </nav>
+          {/* Breadcrumb + Share */}
+          <div className="flex items-center justify-between mb-8">
+            <nav className="flex items-center gap-1.5 font-sans text-xs text-white/40">
+              <Link href="/" className="hover:text-white/70 transition-colors">{locale === "en" ? "Home" : locale === "es" ? "Inicio" : "Início"}</Link>
+              <ChevronRight className="w-3 h-3" />
+              <Link href="/cursos" className="hover:text-white/70 transition-colors">{tNav("courses")}</Link>
+              <ChevronRight className="w-3 h-3" />
+              <span className="text-white/60 truncate max-w-[120px] sm:max-w-none">{lc.title}</span>
+            </nav>
+            <ShareButton
+              title={lc.title}
+              url={`${process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br"}/cursos/${course.slug}`}
+            />
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 items-start">
             {/* Info principal */}
