@@ -46,7 +46,7 @@ export default async function CheckoutPage({ params }: Props) {
 
   const lc = localizedCourse(course, locale);
   const mpTokenDb = await prisma.platformSetting.findUnique({ where: { key: "mp_access_token" } });
-  const hasPayment = !!(process.env.STRIPE_SECRET_KEY || process.env.MP_ACCESS_TOKEN || mpTokenDb?.value);
+  const hasPayment = !!(process.env.STRIPE_SECRET_KEY || process.env.ASAAS_API_KEY || process.env.MP_ACCESS_TOKEN || mpTokenDb?.value);
 
   return (
     <CheckoutClient

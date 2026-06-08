@@ -89,7 +89,7 @@ export default async function RelatoriosPage({ params, searchParams }: Props) {
   // Totais — conta receita dos pagamentos PAID + valor do curso quando PENDING (compromisso)
   const totalReceita = enrollments.reduce((s, e) => {
     const pay = e.payments[0];
-    return s + (pay ? toNum(pay.amount) : toNum(e.course.price));
+    return s + (pay ? toNum(pay.amount) : 0);
   }, 0);
   const totalPago = enrollments
     .filter((e) => e.payments[0]?.status === "PAID")
@@ -158,7 +158,7 @@ export default async function RelatoriosPage({ params, searchParams }: Props) {
                   const payStatus = pay?.status ?? "PENDING";
                   const mc = methodColor[method] ?? methodColor.FREE;
                   const pc = payStatusColor[payStatus] ?? payStatusColor.PENDING;
-                  const amount = pay ? toNum(pay.amount) : toNum(enr.course.price);
+                  const amount = pay ? toNum(pay.amount) : 0;
 
                   return (
                     <tr key={enr.id} className="hover:bg-background/50 transition-colors">
