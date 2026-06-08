@@ -31,92 +31,67 @@ export async function GET(req: Request) {
   const fromDate = from ? new Date(from + "T00:00:00") : undefined;
   const toDate   = to   ? new Date(to   + "T23:59:59") : undefined;
 
-  const payments = await prisma.payment.findMany({
+  const enrollments = await prisma.enrollment.findMany({
     where: {
-      status: "PAID",
+      status: { in: ["ACTIVE", "COMPLETED"] },
       ...(fromDate || toDate
-        ? { paidAt: { ...(fromDate && { gte: fromDate }), ...(toDate && { lte: toDate }) } }
+        ? { enrolledAt: { ...(fromDate && { gte: fromDate }), ...(toDate && { lte: toDate }) } }
         : {}),
-      ...(courseId ? { enrollment: { courseId } } : {}),
+      ...(courseId ? { courseId } : {}),
     },
     select: {
-      amount:   true,
-      method:   true,
-      paidAt:   true,
-      enrollment: {
-        select: {
-          userId:   true,
-          courseId: true,
-          user:   { select: { name: true, email: true } },
-          course: { select: { title: true } },
-        },
+      enrolledAt: true,
+      user:   { select: { name: true, email: true } },
+      course: { select: { title: true, price: true } },
+      payments: {
+        select: { method: true, status: true, amount: true, paidAt: true },
+        orderBy: { createdAt: "desc" },
+        take: 1,
       },
     },
-    orderBy: { paidAt: "desc" },
+    orderBy: { enrolledAt: "desc" },
     take: 10000,
   });
 
-  // Busca cupons usados
-  const pairs = payments.map((p) => ({
-    userId:   p.enrollment.userId,
-    courseId: p.enrollment.courseId,
-  }));
-
-  const couponUsages =
-    pairs.length > 0
-      ? await prisma.couponUsage.findMany({
-          where: { OR: pairs },
-          select: {
-            userId:   true,
-            courseId: true,
-            coupon: { select: { code: true, discountPct: true, discountFlat: true } },
-          },
-        })
-      : [];
-
-  const couponMap = new Map<string, (typeof couponUsages)[0]["coupon"]>();
-  for (const u of couponUsages) {
-    couponMap.set(`${u.userId}:${u.courseId}`, u.coupon);
-  }
-
   const methodLabel: Record<string, string> = {
-    STRIPE:              "Stripe",
-    MERCADO_PAGO_PIX:    "PIX",
-    MERCADO_PAGO_BOLETO: "Boleto",
-    MERCADO_PAGO_CARD:   "Cartão",
-    FREE:                "Grátis",
+    STRIPE:       "Stripe",
+    ASAAS_PIX:    "PIX",
+    ASAAS_BOLETO: "Boleto",
+    ASAAS_CARD:   "Cartão",
+    FREE:         "Grátis",
+  };
+
+  const payStatusLabel: Record<string, string> = {
+    PAID:     "Pago",
+    PENDING:  "Aguardando",
+    OVERDUE:  "Vencido",
+    REFUNDED: "Reembolsado",
   };
 
   const fmtDate = (d: Date) =>
     new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" }).format(d);
 
   // Monta CSV
-  const header = ["Data", "Nome", "E-mail", "Curso", "Método", "Cupom", "Desconto", "Valor (BRL)"].join(",");
+  const header = ["Data inscrição", "Nome", "E-mail", "Curso", "Método", "Status pgto", "Valor (BRL)"].join(",");
 
-  const rows = payments.map((p) => {
-    const coupon = couponMap.get(`${p.enrollment.userId}:${p.enrollment.courseId}`);
-    const discount = coupon
-      ? coupon.discountPct
-        ? `${coupon.discountPct}%`
-        : coupon.discountFlat
-        ? toNum(coupon.discountFlat).toFixed(2)
-        : ""
-      : "";
-
+  const rows = enrollments.map((enr) => {
+    const pay = enr.payments[0];
+    const amount = pay ? toNum(pay.amount) : toNum(enr.course.price);
     return [
-      escapeCsv(p.paidAt ? fmtDate(new Date(p.paidAt)) : ""),
-      escapeCsv(p.enrollment.user.name),
-      escapeCsv(p.enrollment.user.email),
-      escapeCsv(p.enrollment.course.title),
-      escapeCsv(methodLabel[p.method] ?? p.method),
-      escapeCsv(coupon?.code),
-      escapeCsv(discount),
-      toNum(p.amount).toFixed(2).replace(".", ","),
+      escapeCsv(fmtDate(new Date(enr.enrolledAt))),
+      escapeCsv(enr.user.name),
+      escapeCsv(enr.user.email),
+      escapeCsv(enr.course.title),
+      escapeCsv(pay ? (methodLabel[pay.method] ?? pay.method) : "—"),
+      escapeCsv(pay ? (payStatusLabel[pay.status] ?? pay.status) : "Aguardando"),
+      amount.toFixed(2).replace(".", ","),
     ].join(",");
   });
 
-  // Total
-  const total = payments.reduce((s, p) => s + toNum(p.amount), 0);
+  // Total apenas pagamentos confirmados
+  const total = enrollments
+    .filter((e) => e.payments[0]?.status === "PAID")
+    .reduce((s, e) => s + toNum(e.payments[0]?.amount), 0);
   rows.push(["", "", "", "", "", "", "TOTAL", total.toFixed(2).replace(".", ",")].join(","));
 
   const csv = "﻿" + [header, ...rows].join("\r\n"); // BOM para Excel reconhecer UTF-8
