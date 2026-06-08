@@ -395,6 +395,10 @@ type Props = {
   params: Promise<{ slug: string; locale: string }>;
 };
 
+// Força renderização dinâmica: a página verifica matrícula por sessão do usuário
+// e não pode ser pré-gerada estaticamente
+export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
   const courses = await prisma.course.findMany({
     where: { status: "PUBLISHED" },
