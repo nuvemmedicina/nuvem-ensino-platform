@@ -6,6 +6,9 @@ import { getTranslations } from "next-intl/server";
 
 const methodBadge: Record<string, { label: string; color: string }> = {
   STRIPE:              { label: "Stripe",  color: "text-blue-600 bg-blue-500/10 border-blue-500/20" },
+  ASAAS_PIX:           { label: "PIX",     color: "text-green-600 bg-green-500/10 border-green-500/20" },
+  ASAAS_BOLETO:        { label: "Boleto",  color: "text-amber-600 bg-amber-500/10 border-amber-500/20" },
+  ASAAS_CARD:          { label: "Cartão",  color: "text-purple-600 bg-purple-500/10 border-purple-500/20" },
   MERCADO_PAGO_PIX:    { label: "PIX",     color: "text-green-600 bg-green-500/10 border-green-500/20" },
   MERCADO_PAGO_BOLETO: { label: "Boleto",  color: "text-amber-600 bg-amber-500/10 border-amber-500/20" },
   MERCADO_PAGO_CARD:   { label: "Cartão",  color: "text-purple-600 bg-purple-500/10 border-purple-500/20" },
@@ -115,10 +118,11 @@ export default async function AdminOverviewPage({
       where: { status: "PUBLISHED" },
       select: {
         title: true,
-        _count: { select: { enrollments: true } },
+        _count: { select: { enrollments: { where: { status: { in: ["ACTIVE", "COMPLETED"] } } } } },
         enrollments: {
+          where: { status: { in: ["ACTIVE", "COMPLETED"] } },
           select: {
-            payments: { where: { status: "PAID" }, select: { amount: true } },
+            payments: { select: { amount: true, status: true }, take: 1, orderBy: { createdAt: "desc" } },
           },
         },
       },
@@ -126,18 +130,19 @@ export default async function AdminOverviewPage({
       take: 5,
     }),
 
-    prisma.payment.findMany({
-      where: { status: "PAID" },
+    prisma.enrollment.findMany({
+      where: { status: { in: ["ACTIVE", "COMPLETED"] } },
       select: {
-        amount: true, method: true, paidAt: true,
-        enrollment: {
-          select: {
-            user:   { select: { name: true, email: true } },
-            course: { select: { title: true } },
-          },
+        enrolledAt: true,
+        user:   { select: { name: true, email: true } },
+        course: { select: { title: true } },
+        payments: {
+          select: { amount: true, method: true, status: true, paidAt: true },
+          orderBy: { createdAt: "desc" },
+          take: 1,
         },
       },
-      orderBy: { paidAt: "desc" },
+      orderBy: { enrolledAt: "desc" },
       take: 8,
     }),
   ]);
@@ -184,7 +189,7 @@ export default async function AdminOverviewPage({
     title: c.title,
     enrollments: c._count.enrollments,
     revenue: c.enrollments.reduce(
-      (sum, e) => sum + e.payments.reduce((s, p) => s + toNum(p.amount), 0),
+      (sum, e) => sum + e.payments.reduce((s, p) => s + (p.status === "PAID" ? toNum(p.amount) : 0), 0),
       0
     ),
   }));
@@ -329,34 +334,40 @@ export default async function AdminOverviewPage({
           )}
         </div>
 
-        {/* Últimos pagamentos */}
+        {/* Últimas matrículas */}
         <div className="bg-surface border border-border rounded-2xl overflow-hidden">
           <div className="px-5 py-4 border-b border-border">
             <p className="font-sans text-xs font-semibold text-muted uppercase tracking-wider">
-              {t("recentPayments")}
+              Últimas matrículas
             </p>
           </div>
           {recentPayments.length === 0 ? (
             <p className="font-sans text-sm text-muted px-5 py-4">{t("noPayments")}</p>
           ) : (
             <div className="divide-y divide-border">
-              {recentPayments.map((p, i) => {
-                const ml = methodBadge[p.method] ?? methodBadge.FREE;
+              {recentPayments.map((enr, i) => {
+                const pay = enr.payments[0];
+                const method = pay?.method ?? "FREE";
+                const payStatus = pay?.status ?? "FREE";
+                const ml = methodBadge[method] ?? methodBadge.FREE;
+                const isPaid = payStatus === "PAID";
                 return (
                   <div key={i} className="flex items-center gap-3 px-5 py-3 hover:bg-background/50 transition-colors">
                     <div className="flex-1 min-w-0">
                       <p className="font-sans text-sm font-medium text-foreground truncate">
-                        {p.enrollment.user.name ?? p.enrollment.user.email}
+                        {enr.user.name ?? enr.user.email}
                       </p>
-                      <p className="font-sans text-xs text-muted truncate">{p.enrollment.course.title}</p>
+                      <p className="font-sans text-xs text-muted truncate">{enr.course.title}</p>
                     </div>
                     <span className={`font-sans text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border shrink-0 ${ml.color}`}>
                       {ml.label}
                     </span>
                     <div className="text-right shrink-0">
-                      <p className="font-sans text-sm font-semibold text-foreground">{fmtBRL.format(toNum(p.amount))}</p>
-                      <p className="font-sans text-[10px] text-muted">
-                        {p.paidAt ? fmtDate.format(new Date(p.paidAt)) : "—"}
+                      <p className="font-sans text-sm font-semibold text-foreground">
+                        {fmtBRL.format(pay ? toNum(pay.amount) : 0)}
+                      </p>
+                      <p className={`font-sans text-[10px] ${isPaid ? "text-green-600" : "text-amber-500"}`}>
+                        {isPaid ? (pay?.paidAt ? fmtDate.format(new Date(pay.paidAt)) : "Pago") : "Aguardando"}
                       </p>
                     </div>
                   </div>
