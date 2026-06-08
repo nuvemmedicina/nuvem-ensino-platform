@@ -38,6 +38,7 @@ export default async function AdminLayout({
     { key: "instructors",  href: "/admin/instrutores",                  label: t("instructors") },
     { key: "liveSessions", href: "/admin/aulas-ao-vivo",                label: t("liveSessions") },
     { key: "reports",      href: "/admin/relatorios",                   label: t("reports") },
+    { key: "coupons",      href: "/admin/cupons",                        label: "Cupons" },
     { key: "settings",     href: "/admin/configuracoes/pagamentos",     label: t("settings") },
   ];
 
@@ -112,7 +113,7 @@ export default async function AdminLayout({
             {navItems.map((item) => (
               <Link
                 key={item.key}
-                href={item.href as "/admin" | "/admin/cursos" | "/admin/matriculas" | "/admin/usuarios" | "/admin/instrutores" | "/admin/aulas-ao-vivo" | "/admin/relatorios" | "/admin/configuracoes/pagamentos"}
+                href={item.href as "/admin" | "/admin/cursos" | "/admin/matriculas" | "/admin/usuarios" | "/admin/instrutores" | "/admin/aulas-ao-vivo" | "/admin/relatorios" | "/admin/cupons" | "/admin/configuracoes/pagamentos"}
                 className="shrink-0 font-sans text-xs text-white/60 hover:text-white/90 px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors whitespace-nowrap"
               >
                 {item.label}

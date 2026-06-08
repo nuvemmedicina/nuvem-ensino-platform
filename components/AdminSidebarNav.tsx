@@ -11,6 +11,7 @@ import {
   Video,
   BarChart2,
   Settings,
+  Ticket,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -22,6 +23,7 @@ const ICONS: Record<string, LucideIcon> = {
   instructors:  GraduationCap,
   liveSessions: Video,
   reports:      BarChart2,
+  coupons:      Ticket,
   settings:     Settings,
 };
 
