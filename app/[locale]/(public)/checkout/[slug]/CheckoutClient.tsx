@@ -14,6 +14,7 @@ type Props = {
   hours: number;
   userEmail: string;
   userName: string;
+  userPhone: string;
   hasPayment: boolean;
 };
 
@@ -24,12 +25,14 @@ export default function CheckoutClient({
   hours,
   userEmail,
   userName,
+  userPhone,
   hasPayment,
 }: Props) {
   const t = useTranslations("checkout");
   const router = useRouter();
   const [method, setMethod] = useState<PaymentMethod>("pix");
   const [couponCode, setCouponCode] = useState("");
+  const [whatsapp, setWhatsapp] = useState(userPhone);
   const [couponApplied, setCouponApplied] = useState(false);
   const [couponDiscountPct, setCouponDiscountPct] = useState(0);
   const [couponError, setCouponError] = useState("");
@@ -106,6 +109,7 @@ export default function CheckoutClient({
             method,
             couponCode: couponApplied ? couponCode : undefined,
             installments: method === "parcelado" ? installments : 1,
+            whatsapp: whatsapp.trim() || undefined,
           }),
         });
         const data = await res.json();
@@ -340,6 +344,23 @@ export default function CheckoutClient({
                   readOnly
                   value={userEmail}
                   className="px-3 py-2.5 rounded-lg border border-border bg-background/50 text-sm text-foreground/70"
+                />
+              </div>
+            </div>
+            {/* WhatsApp */}
+            <div className="flex flex-col gap-1.5 mt-1">
+              <label className="font-sans text-xs text-muted flex items-center gap-1">
+                WhatsApp
+                <span className="text-muted/50">(para inclusão no grupo do curso)</span>
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 font-sans text-sm text-muted select-none">🇧🇷</span>
+                <input
+                  type="tel"
+                  value={whatsapp}
+                  onChange={(e) => setWhatsapp(e.target.value)}
+                  placeholder="(31) 9 9999-9999"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/40 focus:outline-none focus:border-primary/50"
                 />
               </div>
             </div>

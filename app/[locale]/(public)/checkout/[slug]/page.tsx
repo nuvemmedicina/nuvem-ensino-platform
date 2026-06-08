@@ -48,6 +48,12 @@ export default async function CheckoutPage({ params }: Props) {
   const mpTokenDb = await prisma.platformSetting.findUnique({ where: { key: "mp_access_token" } });
   const hasPayment = !!(process.env.STRIPE_SECRET_KEY || process.env.ASAAS_API_KEY || process.env.MP_ACCESS_TOKEN || mpTokenDb?.value);
 
+  // Pré-carregar WhatsApp salvo do usuário
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { phone: true },
+  });
+
   return (
     <CheckoutClient
       slug={slug}
@@ -56,6 +62,7 @@ export default async function CheckoutPage({ params }: Props) {
       hours={course.hours}
       userEmail={session.user?.email ?? ""}
       userName={session.user?.name ?? ""}
+      userPhone={dbUser?.phone ?? ""}
       hasPayment={hasPayment}
     />
   );

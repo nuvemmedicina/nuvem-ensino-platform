@@ -10,6 +10,7 @@ type Props = {
   courseSlug: string;
   studentName: string;
   studentEmail: string;
+  studentPhone?: string | null;
   date: string; // "YYYY-MM-DD"
   initialStatus: AttendanceStatus | null;
 };
@@ -42,6 +43,7 @@ export function CheckInRow({
   courseSlug,
   studentName,
   studentEmail,
+  studentPhone,
   date,
   initialStatus,
 }: Props) {
@@ -66,6 +68,16 @@ export function CheckInRow({
       <td className="py-3 px-4">
         <p className="font-sans text-sm text-foreground">{studentName}</p>
         <p className="font-sans text-xs text-muted">{studentEmail}</p>
+        {studentPhone && (
+          <a
+            href={`https://wa.me/55${studentPhone.replace(/\D/g, "")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-sans text-xs text-green-600 hover:text-green-500 transition-colors"
+          >
+            📱 {studentPhone}
+          </a>
+        )}
       </td>
       <td className="py-3 px-4 text-right">
         <button

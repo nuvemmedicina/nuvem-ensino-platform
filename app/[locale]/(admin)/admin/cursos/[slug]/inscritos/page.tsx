@@ -149,6 +149,7 @@ export default async function InscritosPage({ params, searchParams }: Props) {
                   courseSlug={slug}
                   studentName={enrollment.user.name ?? enrollment.user.email}
                   studentEmail={enrollment.user.email}
+                  studentPhone={enrollment.user.phone}
                   date={selectedDate}
                   initialStatus={enrollment.attendances[0]?.status ?? null}
                 />

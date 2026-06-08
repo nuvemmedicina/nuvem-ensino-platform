@@ -14,8 +14,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Não autenticado." }, { status: 401 });
   }
 
-  const { courseSlug, method, couponCode, installments } = await req.json();
+  const { courseSlug, method, couponCode, installments, whatsapp } = await req.json();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br";
+
+  // Salva WhatsApp no perfil do usuário se fornecido
+  if (whatsapp && typeof whatsapp === "string" && whatsapp.trim()) {
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { phone: whatsapp.trim() },
+    });
+  }
 
   // Validate coupon
   let discountPct = 0;
