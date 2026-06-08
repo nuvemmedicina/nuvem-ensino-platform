@@ -31,6 +31,7 @@ export default function CheckoutClient({
   const [method, setMethod] = useState<PaymentMethod>("pix");
   const [couponCode, setCouponCode] = useState("");
   const [couponApplied, setCouponApplied] = useState(false);
+  const [couponDiscountPct, setCouponDiscountPct] = useState(0);
   const [couponError, setCouponError] = useState("");
   const [isPending, startTransition] = useTransition();
   const [isCouponLoading, setIsCouponLoading] = useState(false);
@@ -63,7 +64,7 @@ export default function CheckoutClient({
     },
   };
 
-  const discount = couponApplied ? Math.round(price * 0.1) : 0;
+  const discount = couponApplied ? Math.round(price * (couponDiscountPct / 100) * 100) / 100 : 0;
   const finalPrice = price - discount;
 
   const formatted = (v: number) =>
@@ -82,6 +83,7 @@ export default function CheckoutClient({
       const data = await res.json();
       if (data.valid) {
         setCouponApplied(true);
+        setCouponDiscountPct(data.discountPct ?? 0);
       } else {
         setCouponError(t("couponInvalid"));
       }
