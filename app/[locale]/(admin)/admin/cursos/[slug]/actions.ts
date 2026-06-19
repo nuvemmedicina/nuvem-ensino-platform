@@ -39,6 +39,7 @@ export async function updateCourse(courseId: string, slug: string, formData: For
   revalidatePath(`/admin/cursos/${slug}`);
   revalidatePath("/admin/cursos");
   revalidatePath(`/cursos/${slug}`);
+  redirect(`/admin/cursos/${slug}`);
 }
 
 export async function updateLesson(lessonId: string, courseSlug: string, formData: FormData) {
