@@ -19,377 +19,6 @@ import { localizedCourse } from "@/lib/i18n-content";
 import { auth } from "@/auth";
 import ShareButton from "./ShareButton";
 
-// Rich static content (objectives, modules, audience) not yet in DB
-const staticContent: Record<
-  string,
-  {
-    objectives: string[];
-    targetAudience: string[];
-    modules: { title: string; lessons: string[] }[];
-    includes: string[];
-    instructorBio: string;
-    startDate: string | null;
-  }
-> = {
-  "manometria-phmetria-impedancia": {
-    instructorBio:
-      "Dr. Felipe Nelson é referência em exames de motilidade esofágica, pHmetria de 24 horas e impedancio-pHmetria, com anos de experiência clínica. Especialista em Gastroenterologia, conduz ensino e pesquisa em manometria de alta resolução e realiza mentoria direta durante a execução dos exames com pacientes reais.",
-    startDate: "15–19 de junho de 2026",
-    objectives: [
-      "Realizar manometria esofágica de alta resolução com autonomia e segurança",
-      "Interpretar laudos de pHmetria de 24 horas e impedancio-pHmetria",
-      "Classificar padrões de motilidade segundo a Classificação de Chicago 4.0",
-      "Abordar disfagia pós-cirúrgica (fundoplicatura e cirurgia bariátrica)",
-      "Diagnosticar e manejar acalasia e disfagia por doença de Chagas",
-      "Correlacionar achados funcionais com o quadro clínico do paciente",
-    ],
-    targetAudience: [
-      "Médicos gastroenterologistas",
-      "Cirurgiões digestivos e esofagogástricos",
-      "Endoscopistas",
-      "Médicos com interesse em motilidade digestiva e disfagia",
-    ],
-    modules: [
-      {
-        title: "Dia 1 (15/06): Fundamentos e Preparação",
-        lessons: [
-          "Fisiologia esofágica",
-          "Preparo da sala de manometria esofágica de alta resolução",
-          "Preparo para os exames de manometria, pHmetria e impedâncio-pHmetria",
-          "Posicionamento de sonda, técnica de coleta e calibração",
-          "Lavagem e cuidados com as sondas dos exames de motilidade digestiva",
-        ],
-      },
-      {
-        title: "Dia 2 (16/06): Hands On — Manometria, pHmetria e Impedância",
-        lessons: [
-          "Hands On de exames de manometria esofágica de alta resolução + pHmetria + impedância",
-          "Exames com pacientes reais sob mentoria direta",
-          "Interpretação e realização de laudos em tempo real",
-          "Classificação de Chicago 4.0",
-          "Análise da junção esofagogástrica",
-        ],
-      },
-      {
-        title: "Dia 3 (17/06): Hands On — Sistematização, Motilidade Orofaríngea e Pós-operatório",
-        lessons: [
-          "Hands On de exames de manometria esofágica de alta resolução + pHmetria + impedância",
-          "Sistematização da coleta dos exames de manometria, pHmetria e impedância",
-          "Interpretação e realização de laudos em tempo real",
-          "Casos de motilidade orofaríngea e exames complementares",
-          "Casos de pós-operatório de cirurgias antirrefluxo e cirurgia bariátrica",
-          "Radiologia combinada à manometria do esôfago",
-        ],
-      },
-      {
-        title: "Dia 4 (18/06): Hands On — Acalasia e Doença de Chagas",
-        lessons: [
-          "Hands On de exames de manometria esofágica de alta resolução + pHmetria + impedância",
-          "Interpretação e realização de laudos em tempo real",
-          "Casos de pós-operatório de procedimentos para o tratamento da acalasia (POEM, Heller, dilatação pneumática)",
-          "Manometria esofágica em pacientes com Doença de Chagas",
-        ],
-      },
-      {
-        title: "Dia 5 (19/06): Hands On — Casos Especiais e Certificação",
-        lessons: [
-          "Hands On de exames de manometria esofágica de alta resolução + pHmetria + impedância",
-          "Interpretação e realização de laudos em tempo real",
-          "Casos especiais de pHmetria e impedância (Eructações Supragástricas, Síndrome de Ruminação, sintomas atípicos)",
-          "Casos especiais de manometria esofágica (Síndrome de Ruminação, Incapacidade de Eructar, casos inconclusivos)",
-        ],
-      },
-    ],
-    includes: [
-      "5 dias de imersão teórico-prática (15 a 19 de junho de 2026)",
-      "Exames em pacientes reais com mentoria direta do Dr. Felipe Nelson",
-      "Hands On diário de manometria esofágica de alta resolução, pHmetria e impedância",
-      "Material de apoio completo",
-      "Coffee break diário",
-      "Certificado de conclusão",
-    ],
-  },
-  "manometria-anorretal": {
-    instructorBio:
-      "Dra. Eliane Basques é especialista em fisiologia anorretal com ampla experiência em manometria de alta resolução e ultrassonografia endoanal. Professora convidada em diversos congressos nacionais de Coloproctologia.",
-    startDate: "A definir",
-    objectives: [
-      "Dominar a técnica de manometria anorretal de alta resolução",
-      "Interpretar perfis de pressão e reflexo retoanal",
-      "Diagnosticar incontinência fecal, constipação funcional e dissinergias",
-      "Correlacionar achados com biofeedback e tratamento conservador",
-    ],
-    targetAudience: [
-      "Coloproctologistas",
-      "Gastroenterologistas",
-      "Fisioterapeutas pélvicos",
-      "Ginecologistas com interesse em assoalho pélvico",
-    ],
-    modules: [
-      {
-        title: "Módulo 1: Bases da Fisiologia Anorretal",
-        lessons: [
-          "Anatomia e neurofisiologia do assoalho pélvico",
-          "Indicações e contraindicações",
-          "Preparo e posicionamento do paciente",
-        ],
-      },
-      {
-        title: "Módulo 2: Técnica e Prática",
-        lessons: [
-          "Calibração e montagem do cateter",
-          "Realização do exame supervisionado",
-          "Protocolos de pressão e sensação retal",
-        ],
-      },
-      {
-        title: "Módulo 3: Interpretação e Laudos",
-        lessons: [
-          "Análise de traçados de alta resolução",
-          "Laudos comentados e diagnósticos diferenciais",
-          "Integração com outros exames funcionais",
-        ],
-      },
-    ],
-    includes: [
-      "12h de treinamento presencial supervisionado",
-      "Material didático digital",
-      "Acesso a atlas de laudos comentados",
-      "Certificado digital com QR Code",
-      "Coffee break",
-      "Grupo de suporte pós-curso",
-    ],
-  },
-  "testes-respiratorios": {
-    instructorBio:
-      "Dra. Vera Ângelo é diretora técnica da NU.V.E.M Medicina e referência nacional em motilidade digestiva e testes respiratórios. Especialista em Gastroenterologia pela UFMG, conduz pesquisa clínica aplicada em teste respiratório de hidrogênio e metano há mais de uma década.",
-    startDate: null,
-    objectives: [
-      "Dominar os novos protocolos de teste respiratório de hidrogênio e metano",
-      "Interpretar laudos com precisão e correlacionar com quadro clínico",
-      "Compreender e aplicar os últimos guidelines internacionais",
-      "Analisar casos clínicos desafiadores com raciocínio diagnóstico avançado",
-    ],
-    targetAudience: [
-      "Médicos gastroenterologistas",
-      "Clínicos gerais e internistas",
-      "Nutrólogos e nutricionistas clínicos",
-      "Profissionais de saúde com interesse em diagnóstico funcional digestivo",
-    ],
-    modules: [
-      {
-        title: "Teste Respiratório – Novos Protocolos",
-        lessons: [
-          "Introdução para prática de Teste Respiratório",
-          "Vivendo a experiência prática de exames",
-          "Interpretação de laudos realizados na prática",
-          "Desvendando novos Guidelines de Teste Respiratório",
-          "Casos clínicos desafiadores",
-        ],
-      },
-    ],
-    includes: [
-      "3h15min de aula gravada com acesso imediato",
-      "5 aulas práticas com casos clínicos reais",
-      "Certificado de participação com nota fiscal",
-      "Acesso ao conteúdo por tempo indeterminado",
-      "Material de apoio em PDF",
-    ],
-  },
-  "doencas-da-cavidade-oral-halimetria-e-sialometria": {
-    instructorBio:
-      "Dr. Wanderley Bertoni é gastroenterologista formado pela UFRJ e Professor da Faculdade de Medicina da FAMINAS-Muriaé. Especialista em Gastroenterologia pela FBG, Especialista em Endoscopia Digestiva Alta e Titular da SOBED. CRM-MG 26967 · RQE 24610/38052.",
-    startDate: null,
-    objectives: [
-      "Diagnosticar e tratar candidose oral, úlceras aftosas e lesões brancas",
-      "Identificar manifestações orais de doenças sistêmicas",
-      "Realizar e interpretar halimetria na prática clínica",
-      "Avaliar e manejar xerostomia e halitose com protocolos atualizados",
-      "Realizar sialometria e interpretar o fluxo salivar estimulado e não estimulado",
-    ],
-    targetAudience: [
-      "Médicos gastroenterologistas e clínicos gerais",
-      "Dentistas e cirurgiões bucomaxilofaciais",
-      "Otorrinolaringologistas",
-      "Estudantes de medicina e odontologia (último ano)",
-    ],
-    modules: [
-      {
-        title: "Módulo 1: Fundamentos e Diagnóstico da Cavidade Oral",
-        lessons: [
-          "Anatomia e semiologia da cavidade oral",
-          "Candidose oral: diagnóstico e tratamento",
-          "Úlceras aftosas recorrentes e lesões brancas",
-          "Manifestações orais de doenças sistêmicas",
-        ],
-      },
-      {
-        title: "Módulo 2: Halimetria, Sialometria e Manejo Clínico",
-        lessons: [
-          "Halitose: etiologia, avaliação e protocolos de tratamento",
-          "Halimetria: técnica e interpretação clínica",
-          "Xerostomia: diagnóstico diferencial e manejo",
-          "Sialometria: fluxo salivar estimulado e não estimulado",
-        ],
-      },
-    ],
-    includes: [
-      "3h de aula gravada com acesso imediato",
-      "Ministrado por Dr. Wanderley Bertoni",
-      "Certificado de conclusão",
-      "Nota fiscal para declaração de imposto de renda",
-      "Acesso ao conteúdo por tempo indeterminado",
-    ],
-  },
-  "testes-respiratorios-h2-ch4-h2s-junho": {
-    instructorBio:
-      "Dra. Vera Ângelo é diretora técnica da NU.V.E.M Medicina e referência nacional em motilidade digestiva e testes respiratórios. Mestre e Doutora em Patologia pela UFMG, pioneira na aplicação dos novos protocolos de H₂/CH₄/H₂S no Brasil e professora convidada do Albert Einstein.",
-    startDate: "19–20 de junho de 2026",
-    objectives: [
-      "Diagnosticar intolerâncias alimentares (lactose, frutose, frutanas, sacarose) com precisão",
-      "Identificar e diferenciar SIBO, IMO, LIBO e SIFO pelos critérios atualizados",
-      "Operar com autonomia os equipamentos Dynamed e Health Go",
-      "Elaborar e interpretar laudos de testes respiratórios de H₂, CH₄ e H₂S",
-      "Implantar ou aprimorar um serviço de testes respiratórios na sua clínica",
-      "Aplicar as atualizações do DDW 2026 na prática clínica",
-    ],
-    targetAudience: [
-      "Médicos que desejam implantar testes respiratórios na clínica",
-      "Gastroenterologistas e clínicos gerais",
-      "Nutrólogos e nutricionistas clínicos",
-      "Profissionais interessados em diagnóstico funcional digestivo",
-    ],
-    modules: [
-      {
-        title: "Dia 1 (19/06): Módulo Teórico · 14h–18h",
-        lessons: [
-          "Intolerâncias alimentares: lactose, frutose, frutanas e sacarose",
-          "SIBO, IMO, LIBO e SIFO: diagnóstico e critérios atualizados",
-          "Atualizações DDW 2026: novos protocolos e guidelines",
-        ],
-      },
-      {
-        title: "Dia 2 (20/06): Teoria + Prática Supervisionada · 8h–17h30",
-        lessons: [
-          "Como estruturar e implantar um serviço de testes respiratórios",
-          "Prática supervisionada: equipamento Dynamed",
-          "Prática supervisionada: equipamento Health Go",
-          "Elaboração e interpretação de laudos, casos reais",
-        ],
-      },
-    ],
-    includes: [
-      "8h de treinamento teórico-prático (19 e 20 de junho de 2026)",
-      "Prática supervisionada com equipamentos Dynamed e Health Go",
-      "Material didático completo",
-      "Coffee break e almoço incluídos",
-      "Certificado de conclusão",
-      "Atualizações DDW 2026",
-    ],
-  },
-  "desvendando-a-constipacao-intestinal": {
-    instructorBio:
-      "Dra. Eliane Basques é cirurgiã pediátrica da FHEMIG e sócia proprietária da NU.V.E.M Medicina. Especialista em manometria anorretal de alta resolução e distúrbios funcionais do assoalho pélvico, apresenta uma abordagem completa e baseada em evidências para o diagnóstico da constipação intestinal.",
-    startDate: null,
-    objectives: [
-      "Aplicar corretamente os critérios Roma IV no diagnóstico da constipação",
-      "Interpretar o tempo de trânsito colônico e seus padrões",
-      "Correlacionar achados de manometria anorretal com o quadro clínico",
-      "Elaborar planos de tratamento individualizados baseados nos exames",
-      "Diferenciar constipação funcional de dissinergias do assoalho pélvico",
-    ],
-    targetAudience: [
-      "Gastroenterologistas e coloproctologistas",
-      "Clínicos gerais e internistas",
-      "Fisioterapeutas pélvicos",
-      "Médicos em formação com interesse em funcional digestiva",
-    ],
-    modules: [
-      {
-        title: "Desvendando a Constipação Intestinal",
-        lessons: [
-          "Classificação Roma IV: critérios diagnósticos atualizados",
-          "Tempo de trânsito colônico: como solicitar e interpretar",
-          "Manometria anorretal na constipação: padrões e achados",
-          "Correlação clínica e plano de tratamento individualizado",
-        ],
-      },
-    ],
-    includes: [
-      "3h de aula gravada com acesso imediato",
-      "Ministrado por Dra. Eliane Basques",
-      "Certificado de participação",
-      "Nota fiscal para declaração de imposto de renda",
-      "Acesso ao conteúdo por tempo indeterminado",
-    ],
-  },
-  "fisioterapia-respiratoria": {
-    instructorBio:
-      "Dra. Karol Rocha é fisioterapeuta formada pela PUC-MG, mestre em Ciências da Reabilitação pela UNIFAL-MG e doutoranda pela UNICAMP. Especializada no tratamento de disfunções do assoalho pélvico, alia rigor científico e experiência clínica para oferecer formação de alto nível a profissionais de saúde.",
-    startDate: "17–19 de junho de 2026",
-    objectives: [
-      "Dominar a anatomia detalhada e a biomecânica do assoalho pélvico",
-      "Realizar avaliação clínica e instrumental com assertividade",
-      "Aplicar estratégias terapêuticas baseadas em evidências atuais",
-      "Analisar casos clínicos reais e discutir atualizações de protocolo",
-      "Executar práticas clínicas supervisionadas com autonomia",
-    ],
-    targetAudience: [
-      "Fisioterapeutas que atuam ou desejam atuar com assoalho pélvico",
-      "Profissionais de saúde com interesse em reabilitação pélvica",
-      "Fisioterapeutas em busca de especialização prática e científica",
-    ],
-    modules: [
-      {
-        title: "Módulo 1: Anatomia e Biomecânica",
-        lessons: [
-          "Anatomia detalhada do assoalho pélvico",
-          "Biomecânica e fisiologia pélvica",
-          "Fisiopatologia das disfunções mais prevalentes",
-        ],
-      },
-      {
-        title: "Módulo 2: Avaliação Clínica e Instrumental",
-        lessons: [
-          "Anamnese e exame físico especializado",
-          "Avaliação instrumental do assoalho pélvico",
-          "Interpretação de achados e diagnóstico funcional",
-        ],
-      },
-      {
-        title: "Módulo 3: Estratégias Terapêuticas",
-        lessons: [
-          "Técnicas de reabilitação baseadas em evidências",
-          "Protocolos para incontinência urinária e fecal",
-          "Abordagem das disfunções sexuais femininas",
-        ],
-      },
-      {
-        title: "Módulo 4: Casos Clínicos e Protocolos",
-        lessons: [
-          "Discussão de casos clínicos reais",
-          "Atualizações de protocolo e guidelines internacionais",
-          "Documentação e laudo clínico",
-        ],
-      },
-      {
-        title: "Módulo 5: Prática Supervisionada",
-        lessons: [
-          "Atendimento supervisionado em ambiente clínico",
-          "Execução de técnicas sob supervisão direta",
-          "Feedback individualizado e plano de desenvolvimento",
-        ],
-      },
-    ],
-    includes: [
-      "30h de treinamento teórico-prático (17 a 19 de junho de 2026)",
-      "Turmas com no máximo 2 alunos por data, com atenção individualizada",
-      "Certificado de conclusão",
-      "Material de apoio digital",
-      "Suporte pós-curso",
-    ],
-  },
-};
 
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
@@ -469,6 +98,10 @@ export default async function CoursePage({ params }: Props) {
     include: {
       instructor: { include: { user: true } },
       tags: { include: { tag: true } },
+      modules: {
+        orderBy: { order: "asc" },
+        include: { lessons: { orderBy: { order: "asc" }, select: { title: true, id: true } } },
+      },
     },
   });
 
@@ -488,19 +121,15 @@ export default async function CoursePage({ params }: Props) {
     : false;
 
   const lc = localizedCourse(course, locale);
-  const staticFb = staticContent[slug] ?? null;
-
-  // DB tem prioridade; fallback para o conteúdo estático existente
   const splitLines = (s: string | null | undefined) =>
     s ? s.split("\n").map((l) => l.trim()).filter(Boolean) : null;
 
   const content = {
-    startDate:      course.startDateLabel ?? staticFb?.startDate ?? null,
-    objectives:     splitLines(course.objectives)    ?? staticFb?.objectives    ?? null,
-    targetAudience: splitLines(course.targetAudience)?? staticFb?.targetAudience?? null,
-    includes:       splitLines(course.includes)      ?? staticFb?.includes      ?? null,
-    modules:        staticFb?.modules ?? null,       // módulos/aulas vêm do DB (modules do curso) ou do estático
-    instructorBio:  course.instructor.bio            ?? staticFb?.instructorBio ?? null,
+    startDate:      course.startDateLabel ?? null,
+    objectives:     splitLines(course.objectives)     ?? null,
+    targetAudience: splitLines(course.targetAudience) ?? null,
+    includes:       splitLines(course.includes)       ?? null,
+    instructorBio:  course.instructor.bio             ?? null,
   };
 
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br";
@@ -735,15 +364,15 @@ export default async function CoursePage({ params }: Props) {
           )}
 
           {/* Ementa */}
-          {content.modules && (
+          {course.modules.length > 0 && (
             <section>
               <h2 className="font-serif text-2xl font-medium text-foreground mb-6">
                 {t("curriculum")}
               </h2>
               <div className="flex flex-col gap-3">
-                {content.modules.map((mod, i) => (
+                {course.modules.map((mod, i) => (
                   <details
-                    key={mod.title}
+                    key={mod.id}
                     className="group rounded-xl border border-border bg-surface overflow-hidden"
                     open={i === 0}
                   >
@@ -754,11 +383,11 @@ export default async function CoursePage({ params }: Props) {
                     <ul className="px-5 pb-4 flex flex-col gap-2 border-t border-border">
                       {mod.lessons.map((lesson) => (
                         <li
-                          key={lesson}
+                          key={lesson.id}
                           className="flex items-center gap-3 font-sans text-sm text-muted py-1.5"
                         >
                           <span className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0" />
-                          {lesson}
+                          {lesson.title}
                         </li>
                       ))}
                     </ul>
