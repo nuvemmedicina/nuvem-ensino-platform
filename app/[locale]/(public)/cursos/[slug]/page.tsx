@@ -225,10 +225,12 @@ export default async function CoursePage({ params }: Props) {
               </p>
 
               <div className="flex flex-wrap gap-6 text-white/70">
-                <span className="flex items-center gap-2 font-sans text-sm">
-                  <Clock className="w-4 h-4 text-accent/70" />
-                  {course.hours}{t("hours")}
-                </span>
+                {content.startDate && (
+                  <span className="flex items-center gap-2 font-sans text-sm">
+                    <Calendar className="w-4 h-4 text-accent/70" />
+                    {content.startDate}
+                  </span>
+                )}
                 {availableSeats !== null && (
                   <span className="flex items-center gap-2 font-sans text-sm">
                     <Users className="w-4 h-4 text-accent/70" />
@@ -241,12 +243,6 @@ export default async function CoursePage({ params }: Props) {
                   <span className="flex items-center gap-2 font-sans text-sm">
                     <MapPin className="w-4 h-4 text-accent/70" />
                     {course.location}
-                  </span>
-                )}
-                {content.startDate && (
-                  <span className="flex items-center gap-2 font-sans text-sm">
-                    <Calendar className="w-4 h-4 text-accent/70" />
-                    {content.startDate}
                   </span>
                 )}
               </div>
