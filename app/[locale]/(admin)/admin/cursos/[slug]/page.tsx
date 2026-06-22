@@ -108,6 +108,24 @@ export default async function AdminCursoEditPage({ params }: Props) {
           </div>
 
           <div>
+            <label className={labelClass}>Link (slug)</label>
+            <div className="flex items-center gap-0">
+              <span className="font-sans text-xs text-muted bg-border/40 border border-r-0 border-border rounded-l-lg px-3 py-2 whitespace-nowrap select-none">
+                nuvemensino.com.br/cursos/
+              </span>
+              <input
+                name="slug"
+                defaultValue={course.slug}
+                required
+                pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+                title="Apenas letras minúsculas, números e hífens"
+                className={`${inputClass} rounded-l-none`}
+              />
+            </div>
+            <p className="font-sans text-[10px] text-muted mt-1">Apenas letras minúsculas, números e hífens. Alterar invalida links existentes.</p>
+          </div>
+
+          <div>
             <label className={labelClass}>Descrição curta</label>
             <input name="shortDesc" defaultValue={course.shortDesc ?? ""} className={inputClass} />
           </div>

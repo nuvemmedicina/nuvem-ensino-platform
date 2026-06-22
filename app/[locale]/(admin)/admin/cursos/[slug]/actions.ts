@@ -15,16 +15,20 @@ export async function updateCourse(courseId: string, slug: string, formData: For
   await requireAdmin();
 
   const str = (key: string) => (formData.get(key) as string) || null;
+  const newSlug = (formData.get("slug") as string).trim() || slug;
+
+  if (newSlug !== slug) {
+    const conflict = await prisma.course.findUnique({ where: { slug: newSlug } });
+    if (conflict) throw new Error(`O slug "${newSlug}" já está em uso por outro curso.`);
+  }
 
   await prisma.course.update({
     where: { id: courseId },
     data: {
-      // PT-BR (authoritative)
       title:       formData.get("title") as string,
       shortDesc:   str("shortDesc"),
       description: formData.get("description") as string,
-
-      // Other fields
+      slug:        newSlug,
       price:       parseFloat(formData.get("price") as string),
       hours:       parseInt(formData.get("hours") as string),
       status:      formData.get("status") as "DRAFT" | "PUBLISHED" | "ARCHIVED",
@@ -37,9 +41,11 @@ export async function updateCourse(courseId: string, slug: string, formData: For
     },
   });
   revalidatePath(`/admin/cursos/${slug}`);
+  revalidatePath(`/admin/cursos/${newSlug}`);
   revalidatePath("/admin/cursos");
   revalidatePath(`/cursos/${slug}`);
-  redirect(`/admin/cursos/${slug}`);
+  revalidatePath(`/cursos/${newSlug}`);
+  redirect(`/admin/cursos/${newSlug}`);
 }
 
 export async function updateLesson(lessonId: string, courseSlug: string, formData: FormData) {
