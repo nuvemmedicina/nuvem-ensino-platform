@@ -169,3 +169,56 @@ export async function saveMuxAsset(lessonId: string, muxAssetId: string, courseS
   });
   revalidatePath(`/admin/cursos/${courseSlug}`);
 }
+
+export async function duplicateCourse(courseId: string) {
+  await requireAdmin();
+
+  const original = await prisma.course.findUniqueOrThrow({
+    where: { id: courseId },
+    include: {
+      modules: { include: { lessons: true }, orderBy: { order: "asc" } },
+    },
+  });
+
+  // Gera slug único: base-slug-cópia, base-slug-cópia-2, etc.
+  const baseSlug = `${original.slug}-copia`;
+  let candidateSlug = baseSlug;
+  let suffix = 2;
+  while (await prisma.course.findUnique({ where: { slug: candidateSlug } })) {
+    candidateSlug = `${baseSlug}-${suffix++}`;
+  }
+
+  const { id, slug, createdAt, updatedAt, modules, ...fields } = original;
+  void id; void slug; void createdAt; void updatedAt; void modules;
+
+  const duplicate = await prisma.course.create({
+    data: {
+      ...fields,
+      slug: candidateSlug,
+      title: `${original.title} (Cópia)`,
+      status: "DRAFT",
+      reservedSeats: 0,
+      startDate: null,
+      endDate: null,
+      modules: {
+        create: original.modules.map((mod) => ({
+          title: mod.title,
+          order: mod.order,
+          lessons: {
+            create: mod.lessons.map((lesson) => ({
+              title:     lesson.title,
+              order:     lesson.order,
+              type:      lesson.type,
+              videoUrl:  lesson.videoUrl,
+              duration:  lesson.duration,
+              isFree:    lesson.isFree,
+            })),
+          },
+        })),
+      },
+    },
+  });
+
+  revalidatePath("/admin/cursos");
+  redirect(`/admin/cursos/${duplicate.slug}`);
+}

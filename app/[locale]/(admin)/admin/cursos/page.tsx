@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { DeleteButton } from "./[slug]/DeleteButton";
-import { deleteCourse } from "./[slug]/actions";
+import { DuplicateButton } from "./[slug]/DuplicateButton";
+import { deleteCourse, duplicateCourse } from "./[slug]/actions";
 
 export default async function AdminCursosPage({
   params,
@@ -50,6 +51,7 @@ export default async function AdminCursosPage({
           const statusKey = course.status === "PUBLISHED" ? "statusPublished" : course.status === "ARCHIVED" ? "statusArchived" : "statusDraft";
           const statusColor = statusColors[course.status] ?? statusColors.DRAFT;
           const deleteAction = deleteCourse.bind(null, course.id);
+          const duplicateAction = duplicateCourse.bind(null, course.id);
           const hasEnrollments = course._count.enrollments > 0;
 
           return (
@@ -103,8 +105,12 @@ export default async function AdminCursosPage({
                 </div>
               </Link>
 
-              {/* Botão excluir — separado do Link para não conflitar com navegação */}
-              <div className="pr-4 shrink-0">
+              {/* Ações — separadas do Link para não conflitar com navegação */}
+              <div className="pr-4 shrink-0 flex items-center gap-1">
+                <DuplicateButton
+                  action={duplicateAction}
+                  className="p-2 rounded-lg text-muted/40 hover:text-accent hover:bg-accent/10 transition-colors"
+                />
                 <DeleteButton
                   action={deleteAction}
                   confirm={
