@@ -226,7 +226,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           {" "}Use o cupom{" "}
           <span className="font-mono font-bold tracking-widest bg-amber-950/15 px-2 py-0.5 rounded">DICI10</span>
           {" "}no checkout.{" "}
-          <Link href="/cursos/dici-neurogastroenterologia-2026" className="underline hover:no-underline">
+          <Link href={{ pathname: "/cursos/[slug]", params: { slug: "dici-neurogastroenterologia-2026" } }} className="underline hover:no-underline">
             Saiba mais →
           </Link>
         </p>
