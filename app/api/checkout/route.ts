@@ -144,7 +144,7 @@ export async function POST(req: Request) {
       value:             finalPrice,
       description:       `${dbCourse.title} — NU.V.E.M ENSINO`,
       externalReference: enrollment.id,
-      installmentCount:  method === "parcelado" ? Math.min(Math.max(Number(installments) || 3, 1), 3) : 1,
+      installmentCount:  method === "parcelado" ? Math.min(Math.max(Number(installments) || 1, 1), 10) : 1,
       successUrl:        `${appUrl}/dashboard/cursos/${courseSlug}?sucesso=1`,
     });
 

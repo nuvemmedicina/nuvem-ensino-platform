@@ -406,7 +406,7 @@ export default function CheckoutClient({
             {method === "parcelado" && (
               <div className="mt-4 bg-background rounded-xl p-4 font-sans text-sm text-muted">
                 <p className="font-semibold text-foreground mb-3">{t("installments")}</p>
-                {[1, 2, 3].map((n) => (
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
                   <button
                     key={n}
                     type="button"
