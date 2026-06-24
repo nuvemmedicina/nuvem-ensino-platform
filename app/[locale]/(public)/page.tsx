@@ -218,6 +218,20 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
       </section>
 
+      {/* ── Banner de lançamento DICI ────────────────────────────────────── */}
+      <div className="bg-gradient-to-r from-amber-500/90 via-yellow-400/90 to-amber-500/90 px-4 py-3 text-center">
+        <p className="font-sans text-sm font-semibold text-amber-950">
+          🎉 Lançamento — Curso de Aperfeiçoamento em DICI com{" "}
+          <span className="underline underline-offset-2">10% de desconto</span>.
+          {" "}Use o cupom{" "}
+          <span className="font-mono font-bold tracking-widest bg-amber-950/15 px-2 py-0.5 rounded">DICI10</span>
+          {" "}no checkout.{" "}
+          <Link href="/cursos/dici-neurogastroenterologia-2026" className="underline hover:no-underline">
+            Saiba mais →
+          </Link>
+        </p>
+      </div>
+
       {/* ── Stats strip ──────────────────────────────────────────────────── */}
       <div className="bg-canvas-card border-y border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-6 py-7 sm:py-8">
@@ -448,6 +462,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                       <span className="absolute bottom-3 left-4 font-sans text-[10px] font-bold uppercase tracking-widest text-accent bg-accent/15 backdrop-blur-sm px-2.5 py-1 rounded-full border border-accent/20">
                         Online
                       </span>
+                      {/* Badge promoção DICI */}
+                      {course.slug === "dici-neurogastroenterologia-2026" && (
+                        <span className="absolute top-3 right-3 w-11 h-11 rounded-full bg-amber-400 text-amber-950 font-sans font-black text-[13px] flex items-center justify-center shadow-lg border-2 border-amber-300 leading-none">
+                          10%
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex flex-col flex-1 p-5 gap-3">

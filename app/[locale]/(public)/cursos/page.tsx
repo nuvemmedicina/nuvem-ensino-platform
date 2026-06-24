@@ -289,6 +289,11 @@ export default async function CursosPage({
                         <span className="absolute bottom-3 left-4 font-sans text-[10px] font-semibold uppercase tracking-widest text-white bg-primary/80 px-2.5 py-1 rounded-full">
                           {categoryLabel(course.category)}
                         </span>
+                        {course.slug === "dici-neurogastroenterologia-2026" && (
+                          <span className="absolute top-3 right-3 w-11 h-11 rounded-full bg-amber-400 text-amber-950 font-sans font-black text-[13px] flex items-center justify-center shadow-lg border-2 border-amber-300 leading-none">
+                            10%
+                          </span>
+                        )}
                         {course.totalSeats && reservedPct > 0 && (
                           <span className="absolute bottom-3 right-4 font-sans text-[10px] font-semibold text-white/80">
                             {t("card.reserved", { pct: reservedPct })}
