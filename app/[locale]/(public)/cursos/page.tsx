@@ -80,7 +80,7 @@ export default async function CursosPage({
       instructor: { include: { user: true } },
       tags: { include: { tag: true } },
     },
-    orderBy: { createdAt: "asc" },
+    orderBy: { createdAt: "desc" },
   });
 
   // Data for filter options
