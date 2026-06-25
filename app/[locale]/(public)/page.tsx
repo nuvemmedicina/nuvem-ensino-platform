@@ -221,7 +221,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       {/* ── Banner de lançamento DICI ────────────────────────────────────── */}
       <div className="bg-gradient-to-r from-amber-500/90 via-yellow-400/90 to-amber-500/90 px-4 py-3 text-center">
         <p className="font-sans text-sm font-semibold text-amber-950">
-          🎉 Lançamento — Curso de Aperfeiçoamento em DICI com{" "}
+          🎯 1° Lote até 30/06/2026 — Curso de Aperfeiçoamento em DICI com{" "}
           <span className="underline underline-offset-2">10% de desconto</span>.
           {" "}Use o cupom{" "}
           <span className="font-mono font-bold tracking-widest bg-amber-950/15 px-2 py-0.5 rounded">DICI10</span>
