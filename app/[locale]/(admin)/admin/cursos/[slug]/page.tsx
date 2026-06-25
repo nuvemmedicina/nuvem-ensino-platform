@@ -14,6 +14,7 @@ import {
   createLesson,
   deleteLesson,
   deleteModule,
+  updateModuleReleaseDate,
 } from "./actions";
 import { ImageUploader } from "@/components/ImageUploader";
 import {
@@ -449,6 +450,11 @@ export default async function AdminCursoEditPage({ params }: Props) {
             const deleteModAction = deleteModule.bind(null, mod.id, slug);
             const createLessonAction = createLesson.bind(null, mod.id, slug);
 
+            const updateReleaseDateAction = updateModuleReleaseDate.bind(null, mod.id, slug);
+            const releaseDateValue = mod.releaseDate
+              ? new Date(mod.releaseDate).toISOString().slice(0, 16)
+              : "";
+
             return (
               <div key={mod.id} className="border border-border rounded-xl overflow-hidden">
                 {/* Module header */}
@@ -460,6 +466,22 @@ export default async function AdminCursoEditPage({ params }: Props) {
                     className={btnDanger}
                   />
                 </div>
+                {/* Release date (drip) */}
+                <form action={updateReleaseDateAction} className="flex items-center gap-2 px-4 py-2.5 bg-background/50 border-b border-border">
+                  <label className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted shrink-0">
+                    Liberar em
+                  </label>
+                  <input
+                    name="releaseDate"
+                    type="datetime-local"
+                    defaultValue={releaseDateValue}
+                    className={`${inputClass} text-xs flex-1`}
+                  />
+                  <button type="submit" className={btnGhost}>Salvar</button>
+                  {mod.releaseDate && new Date(mod.releaseDate) > new Date() && (
+                    <span className="font-sans text-[10px] text-amber-600 shrink-0">🔒 Bloqueado</span>
+                  )}
+                </form>
 
                 {/* Lessons */}
                 <div className="divide-y divide-border">
