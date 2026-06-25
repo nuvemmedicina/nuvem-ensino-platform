@@ -218,20 +218,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
       </section>
 
-      {/* ── Banner de lançamento DICI ────────────────────────────────────── */}
-      <div className="bg-gradient-to-r from-amber-500/90 via-yellow-400/90 to-amber-500/90 px-4 py-3 text-center">
-        <p className="font-sans text-sm font-semibold text-amber-950">
-          🎯 1° Lote até 30/06/2026 — Curso de Aperfeiçoamento em DICI com{" "}
-          <span className="underline underline-offset-2">10% de desconto</span>.
-          {" "}Use o cupom{" "}
-          <span className="font-mono font-bold tracking-widest bg-amber-950/15 px-2 py-0.5 rounded">DICI10</span>
-          {" "}no checkout.{" "}
-          <Link href={{ pathname: "/cursos/[slug]", params: { slug: "dici-neurogastroenterologia-2026" } }} className="underline hover:no-underline">
-            Saiba mais →
-          </Link>
-        </p>
-      </div>
-
       {/* ── Stats strip ──────────────────────────────────────────────────── */}
       <div className="bg-canvas-card border-y border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-6 py-7 sm:py-8">

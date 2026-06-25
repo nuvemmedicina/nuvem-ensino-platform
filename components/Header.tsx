@@ -9,8 +9,8 @@ import LocaleSwitcher from "@/components/LocaleSwitcher";
 type InternalHref = "/cursos" | "/sobre" | "/instrutores" | "/entrar" | "/cadastro" | "/faq" | "/";
 
 const internalLinks: { labelKey: "courses" | "about"; href: InternalHref }[] = [
-  { labelKey: "courses", href: "/cursos" },
   { labelKey: "about", href: "/sobre" },
+  { labelKey: "courses", href: "/cursos" },
 ];
 
 const externalLinks: { labelKey: "blog" | "nuchemMedicina"; href: string }[] = [
@@ -23,7 +23,23 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="w-full sticky top-0 z-50 border-b border-border" style={{ background: "rgba(255,255,255,0.85)", backdropFilter: "blur(16px)" }}>
+    <header className="w-full sticky top-0 z-50" style={{ backdropFilter: "blur(16px)" }}>
+      {/* ── Barra de anúncio ── */}
+      <div className="bg-amber-500 px-4 py-2 text-center">
+        <p className="font-sans text-xs font-semibold text-amber-950">
+          🎯 <span className="font-bold">1° Lote até 30/06/2026</span> — Curso DICI com 10% de desconto. Cupom{" "}
+          <span className="font-mono font-bold bg-amber-950/15 px-1.5 py-0.5 rounded tracking-widest">DICI10</span>
+          {" "}no checkout.{" "}
+          <Link
+            href={{ pathname: "/cursos/[slug]", params: { slug: "dici-neurogastroenterologia-2026" } }}
+            className="underline underline-offset-2 hover:no-underline"
+          >
+            Saiba mais →
+          </Link>
+        </p>
+      </div>
+
+      <div className="border-b border-border" style={{ background: "rgba(255,255,255,0.85)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="shrink-0 group">
@@ -83,6 +99,7 @@ export default function Header() {
             <span className={`block w-6 h-0.5 bg-foreground transition-transform ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
           </button>
         </div>
+      </div>
       </div>
 
       {menuOpen && (
