@@ -71,6 +71,8 @@ export async function POST(req: Request) {
         certificate_id: cert.id,
         total_lessons: totalLessons,
       });
+
+      return NextResponse.json({ ok: true, completed: true, courseCompleted: true, certificateId: cert.id });
     }
   }
 

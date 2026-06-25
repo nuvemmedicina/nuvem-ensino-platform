@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, Award, Video, ExternalLink, Calendar } from "lucide-react";
+import { ChevronLeft, Award, Video, ExternalLink, Calendar, BarChart2 } from "lucide-react";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import LessonPlayer from "./LessonPlayer";
@@ -154,15 +154,24 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
           </span>
         </div>
 
-        {enrollment.certificate && (
+        <div className="flex items-center gap-3">
           <Link
-            href={`/dashboard/certificados/${enrollment.certificate.id}`}
-            className="flex items-center gap-1.5 font-sans text-xs font-semibold text-amber-600 hover:text-amber-500 transition-colors"
+            href={`/dashboard/cursos/${slug}/resultado`}
+            className="flex items-center gap-1.5 font-sans text-xs font-semibold text-muted hover:text-foreground transition-colors"
           >
-            <Award className="w-4 h-4" />
-            {t("viewCertificate")}
+            <BarChart2 className="w-4 h-4" />
+            Desempenho
           </Link>
-        )}
+          {enrollment.certificate && (
+            <Link
+              href={`/dashboard/certificados/${enrollment.certificate.id}`}
+              className="flex items-center gap-1.5 font-sans text-xs font-semibold text-amber-600 hover:text-amber-500 transition-colors"
+            >
+              <Award className="w-4 h-4" />
+              {t("viewCertificate")}
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Sucesso após pagamento */}
@@ -270,12 +279,14 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
       ) : (
         <LessonPlayer
           courseId={course.id}
+          courseTitle={course.title}
           modules={course.modules}
           initialProgress={progressMap}
           initialLessonId={aula ?? null}
           initialNotes={notesMap}
           quizzes={quizzesMap}
           previousAttempts={previousAttemptsMap}
+          initialCertificateId={enrollment.certificate?.id ?? null}
         />
       )}
     </div>

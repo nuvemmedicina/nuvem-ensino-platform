@@ -2,7 +2,8 @@
 
 import { useState, useTransition, useEffect, useRef } from "react";
 import MuxPlayer from "@mux/mux-player-react";
-import { CheckCircle, Circle, PlayCircle, ChevronDown, ChevronRight, NotebookPen, Check, Lock } from "lucide-react";
+import { CheckCircle, Circle, PlayCircle, ChevronDown, ChevronRight, NotebookPen, Check, Lock, Award, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { saveNote } from "./noteActions";
 import QuizPanel from "./QuizPanel";
@@ -48,12 +49,14 @@ type QuizData = {
 
 type Props = {
   courseId: string;
+  courseTitle: string;
   modules: Module[];
   initialProgress: ProgressMap;
   initialLessonId: string | null;
   initialNotes: Record<string, string>;
   quizzes: Record<string, QuizData>;
   previousAttempts: Record<string, { score: number; total: number }>;
+  initialCertificateId: string | null;
 };
 
 function extractYoutubeId(url: string): string | null {
@@ -83,8 +86,9 @@ function formatReleaseDate(releaseDate: Date | string): string {
   return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "long", year: "numeric" }).format(new Date(releaseDate));
 }
 
-export default function LessonPlayer({ courseId, modules, initialProgress, initialLessonId, initialNotes, quizzes, previousAttempts }: Props) {
+export default function LessonPlayer({ courseId, courseTitle, modules, initialProgress, initialLessonId, initialNotes, quizzes, previousAttempts, initialCertificateId }: Props) {
   const t = useTranslations("dashboard.courses");
+  const router = useRouter();
 
   const allLessons = modules.flatMap((m) => (isModuleLocked(m) ? [] : m.lessons));
   const firstLesson = allLessons[0] ?? null;
@@ -100,6 +104,8 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
     return initial;
   });
   const [isPending, startTransition] = useTransition();
+  const [certificateId, setCertificateId] = useState<string | null>(initialCertificateId);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   // ── Notepad ──────────────────────────────────────────────────────────────
   const [notes, setNotes] = useState<Record<string, string>>(initialNotes);
@@ -146,7 +152,13 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
         body: JSON.stringify({ lessonId: lesson.id, courseId, completed }),
       });
       if (res.ok) {
+        const data = await res.json();
         setProgress((prev) => ({ ...prev, [lesson.id]: completed }));
+        if (data.courseCompleted && data.certificateId) {
+          setCertificateId(data.certificateId);
+          setShowCelebration(true);
+          return;
+        }
         if (completed) {
           const idx = allLessons.findIndex((l) => l.id === lesson.id);
           if (idx !== -1 && idx < allLessons.length - 1) {
@@ -167,6 +179,64 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
   // Decide qual player usar: Mux tem prioridade sobre YouTube
   const hasMux = Boolean(currentLesson?.muxPlaybackId);
   const youtubeId = !hasMux && currentLesson?.videoUrl ? extractYoutubeId(currentLesson.videoUrl) : null;
+
+  if (showCelebration) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+        <div className="relative w-full max-w-lg bg-surface border border-border rounded-3xl p-8 text-center shadow-2xl">
+          {/* Stars decoration */}
+          <div className="flex justify-center gap-1 mb-4">
+            {[0,1,2,3,4].map((i) => (
+              <Star key={i} className="w-5 h-5 text-amber-400 fill-amber-400" />
+            ))}
+          </div>
+
+          <div className="w-20 h-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
+            <Award className="w-10 h-10 text-primary" />
+          </div>
+
+          <h2 className="font-serif text-2xl font-medium text-foreground mb-2">
+            Parabéns! Curso concluído.
+          </h2>
+          <p className="font-sans text-sm text-muted mb-1">
+            Você completou todas as aulas de
+          </p>
+          <p className="font-sans text-sm font-semibold text-foreground mb-6">
+            {courseTitle}
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            {certificateId && (
+              <a
+                href={`/api/certificates/${certificateId}/pdf`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 font-sans text-sm font-semibold px-6 py-3 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
+              >
+                <Award className="w-4 h-4" />
+                Baixar certificado
+              </a>
+            )}
+            <button
+              onClick={() => setShowCelebration(false)}
+              className="inline-flex items-center justify-center font-sans text-sm text-muted hover:text-foreground px-6 py-3 rounded-full border border-border transition-colors"
+            >
+              Continuar no curso
+            </button>
+          </div>
+
+          {certificateId && (
+            <p className="font-sans text-[10px] text-muted mt-5">
+              Seu certificado também está disponível em{" "}
+              <button onClick={() => router.push("/dashboard/certificados")} className="underline hover:no-underline">
+                Meus certificados
+              </button>
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col lg:flex-row gap-0 min-h-[calc(100vh-4rem)]">
