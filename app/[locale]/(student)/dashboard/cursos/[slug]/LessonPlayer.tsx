@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect, useRef } from "react";
 import MuxPlayer from "@mux/mux-player-react";
-import { CheckCircle, Circle, PlayCircle, ChevronDown, ChevronRight, NotebookPen, Check } from "lucide-react";
+import { CheckCircle, Circle, PlayCircle, ChevronDown, ChevronRight, NotebookPen, Check, Lock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { saveNote } from "./noteActions";
 import QuizPanel from "./QuizPanel";
@@ -21,6 +21,7 @@ type Module = {
   id: string;
   title: string;
   order: number;
+  releaseDate: Date | string | null;
   lessons: Lesson[];
 };
 
@@ -73,13 +74,24 @@ function formatDuration(mins: number): string {
   return `${Math.floor(mins / 60)}h${mins % 60 > 0 ? ` ${mins % 60}min` : ""}`;
 }
 
+function isModuleLocked(mod: Module): boolean {
+  if (!mod.releaseDate) return false;
+  return new Date(mod.releaseDate) > new Date();
+}
+
+function formatReleaseDate(releaseDate: Date | string): string {
+  return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "long", year: "numeric" }).format(new Date(releaseDate));
+}
+
 export default function LessonPlayer({ courseId, modules, initialProgress, initialLessonId, initialNotes, quizzes, previousAttempts }: Props) {
   const t = useTranslations("dashboard.courses");
 
-  const allLessons = modules.flatMap((m) => m.lessons);
+  const allLessons = modules.flatMap((m) => (isModuleLocked(m) ? [] : m.lessons));
   const firstLesson = allLessons[0] ?? null;
+  const requestedLesson = initialLessonId ? modules.flatMap((m) => m.lessons).find((l) => l.id === initialLessonId) ?? null : null;
+  const requestedModule = requestedLesson ? modules.find((m) => m.lessons.some((l) => l.id === requestedLesson.id)) : null;
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(
-    initialLessonId ? (allLessons.find((l) => l.id === initialLessonId) ?? firstLesson) : firstLesson
+    requestedLesson && requestedModule && !isModuleLocked(requestedModule) ? requestedLesson : firstLesson
   );
   const [progress, setProgress] = useState<ProgressMap>(initialProgress);
   const [openModules, setOpenModules] = useState<Record<string, boolean>>(() => {
@@ -317,67 +329,79 @@ export default function LessonPlayer({ courseId, modules, initialProgress, initi
         </div>
 
         <div className="flex flex-col">
-          {modules.map((mod) => (
-            <div key={mod.id} className="border-b border-border">
-              <button
-                onClick={() => toggleModule(mod.id)}
-                className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-background transition-colors"
-              >
-                <span className="font-sans text-xs font-semibold text-foreground pr-2 leading-snug">
-                  {mod.title}
-                </span>
-                <ChevronDown
-                  className={`w-4 h-4 text-muted shrink-0 transition-transform ${openModules[mod.id] ? "rotate-180" : ""}`}
-                />
-              </button>
+          {modules.map((mod) => {
+            const locked = isModuleLocked(mod);
+            return (
+              <div key={mod.id} className="border-b border-border">
+                <button
+                  onClick={() => !locked && toggleModule(mod.id)}
+                  className={`w-full flex items-center justify-between px-4 py-3 text-left transition-colors ${locked ? "cursor-default opacity-70" : "hover:bg-background"}`}
+                >
+                  <div className="flex items-center gap-2 flex-1 min-w-0 pr-2">
+                    {locked && <Lock className="w-3.5 h-3.5 text-muted shrink-0" />}
+                    <span className="font-sans text-xs font-semibold text-foreground leading-snug">
+                      {mod.title}
+                    </span>
+                  </div>
+                  {locked ? (
+                    <span className="font-sans text-[10px] text-muted shrink-0 whitespace-nowrap">
+                      {formatReleaseDate(mod.releaseDate!)}
+                    </span>
+                  ) : (
+                    <ChevronDown
+                      className={`w-4 h-4 text-muted shrink-0 transition-transform ${openModules[mod.id] ? "rotate-180" : ""}`}
+                    />
+                  )}
+                </button>
 
-              {openModules[mod.id] && (
-                <div className="pb-2">
-                  {mod.lessons.map((lesson) => {
-                    const isActive = lesson.id === currentLesson?.id;
-                    const isDone = progress[lesson.id];
+                {!locked && openModules[mod.id] && (
+                  <div className="pb-2">
+                    {mod.lessons.map((lesson) => {
+                      const isActive = lesson.id === currentLesson?.id;
+                      const isDone = progress[lesson.id];
 
-                    return (
-                      <button
-                        key={lesson.id}
-                        onClick={() => setCurrentLesson(lesson)}
-                        className={`w-full flex items-start gap-3 px-4 py-2.5 text-left transition-colors ${
-                          isActive
-                            ? "bg-primary/10 border-l-2 border-primary"
-                            : "hover:bg-background border-l-2 border-transparent"
-                        }`}
-                      >
-                        <div className="mt-0.5 shrink-0">
-                          {isDone ? (
-                            <CheckCircle className="w-4 h-4 text-green-500" />
-                          ) : isActive ? (
-                            <PlayCircle className="w-4 h-4 text-primary" />
-                          ) : (
-                            <Circle className="w-4 h-4 text-muted/40" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className={`font-sans text-xs leading-snug ${isActive ? "text-primary font-semibold" : "text-foreground"}`}>
-                            {lesson.title}
-                          </p>
-                          {lesson.duration && (
-                            <p className="font-sans text-[10px] text-muted mt-0.5">
-                              {formatDuration(lesson.duration)}
+                      return (
+                        <button
+                          key={lesson.id}
+                          onClick={() => setCurrentLesson(lesson)}
+                          className={`w-full flex items-start gap-3 px-4 py-2.5 text-left transition-colors ${
+                            isActive
+                              ? "bg-primary/10 border-l-2 border-primary"
+                              : "hover:bg-background border-l-2 border-transparent"
+                          }`}
+                        >
+                          <div className="mt-0.5 shrink-0">
+                            {isDone ? (
+                              <CheckCircle className="w-4 h-4 text-green-500" />
+                            ) : isActive ? (
+                              <PlayCircle className="w-4 h-4 text-primary" />
+                            ) : (
+                              <Circle className="w-4 h-4 text-muted/40" />
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className={`font-sans text-xs leading-snug ${isActive ? "text-primary font-semibold" : "text-foreground"}`}>
+                              {lesson.title}
                             </p>
+                            {lesson.duration && (
+                              <p className="font-sans text-[10px] text-muted mt-0.5">
+                                {formatDuration(lesson.duration)}
+                              </p>
+                            )}
+                          </div>
+                          {lesson.isFree && !isDone && (
+                            <span className="font-sans text-[9px] font-semibold uppercase tracking-wider text-accent bg-accent/10 px-1.5 py-0.5 rounded shrink-0">
+                              {t("free")}
+                            </span>
                           )}
-                        </div>
-                        {lesson.isFree && !isDone && (
-                          <span className="font-sans text-[9px] font-semibold uppercase tracking-wider text-accent bg-accent/10 px-1.5 py-0.5 rounded shrink-0">
-                            {t("free")}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          ))}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </aside>
     </div>
