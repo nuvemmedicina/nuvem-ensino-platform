@@ -287,6 +287,9 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
           quizzes={quizzesMap}
           previousAttempts={previousAttemptsMap}
           initialCertificateId={enrollment.certificate?.id ?? null}
+          currentUserId={session.user.id}
+          currentUserRole={(session.user as { role?: string }).role ?? "STUDENT"}
+          currentUserName={session.user.name ?? null}
         />
       )}
     </div>

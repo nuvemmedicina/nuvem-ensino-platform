@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { saveNote } from "./noteActions";
 import QuizPanel from "./QuizPanel";
+import CommentSection from "./CommentSection";
 
 type Lesson = {
   id: string;
@@ -57,6 +58,9 @@ type Props = {
   quizzes: Record<string, QuizData>;
   previousAttempts: Record<string, { score: number; total: number }>;
   initialCertificateId: string | null;
+  currentUserId: string;
+  currentUserRole: string;
+  currentUserName: string | null;
 };
 
 function extractYoutubeId(url: string): string | null {
@@ -86,7 +90,7 @@ function formatReleaseDate(releaseDate: Date | string): string {
   return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "long", year: "numeric" }).format(new Date(releaseDate));
 }
 
-export default function LessonPlayer({ courseId, courseTitle, modules, initialProgress, initialLessonId, initialNotes, quizzes, previousAttempts, initialCertificateId }: Props) {
+export default function LessonPlayer({ courseId, courseTitle, modules, initialProgress, initialLessonId, initialNotes, quizzes, previousAttempts, initialCertificateId, currentUserId, currentUserRole, currentUserName }: Props) {
   const t = useTranslations("dashboard.courses");
   const router = useRouter();
 
@@ -384,6 +388,16 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
               />
             </div>
           </div>
+        )}
+
+        {/* ── Comentários ── */}
+        {currentLesson && (
+          <CommentSection
+            lessonId={currentLesson.id}
+            currentUserId={currentUserId}
+            currentUserRole={currentUserRole}
+            currentUserName={currentUserName}
+          />
         )}
       </div>
 
