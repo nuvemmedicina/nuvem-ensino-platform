@@ -27,7 +27,6 @@ export async function GET() {
     "Certificado de Conclusão emitido pela FACOP — instituição credenciada pelo MEC",
     "Material complementar atualizado disponibilizado ao longo do curso",
     "Acesso à plataforma NU.V.E.M ENSINO durante todo o período do curso",
-    "⚠ Direitos autorais: é proibida a reprodução total ou parcial das aulas por qualquer meio ou processo. A violação constitui crime (Código Penal, art. 184 e Lei nº 9.610/98), sujeitando-se à busca, apreensão e indenizações.",
   ].join("\n");
 
   await prisma.course.update({
