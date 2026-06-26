@@ -10,6 +10,7 @@ import {
   updateCourseTranslations,
   updateCourseCoInstructor,
   updateLesson,
+  updateModule,
   createModule,
   createLesson,
   deleteLesson,
@@ -450,6 +451,7 @@ export default async function AdminCursoEditPage({ params }: Props) {
             const deleteModAction = deleteModule.bind(null, mod.id, slug);
             const createLessonAction = createLesson.bind(null, mod.id, slug);
 
+            const updateModuleAction = updateModule.bind(null, mod.id, slug);
             const updateReleaseDateAction = updateModuleReleaseDate.bind(null, mod.id, slug);
             const releaseDateValue = mod.releaseDate
               ? new Date(mod.releaseDate).toISOString().slice(0, 16)
@@ -458,8 +460,16 @@ export default async function AdminCursoEditPage({ params }: Props) {
             return (
               <div key={mod.id} className="border border-border rounded-xl overflow-hidden">
                 {/* Module header */}
-                <div className="flex items-center justify-between px-4 py-3 bg-background border-b border-border">
-                  <span className="font-sans text-sm font-semibold text-foreground">{mod.title}</span>
+                <div className="flex items-center gap-2 px-4 py-3 bg-background border-b border-border">
+                  <form action={updateModuleAction} className="flex items-center gap-2 flex-1 min-w-0">
+                    <input
+                      name="title"
+                      defaultValue={mod.title}
+                      required
+                      className={`${inputClass} text-sm font-semibold flex-1`}
+                    />
+                    <button type="submit" className={btnGhost}>Salvar</button>
+                  </form>
                   <DeleteButton
                     action={deleteModAction}
                     confirm={`Excluir módulo "${mod.title}" e todas as suas aulas?`}

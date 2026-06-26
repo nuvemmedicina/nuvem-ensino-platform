@@ -62,6 +62,15 @@ export async function updateLesson(lessonId: string, courseSlug: string, formDat
   revalidatePath(`/admin/cursos/${courseSlug}`);
 }
 
+export async function updateModule(moduleId: string, courseSlug: string, formData: FormData) {
+  await requireAdmin();
+  await prisma.module.update({
+    where: { id: moduleId },
+    data: { title: formData.get("title") as string },
+  });
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
 export async function createModule(courseId: string, courseSlug: string, formData: FormData) {
   await requireAdmin();
   const existing = await prisma.module.findMany({ where: { courseId }, select: { order: true } });
