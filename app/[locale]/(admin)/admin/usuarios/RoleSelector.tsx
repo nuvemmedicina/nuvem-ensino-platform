@@ -71,7 +71,7 @@ export function RoleSelector({
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full mt-1 z-20 bg-surface border border-border rounded-xl shadow-lg overflow-hidden min-w-[110px]">
+        <div className="absolute left-0 top-full mt-1 z-[9999] bg-surface border border-border rounded-xl shadow-lg overflow-hidden min-w-[110px]">
           {(["STUDENT", "INSTRUCTOR", "ADMIN"] as Role[]).map((r) => (
             <button
               key={r}
