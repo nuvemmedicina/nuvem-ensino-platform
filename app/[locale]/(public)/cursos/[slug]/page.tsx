@@ -647,7 +647,7 @@ export default async function CoursePage({ params }: Props) {
               },
               {
                 q: "Não consigo acessar minha conta ou redefinir a senha. O que faço?",
-                a: "Clique em "Esqueci minha senha" na tela de login. O e-mail de redefinição pode cair no spam — verifique essa pasta. Se o problema persistir, fale conosco pelo WhatsApp.",
+                a: "Clique em 'Esqueci minha senha' na tela de login. O e-mail de redefinição pode cair no spam — verifique essa pasta. Se o problema persistir, fale conosco pelo WhatsApp.",
               },
             ].map(({ q, a }) => (
               <details
