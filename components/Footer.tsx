@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link as LocaleLink } from "@/i18n/navigation";
+import { prisma } from "@/lib/prisma";
 
 const socialLinks = [
   {
@@ -45,19 +46,22 @@ const socialLinks = [
 ];
 
 export default async function Footer() {
-  const t = await getTranslations("footer");
+  const [t, dbCourses] = await Promise.all([
+    getTranslations("footer"),
+    prisma.course.findMany({
+      where: { status: "PUBLISHED" },
+      select: { title: true, slug: true, category: true },
+      orderBy: { createdAt: "asc" },
+    }),
+  ]);
 
-  const cursosPresenciais = [
-    { label: "Manometria, pHmetria e Impedância", href: "/cursos/manometria-phmetria-impedancia" },
-    { label: "Fisioterapia Pélvica", href: "/cursos/fisioterapia-respiratoria" },
-    { label: "Testes Respiratórios H₂/CH₄/H₂S", href: "/cursos/testes-respiratorios-h2-ch4-h2s-junho" },
-  ];
+  const cursosPresenciais = dbCourses
+    .filter((c) => c.category === "HANDS_ON" || c.category === "HYBRID")
+    .map((c) => ({ label: c.title, href: `/cursos/${c.slug}` }));
 
-  const cursosOnline = [
-    { label: "Testes Respiratórios", href: "/cursos/testes-respiratorios" },
-    { label: "Doenças da Cavidade Oral, Halimetria e Sialometria", href: "/cursos/doencas-da-cavidade-oral-halimetria-e-sialometria" },
-    { label: "Desvendando a Constipação Intestinal", href: "/cursos/desvendando-a-constipacao-intestinal" },
-  ];
+  const cursosOnline = dbCourses
+    .filter((c) => c.category === "ONLINE")
+    .map((c) => ({ label: c.title, href: `/cursos/${c.slug}` }));
 
   const plataformaLinks = [
     { label: t("links.about"), href: "/sobre" },
