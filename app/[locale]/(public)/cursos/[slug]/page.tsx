@@ -594,7 +594,7 @@ export default async function CoursePage({ params }: Props) {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* MEC */}
-            <div className="flex flex-col sm:flex-row items-center gap-6 rounded-2xl border border-white/15 bg-white/[0.06] backdrop-blur-sm p-8">
+            <div className="flex flex-col sm:flex-row items-center gap-6 rounded-2xl border border-white/15 bg-white/[0.06] backdrop-blur-sm p-8 transition-all duration-300 hover:bg-white/[0.11] hover:border-accent/30 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
               <Image
                 src="/selo-mec.svg"
                 alt="Reconhecido pelo MEC"
@@ -610,7 +610,7 @@ export default async function CoursePage({ params }: Props) {
               </div>
             </div>
             {/* ISO 9001 */}
-            <div className="flex flex-col sm:flex-row items-center gap-6 rounded-2xl border border-white/15 bg-white/[0.06] backdrop-blur-sm p-8">
+            <div className="flex flex-col sm:flex-row items-center gap-6 rounded-2xl border border-white/15 bg-white/[0.06] backdrop-blur-sm p-8 transition-all duration-300 hover:bg-white/[0.11] hover:border-accent/30 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
               <Image
                 src="/selo-iso.svg"
                 alt="Certificação ISO 9001"
