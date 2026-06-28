@@ -630,16 +630,9 @@ export default async function CoursePage({ params }: Props) {
       </section>
 
       {/* ── FAQ ── */}
-      <section className="relative py-16 px-4 overflow-hidden bg-canvas border-t border-white/[0.06]">
-        {/* Grid sutil */}
-        <div aria-hidden className="pointer-events-none absolute inset-0"
-          style={{
-            backgroundImage: `linear-gradient(rgba(203,228,230,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(203,228,230,0.012) 1px, transparent 1px)`,
-            backgroundSize: "48px 48px",
-          }}
-        />
-        <div className="relative max-w-3xl mx-auto">
-          <h2 className="font-serif text-2xl font-light text-white text-center mb-10">
+      <section className="py-16 px-4 bg-background">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="font-serif text-2xl font-medium text-foreground text-center mb-10">
             Perguntas Frequentes
           </h2>
           <div className="flex flex-col gap-3">
@@ -671,25 +664,25 @@ export default async function CoursePage({ params }: Props) {
             ].map(({ q, a }) => (
               <details
                 key={q}
-                className="group rounded-xl border border-white/15 bg-white/[0.06] overflow-hidden"
+                className="group rounded-xl border border-border bg-surface overflow-hidden"
               >
-                <summary className="flex items-center justify-between px-6 py-4 cursor-pointer list-none font-sans text-sm font-semibold text-white select-none gap-4">
+                <summary className="flex items-center justify-between px-6 py-4 cursor-pointer list-none font-sans text-sm font-semibold text-foreground select-none gap-4">
                   <span>{q}</span>
-                  <ChevronRight className="w-4 h-4 text-white/40 shrink-0 transition-transform group-open:rotate-90" />
+                  <ChevronRight className="w-4 h-4 text-muted shrink-0 transition-transform group-open:rotate-90" />
                 </summary>
-                <p className="px-6 pb-5 pt-1 font-sans text-sm text-white/60 leading-relaxed border-t border-white/10">
+                <p className="px-6 pb-5 pt-1 font-sans text-sm text-muted leading-relaxed border-t border-border">
                   {a}
                 </p>
               </details>
             ))}
           </div>
-          <p className="text-center mt-8 font-sans text-sm text-white/45">
+          <p className="text-center mt-8 font-sans text-sm text-muted">
             Ainda tem dúvidas?{" "}
             <a
               href="https://wa.me/5531972291029"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-accent font-semibold hover:text-accent-light transition-colors"
+              className="text-primary font-semibold hover:underline"
             >
               Fale conosco no WhatsApp
             </a>
