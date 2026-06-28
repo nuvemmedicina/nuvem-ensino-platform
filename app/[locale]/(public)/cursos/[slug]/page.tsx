@@ -574,8 +574,8 @@ export default async function CoursePage({ params }: Props) {
         </div>
       </div>
 
-      {/* ── Selos de qualidade ── */}
-      <section className="relative py-16 px-4 overflow-hidden bg-canvas">
+      {/* ── Selos de qualidade — apenas cursos com certificação FACOP/MEC ── */}
+      {course.showCertificationSeals && <section className="relative py-16 px-4 overflow-hidden bg-canvas">
         {/* Grid sutil */}
         <div aria-hidden className="pointer-events-none absolute inset-0"
           style={{
@@ -628,6 +628,8 @@ export default async function CoursePage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      }
 
       {/* ── FAQ ── */}
       <section className="py-16 px-4 bg-background">

@@ -202,6 +202,8 @@ model Course {
   shortDescEs    String?
   descriptionEs  String?   @db.Text
 
+  showCertificationSeals Boolean @default(false)  // exibe selos MEC/ISO na página do curso
+
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 

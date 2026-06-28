@@ -126,5 +126,20 @@ export async function GET() {
     results.push(`✗ LessonComment indexes: ${e}`);
   }
 
+  // ── Migração 3: showCertificationSeals no Course ────────────────────────
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "Course" ADD COLUMN IF NOT EXISTS "showCertificationSeals" BOOLEAN NOT NULL DEFAULT false`);
+    results.push("✓ Course.showCertificationSeals adicionado");
+  } catch (e) {
+    results.push(`✗ Course.showCertificationSeals: ${e}`);
+  }
+
+  try {
+    await prisma.$executeRawUnsafe(`UPDATE "Course" SET "showCertificationSeals" = true WHERE slug = 'dici-neurogastroenterologia-2026'`);
+    results.push("✓ Selos ativados para DICI");
+  } catch (e) {
+    results.push(`✗ UPDATE selos DICI: ${e}`);
+  }
+
   return NextResponse.json({ ok: true, results });
 }
