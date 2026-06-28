@@ -70,7 +70,7 @@ export default async function FaqPage({
               {t("sendEmail")}
             </a>
             <a
-              href="https://wa.me/5531997261029"
+              href="https://wa.me/5531972291029"
               target="_blank"
               rel="noopener noreferrer"
               className="font-sans text-sm font-semibold px-6 py-2.5 rounded-full border border-border text-foreground hover:border-primary/40 transition-colors"

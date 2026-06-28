@@ -305,7 +305,7 @@ export default async function CoursePage({ params }: Props) {
                   </Link>
                 )}
                 <a
-                  href="https://wa.me/5531997261029"
+                  href="https://wa.me/5531972291029"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full border border-white/20 text-white/80 hover:border-white/50 hover:text-white transition-all"
@@ -593,7 +593,7 @@ export default async function CoursePage({ params }: Props) {
               <div>
                 <p className="font-serif text-xl font-medium text-foreground mb-2">Reconhecido pelo MEC</p>
                 <p className="font-sans text-sm text-muted leading-relaxed">
-                  A NU.V.E.M ENSINO é reconhecida pelo Ministério da Educação para ofertar cursos presenciais e EAD, garantindo qualidade acadêmica e certificação válida em todo o território nacional.
+                  Os cursos da NU.V.E.M ENSINO são oferecidos em parceria com a <strong>Faculdade FACOP</strong>, reconhecida pelo Ministério da Educação (MEC) para oferta de cursos presenciais e EAD, garantindo qualidade acadêmica e certificação válida em todo o território nacional.
                 </p>
               </div>
             </div>
@@ -667,7 +667,7 @@ export default async function CoursePage({ params }: Props) {
           <p className="text-center mt-8 font-sans text-sm text-muted">
             Ainda tem dúvidas?{" "}
             <a
-              href="https://wa.me/5531997261029"
+              href="https://wa.me/5531972291029"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary font-semibold hover:underline"

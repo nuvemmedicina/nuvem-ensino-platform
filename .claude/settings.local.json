@@ -118,7 +118,10 @@
       "Bash(npx next *)",
       "Bash(Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue)",
       "Bash(Write-Host \"Cleaned .next\")",
-      "Bash(git rm *)"
+      "Bash(git rm *)",
+      "Bash(node proposta.js)",
+      "Bash(mkdir \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(student\\)\\\\dashboard\\\\cursos\\\\[slug]\\\\resultado\")",
+      "Bash(mkdir \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(admin\\)\\\\admin\\\\configuracoes\\\\run-migrations\")"
     ]
   }
 }
