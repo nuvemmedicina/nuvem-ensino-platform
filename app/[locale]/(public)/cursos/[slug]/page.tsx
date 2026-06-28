@@ -341,6 +341,7 @@ export default async function CoursePage({ params }: Props) {
       {/* ── Conteúdo principal ── */}
       <div className="max-w-5xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 items-start">
         <div className="space-y-14">
+
           {/* O que você vai aprender */}
           {content.objectives && (
             <section>
@@ -572,6 +573,110 @@ export default async function CoursePage({ params }: Props) {
           </div>
         </div>
       </div>
+
+      {/* ── Selos de qualidade ── */}
+      <section className="border-t border-border bg-surface py-16 px-4">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="font-serif text-2xl font-medium text-foreground text-center mb-10">
+            Qualidade e Reconhecimento
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* MEC */}
+            <div className="flex flex-col sm:flex-row items-center gap-6 rounded-2xl border border-border p-8">
+              <Image
+                src="/selo-mec-01.png"
+                alt="Reconhecido pelo MEC"
+                width={100}
+                height={100}
+                className="shrink-0 object-contain"
+              />
+              <div>
+                <p className="font-serif text-xl font-medium text-foreground mb-2">Reconhecido pelo MEC</p>
+                <p className="font-sans text-sm text-muted leading-relaxed">
+                  A NU.V.E.M ENSINO é reconhecida pelo Ministério da Educação para ofertar cursos presenciais e EAD, garantindo qualidade acadêmica e certificação válida em todo o território nacional.
+                </p>
+              </div>
+            </div>
+            {/* ISO 9001 */}
+            <div className="flex flex-col sm:flex-row items-center gap-6 rounded-2xl border border-border p-8">
+              <Image
+                src="/selo-iso-9001.png"
+                alt="Certificação ISO 9001"
+                width={100}
+                height={100}
+                className="shrink-0 object-contain"
+              />
+              <div>
+                <p className="font-serif text-xl font-medium text-foreground mb-2">Certificação ISO 9001</p>
+                <p className="font-sans text-sm text-muted leading-relaxed">
+                  Possuímos certificação internacional de qualidade ISO 9001, que atesta a excelência em nossos processos de gestão, metodologias de ensino e entrega de conteúdo.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section className="py-16 px-4 bg-background">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="font-serif text-2xl font-medium text-foreground text-center mb-10">
+            Perguntas Frequentes
+          </h2>
+          <div className="flex flex-col gap-3">
+            {[
+              {
+                q: "Terei acesso permanente às aulas após a exibição de cada módulo?",
+                a: "Sim! Após a liberação de cada módulo, você tem acesso permanente a todas as aulas. Assista quantas vezes quiser, no horário que preferir.",
+              },
+              {
+                q: "Os módulos são liberados todos de uma vez ou em datas diferentes?",
+                a: "Os módulos seguem um calendário de liberação progressiva (drip content). Cada módulo é disponibilizado na data programada, para que você acompanhe o conteúdo de forma estruturada. Após liberado, permanece acessível para sempre.",
+              },
+              {
+                q: "Posso assistir às aulas em qualquer horário?",
+                a: "Sim. Todo o conteúdo é 100% assíncrono e fica disponível 24h por dia. Você estuda no seu ritmo, sem horário fixo.",
+              },
+              {
+                q: "Haverá material de apoio ou apostilas?",
+                a: "Sim. Materiais complementares são disponibilizados dentro da plataforma ao longo do curso.",
+              },
+              {
+                q: "Sou aluno Nuvem. Como consigo meu desconto?",
+                a: "Alunos com matrícula ativa em outro curso da NU.V.E.M têm desconto especial. Entre em contato pelo WhatsApp para receber seu cupom personalizado.",
+              },
+              {
+                q: "Não consigo acessar minha conta ou redefinir a senha. O que faço?",
+                a: "Clique em "Esqueci minha senha" na tela de login. O e-mail de redefinição pode cair no spam — verifique essa pasta. Se o problema persistir, fale conosco pelo WhatsApp.",
+              },
+            ].map(({ q, a }) => (
+              <details
+                key={q}
+                className="group rounded-xl border border-border bg-surface overflow-hidden"
+              >
+                <summary className="flex items-center justify-between px-6 py-4 cursor-pointer list-none font-sans text-sm font-semibold text-foreground select-none gap-4">
+                  <span>{q}</span>
+                  <ChevronRight className="w-4 h-4 text-muted shrink-0 transition-transform group-open:rotate-90" />
+                </summary>
+                <p className="px-6 pb-5 pt-1 font-sans text-sm text-muted leading-relaxed border-t border-border">
+                  {a}
+                </p>
+              </details>
+            ))}
+          </div>
+          <p className="text-center mt-8 font-sans text-sm text-muted">
+            Ainda tem dúvidas?{" "}
+            <a
+              href="https://wa.me/5531997261029"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary font-semibold hover:underline"
+            >
+              Fale conosco no WhatsApp
+            </a>
+          </p>
+        </div>
+      </section>
     </div>
   );
 }
