@@ -638,7 +638,32 @@ export default async function CoursePage({ params }: Props) {
             Perguntas Frequentes
           </h2>
           <div className="flex flex-col gap-3">
-            {[
+            {(course.category === "HANDS_ON" || course.category === "HYBRID" ? [
+              {
+                q: "O material do curso é entregue na hora?",
+                a: "Sim! Todo o material didático — apostilas, protocolos e referências bibliográficas — é entregue presencialmente no dia do curso. Você sai com tudo em mãos.",
+              },
+              {
+                q: "O curso é totalmente prático?",
+                a: "Sim. Nossos cursos Hands-On são focados na prática clínica, com estações de treinamento supervisionadas por especialistas. A teoria é apresentada de forma objetiva para embasar a prática.",
+              },
+              {
+                q: "Preciso ter experiência prévia para participar?",
+                a: "Não é obrigatório. O curso é estruturado para atender desde profissionais iniciantes até experientes. O conteúdo é adaptado ao nível do grupo.",
+              },
+              {
+                q: "Receberei certificado de conclusão?",
+                a: "Sim. O certificado é emitido pela Faculdade FACOP, credenciada pelo MEC, com carga horária especificada. Você receberá por e-mail após o curso.",
+              },
+              {
+                q: "Sou aluno Nuvem. Como consigo meu desconto?",
+                a: "Alunos com matrícula ativa em outro curso da NU.V.E.M têm desconto especial. Entre em contato pelo WhatsApp para receber seu cupom personalizado.",
+              },
+              {
+                q: "Como funciona o credenciamento no dia do evento?",
+                a: "O credenciamento é feito na recepção do local a partir do horário indicado na confirmação de inscrição. Apresente seu documento de identidade e o comprovante de inscrição.",
+              },
+            ] : [
               {
                 q: "Terei acesso permanente às aulas após a exibição de cada módulo?",
                 a: "Sim! Após a liberação de cada módulo, você tem acesso permanente a todas as aulas. Assista quantas vezes quiser, no horário que preferir.",
@@ -663,7 +688,7 @@ export default async function CoursePage({ params }: Props) {
                 q: "Não consigo acessar minha conta ou redefinir a senha. O que faço?",
                 a: "Clique em 'Esqueci minha senha' na tela de login. O e-mail de redefinição pode cair no spam — verifique essa pasta. Se o problema persistir, fale conosco pelo WhatsApp.",
               },
-            ].map(({ q, a }) => (
+            ]).map(({ q, a }) => (
               <details
                 key={q}
                 className="group rounded-xl border border-border bg-surface overflow-hidden"
