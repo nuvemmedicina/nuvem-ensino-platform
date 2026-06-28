@@ -584,10 +584,10 @@ export default async function CoursePage({ params }: Props) {
             {/* MEC */}
             <div className="flex flex-col sm:flex-row items-center gap-6 rounded-2xl border border-border p-8">
               <Image
-                src="/selo-mec-01.png"
+                src="/selo-mec.svg"
                 alt="Reconhecido pelo MEC"
-                width={100}
-                height={100}
+                width={110}
+                height={110}
                 className="shrink-0 object-contain"
               />
               <div>
@@ -600,10 +600,10 @@ export default async function CoursePage({ params }: Props) {
             {/* ISO 9001 */}
             <div className="flex flex-col sm:flex-row items-center gap-6 rounded-2xl border border-border p-8">
               <Image
-                src="/selo-iso-9001.png"
+                src="/selo-iso.svg"
                 alt="Certificação ISO 9001"
-                width={100}
-                height={100}
+                width={110}
+                height={110}
                 className="shrink-0 object-contain"
               />
               <div>
