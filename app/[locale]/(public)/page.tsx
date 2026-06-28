@@ -287,25 +287,44 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
       {/* ── Cursos Presenciais (Hands-On / Híbrido) ─────────────────────── */}
       {presentialCourses.length > 0 && (
-        <section className="bg-background py-4 pb-24 px-4">
-          <div className="max-w-5xl mx-auto">
+        <section className="bg-canvas py-24 px-4 relative overflow-hidden">
+          {/* Grid sutil — igual ao bloco online */}
+          <div aria-hidden className="pointer-events-none absolute inset-0"
+            style={{
+              backgroundImage: `linear-gradient(rgba(203,228,230,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(203,228,230,0.015) 1px, transparent 1px)`,
+              backgroundSize: "48px 48px",
+            }}
+          />
+          {/* Logo marca d'água no fundo */}
+          <div aria-hidden className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/3 opacity-[0.035] w-[500px]">
+            <Image src="/icone-nuvem.svg" alt="" width={500} height={356} className="w-full h-auto" />
+          </div>
+
+          <div className="max-w-5xl mx-auto relative">
+            {/* Header com glass card */}
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
               <div>
-                <h2 className="font-serif text-3xl sm:text-4xl font-light text-foreground mb-2">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-accent/15 border border-accent/20 flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 text-accent" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                    </svg>
+                  </div>
+                  <span className="font-sans text-xs font-semibold tracking-widest uppercase text-accent/70">Hands-On</span>
+                </div>
+                <h2 className="font-serif text-3xl sm:text-4xl font-light text-white mb-2">
                   {t("featured.title")}
                 </h2>
-                <p className="font-sans text-sm text-muted">{t("featured.subtitle")}</p>
+                <p className="font-sans text-sm text-white/45">{t("featured.subtitle")}</p>
               </div>
               <Link href="/cursos"
-                className="group inline-flex items-center gap-2 font-sans text-xs font-semibold text-primary hover:text-primary-light tracking-wider uppercase shrink-0 transition-colors">
+                className="group inline-flex items-center gap-2 font-sans text-xs font-semibold text-white/50 hover:text-white transition-colors shrink-0">
                 {t("featured.viewAll")}
-                <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1">
-                  <path fillRule="evenodd" d="M2 8a.5.5 0 01.5-.5h9.293L9.146 4.854a.5.5 0 11.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L11.793 8.5H2.5A.5.5 0 012 8z" />
-                </svg>
+                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {presentialCourses.map((course) => {
                 const price = Number(course.price);
                 const instructorName = course.instructor.user.name ?? "";
@@ -314,11 +333,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 const categoryLabel = course.category === "HANDS_ON" ? "Hands-On" : "Híbrido";
 
                 return (
-                  <div key={course.slug}
-                    className="shimmer-card group flex flex-col rounded-2xl bg-surface border border-border overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_16px_48px_rgba(0,71,94,0.15)] hover:border-primary/40">
+                  <Link key={course.slug}
+                    href={{ pathname: "/cursos/[slug]", params: { slug: course.slug } }}
+                    className="shimmer-card group flex flex-col rounded-2xl border border-white/15 bg-white/[0.08] hover:bg-white/[0.14] hover:border-accent/40 transition-all duration-300 hover:-translate-y-1.5 overflow-hidden">
 
                     {/* Imagem */}
-                    <div className="relative h-64 sm:h-56 overflow-hidden bg-surface">
+                    <div className="relative h-56 sm:h-48 overflow-hidden bg-canvas-card">
                       {thumb ? (
                         <Image
                           src={thumb}
@@ -330,46 +350,44 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                         />
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center"
-                          style={{ background: "linear-gradient(135deg, rgba(0,71,94,0.15) 0%, rgba(0,71,94,0.05) 100%)" }}>
-                          <svg viewBox="0 0 24 24" fill="none" className="w-12 h-12 text-primary/20" stroke="currentColor" strokeWidth={1}>
+                          style={{ background: "linear-gradient(135deg, rgba(203,228,230,0.08) 0%, rgba(203,228,230,0.02) 100%)" }}>
+                          <svg viewBox="0 0 24 24" fill="none" className="w-12 h-12 text-accent/20" stroke="currentColor" strokeWidth={1}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                           </svg>
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                      <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300" />
-                      <span className="absolute bottom-3 left-4 font-sans text-[10px] font-bold uppercase tracking-widest text-white/90 bg-primary/70 backdrop-blur-sm px-2.5 py-1 rounded-full border border-white/10 group-hover:bg-primary/90 transition-colors">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                      <span className="absolute bottom-3 left-4 font-sans text-[10px] font-bold uppercase tracking-widest text-accent bg-accent/15 backdrop-blur-sm px-2.5 py-1 rounded-full border border-accent/20">
                         {categoryLabel}
                       </span>
                     </div>
 
-                    <div className="flex flex-col flex-1 p-6 gap-4">
+                    <div className="flex flex-col flex-1 p-5 gap-3">
                       <div>
-                        <p className="font-sans text-[11px] text-muted/70 mb-1.5 tracking-wide">{instructorName}</p>
-                        <h3 className="font-serif text-xl font-medium text-foreground leading-snug group-hover:text-primary transition-colors duration-200">
+                        <p className="font-sans text-[11px] text-white/50 mb-1">{instructorName}</p>
+                        <h3 className="font-serif text-lg font-medium text-white leading-snug group-hover:text-accent transition-colors duration-200">
                           {course.title}
                         </h3>
                       </div>
 
-                      <p className="font-sans text-xs text-muted leading-relaxed flex-1 line-clamp-3">{desc}</p>
+                      <p className="font-sans text-xs text-white/55 leading-relaxed flex-1 line-clamp-2">{desc}</p>
 
-                      <div className="flex items-center justify-between pt-4 border-t border-border">
+                      <div className="flex items-center justify-between pt-3 border-t border-white/12">
                         <div>
-                          <span className="font-serif text-xl font-semibold text-primary">
+                          <span className="font-serif text-lg font-semibold text-white">
                             {price === 0 ? "Gratuito" : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(price)}
                           </span>
-                          <p className="font-sans text-[10px] text-muted/60 mt-0.5">
-                            {t("featured.training", { hours: String(course.hours) })}
-                          </p>
+                          <div className="flex items-center gap-1 mt-0.5">
+                            <Clock className="w-3 h-3 text-white/40" />
+                            <span className="font-sans text-[10px] text-white/45">{course.hours}h</span>
+                          </div>
                         </div>
-                        <Link
-                          href={{ pathname: "/cursos/[slug]", params: { slug: course.slug } }}
-                          className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-primary text-primary hover:bg-primary hover:text-white hover:shadow-[0_4px_14px_rgba(0,71,94,0.3)] transition-all duration-200">
+                        <span className="font-sans text-xs font-semibold px-3.5 py-1.5 rounded-full border border-accent/30 text-accent group-hover:bg-accent group-hover:text-accent-foreground group-hover:border-accent transition-all duration-200">
                           {t("featured.learnMore")}
-                        </Link>
+                        </span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
