@@ -51,16 +51,18 @@ export default async function Footer() {
     prisma.course.findMany({
       where: { status: "PUBLISHED" },
       select: { title: true, slug: true, category: true },
-      orderBy: { createdAt: "asc" },
+      orderBy: { createdAt: "desc" },
     }),
   ]);
 
   const cursosPresenciais = dbCourses
     .filter((c) => c.category === "HANDS_ON" || c.category === "HYBRID")
+    .slice(0, 3)
     .map((c) => ({ label: c.title, href: `/cursos/${c.slug}` }));
 
   const cursosOnline = dbCourses
     .filter((c) => c.category === "ONLINE")
+    .slice(0, 3)
     .map((c) => ({ label: c.title, href: `/cursos/${c.slug}` }));
 
   const plataformaLinks = [
