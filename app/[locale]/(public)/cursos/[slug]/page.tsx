@@ -575,40 +575,52 @@ export default async function CoursePage({ params }: Props) {
       </div>
 
       {/* ── Selos de qualidade ── */}
-      <section className="border-t border-border bg-surface py-16 px-4">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="font-serif text-2xl font-medium text-foreground text-center mb-10">
+      <section className="relative py-16 px-4 overflow-hidden bg-canvas">
+        {/* Grid sutil */}
+        <div aria-hidden className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: `linear-gradient(rgba(203,228,230,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(203,228,230,0.015) 1px, transparent 1px)`,
+            backgroundSize: "48px 48px",
+          }}
+        />
+        {/* Logo marca d'água */}
+        <div aria-hidden className="pointer-events-none absolute -right-16 top-1/2 -translate-y-1/2 opacity-[0.035] w-[400px] hidden sm:block">
+          <Image src="/icone-nuvem.svg" alt="" width={400} height={285} className="w-full h-auto" />
+        </div>
+
+        <div className="relative max-w-5xl mx-auto">
+          <h2 className="font-serif text-2xl font-light text-white text-center mb-10">
             Qualidade e Reconhecimento
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* MEC */}
-            <div className="flex flex-col sm:flex-row items-center gap-6 rounded-2xl border border-border p-8">
+            <div className="flex flex-col sm:flex-row items-center gap-6 rounded-2xl border border-white/15 bg-white/[0.06] backdrop-blur-sm p-8">
               <Image
                 src="/selo-mec.svg"
                 alt="Reconhecido pelo MEC"
                 width={110}
                 height={110}
-                className="shrink-0 object-contain"
+                className="shrink-0 object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
               />
               <div>
-                <p className="font-serif text-xl font-medium text-foreground mb-2">Reconhecido pelo MEC</p>
-                <p className="font-sans text-sm text-muted leading-relaxed">
-                  Os cursos da NU.V.E.M ENSINO são oferecidos em parceria com a <strong>Faculdade FACOP</strong>, reconhecida pelo Ministério da Educação (MEC) para oferta de cursos presenciais e EAD, garantindo qualidade acadêmica e certificação válida em todo o território nacional.
+                <p className="font-serif text-xl font-medium text-white mb-2">Reconhecido pelo MEC</p>
+                <p className="font-sans text-sm text-white/60 leading-relaxed">
+                  Os cursos da NU.V.E.M ENSINO são oferecidos em parceria com a <strong className="text-accent font-semibold">Faculdade FACOP</strong>, reconhecida pelo Ministério da Educação (MEC) para oferta de cursos presenciais e EAD, garantindo qualidade acadêmica e certificação válida em todo o território nacional.
                 </p>
               </div>
             </div>
             {/* ISO 9001 */}
-            <div className="flex flex-col sm:flex-row items-center gap-6 rounded-2xl border border-border p-8">
+            <div className="flex flex-col sm:flex-row items-center gap-6 rounded-2xl border border-white/15 bg-white/[0.06] backdrop-blur-sm p-8">
               <Image
                 src="/selo-iso.svg"
                 alt="Certificação ISO 9001"
                 width={110}
                 height={110}
-                className="shrink-0 object-contain"
+                className="shrink-0 object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
               />
               <div>
-                <p className="font-serif text-xl font-medium text-foreground mb-2">Certificação ISO 9001</p>
-                <p className="font-sans text-sm text-muted leading-relaxed">
+                <p className="font-serif text-xl font-medium text-white mb-2">Certificação ISO 9001</p>
+                <p className="font-sans text-sm text-white/60 leading-relaxed">
                   Possuímos certificação internacional de qualidade ISO 9001, que atesta a excelência em nossos processos de gestão, metodologias de ensino e entrega de conteúdo.
                 </p>
               </div>
@@ -618,9 +630,16 @@ export default async function CoursePage({ params }: Props) {
       </section>
 
       {/* ── FAQ ── */}
-      <section className="py-16 px-4 bg-background">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="font-serif text-2xl font-medium text-foreground text-center mb-10">
+      <section className="relative py-16 px-4 overflow-hidden bg-canvas border-t border-white/[0.06]">
+        {/* Grid sutil */}
+        <div aria-hidden className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: `linear-gradient(rgba(203,228,230,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(203,228,230,0.012) 1px, transparent 1px)`,
+            backgroundSize: "48px 48px",
+          }}
+        />
+        <div className="relative max-w-3xl mx-auto">
+          <h2 className="font-serif text-2xl font-light text-white text-center mb-10">
             Perguntas Frequentes
           </h2>
           <div className="flex flex-col gap-3">
@@ -652,25 +671,25 @@ export default async function CoursePage({ params }: Props) {
             ].map(({ q, a }) => (
               <details
                 key={q}
-                className="group rounded-xl border border-border bg-surface overflow-hidden"
+                className="group rounded-xl border border-white/15 bg-white/[0.06] overflow-hidden"
               >
-                <summary className="flex items-center justify-between px-6 py-4 cursor-pointer list-none font-sans text-sm font-semibold text-foreground select-none gap-4">
+                <summary className="flex items-center justify-between px-6 py-4 cursor-pointer list-none font-sans text-sm font-semibold text-white select-none gap-4">
                   <span>{q}</span>
-                  <ChevronRight className="w-4 h-4 text-muted shrink-0 transition-transform group-open:rotate-90" />
+                  <ChevronRight className="w-4 h-4 text-white/40 shrink-0 transition-transform group-open:rotate-90" />
                 </summary>
-                <p className="px-6 pb-5 pt-1 font-sans text-sm text-muted leading-relaxed border-t border-border">
+                <p className="px-6 pb-5 pt-1 font-sans text-sm text-white/60 leading-relaxed border-t border-white/10">
                   {a}
                 </p>
               </details>
             ))}
           </div>
-          <p className="text-center mt-8 font-sans text-sm text-muted">
+          <p className="text-center mt-8 font-sans text-sm text-white/45">
             Ainda tem dúvidas?{" "}
             <a
               href="https://wa.me/5531972291029"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary font-semibold hover:underline"
+              className="text-accent font-semibold hover:text-accent-light transition-colors"
             >
               Fale conosco no WhatsApp
             </a>
