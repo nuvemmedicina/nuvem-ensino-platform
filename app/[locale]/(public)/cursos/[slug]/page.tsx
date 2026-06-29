@@ -596,7 +596,7 @@ export default async function CoursePage({ params }: Props) {
             {/* MEC */}
             <div className="flex flex-col sm:flex-row items-center gap-6 rounded-2xl border border-white/15 bg-white/[0.06] backdrop-blur-sm p-8 transition-all duration-300 hover:bg-white/[0.11] hover:border-accent/30 hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
               <Image
-                src="/selo-mec.svg"
+                src="/selo-mec-nuvem.svg"
                 alt="Reconhecido pelo MEC"
                 width={110}
                 height={110}
