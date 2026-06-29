@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { CreditCard, QrCode, FileText, Loader2, Shield, CheckCircle, Zap, Copy, Check, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-type PaymentMethod = "stripe" | "pix" | "boleto" | "parcelado";
+type PaymentMethod = "pix" | "boleto" | "parcelado";
 
 type Props = {
   slug: string;
@@ -45,11 +45,6 @@ export default function CheckoutClient({
   const [installments, setInstallments] = useState(3);
 
   const methodLabels: Record<PaymentMethod, { label: string; desc: string; icon: React.ReactNode }> = {
-    stripe: {
-      label: t("methods.stripe.label"),
-      desc: t("methods.stripe.desc"),
-      icon: <CreditCard className="w-4 h-4" />,
-    },
     pix: {
       label: t("methods.pix.label"),
       desc: t("methods.pix.desc"),
