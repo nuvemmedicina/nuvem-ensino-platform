@@ -13,7 +13,7 @@ export default async function AdminMatriculasPage({
 
   const enrollments = await prisma.enrollment.findMany({
     include: {
-      user:   { select: { name: true, email: true } },
+      user:   { select: { name: true, email: true, phone: true } },
       course: { select: { title: true, slug: true, totalSeats: true } },
       _count: { select: { attendances: { where: { status: { in: ["PRESENT", "LATE"] } } } } },
       payments: { select: { id: true, status: true, method: true, amount: true }, orderBy: { createdAt: "desc" }, take: 1 },

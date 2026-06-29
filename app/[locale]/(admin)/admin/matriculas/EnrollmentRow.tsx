@@ -18,7 +18,7 @@ type Props = {
     id: string;
     status: string;
     enrolledAt: string;
-    user: { name: string | null; email: string };
+    user: { name: string | null; email: string; phone: string | null };
     course: { title: string; slug: string; totalSeats: number | null };
     _count: { attendances: number };
     payment: { status: string; method: string; amount: number } | null;
@@ -74,6 +74,11 @@ export function EnrollmentRow({ enrollment: e, dateLocale }: Props) {
       <td className="px-5 py-3.5">
         <p className="font-sans text-sm font-medium text-foreground">{e.user.name}</p>
         <p className="font-sans text-xs text-muted">{e.user.email}</p>
+        {e.user.phone && (
+          <a href={`tel:+55${e.user.phone.replace(/\D/g, "")}`} className="font-sans text-xs text-muted hover:text-primary transition-colors">
+            {e.user.phone}
+          </a>
+        )}
         {error && <p className="font-sans text-xs text-red-500 mt-1">{error}</p>}
       </td>
       <td className="px-5 py-3.5">
