@@ -16,6 +16,7 @@ export default async function AdminMatriculasPage({
       user:   { select: { name: true, email: true } },
       course: { select: { title: true, slug: true, totalSeats: true } },
       _count: { select: { attendances: { where: { status: { in: ["PRESENT", "LATE"] } } } } },
+      payments: { select: { id: true, status: true, method: true, amount: true }, orderBy: { createdAt: "desc" }, take: 1 },
     },
     orderBy: { enrolledAt: "desc" },
   });
@@ -38,6 +39,7 @@ export default async function AdminMatriculasPage({
                 <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">{t("colCourse")}</th>
                 <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden sm:table-cell">{t("colDate")}</th>
                 <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden md:table-cell">{t("colAttendances")}</th>
+                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden md:table-cell">Pagamento</th>
                 <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">{t("colStatus")}</th>
               </tr>
             </thead>
@@ -45,7 +47,13 @@ export default async function AdminMatriculasPage({
               {enrollments.map((e) => (
                 <EnrollmentRow
                   key={e.id}
-                  enrollment={{ ...e, enrolledAt: e.enrolledAt.toISOString() }}
+                  enrollment={{
+                    ...e,
+                    enrolledAt: e.enrolledAt.toISOString(),
+                    payment: e.payments[0]
+                      ? { status: e.payments[0].status, method: e.payments[0].method, amount: Number(e.payments[0].amount) }
+                      : null,
+                  }}
                   dateLocale={dateLocale}
                 />
               ))}

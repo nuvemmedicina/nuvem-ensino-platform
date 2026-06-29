@@ -4,6 +4,26 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
+export async function confirmPayment(enrollmentId: string) {
+  const session = await auth();
+  const role = (session?.user as { role?: string } | undefined)?.role;
+  if (role !== "ADMIN") throw new Error("Não autorizado.");
+
+  const payment = await prisma.payment.findFirst({
+    where: { enrollmentId, status: { not: "PAID" } },
+    orderBy: { createdAt: "desc" },
+  });
+  if (!payment) throw new Error("Nenhum pagamento pendente encontrado.");
+
+  await prisma.payment.update({
+    where: { id: payment.id },
+    data: { status: "PAID", paidAt: new Date() },
+  });
+
+  revalidatePath("/admin/matriculas");
+  revalidatePath("/admin");
+}
+
 export async function cancelEnrollment(enrollmentId: string) {
   const session = await auth();
   const role = (session?.user as { role?: string } | undefined)?.role;
