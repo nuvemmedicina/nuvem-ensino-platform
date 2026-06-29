@@ -27,11 +27,18 @@ export async function POST(req: Request) {
 
   // Validate coupon
   let discountPct = 0;
+  let appliedCoupon: { id: string; discountPct: number | null; maxUses: number | null; usesCount: number } | null = null;
   if (couponCode) {
     const coupon = await prisma.coupon.findFirst({
       where: { code: couponCode, active: true },
     });
-    if (coupon?.discountPct) discountPct = coupon.discountPct;
+    if (coupon) {
+      if (coupon.maxUses !== null && coupon.usesCount >= coupon.maxUses) {
+        return NextResponse.json({ error: "Cupom atingiu o limite de usos." }, { status: 400 });
+      }
+      if (coupon.discountPct) discountPct = coupon.discountPct;
+      appliedCoupon = coupon;
+    }
   }
 
   // Find course + reserve seat atomically
@@ -120,6 +127,13 @@ export async function POST(req: Request) {
       },
     });
 
+    if (appliedCoupon) {
+      await prisma.$transaction([
+        prisma.coupon.update({ where: { id: appliedCoupon.id }, data: { usesCount: { increment: 1 } } }),
+        prisma.couponUsage.create({ data: { couponId: appliedCoupon.id, courseId: dbCourse.id, userId: session.user.id } }),
+      ]);
+    }
+
     return NextResponse.json({ url: checkoutSession.url });
   }
 
@@ -162,6 +176,13 @@ export async function POST(req: Request) {
         asaasPaymentId: payment.id,
       },
     });
+
+    if (appliedCoupon) {
+      await prisma.$transaction([
+        prisma.coupon.update({ where: { id: appliedCoupon.id }, data: { usesCount: { increment: 1 } } }),
+        prisma.couponUsage.create({ data: { couponId: appliedCoupon.id, courseId: dbCourse.id, userId: session.user.id } }),
+      ]);
+    }
 
     // PIX: return QR code to show inline
     if (method === "pix") {

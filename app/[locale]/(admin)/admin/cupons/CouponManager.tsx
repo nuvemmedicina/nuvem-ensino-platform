@@ -1,8 +1,14 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight, X, Loader2, Check } from "lucide-react";
+import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight, X, Loader2, Check, ChevronDown } from "lucide-react";
 import { createCoupon, updateCoupon, toggleCoupon, deleteCoupon } from "./actions";
+
+type CouponUsage = {
+  courseTitle: string;
+  courseSlug: string;
+  usedAt: string;
+};
 
 type Coupon = {
   id: string;
@@ -14,6 +20,7 @@ type Coupon = {
   expiresAt: string | null;
   active: boolean;
   createdAt: string;
+  usages?: CouponUsage[];
 };
 
 type FormState = {
@@ -39,6 +46,7 @@ export default function CouponManager({ initialCoupons }: { initialCoupons: Coup
   const [isPending, startTransition] = useTransition();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const fmtBRL = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
@@ -153,7 +161,7 @@ export default function CouponManager({ initialCoupons }: { initialCoupons: Coup
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {coupons.map((c) => (
+                {coupons.map((c) => (<>
                   <tr key={c.id} className="hover:bg-background/50 transition-colors">
                     {/* Código */}
                     <td className="px-5 py-3.5">
@@ -173,10 +181,19 @@ export default function CouponManager({ initialCoupons }: { initialCoupons: Coup
 
                     {/* Usos */}
                     <td className="px-5 py-3.5 hidden sm:table-cell">
-                      <span className="font-sans text-sm text-muted">
-                        {c.usesCount}
-                        {c.maxUses !== null ? ` / ${c.maxUses}` : ""}
-                      </span>
+                      {c.usesCount > 0 ? (
+                        <button
+                          onClick={() => setExpandedId(expandedId === c.id ? null : c.id)}
+                          className="flex items-center gap-1 font-sans text-sm text-primary hover:underline"
+                        >
+                          {c.usesCount}{c.maxUses !== null ? ` / ${c.maxUses}` : ""}
+                          <ChevronDown className={`w-3.5 h-3.5 transition-transform ${expandedId === c.id ? "rotate-180" : ""}`} />
+                        </button>
+                      ) : (
+                        <span className="font-sans text-sm text-muted">
+                          0{c.maxUses !== null ? ` / ${c.maxUses}` : ""}
+                        </span>
+                      )}
                     </td>
 
                     {/* Validade */}
@@ -232,7 +249,22 @@ export default function CouponManager({ initialCoupons }: { initialCoupons: Coup
                       </div>
                     </td>
                   </tr>
-                ))}
+                  {expandedId === c.id && c.usages && c.usages.length > 0 && (
+                    <tr key={`${c.id}-detail`} className="bg-background/70">
+                      <td colSpan={6} className="px-5 py-3">
+                        <p className="font-sans text-xs font-semibold text-muted uppercase tracking-wider mb-2">Histórico de usos</p>
+                        <div className="flex flex-col gap-1.5">
+                          {c.usages.map((u, i) => (
+                            <div key={i} className="flex items-center justify-between text-xs font-sans text-muted">
+                              <span className="text-foreground">{u.courseTitle}</span>
+                              <span>{new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date(u.usedAt))}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </>))}
               </tbody>
             </table>
           </div>
