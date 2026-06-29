@@ -524,11 +524,12 @@ export default async function AdminCursoEditPage({ params }: Props) {
                                   name="duration"
                                   type="number"
                                   min="0"
-                                  defaultValue={lesson.duration ?? ""}
+                                  step="0.5"
+                                  defaultValue={lesson.duration != null ? lesson.duration / 60 : ""}
                                   placeholder="Duração"
                                   className={`${inputClass} text-xs`}
                                 />
-                                <span className="font-sans text-xs text-muted shrink-0">min</span>
+                                <span className="font-sans text-xs text-muted shrink-0">h</span>
                               </div>
                               <label className="flex items-center gap-2 font-sans text-xs text-muted cursor-pointer">
                                 <input

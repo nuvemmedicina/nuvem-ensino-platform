@@ -55,7 +55,7 @@ export async function updateLesson(lessonId: string, courseSlug: string, formDat
     data: {
       title:    formData.get("title") as string,
       videoUrl: (formData.get("videoUrl") as string) || null,
-      duration: formData.get("duration") ? parseInt(formData.get("duration") as string) : null,
+      duration: formData.get("duration") ? Math.round(parseFloat(formData.get("duration") as string) * 60) : null,
       isFree:   formData.get("isFree") === "on",
     },
   });
@@ -94,7 +94,7 @@ export async function createLesson(moduleId: string, courseSlug: string, formDat
       moduleId,
       title:    formData.get("title") as string,
       videoUrl: (formData.get("videoUrl") as string) || null,
-      duration: formData.get("duration") ? parseInt(formData.get("duration") as string) : null,
+      duration: formData.get("duration") ? Math.round(parseFloat(formData.get("duration") as string) * 60) : null,
       order:    maxOrder + 1,
       type:     "VIDEO",
     },
