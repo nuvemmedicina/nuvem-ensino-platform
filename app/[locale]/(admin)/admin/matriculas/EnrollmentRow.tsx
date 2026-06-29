@@ -16,6 +16,7 @@ const statusColors: Record<string, string> = {
 type Props = {
   enrollment: {
     id: string;
+    courseId: string;
     status: string;
     enrolledAt: string;
     user: { name: string | null; email: string; phone: string | null };

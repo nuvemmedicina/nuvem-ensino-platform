@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
-import { EnrollmentRow } from "./EnrollmentRow";
+import { EnrollmentTable } from "./EnrollmentTable";
 
 export default async function AdminMatriculasPage({
   params,
@@ -11,15 +11,31 @@ export default async function AdminMatriculasPage({
   const t = await getTranslations({ locale, namespace: "admin.enrollments" });
   const dateLocale = locale === "en" ? "en-US" : locale === "es" ? "es-ES" : "pt-BR";
 
-  const enrollments = await prisma.enrollment.findMany({
-    include: {
-      user:   { select: { name: true, email: true, phone: true } },
-      course: { select: { title: true, slug: true, totalSeats: true } },
-      _count: { select: { attendances: { where: { status: { in: ["PRESENT", "LATE"] } } } } },
-      payments: { select: { id: true, status: true, method: true, amount: true }, orderBy: { createdAt: "desc" }, take: 1 },
-    },
-    orderBy: { enrolledAt: "desc" },
-  });
+  const [enrollments, courses] = await Promise.all([
+    prisma.enrollment.findMany({
+      include: {
+        user:   { select: { name: true, email: true, phone: true } },
+        course: { select: { id: true, title: true, slug: true, totalSeats: true } },
+        _count: { select: { attendances: { where: { status: { in: ["PRESENT", "LATE"] } } } } },
+        payments: { select: { id: true, status: true, method: true, amount: true }, orderBy: { createdAt: "desc" }, take: 1 },
+      },
+      orderBy: { enrolledAt: "desc" },
+    }),
+    prisma.course.findMany({
+      where: { status: "PUBLISHED" },
+      select: { id: true, title: true },
+      orderBy: { title: "asc" },
+    }),
+  ]);
+
+  const serialized = enrollments.map((e) => ({
+    ...e,
+    courseId: e.course.id,
+    enrolledAt: e.enrolledAt.toISOString(),
+    payment: e.payments[0]
+      ? { status: e.payments[0].status, method: e.payments[0].method, amount: Number(e.payments[0].amount) }
+      : null,
+  }));
 
   return (
     <div>
@@ -31,35 +47,11 @@ export default async function AdminMatriculasPage({
       {enrollments.length === 0 ? (
         <p className="font-sans text-sm text-muted">{t("none")}</p>
       ) : (
-        <div className="bg-surface border border-border rounded-2xl overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-background">
-                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">{t("colStudent")}</th>
-                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">{t("colCourse")}</th>
-                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden sm:table-cell">{t("colDate")}</th>
-                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden md:table-cell">{t("colAttendances")}</th>
-                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden md:table-cell">Pagamento</th>
-                <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">{t("colStatus")}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {enrollments.map((e) => (
-                <EnrollmentRow
-                  key={e.id}
-                  enrollment={{
-                    ...e,
-                    enrolledAt: e.enrolledAt.toISOString(),
-                    payment: e.payments[0]
-                      ? { status: e.payments[0].status, method: e.payments[0].method, amount: Number(e.payments[0].amount) }
-                      : null,
-                  }}
-                  dateLocale={dateLocale}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <EnrollmentTable
+          enrollments={serialized}
+          dateLocale={dateLocale}
+          courses={courses}
+        />
       )}
     </div>
   );
