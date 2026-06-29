@@ -600,6 +600,7 @@ export default async function CoursePage({ params }: Props) {
                 alt="Reconhecido pelo MEC"
                 width={110}
                 height={110}
+                unoptimized
                 className="shrink-0 object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
               />
               <div>
