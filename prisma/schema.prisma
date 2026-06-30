@@ -203,6 +203,7 @@ model Course {
   descriptionEs  String?   @db.Text
 
   showCertificationSeals Boolean @default(false)  // exibe selos MEC/ISO na página do curso
+  faqJson        String?   @db.Text              // JSON: [{q,a}[]] — FAQ personalizado por curso
 
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt

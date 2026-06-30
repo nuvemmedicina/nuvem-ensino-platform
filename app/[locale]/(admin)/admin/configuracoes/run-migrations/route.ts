@@ -141,7 +141,15 @@ export async function GET() {
     results.push(`✗ UPDATE selos DICI: ${e}`);
   }
 
-  // ── Migração 4: corrigir reservedSeats negativos ────────────────────────
+  // ── Migração 4: faqJson no Course ───────────────────────────────────────
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "Course" ADD COLUMN IF NOT EXISTS "faqJson" TEXT`);
+    results.push("✓ Course.faqJson adicionado");
+  } catch (e) {
+    results.push(`✗ Course.faqJson: ${e}`);
+  }
+
+  // ── Migração 5: corrigir reservedSeats negativos ────────────────────────
   try {
     await prisma.$executeRawUnsafe(`UPDATE "Course" SET "reservedSeats" = 0 WHERE "reservedSeats" < 0`);
     results.push("✓ reservedSeats negativos corrigidos para 0");

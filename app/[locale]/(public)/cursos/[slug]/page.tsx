@@ -639,7 +639,9 @@ export default async function CoursePage({ params }: Props) {
             Perguntas Frequentes
           </h2>
           <div className="flex flex-col gap-3">
-            {(course.category === "HANDS_ON" || course.category === "HYBRID" ? [
+            {(course.faqJson
+              ? (JSON.parse(course.faqJson) as { q: string; a: string }[])
+              : course.category === "HANDS_ON" || course.category === "HYBRID" ? [
               {
                 q: "O material do curso é entregue na hora?",
                 a: "Sim! Todo o material didático — apostilas, protocolos e referências bibliográficas — é entregue presencialmente no dia do curso. Você sai com tudo em mãos.",
@@ -689,7 +691,8 @@ export default async function CoursePage({ params }: Props) {
                 q: "Não consigo acessar minha conta ou redefinir a senha. O que faço?",
                 a: "Clique em 'Esqueci minha senha' na tela de login. O e-mail de redefinição pode cair no spam — verifique essa pasta. Se o problema persistir, fale conosco pelo WhatsApp.",
               },
-            ]).map(({ q, a }) => (
+            ]
+            ).map(({ q, a }) => (
               <details
                 key={q}
                 className="group rounded-xl border border-border bg-surface overflow-hidden"

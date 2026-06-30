@@ -186,6 +186,20 @@ export async function updateCourseCoInstructor(courseId: string, slug: string, f
 }
 
 // Chamado pelo MuxUploader após upload concluído
+export async function updateCourseFaq(
+  courseId: string,
+  slug: string,
+  items: { q: string; a: string }[],
+) {
+  await requireAdmin();
+  await prisma.course.update({
+    where: { id: courseId },
+    data: { faqJson: JSON.stringify(items) },
+  });
+  revalidatePath(`/admin/cursos/${slug}`);
+  revalidatePath(`/cursos/${slug}`);
+}
+
 export async function saveMuxAsset(lessonId: string, muxAssetId: string, courseSlug: string) {
   await requireAdmin();
   await prisma.lesson.update({

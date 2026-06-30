@@ -17,6 +17,7 @@ import {
   deleteModule,
   updateModuleReleaseDate,
 } from "./actions";
+import { FaqEditor } from "./FaqEditor";
 import { ImageUploader } from "@/components/ImageUploader";
 import {
   createQuiz,
@@ -378,6 +379,21 @@ export default async function AdminCursoEditPage({ params }: Props) {
             <button type="submit" className={btnPrimary}>Salvar co-instrutor</button>
           </div>
         </form>
+      </section>
+
+      {/* ── FAQ personalizado ── */}
+      <section className="bg-surface border border-border rounded-2xl p-6 mb-6">
+        <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-1">
+          Perguntas Frequentes (FAQ)
+        </h2>
+        <p className="font-sans text-xs text-muted mb-5">
+          Personalize as perguntas exibidas na página pública deste curso. Deixe vazio para usar as perguntas padrão do tipo de curso.
+        </p>
+        <FaqEditor
+          courseId={course.id}
+          slug={course.slug}
+          initial={course.faqJson ? (JSON.parse(course.faqJson) as { q: string; a: string }[]) : []}
+        />
       </section>
 
       {/* ── Traduções ── */}
