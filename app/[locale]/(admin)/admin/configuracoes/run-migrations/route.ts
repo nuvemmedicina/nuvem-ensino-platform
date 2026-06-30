@@ -157,5 +157,32 @@ export async function GET() {
     results.push(`✗ fix reservedSeats: ${e}`);
   }
 
+  // ── Migração 6: colunas opcionais do Instructor ──────────────────────────
+  const instructorCols: [string, string][] = [
+    ["formation",    "TEXT"],
+    ["institution",  "TEXT"],
+    ["linkedin",     "TEXT"],
+    ["instagram",    "TEXT"],
+    ["lattes",       "TEXT"],
+    ["displayOrder", "INTEGER NOT NULL DEFAULT 99"],
+    ["bio",          "TEXT"],
+  ];
+  for (const [col, type] of instructorCols) {
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE "Instructor" ADD COLUMN IF NOT EXISTS "${col}" ${type}`);
+      results.push(`✓ Instructor.${col} adicionado`);
+    } catch (e) {
+      results.push(`✗ Instructor.${col}: ${e}`);
+    }
+  }
+
+  // ── Migração 7: description nas Lessons ─────────────────────────────────
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "Lesson" ADD COLUMN IF NOT EXISTS "description" TEXT`);
+    results.push("✓ Lesson.description adicionado");
+  } catch (e) {
+    results.push(`✗ Lesson.description: ${e}`);
+  }
+
   return NextResponse.json({ ok: true, results });
 }
