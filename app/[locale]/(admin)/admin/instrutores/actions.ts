@@ -66,21 +66,38 @@ export async function updateInstructor(instructorId: string, formData: FormData)
 
   const str = (key: string) => (formData.get(key) as string) || null;
 
-  await prisma.instructor.update({
+  const instructor = await prisma.instructor.findUnique({
     where: { id: instructorId },
-    data: {
-      title:       str("title"),
-      crm:         str("crm"),
-      rqe:         str("rqe"),
-      photoUrl:    str("photoUrl"),
-      bio:         str("bio"),
-      formation:   str("formation"),
-      institution: str("institution"),
-      linkedin:     str("linkedin"),
-      instagram:    str("instagram"),
-      displayOrder: formData.get("displayOrder") ? parseInt(formData.get("displayOrder") as string) : 99,
-    },
+    select: { userId: true, user: { select: { email: true } } },
   });
+  if (!instructor) throw new Error("Instrutor não encontrado.");
+
+  const newEmail = (formData.get("email") as string)?.trim();
+  if (newEmail && newEmail !== instructor.user.email) {
+    const conflict = await prisma.user.findUnique({ where: { email: newEmail } });
+    if (conflict) throw new Error(`Já existe uma conta cadastrada com o e-mail "${newEmail}".`);
+  }
+
+  await prisma.$transaction([
+    prisma.instructor.update({
+      where: { id: instructorId },
+      data: {
+        title:       str("title"),
+        crm:         str("crm"),
+        rqe:         str("rqe"),
+        photoUrl:    str("photoUrl"),
+        bio:         str("bio"),
+        formation:   str("formation"),
+        institution: str("institution"),
+        linkedin:     str("linkedin"),
+        instagram:    str("instagram"),
+        displayOrder: formData.get("displayOrder") ? parseInt(formData.get("displayOrder") as string) : 99,
+      },
+    }),
+    ...(newEmail && newEmail !== instructor.user.email
+      ? [prisma.user.update({ where: { id: instructor.userId }, data: { email: newEmail } })]
+      : []),
+  ]);
 
   revalidatePath("/admin/instrutores");
   revalidatePath("/instrutores");

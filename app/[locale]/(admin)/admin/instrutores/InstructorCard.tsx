@@ -30,11 +30,17 @@ const labelClass =
 export function InstructorCard({ instructor: inst }: { instructor: Instructor }) {
   const [editing, setEditing] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
   function handleUpdate(formData: FormData) {
+    setError(null);
     startTransition(async () => {
-      await updateInstructor(inst.id, formData);
-      setEditing(false);
+      try {
+        await updateInstructor(inst.id, formData);
+        setEditing(false);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Erro ao salvar.");
+      }
     });
   }
 
@@ -68,7 +74,17 @@ export function InstructorCard({ instructor: inst }: { instructor: Instructor })
           </div>
         </div>
         <form action={handleUpdate} className="space-y-3">
+          {error && (
+            <div className="rounded-lg border border-red-300 bg-red-50 px-3 py-2 font-sans text-xs text-red-700">
+              {error}
+            </div>
+          )}
+
           {/* Identificação */}
+          <div>
+            <label className={labelClass}>E-mail da conta</label>
+            <input name="email" type="email" defaultValue={inst.user.email} className={inputClass} />
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className={labelClass}>Título / Especialidade</label>
