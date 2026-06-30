@@ -153,6 +153,7 @@ model Instructor {
   user    User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   courses Course[]
   modules ModuleInstructor[]
+  lessonInstructors LessonInstructor[]
 }
 
 // ─── COURSES ──────────────────────────────────────────────────────────────────
@@ -262,6 +263,18 @@ model ModuleInstructor {
   @@unique([moduleId, instructorId])
 }
 
+model LessonInstructor {
+  id           String     @id @default(cuid())
+  lessonId     String
+  instructorId String
+  order        Int        @default(0)
+
+  lesson     Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonId, instructorId])
+}
+
 model Lesson {
   id           String     @id @default(cuid())
   moduleId     String
@@ -286,6 +299,7 @@ model Lesson {
   progress  Progress[]
   notes     Note[]
   comments  LessonComment[]
+  instructors LessonInstructor[]
 }
 
 model Material {

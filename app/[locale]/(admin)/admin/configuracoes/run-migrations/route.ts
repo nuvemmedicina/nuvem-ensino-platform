@@ -184,5 +184,39 @@ export async function GET() {
     results.push(`✗ Lesson.description: ${e}`);
   }
 
+  // ── Migração 8: tabela LessonInstructor ──────────────────────────────────
+  try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "LessonInstructor" (
+        "id"           TEXT NOT NULL,
+        "lessonId"     TEXT NOT NULL,
+        "instructorId" TEXT NOT NULL,
+        "order"        INTEGER NOT NULL DEFAULT 0,
+        CONSTRAINT "LessonInstructor_pkey" PRIMARY KEY ("id")
+      )
+    `);
+    results.push("✓ Tabela LessonInstructor criada");
+  } catch (e) {
+    results.push(`✗ LessonInstructor table: ${e}`);
+  }
+  try {
+    await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "LessonInstructor_lessonId_instructorId_key" ON "LessonInstructor"("lessonId", "instructorId")`);
+    results.push("✓ Índice único LessonInstructor criado");
+  } catch (e) {
+    results.push(`✗ LessonInstructor index: ${e}`);
+  }
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "LessonInstructor" ADD CONSTRAINT IF NOT EXISTS "LessonInstructor_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "Lesson"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    results.push("✓ FK LessonInstructor → Lesson");
+  } catch (e) {
+    results.push(`✗ FK lessonId: ${e}`);
+  }
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "LessonInstructor" ADD CONSTRAINT IF NOT EXISTS "LessonInstructor_instructorId_fkey" FOREIGN KEY ("instructorId") REFERENCES "Instructor"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    results.push("✓ FK LessonInstructor → Instructor");
+  } catch (e) {
+    results.push(`✗ FK instructorId: ${e}`);
+  }
+
   return NextResponse.json({ ok: true, results });
 }

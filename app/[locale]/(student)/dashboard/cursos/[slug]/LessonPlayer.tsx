@@ -18,6 +18,7 @@ type Lesson = {
   muxPlaybackId: string | null;
   isFree: boolean;
   order: number;
+  instructors?: { instructor: { user: { name: string | null } } }[];
 };
 
 type Module = {
@@ -296,12 +297,13 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
             <div>
               {(() => {
                 const mod = modules.find((m) => m.lessons.some((l) => l.id === currentLesson?.id));
+                const lessonInstructors = currentLesson?.instructors ?? [];
                 return mod ? (
                   <div className="mb-1">
                     <p className="font-sans text-xs text-muted">{mod.title}</p>
-                    {mod.instructors && mod.instructors.length > 0 && (
+                    {lessonInstructors.length > 0 && (
                       <p className="font-sans text-xs text-primary/80 font-medium">
-                        {mod.instructors.map((mi) => mi.instructor.user.name).filter(Boolean).join(" · ")}
+                        {lessonInstructors.map((li) => li.instructor.user.name).filter(Boolean).join(" · ")}
                       </p>
                     )}
                   </div>
@@ -488,9 +490,9 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
                             <p className={`font-sans text-xs leading-snug ${isActive ? "text-primary font-semibold" : "text-foreground"}`}>
                               {lesson.title}
                             </p>
-                            {mod.instructors && mod.instructors.length > 0 && (
+                            {lesson.instructors && lesson.instructors.length > 0 && (
                               <p className="font-sans text-[10px] text-muted/70 mt-0.5 leading-snug">
-                                {mod.instructors.map((mi) => mi.instructor.user.name).filter(Boolean).join(" · ")}
+                                {lesson.instructors.map((li) => li.instructor.user.name).filter(Boolean).join(" · ")}
                               </p>
                             )}
                             {lesson.duration && (

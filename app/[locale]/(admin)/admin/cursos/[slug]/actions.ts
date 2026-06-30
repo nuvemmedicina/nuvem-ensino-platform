@@ -80,6 +80,23 @@ export async function updateModuleInstructors(
   revalidatePath(`/admin/cursos/${courseSlug}`);
 }
 
+export async function updateLessonInstructors(
+  lessonId: string,
+  courseSlug: string,
+  instructorIds: string[],
+) {
+  await requireAdmin();
+  await prisma.$transaction([
+    prisma.lessonInstructor.deleteMany({ where: { lessonId } }),
+    ...instructorIds.map((instructorId, order) =>
+      prisma.lessonInstructor.create({
+        data: { id: crypto.randomUUID(), lessonId, instructorId, order },
+      })
+    ),
+  ]);
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
 export async function updateModule(moduleId: string, courseSlug: string, formData: FormData) {
   await requireAdmin();
   await prisma.module.update({

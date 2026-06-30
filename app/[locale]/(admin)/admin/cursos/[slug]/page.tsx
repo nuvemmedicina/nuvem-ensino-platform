@@ -18,6 +18,7 @@ import {
   updateModuleReleaseDate,
 } from "./actions";
 import { ModuleInstructorSelector } from "./ModuleInstructorSelector";
+import { LessonInstructorSelector } from "./LessonInstructorSelector";
 import { FaqEditor } from "./FaqEditor";
 import { ImageUploader } from "@/components/ImageUploader";
 import {
@@ -62,6 +63,7 @@ export default async function AdminCursoEditPage({ params }: Props) {
                   },
                 },
               },
+              instructors: { include: { instructor: { include: { user: true } } }, orderBy: { order: "asc" } },
             },
           },
           instructors: { include: { instructor: { include: { user: true } } }, orderBy: { order: "asc" } },
@@ -589,6 +591,17 @@ export default async function AdminCursoEditPage({ params }: Props) {
                             action={deleteLessonAction}
                             confirm={`Excluir aula "${lesson.title}"?`}
                             className={`${btnDanger} shrink-0 mt-1`}
+                          />
+                        </div>
+
+                        {/* Docentes da aula */}
+                        <div className="flex items-center gap-2 mt-2 pt-2 border-t border-border/50">
+                          <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted shrink-0">Docentes</span>
+                          <LessonInstructorSelector
+                            lessonId={lesson.id}
+                            courseSlug={slug}
+                            allInstructors={allInstructors.map((i) => ({ id: i.id, name: i.user.name, title: i.title }))}
+                            initialIds={lesson.instructors.map((li) => li.instructorId)}
                           />
                         </div>
 

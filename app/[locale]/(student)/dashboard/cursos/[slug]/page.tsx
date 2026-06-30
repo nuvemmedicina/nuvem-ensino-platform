@@ -43,6 +43,10 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
               muxPlaybackId: true,
               isFree: true,
               order: true,
+              instructors: {
+                include: { instructor: { include: { user: true } } },
+                orderBy: { order: "asc" },
+              },
               quiz: {
                 include: {
                   questions: {

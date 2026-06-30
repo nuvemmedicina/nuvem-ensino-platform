@@ -101,7 +101,15 @@ export default async function CoursePage({ params }: Props) {
       modules: {
         orderBy: { order: "asc" },
         include: {
-          lessons: { orderBy: { order: "asc" }, select: { title: true, id: true } },
+          lessons: {
+            orderBy: { order: "asc" },
+            include: {
+              instructors: {
+                include: { instructor: { include: { user: true } } },
+                orderBy: { order: "asc" },
+              },
+            },
+          },
           instructors: {
             include: { instructor: { include: { user: true } } },
             orderBy: { order: "asc" },
@@ -394,9 +402,9 @@ export default async function CoursePage({ params }: Props) {
                           <span className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0 mt-2" />
                           <div>
                             <p className="font-sans text-sm text-muted">{lesson.title}</p>
-                            {mod.instructors.length > 0 && (
+                            {lesson.instructors.length > 0 && (
                               <p className="font-sans text-xs text-muted/60 mt-0.5">
-                                {mod.instructors.map((mi) => mi.instructor.user.name).filter(Boolean).join(" · ")}
+                                {lesson.instructors.map((li) => li.instructor.user.name).filter(Boolean).join(" · ")}
                               </p>
                             )}
                           </div>
