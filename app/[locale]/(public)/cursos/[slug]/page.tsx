@@ -382,11 +382,6 @@ export default async function CoursePage({ params }: Props) {
                     <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none font-sans text-sm font-semibold text-foreground select-none gap-3">
                       <div className="flex-1 min-w-0">
                         <span>{mod.title}</span>
-                        {mod.instructors.length > 0 && (
-                          <p className="font-sans text-xs font-normal text-muted mt-0.5">
-                            {mod.instructors.map((mi) => mi.instructor.user.name).filter(Boolean).join(" · ")}
-                          </p>
-                        )}
                       </div>
                       <ChevronRight className="w-4 h-4 text-muted shrink-0 transition-transform group-open:rotate-90" />
                     </summary>
@@ -394,10 +389,17 @@ export default async function CoursePage({ params }: Props) {
                       {mod.lessons.map((lesson) => (
                         <li
                           key={lesson.id}
-                          className="flex items-center gap-3 font-sans text-sm text-muted py-1.5"
+                          className="flex items-start gap-3 py-1.5"
                         >
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0" />
-                          {lesson.title}
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0 mt-2" />
+                          <div>
+                            <p className="font-sans text-sm text-muted">{lesson.title}</p>
+                            {mod.instructors.length > 0 && (
+                              <p className="font-sans text-xs text-muted/60 mt-0.5">
+                                {mod.instructors.map((mi) => mi.instructor.user.name).filter(Boolean).join(" · ")}
+                              </p>
+                            )}
+                          </div>
                         </li>
                       ))}
                     </ul>

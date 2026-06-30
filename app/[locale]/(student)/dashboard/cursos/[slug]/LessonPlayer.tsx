@@ -447,11 +447,6 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
                     <span className="font-sans text-xs font-semibold text-foreground leading-snug">
                       {mod.title}
                     </span>
-                    {mod.instructors && mod.instructors.length > 0 && (
-                      <p className="font-sans text-[10px] text-muted mt-0.5 leading-snug">
-                        {mod.instructors.map((mi) => mi.instructor.user.name).filter(Boolean).join(" · ")}
-                      </p>
-                    )}
                   </div>
                   {locked ? (
                     <span className="font-sans text-[10px] text-muted shrink-0 whitespace-nowrap">
@@ -493,6 +488,11 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
                             <p className={`font-sans text-xs leading-snug ${isActive ? "text-primary font-semibold" : "text-foreground"}`}>
                               {lesson.title}
                             </p>
+                            {mod.instructors && mod.instructors.length > 0 && (
+                              <p className="font-sans text-[10px] text-muted/70 mt-0.5 leading-snug">
+                                {mod.instructors.map((mi) => mi.instructor.user.name).filter(Boolean).join(" · ")}
+                              </p>
+                            )}
                             {lesson.duration && (
                               <p className="font-sans text-[10px] text-muted mt-0.5">
                                 {formatDuration(lesson.duration)}
