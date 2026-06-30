@@ -36,6 +36,11 @@ export async function cancelEnrollment(enrollmentId: string) {
   if (!enrollment) throw new Error("Matrícula não encontrada.");
   if (enrollment.status === "CANCELLED") throw new Error("Matrícula já cancelada.");
 
+  const course = await prisma.course.findUnique({
+    where: { id: enrollment.courseId },
+    select: { reservedSeats: true },
+  });
+
   await prisma.$transaction([
     prisma.enrollment.update({
       where: { id: enrollmentId },
@@ -43,7 +48,7 @@ export async function cancelEnrollment(enrollmentId: string) {
     }),
     prisma.course.update({
       where: { id: enrollment.courseId },
-      data: { reservedSeats: { decrement: 1 } },
+      data: { reservedSeats: Math.max(0, (course?.reservedSeats ?? 1) - 1) },
     }),
   ]);
 

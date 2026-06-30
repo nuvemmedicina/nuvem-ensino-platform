@@ -141,5 +141,13 @@ export async function GET() {
     results.push(`✗ UPDATE selos DICI: ${e}`);
   }
 
+  // ── Migração 4: corrigir reservedSeats negativos ────────────────────────
+  try {
+    await prisma.$executeRawUnsafe(`UPDATE "Course" SET "reservedSeats" = 0 WHERE "reservedSeats" < 0`);
+    results.push("✓ reservedSeats negativos corrigidos para 0");
+  } catch (e) {
+    results.push(`✗ fix reservedSeats: ${e}`);
+  }
+
   return NextResponse.json({ ok: true, results });
 }
