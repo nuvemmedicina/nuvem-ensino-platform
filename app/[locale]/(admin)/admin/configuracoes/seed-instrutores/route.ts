@@ -36,6 +36,14 @@ const INSTRUCTORS = [
     formation: "Doutor em Clínica Médica (UNICAMP)",
     institution: "Professor do Curso de Medicina da UFMA e UEMASUL",
   },
+  {
+    name: "Dr. Moisés Copelman",
+    email: "mcopelman@yahoo.com.br",
+    photoUrl: null,
+    title: "Gastroenterologista",
+    formation: "Mestre em Gastroenterologia (USP)",
+    institution: "Responsável pela Endoscopia Pediátrica (UERJ e HFB/MS)",
+  },
 ];
 
 export async function GET() {
