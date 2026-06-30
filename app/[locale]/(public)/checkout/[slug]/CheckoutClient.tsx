@@ -430,7 +430,7 @@ export default function CheckoutClient({
             {couponApplied ? (
               <div className="flex items-center gap-2 text-green-600 font-sans text-sm">
                 <CheckCircle className="w-4 h-4" />
-                {t("couponApplied")}
+                Cupom aplicado, {couponDiscountPct}% de desconto
               </div>
             ) : (
               <div className="flex gap-2">
