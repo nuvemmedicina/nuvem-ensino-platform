@@ -47,18 +47,21 @@ export function InstructorCard({ instructor: inst }: { instructor: Instructor })
     startTransition(() => deleteInstructor(inst.id));
   }
 
-  const initials = (inst.user.name ?? inst.user.email)
-    .split(" ")
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase();
+  const raw = inst.user.name ?? inst.user.email ?? "?";
+  const initials =
+    raw
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((w) => w[0] ?? "")
+      .join("")
+      .toUpperCase() || "?";
 
   if (editing) {
     return (
       <div className="bg-surface border border-primary/30 rounded-2xl p-5">
         <div className="flex items-center gap-3 mb-4">
-          <Avatar src={inst.user.image} initials={initials} />
+          <Avatar src={inst.photoUrl ?? inst.user.image} initials={initials} />
           <div>
             <p className="font-sans text-sm font-semibold text-foreground">{inst.user.name}</p>
             <p className="font-sans text-xs text-muted">{inst.user.email}</p>
@@ -164,7 +167,7 @@ export function InstructorCard({ instructor: inst }: { instructor: Instructor })
 
   return (
     <div className="bg-surface border border-border rounded-2xl px-5 py-4 flex items-center gap-4">
-      <Avatar src={inst.user.image} initials={initials} size="lg" />
+      <Avatar src={inst.photoUrl ?? inst.user.image} initials={initials} size="lg" />
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
