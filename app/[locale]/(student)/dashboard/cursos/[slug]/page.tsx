@@ -28,11 +28,16 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
       modules: {
         orderBy: { order: "asc" },
         include: {
+          instructors: {
+            include: { instructor: { include: { user: true } } },
+            orderBy: { order: "asc" },
+          },
           lessons: {
             orderBy: { order: "asc" },
             select: {
               id: true,
               title: true,
+              description: true,
               duration: true,
               videoUrl: true,
               muxPlaybackId: true,

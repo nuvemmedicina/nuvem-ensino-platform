@@ -53,12 +53,30 @@ export async function updateLesson(lessonId: string, courseSlug: string, formDat
   await prisma.lesson.update({
     where: { id: lessonId },
     data: {
-      title:    formData.get("title") as string,
-      videoUrl: (formData.get("videoUrl") as string) || null,
-      duration: formData.get("duration") ? Math.round(parseFloat(formData.get("duration") as string) * 60) : null,
-      isFree:   formData.get("isFree") === "on",
+      title:       formData.get("title") as string,
+      videoUrl:    (formData.get("videoUrl") as string) || null,
+      description: (formData.get("description") as string) || null,
+      duration:    formData.get("duration") ? Math.round(parseFloat(formData.get("duration") as string) * 60) : null,
+      isFree:      formData.get("isFree") === "on",
     },
   });
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
+export async function updateModuleInstructors(
+  moduleId: string,
+  courseSlug: string,
+  instructorIds: string[],
+) {
+  await requireAdmin();
+  await prisma.$transaction([
+    prisma.moduleInstructor.deleteMany({ where: { moduleId } }),
+    ...instructorIds.map((instructorId, order) =>
+      prisma.moduleInstructor.create({
+        data: { id: crypto.randomUUID(), moduleId, instructorId, order },
+      })
+    ),
+  ]);
   revalidatePath(`/admin/cursos/${courseSlug}`);
 }
 

@@ -17,6 +17,7 @@ import {
   deleteModule,
   updateModuleReleaseDate,
 } from "./actions";
+import { ModuleInstructorSelector } from "./ModuleInstructorSelector";
 import { FaqEditor } from "./FaqEditor";
 import { ImageUploader } from "@/components/ImageUploader";
 import {
@@ -50,25 +51,31 @@ export default async function AdminCursoEditPage({ params }: Props) {
       modules: {
         orderBy: { order: "asc" },
         include: {
-            lessons: {
-              orderBy: { order: "asc" },
-              include: {
-                quiz: {
-                  include: {
-                    questions: {
-                      include: { options: true },
-                      orderBy: { order: "asc" },
-                    },
+          lessons: {
+            orderBy: { order: "asc" },
+            include: {
+              quiz: {
+                include: {
+                  questions: {
+                    include: { options: true },
+                    orderBy: { order: "asc" },
                   },
                 },
               },
             },
           },
+          instructors: { include: { instructor: { include: { user: true } } }, orderBy: { order: "asc" } },
+        },
       },
     },
   });
 
   if (!course) notFound();
+
+  const allInstructors = await prisma.instructor.findMany({
+    include: { user: true },
+    orderBy: { displayOrder: "asc" },
+  });
 
   const updateCourseAction = updateCourse.bind(null, course.id, slug);
   const updateCourseContentAction = updateCourseContent.bind(null, course.id, slug);
@@ -509,6 +516,17 @@ export default async function AdminCursoEditPage({ params }: Props) {
                   )}
                 </form>
 
+                {/* Docentes do módulo */}
+                <div className="flex items-center gap-2 px-4 py-2 bg-background/30 border-b border-border">
+                  <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted shrink-0">Docentes</span>
+                  <ModuleInstructorSelector
+                    moduleId={mod.id}
+                    courseSlug={slug}
+                    allInstructors={allInstructors.map((i) => ({ id: i.id, name: i.user.name, title: i.title }))}
+                    initialIds={mod.instructors.map((mi) => mi.instructorId)}
+                  />
+                </div>
+
                 {/* Lessons */}
                 <div className="divide-y divide-border">
                   {mod.lessons.map((lesson) => {
@@ -531,6 +549,13 @@ export default async function AdminCursoEditPage({ params }: Props) {
                                 defaultValue={lesson.videoUrl ?? ""}
                                 placeholder="URL do YouTube (opcional — use se não tiver vídeo Mux)"
                                 className={inputClass}
+                              />
+                              <textarea
+                                name="description"
+                                defaultValue={lesson.description ?? ""}
+                                placeholder="Descrição da aula (opcional)"
+                                rows={2}
+                                className={`${inputClass} resize-none text-xs`}
                               />
                             </div>
 

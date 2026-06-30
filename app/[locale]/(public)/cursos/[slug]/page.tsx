@@ -100,7 +100,13 @@ export default async function CoursePage({ params }: Props) {
       tags: { include: { tag: true } },
       modules: {
         orderBy: { order: "asc" },
-        include: { lessons: { orderBy: { order: "asc" }, select: { title: true, id: true } } },
+        include: {
+          lessons: { orderBy: { order: "asc" }, select: { title: true, id: true } },
+          instructors: {
+            include: { instructor: { include: { user: true } } },
+            orderBy: { order: "asc" },
+          },
+        },
       },
     },
   });
@@ -373,9 +379,16 @@ export default async function CoursePage({ params }: Props) {
                     className="group rounded-xl border border-border bg-surface overflow-hidden"
                     open={i === 0}
                   >
-                    <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none font-sans text-sm font-semibold text-foreground select-none">
-                      {mod.title}
-                      <ChevronRight className="w-4 h-4 text-muted transition-transform group-open:rotate-90" />
+                    <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none font-sans text-sm font-semibold text-foreground select-none gap-3">
+                      <div className="flex-1 min-w-0">
+                        <span>{mod.title}</span>
+                        {mod.instructors.length > 0 && (
+                          <p className="font-sans text-xs font-normal text-muted mt-0.5">
+                            {mod.instructors.map((mi) => mi.instructor.user.name).filter(Boolean).join(" · ")}
+                          </p>
+                        )}
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-muted shrink-0 transition-transform group-open:rotate-90" />
                     </summary>
                     <ul className="px-5 pb-4 flex flex-col gap-2 border-t border-border">
                       {mod.lessons.map((lesson) => (

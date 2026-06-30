@@ -12,6 +12,7 @@ import CommentSection from "./CommentSection";
 type Lesson = {
   id: string;
   title: string;
+  description: string | null;
   duration: number | null;
   videoUrl: string | null;
   muxPlaybackId: string | null;
@@ -25,6 +26,7 @@ type Module = {
   order: number;
   releaseDate: Date | string | null;
   lessons: Lesson[];
+  instructors?: { instructor: { user: { name: string | null } } }[];
 };
 
 type ProgressMap = Record<string, boolean>;
@@ -292,9 +294,19 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
         <div className="p-6 border-b border-border">
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>
-              <p className="font-sans text-xs text-muted mb-1">
-                {modules.find((m) => m.lessons.some((l) => l.id === currentLesson?.id))?.title}
-              </p>
+              {(() => {
+                const mod = modules.find((m) => m.lessons.some((l) => l.id === currentLesson?.id));
+                return mod ? (
+                  <div className="mb-1">
+                    <p className="font-sans text-xs text-muted">{mod.title}</p>
+                    {mod.instructors && mod.instructors.length > 0 && (
+                      <p className="font-sans text-xs text-primary/80 font-medium">
+                        {mod.instructors.map((mi) => mi.instructor.user.name).filter(Boolean).join(" · ")}
+                      </p>
+                    )}
+                  </div>
+                ) : null;
+              })()}
               <h1 className="font-serif text-xl font-medium text-foreground">
                 {currentLesson?.title ?? t("selectLesson")}
               </h1>
@@ -318,6 +330,15 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
             )}
           </div>
         </div>
+
+        {/* Descrição da aula */}
+        {currentLesson?.description && (
+          <div className="px-6 py-4 border-b border-border">
+            <p className="font-sans text-sm text-muted leading-relaxed whitespace-pre-line">
+              {currentLesson.description}
+            </p>
+          </div>
+        )}
 
         {/* Navegação entre aulas */}
         <div className="flex items-center justify-between px-6 py-4">
@@ -426,6 +447,11 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
                     <span className="font-sans text-xs font-semibold text-foreground leading-snug">
                       {mod.title}
                     </span>
+                    {mod.instructors && mod.instructors.length > 0 && (
+                      <p className="font-sans text-[10px] text-muted mt-0.5 leading-snug">
+                        {mod.instructors.map((mi) => mi.instructor.user.name).filter(Boolean).join(" · ")}
+                      </p>
+                    )}
                   </div>
                   {locked ? (
                     <span className="font-sans text-[10px] text-muted shrink-0 whitespace-nowrap">
