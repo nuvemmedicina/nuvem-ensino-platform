@@ -69,7 +69,8 @@ export async function POST(req: Request) {
       if (existing?.status === "ACTIVE" || existing?.status === "COMPLETED")
         throw Object.assign(new Error("Você já está matriculado neste curso."), { status: 409 });
 
-      if (c.totalSeats !== null)
+      // Só reserva vaga se não há matrícula existente (evita leak em retentativas)
+      if (c.totalSeats !== null && !existing)
         await tx.course.update({ where: { id: c.id }, data: { reservedSeats: { increment: 1 } } });
 
       const enr = existing
@@ -142,64 +143,73 @@ export async function POST(req: Request) {
     if (!process.env.ASAAS_API_KEY)
       return NextResponse.json({ error: "Asaas não configurado. Adicione ASAAS_API_KEY nas variáveis de ambiente." }, { status: 503 });
 
-    const customer = await findOrCreateCustomer(
-      session.user.email ?? "",
-      session.user.name  ?? session.user.email ?? "Aluno",
-    );
+    try {
+      const customer = await findOrCreateCustomer(
+        session.user.email ?? "",
+        session.user.name  ?? session.user.email ?? "Aluno",
+      );
 
-    const billingType =
-      method === "pix"      ? "PIX"         :
-      method === "boleto"   ? "BOLETO"       :
-      /* parcelado */         "CREDIT_CARD";
+      const billingType =
+        method === "pix"      ? "PIX"         :
+        method === "boleto"   ? "BOLETO"       :
+        /* parcelado */         "CREDIT_CARD";
 
-    const payment = await createPayment({
-      customerId:        customer.id,
-      billingType,
-      value:             finalPrice,
-      description:       `${dbCourse.title} — NU.V.E.M ENSINO`,
-      externalReference: enrollment.id,
-      installmentCount:  method === "parcelado" ? Math.min(Math.max(Number(installments) || 1, 1), 10) : 1,
-      successUrl:        `${appUrl}/dashboard/cursos/${courseSlug}?sucesso=1`,
-    });
-
-    const dbMethod =
-      method === "pix"      ? "ASAAS_PIX"   :
-      method === "boleto"   ? "ASAAS_BOLETO" :
-      /* parcelado */         "ASAAS_CARD";
-
-    await prisma.payment.create({
-      data: {
-        enrollmentId:  enrollment.id,
-        method:        dbMethod,
-        status:        "PENDING",
-        amount:        finalPrice,
-        asaasPaymentId: payment.id,
-      },
-    });
-
-    if (appliedCoupon) {
-      await prisma.$transaction([
-        prisma.coupon.update({ where: { id: appliedCoupon.id }, data: { usesCount: { increment: 1 } } }),
-        prisma.couponUsage.create({ data: { couponId: appliedCoupon.id, courseId: dbCourse.id, userId: session.user.id } }),
-      ]);
-    }
-
-    // PIX: return QR code to show inline
-    if (method === "pix") {
-      const qr = await getPixQrCode(payment.id);
-      return NextResponse.json({
-        pixQrCodeImage:  qr.encodedImage,   // base64 PNG
-        pixCopyPaste:    qr.payload,        // copia e cola
-        pixExpiration:   qr.expirationDate,
+      const payment = await createPayment({
+        customerId:        customer.id,
+        billingType,
+        value:             finalPrice,
+        description:       `${dbCourse.title} — NU.V.E.M ENSINO`,
+        externalReference: enrollment.id,
+        installmentCount:  method === "parcelado" ? Math.min(Math.max(Number(installments) || 1, 1), 10) : 1,
+        successUrl:        `${appUrl}/dashboard/cursos/${courseSlug}?sucesso=1`,
       });
+
+      const dbMethod =
+        method === "pix"      ? "ASAAS_PIX"   :
+        method === "boleto"   ? "ASAAS_BOLETO" :
+        /* parcelado */         "ASAAS_CARD";
+
+      await prisma.payment.create({
+        data: {
+          enrollmentId:  enrollment.id,
+          method:        dbMethod,
+          status:        "PENDING",
+          amount:        finalPrice,
+          asaasPaymentId: payment.id,
+        },
+      });
+
+      if (appliedCoupon) {
+        await prisma.$transaction([
+          prisma.coupon.update({ where: { id: appliedCoupon.id }, data: { usesCount: { increment: 1 } } }),
+          prisma.couponUsage.create({ data: { couponId: appliedCoupon.id, courseId: dbCourse.id, userId: session.user.id } }),
+        ]);
+      }
+
+      // PIX: return QR code to show inline
+      if (method === "pix") {
+        const qr = await getPixQrCode(payment.id);
+        return NextResponse.json({
+          pixQrCodeImage:  qr.encodedImage,
+          pixCopyPaste:    qr.payload,
+          pixExpiration:   qr.expirationDate,
+        });
+      }
+
+      // Boleto / Parcelado: redirect to Asaas hosted page
+      const redirectUrl = method === "boleto"
+        ? (payment.bankSlipUrl ?? payment.invoiceUrl)
+        : payment.invoiceUrl;
+
+      return NextResponse.json({ url: redirectUrl });
+    } catch (err: unknown) {
+      const e = err as Error;
+      console.error("Asaas checkout error:", e.message);
+      return NextResponse.json(
+        { error: `Erro ao gerar cobrança: ${e.message}` },
+        { status: 502 },
+      );
     }
-
-    // Boleto / Parcelado: redirect to Asaas hosted page
-    const redirectUrl = method === "boleto"
-      ? (payment.bankSlipUrl ?? payment.invoiceUrl)
-      : payment.invoiceUrl;
-
-    return NextResponse.json({ url: redirectUrl });
   }
 
   return NextResponse.json({ error: "Método inválido." }, { status: 400 });
