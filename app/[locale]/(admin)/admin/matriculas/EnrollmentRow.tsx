@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { cancelEnrollment, confirmPayment } from "./actions";
 
 const statusColors: Record<string, string> = {
+  PENDING:   "text-orange-600 bg-orange-500/10 border-orange-500/20",
   ACTIVE:    "text-green-600 bg-green-500/10 border-green-500/20",
   COMPLETED: "text-blue-600 bg-blue-500/10 border-blue-500/20",
   CANCELLED: "text-muted bg-border/50 border-border",
@@ -34,7 +35,9 @@ export function EnrollmentRow({ enrollment: e, dateLocale }: Props) {
   const [error, setError] = useState("");
   const statusColor = statusColors[e.status] ?? statusColors.ACTIVE;
 
-  const statusKey = e.status === "ACTIVE"
+  const statusKey = e.status === "PENDING"
+    ? "statusPending"
+    : e.status === "ACTIVE"
     ? "statusActive"
     : e.status === "COMPLETED"
     ? "statusCompleted"

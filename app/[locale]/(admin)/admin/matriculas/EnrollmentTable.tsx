@@ -44,6 +44,7 @@ export function EnrollmentTable({
           className="font-sans text-sm px-3 py-2 rounded-lg border border-border bg-surface text-foreground focus:outline-none focus:border-primary/50"
         >
           <option value="all">Todos os status</option>
+          <option value="PENDING">Aguard. pagamento</option>
           <option value="ACTIVE">Ativa</option>
           <option value="COMPLETED">Concluída</option>
           <option value="CANCELLED">Cancelada</option>

@@ -28,6 +28,7 @@ enum CourseStatus {
 }
 
 enum EnrollmentStatus {
+  PENDING
   ACTIVE
   COMPLETED
   CANCELLED

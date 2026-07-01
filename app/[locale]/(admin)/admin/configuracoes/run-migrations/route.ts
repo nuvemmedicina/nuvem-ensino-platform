@@ -218,5 +218,13 @@ export async function GET() {
     results.push(`✗ FK instructorId: ${e}`);
   }
 
+  // ── Migração 9: valor PENDING no enum EnrollmentStatus ──────────────────
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TYPE "EnrollmentStatus" ADD VALUE IF NOT EXISTS 'PENDING' BEFORE 'ACTIVE'`);
+    results.push("✓ EnrollmentStatus.PENDING adicionado");
+  } catch (e) {
+    results.push(`✗ EnrollmentStatus.PENDING: ${e}`);
+  }
+
   return NextResponse.json({ ok: true, results });
 }

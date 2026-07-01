@@ -394,6 +394,7 @@
       "colDate": "Date",
       "colAttendances": "Attendance",
       "colStatus": "Status",
+      "statusPending": "Awaiting Payment",
       "statusActive": "Active",
       "statusCompleted": "Completed",
       "statusCancelled": "Cancelled",

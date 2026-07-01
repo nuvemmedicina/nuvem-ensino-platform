@@ -394,6 +394,7 @@
       "colDate": "Data",
       "colAttendances": "Presenças",
       "colStatus": "Status",
+      "statusPending": "Ag. Pagamento",
       "statusActive": "Ativa",
       "statusCompleted": "Concluída",
       "statusCancelled": "Cancelada",
