@@ -15,10 +15,16 @@ export async function confirmPayment(enrollmentId: string) {
   });
   if (!payment) throw new Error("Nenhum pagamento pendente encontrado.");
 
-  await prisma.payment.update({
-    where: { id: payment.id },
-    data: { status: "PAID", paidAt: new Date() },
-  });
+  await prisma.$transaction([
+    prisma.payment.update({
+      where: { id: payment.id },
+      data: { status: "PAID", paidAt: new Date() },
+    }),
+    prisma.enrollment.update({
+      where: { id: enrollmentId },
+      data: { status: "ACTIVE" },
+    }),
+  ]);
 
   revalidatePath("/admin/matriculas");
   revalidatePath("/admin");
