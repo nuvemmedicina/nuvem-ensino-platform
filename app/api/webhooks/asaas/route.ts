@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
         where: { id: dbPayment.enrollmentId },
         select: { courseId: true, status: true },
       });
-      if (enrollment && enrollment.status === "PENDING") {
+      if (enrollment && (enrollment.status === "PENDING" || enrollment.status === "CANCELLED")) {
         await prisma.$transaction([
           prisma.payment.update({
             where: { id: dbPayment.id },

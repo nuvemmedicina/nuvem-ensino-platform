@@ -73,9 +73,9 @@ export async function POST(req: Request) {
         await tx.course.update({ where: { id: c.id }, data: { reservedSeats: { increment: 1 } } });
 
       const enr = existing
-        ? await tx.enrollment.update({ where: { id: existing.id }, data: { status: "PENDING" } })
+        ? await tx.enrollment.update({ where: { id: existing.id }, data: { status: "CANCELLED" } })
         : await tx.enrollment.create({
-            data: { userId: session.user.id, courseId: c.id, status: "PENDING" },
+            data: { userId: session.user.id, courseId: c.id, status: "CANCELLED" },
           });
 
       return { course: c, enrollment: enr };
