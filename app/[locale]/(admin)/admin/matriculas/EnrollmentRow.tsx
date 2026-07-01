@@ -131,7 +131,7 @@ export function EnrollmentRow({ enrollment: e, dateLocale }: Props) {
             {t(statusKey)}
           </span>
           <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-            {e.payment?.status !== "PAID" && e.payment && e.status !== "CANCELLED" && (
+            {e.payment?.status !== "PAID" && e.payment && (
               <button
                 onClick={handleConfirmPayment}
                 disabled={confirming}
