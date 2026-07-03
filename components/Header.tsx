@@ -27,7 +27,7 @@ export default function Header() {
       {/* ── Barra de anúncio ── */}
       <div className="bg-amber-500 px-4 py-2 text-center">
         <p className="font-sans text-xs font-semibold text-amber-950">
-          🎯 <span className="font-bold">1° Lote até 30/06/2026</span> — Curso DICI com 10% de desconto. Cupom{" "}
+          🎯 <span className="font-bold">1° Lote até 31/07/2026</span> — Curso DICI com 10% de desconto. Cupom{" "}
           <span className="font-mono font-bold bg-amber-950/15 px-1.5 py-0.5 rounded tracking-widest">DICI10</span>
           {" "}no checkout.{" "}
           <Link
