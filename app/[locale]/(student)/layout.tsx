@@ -31,7 +31,7 @@ export default async function StudentLayout({
   return (
     <div className="min-h-screen bg-background flex">
       {/* ── Sidebar desktop ── */}
-      <aside className="hidden md:flex flex-col w-60 bg-canvas shrink-0 sticky top-0 h-screen">
+      <aside className="hidden md:flex flex-col w-56 bg-[#0d0d0d] border-r border-white/5 shrink-0 sticky top-0 h-screen">
         <div className="px-5 py-5 border-b border-white/10">
           <Link href="/">
             <Image
@@ -101,7 +101,7 @@ export default async function StudentLayout({
       </aside>
 
       {/* ── Main content ── */}
-      <main className="flex-1 min-w-0 flex flex-col">
+      <main className="flex-1 min-w-0 flex flex-col bg-[#0a0a0a]">
         {/* Mobile header */}
         <header className="md:hidden sticky top-0 z-40 bg-canvas border-b border-white/10 shrink-0">
           <div className="flex items-center justify-between px-4 h-14">
