@@ -62,7 +62,8 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
               src={heroEnrollment.course.thumbnailUrl}
               alt={heroEnrollment.course.title}
               fill
-              className="object-cover object-top"
+              className="object-cover"
+              style={{ objectPosition: "center 20%" }}
               priority
               sizes="100vw"
             />
