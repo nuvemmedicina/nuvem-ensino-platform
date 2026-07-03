@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, ChevronRight } from "lucide-react";
+import { Play, Award, BookOpen } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 function calcProgress(progress: { completed: boolean }[], totalLessons: number) {
@@ -11,11 +11,7 @@ function calcProgress(progress: { completed: boolean }[], totalLessons: number) 
   return Math.round((progress.filter((p) => p.completed).length / totalLessons) * 100);
 }
 
-export default async function MeusCursosPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function MeusCursosPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "dashboard.courses" });
 
@@ -36,94 +32,143 @@ export default async function MeusCursosPage({
     orderBy: { enrolledAt: "desc" },
   });
 
-  const subtitle =
-    enrollments.length === 0
-      ? t("notEnrolled")
-      : enrollments.length === 1
-      ? t("countOne")
-      : t("countPlural", { count: enrollments.length });
+  const active    = enrollments.filter((e) => e.status === "ACTIVE");
+  const completed = enrollments.filter((e) => e.status === "COMPLETED");
 
-  return (
-    <div>
-      <div className="mb-8">
-        <h1 className="font-serif text-2xl font-medium text-foreground">{t("title")}</h1>
-        <p className="font-sans text-sm text-muted mt-1">{subtitle}</p>
-      </div>
-
-      {enrollments.length === 0 ? (
+  if (enrollments.length === 0) {
+    return (
+      <div>
+        <h1 className="font-serif text-2xl font-medium text-foreground mb-8">{t("title")}</h1>
         <div className="flex flex-col items-center justify-center py-20 text-center bg-surface border border-border rounded-2xl">
           <BookOpen className="w-12 h-12 text-muted/30 mb-4" />
           <p className="font-serif text-xl text-foreground/40 mb-2">{t("emptyTitle")}</p>
           <p className="font-sans text-sm text-muted mb-6">{t("emptyDesc")}</p>
-          <Link
-            href="/cursos"
-            className="inline-block font-sans text-sm font-semibold px-6 py-3 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
-          >
+          <Link href="/cursos" className="font-sans text-sm font-semibold px-6 py-3 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors">
             {t("viewCourses")}
           </Link>
         </div>
-      ) : (
-        <div className="flex flex-col gap-4">
-          {enrollments.map((enrollment) => {
-            const totalLessons = enrollment.course.modules.reduce(
-              (sum, m) => sum + m.lessons.length,
-              0
-            );
-            const pct = calcProgress(enrollment.progress, totalLessons);
-            const completed = enrollment.status === "COMPLETED";
+      </div>
+    );
+  }
 
-            return (
-              <Link
-                key={enrollment.id}
-                href={`/dashboard/cursos/${enrollment.course.slug}`}
-                className="flex gap-5 bg-surface border border-border rounded-2xl p-5 hover:border-primary/40 hover:shadow-sm transition-all group"
-              >
-                <div className="relative w-24 h-24 rounded-xl overflow-hidden shrink-0">
-                  <Image
-                    src={
-                      enrollment.course.instructor.user.image ??
-                      "/instructors/dra-vera.jpg"
-                    }
-                    alt={enrollment.course.title}
-                    fill
-                    className="object-cover object-top"
-                    sizes="96px"
-                  />
-                </div>
+  return (
+    <div className="space-y-12">
+      {/* ── Em andamento ── */}
+      {active.length > 0 && (
+        <section>
+          <h2 className="font-serif text-xl font-medium text-foreground mb-6">Em andamento</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {active.map((e) => {
+              const total = e.course.modules.reduce((s, m) => s + m.lessons.length, 0);
+              const pct   = calcProgress(e.progress, total);
+              return <PosterCard key={e.id} enrollment={e} pct={pct} total={total} />;
+            })}
+          </div>
+        </section>
+      )}
 
-                <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                  <div>
-                    <p className="font-sans text-[10px] uppercase tracking-wider text-muted">
-                      {enrollment.course.instructor.user.name}
-                    </p>
-                    <h2 className="font-serif text-base font-medium text-foreground leading-snug mt-0.5 line-clamp-2 group-hover:text-primary transition-colors">
-                      {enrollment.course.title}
-                    </h2>
-                    <p className="font-sans text-xs text-muted mt-1">
-                      {enrollment.course.hours}h · {totalLessons} {t("lessons")}
-                    </p>
-                  </div>
-
-                  <div className="mt-3">
-                    <div className="flex justify-between font-sans text-[10px] text-muted mb-1">
-                      <span>{completed ? t("completedLabel") : t("progressLabel")}</span>
-                      <span>{pct}%</span>
-                    </div>
-                    <div className="h-1.5 bg-border rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all ${completed ? "bg-green-500" : "bg-primary"}`}
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <ChevronRight className="w-4 h-4 text-muted/40 shrink-0 self-center group-hover:text-primary transition-colors" />
-              </Link>
-            );
-          })}
-        </div>
+      {/* ── Concluídos ── */}
+      {completed.length > 0 && (
+        <section>
+          <h2 className="font-serif text-xl font-medium text-foreground mb-6">Concluídos</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {completed.map((e) => {
+              const total = e.course.modules.reduce((s, m) => s + m.lessons.length, 0);
+              return <PosterCard key={e.id} enrollment={e} pct={100} total={total} done />;
+            })}
+          </div>
+        </section>
       )}
     </div>
+  );
+}
+
+// ── Componente de pôster ───────────────────────────────────────────────────────
+function PosterCard({
+  enrollment: e,
+  pct,
+  total,
+  done,
+}: {
+  enrollment: {
+    course: {
+      slug: string;
+      title: string;
+      hours: number;
+      thumbnailUrl: string | null;
+      instructor: { user: { name: string | null; image: string | null } };
+    };
+  };
+  pct: number;
+  total: number;
+  done?: boolean;
+}) {
+  const thumb = e.course.thumbnailUrl ?? e.course.instructor.user.image;
+
+  return (
+    <Link
+      href={`/dashboard/cursos/${e.course.slug}`}
+      className="group relative flex flex-col rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-surface border border-border"
+    >
+      {/* Poster image — proporção 2:3 */}
+      <div className="relative w-full" style={{ paddingBottom: "140%" }}>
+        {thumb ? (
+          <Image
+            src={thumb}
+            alt={e.course.title}
+            fill
+            className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-canvas flex items-center justify-center">
+            <BookOpen className="w-10 h-10 text-primary/40" />
+          </div>
+        )}
+
+        {/* Gradiente inferior */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+        {/* Badge concluído */}
+        {done && (
+          <div className="absolute top-2.5 right-2.5 flex items-center gap-1 bg-green-500 text-white font-sans text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
+            <Award className="w-3 h-3" /> Concluído
+          </div>
+        )}
+
+        {/* Play overlay */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="w-12 h-12 rounded-full bg-white/95 shadow-lg flex items-center justify-center">
+            <Play className="w-5 h-5 fill-primary text-primary ml-0.5" />
+          </div>
+        </div>
+
+        {/* Título sobre o gradiente */}
+        <div className="absolute bottom-0 left-0 right-0 p-3">
+          <h3 className="font-sans text-xs font-semibold text-white leading-snug line-clamp-2 drop-shadow">
+            {e.course.title}
+          </h3>
+        </div>
+      </div>
+
+      {/* Rodapé */}
+      <div className="px-3 pt-2.5 pb-3 bg-surface">
+        <p className="font-sans text-[10px] text-muted truncate mb-2">
+          {e.course.instructor.user.name} · {e.course.hours}h
+          {total > 0 && ` · ${total} aulas`}
+        </p>
+
+        {/* Barra de progresso */}
+        <div className="h-1 bg-border rounded-full overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all duration-500 ${done ? "bg-green-500" : "bg-primary"}`}
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        {!done && pct > 0 && (
+          <p className="font-sans text-[10px] text-muted mt-1">{pct}% concluído</p>
+        )}
+      </div>
+    </Link>
   );
 }
