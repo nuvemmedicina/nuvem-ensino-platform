@@ -51,7 +51,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   const heroPct = heroEnrollment ? calcProgress(heroEnrollment.progress, heroTotalLessons) : 0;
 
   return (
-    <div className="-mx-6 -mt-6 lg:-mx-8 lg:-mt-8 bg-background min-h-screen">
+    <div className="-mx-6 -mt-6 lg:-mx-8 lg:-mt-8 min-h-screen" style={{ backgroundColor: "#d3ebee" }}>
 
       {/* ── HERO ── */}
       {heroEnrollment ? (
@@ -135,7 +135,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
       )}
 
       {/* ── CONTEÚDO ── */}
-      <div className="bg-background px-4 lg:px-8 py-8 space-y-10">
+      <div className="px-4 lg:px-8 py-8 space-y-10" style={{ backgroundColor: "#d3ebee" }}>
 
         {/* Stats chips */}
         <div className="flex items-center gap-3 flex-wrap">
