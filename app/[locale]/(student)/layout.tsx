@@ -2,7 +2,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { LayoutDashboard, BookOpen, Award, User, Video } from "lucide-react";
+import { LayoutDashboard, BookOpen, Award, User, Video, MessageCircle } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
 import { getTranslations } from "next-intl/server";
 
@@ -55,6 +55,19 @@ export default async function StudentLayout({
             </Link>
           ))}
         </nav>
+
+        {/* WhatsApp suporte */}
+        <div className="px-3 pb-2">
+          <a
+            href="https://wa.me/5531722910291"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl font-sans text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all"
+          >
+            <MessageCircle className="w-4 h-4 shrink-0 text-green-400" />
+            Suporte via WhatsApp
+          </a>
+        </div>
 
         <div className="px-3 py-4 border-t border-white/10">
           <div className="flex items-center gap-3 px-3 py-2 mb-1">
