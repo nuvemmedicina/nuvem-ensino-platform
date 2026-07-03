@@ -134,16 +134,16 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
       )}
 
       {/* ── CONTEÚDO ── */}
-      <div className="px-4 lg:px-8 py-8 space-y-10">
+      <div className="bg-background px-4 lg:px-8 py-8 space-y-10">
 
         {/* Stats chips */}
         <div className="flex items-center gap-3 flex-wrap">
           {[
-            { label: `${activeEnrollments.length} em andamento`, color: "text-primary" },
-            { label: `${completedEnrollments.length} concluídos`, color: "text-green-400" },
-            { label: `${certificatesCount} certificados`, color: "text-amber-400" },
-          ].map(({ label, color }) => (
-            <span key={label} className={`font-sans text-xs font-semibold ${color} bg-white/5 border border-white/10 px-3 py-1.5 rounded-full`}>
+            { label: `${activeEnrollments.length} em andamento`, color: "text-primary", bg: "bg-primary/8 border-primary/20" },
+            { label: `${completedEnrollments.length} concluídos`,  color: "text-green-700", bg: "bg-green-500/10 border-green-500/20" },
+            { label: `${certificatesCount} certificados`,           color: "text-amber-700", bg: "bg-amber-500/10 border-amber-500/20" },
+          ].map(({ label, color, bg }) => (
+            <span key={label} className={`font-sans text-xs font-semibold ${color} ${bg} border px-3 py-1.5 rounded-full`}>
               {label}
             </span>
           ))}
@@ -153,7 +153,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         {activeEnrollments.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-sans text-base font-semibold text-white">Continuar assistindo</h2>
+              <h2 className="font-sans text-base font-semibold text-foreground">Continuar assistindo</h2>
               <Link href="/dashboard/cursos" className="font-sans text-xs text-primary hover:text-primary/80 flex items-center gap-1 transition-colors">
                 Ver todos <ChevronRight className="w-3 h-3" />
               </Link>
@@ -182,7 +182,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         {completedEnrollments.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-sans text-base font-semibold text-white">Cursos concluídos</h2>
+              <h2 className="font-sans text-base font-semibold text-foreground">Cursos concluídos</h2>
             </div>
             <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-none -mx-4 lg:-mx-8 px-4 lg:px-8">
               {completedEnrollments.map((e) => (
