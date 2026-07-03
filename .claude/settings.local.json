@@ -121,7 +121,29 @@
       "Bash(git rm *)",
       "Bash(node proposta.js)",
       "Bash(mkdir \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(student\\)\\\\dashboard\\\\cursos\\\\[slug]\\\\resultado\")",
-      "Bash(mkdir \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(admin\\)\\\\admin\\\\configuracoes\\\\run-migrations\")"
+      "Bash(mkdir \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(admin\\)\\\\admin\\\\configuracoes\\\\run-migrations\")",
+      "Bash(cp \"G:\\\\Meu Drive\\\\LOGO\\\\Nuvem Ensino\\\\MEC.svg\" \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\public\\\\selo-mec.svg\")",
+      "Bash(cp \"G:\\\\Meu Drive\\\\LOGO\\\\Nuvem Ensino\\\\SELO-ISO.svg\" \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\public\\\\selo-iso.svg\")",
+      "Bash(git mv *)",
+      "Bash(git restore *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" https://nuvemensino.com.br/admin/configuracoes/db-check)",
+      "Bash(curl -sIL https://nuvemensino.com.br/admin/configuracoes/db-check)",
+      "Bash(cd \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\" && rm -rf \"app/[locale]/\\(admin\\)/admin/configuracoes/db-check\" && git add \"app/[locale]/\\(admin\\)/admin/instrutores/page.tsx\" \"app/[locale]/\\(admin\\)/admin/instrutores/CreateInstructorForm.tsx\" \"app/[locale]/\\(admin\\)/admin/configuracoes/db-check\" && git status)",
+      "Bash(curl -s -o /tmp/out.html -w \"%{http_code}\\\\n\" -L \"https://nuvemensino.com.br/admin/instrutores\" -H \"Cookie: \")",
+      "Read(//tmp/**)",
+      "Bash(awk '/^model User /,/^}/' prisma/schema.prisma)",
+      "Bash(node -e \"require\\('dotenv'\\).config\\({path:'.env.local'}\\)\")",
+      "Bash(DOTENV_CONFIG_PATH=.env.local node -r dotenv/config scripts/seed-instructors.mjs dotenv_config_path=.env.local)",
+      "Bash(cp .env.local .env.local.bak)",
+      "Bash(npx dotenv *)",
+      "Bash(awk -F= '/^DATABASE_URL=/{print length\\($0\\)}' .env.local)",
+      "Bash(awk -F= '/^DATABASE_URL=/{print substr\\($0,1,40\\)}' .env.local)",
+      "Bash(awk -F= '{print $1, length\\($0\\)}')",
+      "Bash(awk '/^model Lesson /,/^}/' prisma/schema.prisma)",
+      "Bash(awk '/^enum EnrollmentStatus/,/^}/' prisma/schema.prisma)",
+      "Bash(gh auth *)",
+      "Bash(gh repo *)",
+      "Bash(git remote *)"
     ]
   }
 }

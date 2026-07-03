@@ -2,7 +2,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { LayoutDashboard, BookOpen, Award, User, Video, MessageCircle } from "lucide-react";
+import { LayoutDashboard, BookOpen, Award, User, Video, MessageCircle, Users } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
 import { getTranslations } from "next-intl/server";
 
@@ -25,6 +25,7 @@ export default async function StudentLayout({
     { label: t("liveLessons"), href: "/dashboard/aulas-ao-vivo",  icon: Video },
     { label: t("certificates"),href: "/dashboard/certificados",   icon: Award },
     { label: t("profile"),     href: "/dashboard/perfil",         icon: User },
+    { label: "Comunidade",     href: "/dashboard/comunidade",     icon: Users },
   ];
 
   return (

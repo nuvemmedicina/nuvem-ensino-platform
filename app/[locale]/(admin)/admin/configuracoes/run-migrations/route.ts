@@ -226,5 +226,86 @@ export async function GET() {
     results.push(`✗ EnrollmentStatus.PENDING: ${e}`);
   }
 
+  // ── Migração 10: tabelas do Fórum ────────────────────────────────────────
+  try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "ForumPost" (
+        "id"         TEXT NOT NULL,
+        "courseId"   TEXT NOT NULL,
+        "authorId"   TEXT NOT NULL,
+        "title"      TEXT NOT NULL,
+        "content"    TEXT NOT NULL,
+        "isPinned"   BOOLEAN NOT NULL DEFAULT false,
+        "isAnswered" BOOLEAN NOT NULL DEFAULT false,
+        "createdAt"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT "ForumPost_pkey" PRIMARY KEY ("id")
+      )
+    `);
+    results.push("✓ Tabela ForumPost criada");
+  } catch (e) { results.push(`✗ ForumPost: ${e}`); }
+
+  try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "ForumReply" (
+        "id"               TEXT NOT NULL,
+        "postId"           TEXT NOT NULL,
+        "authorId"         TEXT NOT NULL,
+        "content"          TEXT NOT NULL,
+        "isOfficialAnswer" BOOLEAN NOT NULL DEFAULT false,
+        "createdAt"        TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt"        TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT "ForumReply_pkey" PRIMARY KEY ("id")
+      )
+    `);
+    results.push("✓ Tabela ForumReply criada");
+  } catch (e) { results.push(`✗ ForumReply: ${e}`); }
+
+  try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "ForumLike" (
+        "id"      TEXT NOT NULL,
+        "userId"  TEXT NOT NULL,
+        "postId"  TEXT,
+        "replyId" TEXT,
+        CONSTRAINT "ForumLike_pkey" PRIMARY KEY ("id")
+      )
+    `);
+    results.push("✓ Tabela ForumLike criada");
+  } catch (e) { results.push(`✗ ForumLike: ${e}`); }
+
+  try {
+    await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "ForumLike_userId_postId_key" ON "ForumLike"("userId", "postId") WHERE "postId" IS NOT NULL`);
+    await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "ForumLike_userId_replyId_key" ON "ForumLike"("userId", "replyId") WHERE "replyId" IS NOT NULL`);
+    await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "ForumPost_courseId_idx" ON "ForumPost"("courseId")`);
+    await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "ForumReply_postId_idx" ON "ForumReply"("postId")`);
+    results.push("✓ Índices do Fórum criados");
+  } catch (e) { results.push(`✗ Forum indexes: ${e}`); }
+
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "ForumPost" ADD CONSTRAINT "ForumPost_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    results.push("✓ FK ForumPost → Course");
+  } catch (e) { results.push(`✗ FK ForumPost.courseId: ${e}`); }
+
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "ForumPost" ADD CONSTRAINT "ForumPost_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    results.push("✓ FK ForumPost → User");
+  } catch (e) { results.push(`✗ FK ForumPost.authorId: ${e}`); }
+
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "ForumReply" ADD CONSTRAINT "ForumReply_postId_fkey" FOREIGN KEY ("postId") REFERENCES "ForumPost"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    results.push("✓ FK ForumReply → ForumPost");
+  } catch (e) { results.push(`✗ FK ForumReply.postId: ${e}`); }
+
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "ForumReply" ADD CONSTRAINT "ForumReply_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    results.push("✓ FK ForumReply → User");
+  } catch (e) { results.push(`✗ FK ForumReply.authorId: ${e}`); }
+
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "ForumLike" ADD CONSTRAINT "ForumLike_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    results.push("✓ FK ForumLike → User");
+  } catch (e) { results.push(`✗ FK ForumLike.userId: ${e}`); }
+
   return NextResponse.json({ ok: true, results });
 }
