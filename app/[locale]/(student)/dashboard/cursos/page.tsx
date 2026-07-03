@@ -108,7 +108,7 @@ function PosterCard({
   return (
     <Link
       href={`/dashboard/cursos/${e.course.slug}`}
-      className="group relative flex flex-col rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-surface border border-border"
+      className="group relative flex flex-col rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-[#1c1c1c] border border-white/10"
     >
       {/* Poster image — proporção 2:3 */}
       <div className="relative w-full" style={{ paddingBottom: "140%" }}>
@@ -152,14 +152,14 @@ function PosterCard({
       </div>
 
       {/* Rodapé */}
-      <div className="px-3 pt-2.5 pb-3 bg-surface">
+      <div className="px-3 pt-2.5 pb-3 bg-[#1c1c1c]">
         <p className="font-sans text-[10px] text-muted truncate mb-2">
           {e.course.instructor.user.name} · {e.course.hours}h
           {total > 0 && ` · ${total} aulas`}
         </p>
 
         {/* Barra de progresso */}
-        <div className="h-1 bg-border rounded-full overflow-hidden">
+        <div className="h-1 bg-white/10 rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-500 ${done ? "bg-green-500" : "bg-primary"}`}
             style={{ width: `${pct}%` }}
