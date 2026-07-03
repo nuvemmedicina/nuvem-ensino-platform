@@ -62,7 +62,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
               src={heroEnrollment.course.thumbnailUrl}
               alt={heroEnrollment.course.title}
               fill
-              className="object-cover object-center"
+              className="object-cover object-top"
               priority
               sizes="100vw"
             />
@@ -71,9 +71,9 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           )}
 
           {/* Gradients */}
-          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-black/40" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/60 to-black/10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
 
           {/* Content */}
           <div className="absolute inset-0 flex flex-col justify-end px-8 lg:px-12 pb-10 lg:pb-14">
