@@ -143,31 +143,22 @@ function PosterCard({
           </div>
         </div>
 
-        {/* Título sobre o gradiente */}
-        <div className="absolute bottom-0 left-0 right-0 p-3">
-          <h3 className="font-sans text-xs font-semibold text-white leading-snug line-clamp-2 drop-shadow">
+        {/* Título + info sobre o gradiente */}
+        <div className="absolute bottom-0 left-0 right-0 px-3 pb-3 pt-8 bg-gradient-to-t from-black via-black/60 to-transparent">
+          <h3 className="font-sans text-xs font-semibold text-white leading-snug line-clamp-2 drop-shadow mb-1">
             {e.course.title}
           </h3>
+          <p className="font-sans text-[10px] text-white/50 truncate mb-2">
+            {e.course.instructor.user.name} · {e.course.hours}h
+          </p>
+          {/* Barra de progresso */}
+          <div className="h-0.5 bg-white/20 rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-500 ${done ? "bg-green-400" : "bg-primary"}`}
+              style={{ width: `${pct}%` }}
+            />
+          </div>
         </div>
-      </div>
-
-      {/* Rodapé */}
-      <div className="px-3 pt-2.5 pb-3 bg-[#1c1c1c]">
-        <p className="font-sans text-[10px] text-muted truncate mb-2">
-          {e.course.instructor.user.name} · {e.course.hours}h
-          {total > 0 && ` · ${total} aulas`}
-        </p>
-
-        {/* Barra de progresso */}
-        <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-          <div
-            className={`h-full rounded-full transition-all duration-500 ${done ? "bg-green-500" : "bg-primary"}`}
-            style={{ width: `${pct}%` }}
-          />
-        </div>
-        {!done && pct > 0 && (
-          <p className="font-sans text-[10px] text-muted mt-1">{pct}% concluído</p>
-        )}
       </div>
     </Link>
   );
