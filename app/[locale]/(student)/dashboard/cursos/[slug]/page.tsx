@@ -4,6 +4,7 @@ import { ChevronLeft, Award, Video, ExternalLink, Calendar, BarChart2 } from "lu
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import LessonPlayer from "./LessonPlayer";
+import { CompleteCourseButton } from "./CompleteCourseButton";
 import { getTranslations } from "next-intl/server";
 
 type Props = {
@@ -280,6 +281,21 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
                     <Calendar className="w-3.5 h-3.5" />
                     Adicionar ao Google Calendar
                   </a>
+                </div>
+              )}
+
+              {!enrollment.certificate && (
+                <div className="pt-4 border-t border-border">
+                  <CompleteCourseButton courseId={course.id} />
+                </div>
+              )}
+              {enrollment.certificate && (
+                <div className="pt-4 border-t border-border flex items-center justify-center gap-2 font-sans text-sm font-semibold text-green-600">
+                  <Award className="w-4 h-4" />
+                  Certificado disponível em{" "}
+                  <Link href="/dashboard/certificados" className="underline underline-offset-2">
+                    Certificados
+                  </Link>
                 </div>
               )}
             </div>
