@@ -307,5 +307,11 @@ export async function GET() {
     results.push("✓ FK ForumLike → User");
   } catch (e) { results.push(`✗ FK ForumLike.userId: ${e}`); }
 
+  // ── Migração 11: User.taxId (CPF) ───────────────────────────────────────
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "taxId" TEXT`);
+    results.push("✓ User.taxId adicionado");
+  } catch (e) { results.push(`✗ User.taxId: ${e}`); }
+
   return NextResponse.json({ ok: true, results });
 }

@@ -14,15 +14,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Não autenticado." }, { status: 401 });
   }
 
-  const { courseSlug, method, couponCode, installments, whatsapp } = await req.json();
+  const { courseSlug, method, couponCode, installments, whatsapp, cpf } = await req.json();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br";
 
-  // Salva WhatsApp no perfil do usuário se fornecido
-  if (whatsapp && typeof whatsapp === "string" && whatsapp.trim()) {
-    await prisma.user.update({
-      where: { id: session.user.id },
-      data: { phone: whatsapp.trim() },
-    });
+  // Salva WhatsApp e CPF no perfil do usuário se fornecidos
+  const profileUpdates: Record<string, string> = {};
+  if (whatsapp && typeof whatsapp === "string" && whatsapp.trim()) profileUpdates.phone = whatsapp.trim();
+  if (cpf && typeof cpf === "string" && cpf.trim()) profileUpdates.taxId = cpf.replace(/\D/g, "");
+  if (Object.keys(profileUpdates).length > 0) {
+    await prisma.user.update({ where: { id: session.user.id }, data: profileUpdates });
   }
 
   // Validate coupon
@@ -144,9 +144,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Asaas não configurado. Adicione ASAAS_API_KEY nas variáveis de ambiente." }, { status: 503 });
 
     try {
+      // Busca CPF salvo no perfil (pode ter sido atualizado acima)
+      const userProfile = await prisma.user.findUnique({ where: { id: session.user.id }, select: { taxId: true } });
       const customer = await findOrCreateCustomer(
         session.user.email ?? "",
         session.user.name  ?? session.user.email ?? "Aluno",
+        userProfile?.taxId ?? undefined,
       );
 
       const billingType =

@@ -66,15 +66,26 @@ function isoDate(minutesFromNow = 0): string {
 export async function findOrCreateCustomer(
   email: string,
   name: string,
+  cpfCnpj?: string,
 ): Promise<AsaasCustomer> {
   const list = await req<{ data: AsaasCustomer[] }>(
     `/customers?email=${encodeURIComponent(email)}&limit=1`,
   );
-  if (list.data.length > 0) return list.data[0];
+  if (list.data.length > 0) {
+    const existing = list.data[0];
+    // Atualiza CPF se ainda não estava cadastrado
+    if (cpfCnpj && !existing.cpfCnpj) {
+      await req(`/customers/${existing.id}`, {
+        method: "PUT",
+        body: JSON.stringify({ cpfCnpj }),
+      });
+    }
+    return existing;
+  }
 
   return req<AsaasCustomer>("/customers", {
     method: "POST",
-    body: JSON.stringify({ name, email }),
+    body: JSON.stringify({ name, email, ...(cpfCnpj ? { cpfCnpj } : {}) }),
   });
 }
 

@@ -33,6 +33,7 @@ export default function CheckoutClient({
   const [method, setMethod] = useState<PaymentMethod>("pix");
   const [couponCode, setCouponCode] = useState("");
   const [whatsapp, setWhatsapp] = useState(userPhone);
+  const [cpf, setCpf] = useState("");
   const [couponApplied, setCouponApplied] = useState(false);
   const [couponDiscountPct, setCouponDiscountPct] = useState(0);
   const [couponError, setCouponError] = useState("");
@@ -105,6 +106,7 @@ export default function CheckoutClient({
             couponCode: couponApplied ? couponCode : undefined,
             installments: method === "parcelado" ? installments : 1,
             whatsapp: whatsapp.trim() || undefined,
+            cpf: cpf.replace(/\D/g, "") || undefined,
           }),
         });
         const data = await res.json();
@@ -342,6 +344,25 @@ export default function CheckoutClient({
                 />
               </div>
             </div>
+            {/* CPF */}
+            <div className="flex flex-col gap-1.5 mt-1">
+              <label className="font-sans text-xs text-muted flex items-center gap-1">
+                CPF <span className="text-red-500">*</span>
+                <span className="text-muted/50">(obrigatório para emissão do boleto/Pix)</span>
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                value={cpf}
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/\D/g, "").slice(0, 11);
+                  setCpf(digits.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, (_, a, b, c, d) => d ? `${a}.${b}.${c}-${d}` : c ? `${a}.${b}.${c}` : b ? `${a}.${b}` : a));
+                }}
+                placeholder="000.000.000-00"
+                className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/40 focus:outline-none focus:border-primary/50 font-mono"
+              />
+            </div>
+
             {/* WhatsApp */}
             <div className="flex flex-col gap-1.5 mt-1">
               <label className="font-sans text-xs text-muted flex items-center gap-1">
