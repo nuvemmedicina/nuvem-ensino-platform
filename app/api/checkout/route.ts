@@ -22,7 +22,14 @@ export async function POST(req: Request) {
   if (whatsapp && typeof whatsapp === "string" && whatsapp.trim()) profileUpdates.phone = whatsapp.trim();
   if (cpf && typeof cpf === "string" && cpf.trim()) profileUpdates.taxId = cpf.replace(/\D/g, "");
   if (Object.keys(profileUpdates).length > 0) {
-    await prisma.user.update({ where: { id: session.user.id }, data: profileUpdates });
+    try {
+      await prisma.user.update({ where: { id: session.user.id }, data: profileUpdates });
+    } catch {
+      // Coluna taxId pode ainda não existir se a migração não foi rodada
+      if (profileUpdates.phone) {
+        await prisma.user.update({ where: { id: session.user.id }, data: { phone: profileUpdates.phone } });
+      }
+    }
   }
 
   // Validate coupon
