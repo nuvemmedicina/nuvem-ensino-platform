@@ -114,6 +114,21 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
     }
   }
 
+  // Sanitiza módulos bloqueados: remove dados de vídeo server-side para não vazar ao cliente
+  const now = new Date();
+  const sanitizedModules = course.modules.map((mod) => {
+    const locked = mod.releaseDate && new Date(mod.releaseDate) > now;
+    if (!locked) return mod;
+    return {
+      ...mod,
+      lessons: mod.lessons.map((lesson) => ({
+        ...lesson,
+        videoUrl: null,
+        muxPlaybackId: null,
+      })),
+    };
+  });
+
   // Busca anotações do aluno para todas as aulas deste curso
   const allLessonIds = course.modules.flatMap((m) => m.lessons.map((l) => l.id));
   const notesData = await prisma.note.findMany({
@@ -305,7 +320,7 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
         <LessonPlayer
           courseId={course.id}
           courseTitle={course.title}
-          modules={course.modules}
+          modules={sanitizedModules}
           initialProgress={progressMap}
           initialLessonId={aula ?? null}
           initialNotes={notesMap}
