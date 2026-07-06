@@ -313,5 +313,82 @@ export async function GET() {
     results.push("✓ User.taxId adicionado");
   } catch (e) { results.push(`✗ User.taxId: ${e}`); }
 
+  // ── Migração 12: Provas por módulo ───────────────────────────────────────
+  try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "ModuleQuiz" (
+        "id"             TEXT NOT NULL,
+        "moduleId"       TEXT NOT NULL,
+        "title"          TEXT NOT NULL DEFAULT 'Prova do Módulo',
+        "availableFrom"  TIMESTAMP(3),
+        "availableUntil" TIMESTAMP(3),
+        "passingPct"     INTEGER NOT NULL DEFAULT 80,
+        "maxAttempts"    INTEGER NOT NULL DEFAULT 3,
+        "createdAt"      TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt"      TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT "ModuleQuiz_pkey" PRIMARY KEY ("id")
+      )
+    `);
+    results.push("✓ Tabela ModuleQuiz criada");
+  } catch (e) { results.push(`✗ ModuleQuiz: ${e}`); }
+
+  try {
+    await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX IF NOT EXISTS "ModuleQuiz_moduleId_key" ON "ModuleQuiz"("moduleId")`);
+    await prisma.$executeRawUnsafe(`ALTER TABLE "ModuleQuiz" ADD CONSTRAINT IF NOT EXISTS "ModuleQuiz_moduleId_fkey" FOREIGN KEY ("moduleId") REFERENCES "Module"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    results.push("✓ Index + FK ModuleQuiz → Module");
+  } catch (e) { results.push(`✗ ModuleQuiz FK: ${e}`); }
+
+  try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "ModuleQuizQuestion" (
+        "id"     TEXT NOT NULL,
+        "quizId" TEXT NOT NULL,
+        "text"   TEXT NOT NULL,
+        "order"  INTEGER NOT NULL DEFAULT 0,
+        CONSTRAINT "ModuleQuizQuestion_pkey" PRIMARY KEY ("id")
+      )
+    `);
+    await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "ModuleQuizQuestion_quizId_idx" ON "ModuleQuizQuestion"("quizId")`);
+    await prisma.$executeRawUnsafe(`ALTER TABLE "ModuleQuizQuestion" ADD CONSTRAINT IF NOT EXISTS "ModuleQuizQuestion_quizId_fkey" FOREIGN KEY ("quizId") REFERENCES "ModuleQuiz"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    results.push("✓ Tabela ModuleQuizQuestion criada");
+  } catch (e) { results.push(`✗ ModuleQuizQuestion: ${e}`); }
+
+  try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "ModuleQuizOption" (
+        "id"         TEXT NOT NULL,
+        "questionId" TEXT NOT NULL,
+        "text"       TEXT NOT NULL,
+        "isCorrect"  BOOLEAN NOT NULL DEFAULT false,
+        "order"      INTEGER NOT NULL DEFAULT 0,
+        CONSTRAINT "ModuleQuizOption_pkey" PRIMARY KEY ("id")
+      )
+    `);
+    await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "ModuleQuizOption_questionId_idx" ON "ModuleQuizOption"("questionId")`);
+    await prisma.$executeRawUnsafe(`ALTER TABLE "ModuleQuizOption" ADD CONSTRAINT IF NOT EXISTS "ModuleQuizOption_questionId_fkey" FOREIGN KEY ("questionId") REFERENCES "ModuleQuizQuestion"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    results.push("✓ Tabela ModuleQuizOption criada");
+  } catch (e) { results.push(`✗ ModuleQuizOption: ${e}`); }
+
+  try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "ModuleQuizAttempt" (
+        "id"        TEXT NOT NULL,
+        "quizId"    TEXT NOT NULL,
+        "userId"    TEXT NOT NULL,
+        "score"     INTEGER NOT NULL,
+        "total"     INTEGER NOT NULL,
+        "passed"    BOOLEAN NOT NULL,
+        "answers"   JSONB NOT NULL,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT "ModuleQuizAttempt_pkey" PRIMARY KEY ("id")
+      )
+    `);
+    await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "ModuleQuizAttempt_quizId_idx" ON "ModuleQuizAttempt"("quizId")`);
+    await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "ModuleQuizAttempt_userId_idx" ON "ModuleQuizAttempt"("userId")`);
+    await prisma.$executeRawUnsafe(`ALTER TABLE "ModuleQuizAttempt" ADD CONSTRAINT IF NOT EXISTS "ModuleQuizAttempt_quizId_fkey" FOREIGN KEY ("quizId") REFERENCES "ModuleQuiz"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    await prisma.$executeRawUnsafe(`ALTER TABLE "ModuleQuizAttempt" ADD CONSTRAINT IF NOT EXISTS "ModuleQuizAttempt_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+    results.push("✓ Tabela ModuleQuizAttempt criada");
+  } catch (e) { results.push(`✗ ModuleQuizAttempt: ${e}`); }
+
   return NextResponse.json({ ok: true, results });
 }

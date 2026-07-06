@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import LessonPlayer from "./LessonPlayer";
 import { CompleteCourseButton } from "./CompleteCourseButton";
+import { ModuleQuizPanel } from "./ModuleQuizPanel";
 import { getTranslations } from "next-intl/server";
 
 type Props = {
@@ -32,6 +33,14 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
           instructors: {
             include: { instructor: { include: { user: true } } },
             orderBy: { order: "asc" },
+          },
+          quiz: {
+            include: {
+              questions: {
+                include: { options: { select: { id: true, text: true, isCorrect: false, order: true }, orderBy: { order: "asc" } } },
+                orderBy: { order: "asc" },
+              },
+            },
           },
           lessons: {
             orderBy: { order: "asc" },
@@ -113,6 +122,15 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
       previousAttemptsMap[attempt.quizId] = { score: attempt.score, total: attempt.total };
     }
   }
+
+  // Busca tentativas de provas de módulo do aluno
+  const moduleQuizIds = course.modules.flatMap((m) => m.quiz ? [m.quiz.id] : []);
+  const moduleQuizAttempts = moduleQuizIds.length > 0
+    ? await prisma.moduleQuizAttempt.findMany({
+        where: { userId: session.user.id, quizId: { in: moduleQuizIds } },
+        orderBy: { createdAt: "desc" },
+      })
+    : [];
 
   // Sanitiza módulos bloqueados: remove dados de vídeo server-side para não vazar ao cliente
   const now = new Date();
@@ -317,6 +335,36 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
           </div>
         </div>
       ) : (
+        <>
+        {/* ── Provas de módulo ── */}
+        {course.modules.some((m) => m.quiz) && (
+          <div className="mx-4 lg:mx-6 mt-4 mb-2 space-y-3">
+            {course.modules
+              .filter((m) => m.quiz)
+              .map((m) => {
+                const attempts = moduleQuizAttempts.filter((a) => a.quizId === m.quiz!.id);
+                return (
+                  <ModuleQuizPanel
+                    key={m.id}
+                    moduleTitle={m.title}
+                    quiz={{
+                      ...m.quiz!,
+                      questions: m.quiz!.questions.map((q) => ({
+                        ...q,
+                        options: q.options.map(({ id, text, order }) => ({ id, text, order })),
+                      })),
+                    }}
+                    previousAttempts={attempts.map((a) => ({
+                      score: a.score,
+                      total: a.total,
+                      passed: a.passed,
+                      createdAt: a.createdAt,
+                    }))}
+                  />
+                );
+              })}
+          </div>
+        )}
         <LessonPlayer
           courseId={course.id}
           courseTitle={course.title}
@@ -331,6 +379,7 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
           currentUserRole={(session.user as { role?: string }).role ?? "STUDENT"}
           currentUserName={session.user.name ?? null}
         />
+        </>
       )}
     </div>
   );

@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, Plus, CheckCircle, Users } from "lucide-react";
+import { ChevronLeft, Plus, CheckCircle, Users, BarChart2 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import {
   updateCourse,
@@ -28,6 +28,16 @@ import {
   deleteQuiz,
   deleteQuestion,
 } from "./quizActions";
+import {
+  createModuleQuiz,
+  updateModuleQuiz,
+  deleteModuleQuiz,
+  addModuleQuizQuestion,
+  deleteModuleQuizQuestion,
+  addModuleQuizOption,
+  setCorrectOption,
+  deleteModuleQuizOption,
+} from "./moduleQuizActions";
 import { DeleteButton } from "./DeleteButton";
 import { MuxUploader } from "./MuxUploader";
 
@@ -67,6 +77,14 @@ export default async function AdminCursoEditPage({ params }: Props) {
             },
           },
           instructors: { include: { instructor: { include: { user: true } } }, orderBy: { order: "asc" } },
+          quiz: {
+            include: {
+              questions: {
+                include: { options: { orderBy: { order: "asc" } } },
+                orderBy: { order: "asc" },
+              },
+            },
+          },
         },
       },
     },
@@ -99,13 +117,22 @@ export default async function AdminCursoEditPage({ params }: Props) {
         <h1 className="font-serif text-2xl font-medium text-foreground line-clamp-2">
           {course.title}
         </h1>
-        <Link
-          href={`/admin/cursos/${slug}/inscritos`}
-          className="shrink-0 inline-flex items-center gap-1.5 font-sans text-xs font-semibold px-3 py-2 rounded-lg border border-border text-muted hover:border-primary/40 hover:text-foreground transition-colors"
-        >
-          <Users className="w-3.5 h-3.5" />
-          Ver inscritos
-        </Link>
+        <div className="flex items-center gap-2 shrink-0">
+          <Link
+            href={`/admin/cursos/${slug}/relatorio`}
+            className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold px-3 py-2 rounded-lg border border-border text-muted hover:border-primary/40 hover:text-foreground transition-colors"
+          >
+            <BarChart2 className="w-3.5 h-3.5" />
+            Relatório de provas
+          </Link>
+          <Link
+            href={`/admin/cursos/${slug}/inscritos`}
+            className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold px-3 py-2 rounded-lg border border-border text-muted hover:border-primary/40 hover:text-foreground transition-colors"
+          >
+            <Users className="w-3.5 h-3.5" />
+            Ver inscritos
+          </Link>
+        </div>
       </div>
 
       {/* ── Dados do curso ── */}
@@ -747,6 +774,128 @@ export default async function AdminCursoEditPage({ params }: Props) {
                       Adicionar
                     </button>
                   </form>
+                </div>
+
+                {/* ── Prova do módulo ── */}
+                <div className="border-t border-border bg-amber-500/5">
+                  <div className="px-4 py-3 flex items-center justify-between">
+                    <p className="font-sans text-xs font-bold uppercase tracking-wider text-amber-700">
+                      Prova do Módulo
+                    </p>
+                    {!mod.quiz && (
+                      <form action={createModuleQuiz.bind(null, mod.id, slug)}>
+                        <button type="submit" className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-700 hover:bg-amber-500/20 transition-colors">
+                          <Plus className="w-3.5 h-3.5 inline mr-1" />
+                          Criar prova
+                        </button>
+                      </form>
+                    )}
+                    {mod.quiz && (
+                      <form action={deleteModuleQuiz.bind(null, mod.quiz.id, slug)}>
+                        <button type="submit" className={btnDanger}>Excluir prova</button>
+                      </form>
+                    )}
+                  </div>
+
+                  {mod.quiz && (
+                    <div className="px-4 pb-4 space-y-4">
+                      {/* Config da prova */}
+                      <form action={updateModuleQuiz.bind(null, mod.quiz.id, slug)} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="sm:col-span-3">
+                          <label className={labelClass}>Título da prova</label>
+                          <input name="title" defaultValue={mod.quiz.title} required className={`${inputClass} text-xs`} />
+                        </div>
+                        <div>
+                          <label className={labelClass}>Disponível a partir de</label>
+                          <input
+                            name="availableFrom"
+                            type="datetime-local"
+                            defaultValue={mod.quiz.availableFrom ? new Date(mod.quiz.availableFrom).toISOString().slice(0, 16) : ""}
+                            className={`${inputClass} text-xs`}
+                          />
+                        </div>
+                        <div>
+                          <label className={labelClass}>Prazo final</label>
+                          <input
+                            name="availableUntil"
+                            type="datetime-local"
+                            defaultValue={mod.quiz.availableUntil ? new Date(mod.quiz.availableUntil).toISOString().slice(0, 16) : ""}
+                            className={`${inputClass} text-xs`}
+                          />
+                        </div>
+                        <div className="flex items-end">
+                          <button type="submit" className={btnGhost}>Salvar configuração</button>
+                        </div>
+                      </form>
+
+                      <p className="font-sans text-[10px] text-muted">
+                        {mod.quiz.questions.length} questão(ões) · mín. {mod.quiz.passingPct}% · até {mod.quiz.maxAttempts} tentativas
+                      </p>
+
+                      {/* Questões existentes */}
+                      {mod.quiz.questions.map((q, qi) => (
+                        <div key={q.id} className="border border-border rounded-xl p-3 bg-background space-y-2">
+                          <div className="flex items-start gap-2">
+                            <span className="font-sans text-xs font-bold text-muted shrink-0 mt-0.5">{qi + 1}.</span>
+                            <p className="font-sans text-xs text-foreground flex-1">{q.text}</p>
+                            <form action={deleteModuleQuizQuestion.bind(null, q.id, slug)}>
+                              <button type="submit" className={btnDanger}>✕</button>
+                            </form>
+                          </div>
+
+                          {/* Opções */}
+                          <div className="pl-4 space-y-1">
+                            {q.options.map((opt) => (
+                              <div key={opt.id} className="flex items-center gap-2">
+                                <form action={setCorrectOption.bind(null, opt.id, q.id, slug)}>
+                                  <button
+                                    type="submit"
+                                    className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${opt.isCorrect ? "bg-green-500 border-green-500" : "border-border hover:border-green-400"}`}
+                                    title="Marcar como correta"
+                                  >
+                                    {opt.isCorrect && <CheckCircle className="w-3 h-3 text-white" />}
+                                  </button>
+                                </form>
+                                <span className={`font-sans text-xs flex-1 ${opt.isCorrect ? "text-green-700 font-semibold" : "text-muted"}`}>{opt.text}</span>
+                                <form action={deleteModuleQuizOption.bind(null, opt.id, slug)}>
+                                  <button type="submit" className={btnDanger}>✕</button>
+                                </form>
+                              </div>
+                            ))}
+
+                            {/* Add option */}
+                            <form action={addModuleQuizOption.bind(null, q.id, slug)} className="flex items-center gap-2 pt-1">
+                              <input name="text" placeholder="Nova alternativa…" required className={`${inputClass} text-xs flex-1`} />
+                              <label className="flex items-center gap-1 font-sans text-[10px] text-muted shrink-0">
+                                <input type="checkbox" name="isCorrect" className="w-3 h-3" />
+                                Correta
+                              </label>
+                              <button type="submit" className={btnGhost}>+</button>
+                            </form>
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Add question */}
+                      {mod.quiz.questions.length < 10 && (
+                        <form action={addModuleQuizQuestion.bind(null, mod.quiz.id, slug)} className="flex gap-2">
+                          <input
+                            name="text"
+                            placeholder={`Questão ${mod.quiz.questions.length + 1} de 10…`}
+                            required
+                            className={`${inputClass} flex-1 text-xs`}
+                          />
+                          <button type="submit" className={btnGhost}>
+                            <Plus className="w-3.5 h-3.5 inline mr-1" />
+                            Questão
+                          </button>
+                        </form>
+                      )}
+                      {mod.quiz.questions.length >= 10 && (
+                        <p className="font-sans text-xs text-green-700 font-semibold">✓ 10 questões cadastradas</p>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             );

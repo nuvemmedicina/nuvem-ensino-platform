@@ -94,9 +94,10 @@ model User {
   instructor        Instructor?
   attendancesMade   Attendance[]  @relation("AttendanceMarkedBy")
   lessonComments    LessonComment[]
-  forumPosts        ForumPost[]
-  forumReplies      ForumReply[]
-  forumLikes        ForumLike[]
+  forumPosts         ForumPost[]
+  forumReplies       ForumReply[]
+  forumLikes         ForumLike[]
+  moduleQuizAttempts ModuleQuizAttempt[]
 }
 
 model Account {
@@ -255,6 +256,7 @@ model Module {
   course      Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
   lessons     Lesson[]
   instructors ModuleInstructor[]
+  quiz        ModuleQuiz?
 }
 
 model ModuleInstructor {
@@ -577,6 +579,58 @@ model ForumLike {
 
   @@unique([userId, postId])
   @@unique([userId, replyId])
+}
+
+// ─── MODULE QUIZZES ───────────────────────────────────────────────────────────
+
+model ModuleQuiz {
+  id             String    @id @default(cuid())
+  moduleId       String    @unique
+  title          String    @default("Prova do Módulo")
+  availableFrom  DateTime?
+  availableUntil DateTime?
+  passingPct     Int       @default(80)
+  maxAttempts    Int       @default(3)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  module    Module               @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  questions ModuleQuizQuestion[]
+  attempts  ModuleQuizAttempt[]
+}
+
+model ModuleQuizQuestion {
+  id     String @id @default(cuid())
+  quizId String
+  text   String @db.Text
+  order  Int    @default(0)
+
+  quiz    ModuleQuiz        @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  options ModuleQuizOption[]
+}
+
+model ModuleQuizOption {
+  id         String  @id @default(cuid())
+  questionId String
+  text       String  @db.Text
+  isCorrect  Boolean @default(false)
+  order      Int     @default(0)
+
+  question ModuleQuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model ModuleQuizAttempt {
+  id        String   @id @default(cuid())
+  quizId    String
+  userId    String
+  score     Int
+  total     Int
+  passed    Boolean
+  answers   Json
+  createdAt DateTime @default(now())
+
+  quiz ModuleQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // ─── LIVE SESSIONS ────────────────────────────────────────────────────────────
