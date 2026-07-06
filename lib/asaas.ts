@@ -34,7 +34,7 @@ async function req<T = unknown>(
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-export type AsaasCustomer = { id: string; name: string; email: string };
+export type AsaasCustomer = { id: string; name: string; email: string; cpfCnpj?: string };
 export type AsaasBillingType = "PIX" | "BOLETO" | "CREDIT_CARD";
 
 export type AsaasPayment = {
