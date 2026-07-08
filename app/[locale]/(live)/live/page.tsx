@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { Metadata } from "next";
 import LiveRegistrationForm from "./LiveRegistrationForm";
 
@@ -28,13 +27,8 @@ export default function LivePage() {
 
         {/* Logo branca — topo */}
         <div className="absolute top-6 left-6 z-10">
-          <Image
-            src="/nuvem-ensino-branca.png"
-            alt="NU.V.E.M ENSINO"
-            width={130}
-            height={105}
-            className="h-11 w-auto drop-shadow-md"
-          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M ENSINO" className="h-11 w-auto drop-shadow-md" />
         </div>
 
         {/* Legenda + Selo MEC — rodapé */}
@@ -106,13 +100,8 @@ export default function LivePage() {
 
         {/* Selos ISO + MEC */}
         <div className="mt-10 pt-8 border-t border-[#D8D2C8] dark:border-[#1E3540] flex justify-center">
-          <Image
-            src="/selos-iso-mec.png"
-            alt="Certificações ISO 9001 e Reconhecido pelo MEC"
-            width={300}
-            height={130}
-            className="h-20 w-auto"
-          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/selos-iso-mec.png" alt="Certificações ISO 9001 e Reconhecido pelo MEC" className="h-20 w-auto" />
         </div>
       </div>
     </div>
