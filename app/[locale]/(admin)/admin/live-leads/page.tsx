@@ -24,7 +24,7 @@ export default async function LiveLeadsPage() {
             Inscrições — Live DICI
           </h1>
           <p className="font-sans text-sm text-muted mt-1">
-            {leads.length} {leads.length === 1 ? "inscrito" : "inscritos"} · 24/07/2026 às 19h30
+            {leads.length} {leads.length === 1 ? "inscrito" : "inscritos"} · 22/07/2026 às 19h30
           </p>
         </div>
         <a

@@ -54,7 +54,7 @@ export default function LivePage() {
         {/* Badge ao vivo */}
         <div className="inline-flex items-center gap-2 bg-red-600 text-white text-[10px] font-black tracking-[0.18em] uppercase px-3.5 py-1.5 rounded-full w-fit mb-7 animate-pulse">
           <span className="w-1.5 h-1.5 rounded-full bg-white" />
-          Live Exclusiva · 24/07 às 19h30
+          Live Exclusiva · 22/07 às 19h30
         </div>
 
         <h1
