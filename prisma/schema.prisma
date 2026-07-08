@@ -633,6 +633,21 @@ model ModuleQuizAttempt {
   user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+// ─── LIVE EVENT LEADS ────────────────────────────────────────────────────────
+
+model LiveLead {
+  id            String   @id @default(cuid())
+  eventSlug     String
+  nome          String
+  especialidade String
+  telefone      String
+  email         String
+  createdAt     DateTime @default(now())
+
+  @@index([eventSlug])
+  @@index([email])
+}
+
 // ─── LIVE SESSIONS ────────────────────────────────────────────────────────────
 
 model LiveSession {
@@ -652,3 +667,4 @@ model LiveSession {
 
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
+

@@ -390,5 +390,24 @@ export async function GET() {
     results.push("✓ Tabela ModuleQuizAttempt criada");
   } catch (e) { results.push(`✗ ModuleQuizAttempt: ${e}`); }
 
+  // ── Migração 13: tabela LiveLead (inscrições de live) ───────────────────
+  try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "LiveLead" (
+        "id"            TEXT NOT NULL,
+        "eventSlug"     TEXT NOT NULL,
+        "nome"          TEXT NOT NULL,
+        "especialidade" TEXT NOT NULL,
+        "telefone"      TEXT NOT NULL,
+        "email"         TEXT NOT NULL,
+        "createdAt"     TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT "LiveLead_pkey" PRIMARY KEY ("id")
+      )
+    `);
+    await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "LiveLead_eventSlug_idx" ON "LiveLead"("eventSlug")`);
+    await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "LiveLead_email_idx" ON "LiveLead"("email")`);
+    results.push("✓ Tabela LiveLead criada");
+  } catch (e) { results.push(`✗ LiveLead: ${e}`); }
+
   return NextResponse.json({ ok: true, results });
 }
