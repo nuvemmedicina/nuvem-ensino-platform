@@ -31,29 +31,20 @@ export default function LivePage() {
           <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M ENSINO" className="h-11 w-auto drop-shadow-md" />
         </div>
 
-        {/* Legenda + Selo MEC — rodapé */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 px-8 pb-8 flex items-end justify-between gap-4">
-          <div>
-            <p className="text-[10px] font-bold tracking-[0.18em] uppercase text-[#C9A84C] mb-2">
-              Apresentação
-            </p>
-            <h2
-              className="text-white text-2xl font-normal leading-snug"
-              style={{ fontFamily: "Georgia, serif" }}
-            >
-              Dra. Vera Ângelo
-            </h2>
-            <p className="text-white/55 text-sm mt-1 leading-relaxed">
-              Especialista em Neurogastroenterologia<br className="hidden lg:block" /> e Motilidade Digestiva
-            </p>
-          </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/selo-mec-nuvem.svg"
-            alt="Selo MEC"
-            height={72}
-            className="h-16 w-auto shrink-0 drop-shadow-lg"
-          />
+        {/* Legenda — rodapé */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 px-8 pb-8">
+          <p className="text-[10px] font-bold tracking-[0.18em] uppercase text-[#C9A84C] mb-2">
+            Apresentação
+          </p>
+          <h2
+            className="text-white text-2xl font-normal leading-snug"
+            style={{ fontFamily: "Georgia, serif" }}
+          >
+            Dra. Vera Ângelo
+          </h2>
+          <p className="text-white/55 text-sm mt-1 leading-relaxed">
+            Especialista em Neurogastroenterologia<br className="hidden lg:block" /> e Motilidade Digestiva
+          </p>
         </div>
       </div>
 
