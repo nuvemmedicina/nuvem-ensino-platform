@@ -104,19 +104,14 @@ export default function LivePage() {
 
         <LiveRegistrationForm />
 
-        {/* Selo MEC */}
-        <div className="flex items-center gap-4 mt-10 pt-8 border-t border-[#D8D2C8] dark:border-[#1E3540]">
-          <Image
-            src="/selo-mec-nuvem.svg"
-            alt="Selo MEC — NU.V.E.M ENSINO"
-            width={56}
-            height={56}
-            className="shrink-0"
+        {/* Selos ISO + MEC */}
+        <div className="mt-10 pt-8 border-t border-[#D8D2C8] dark:border-[#1E3540] flex justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/selos-mec-iso.svg"
+            alt="Certificações ISO 9001 e Reconhecido pelo MEC"
+            className="h-20 w-auto"
           />
-          <p className="text-xs text-[#5C747A] dark:text-[#8AADB5] leading-relaxed">
-            Curso reconhecido e desenvolvido por especialistas certificados.
-            Formação médica de excelência.
-          </p>
         </div>
       </div>
     </div>
