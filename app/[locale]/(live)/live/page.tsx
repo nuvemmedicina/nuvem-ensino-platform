@@ -26,14 +26,15 @@ export default function LivePage() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#001820] via-[#001820]/10 to-[#001820]/5" />
         </div>
 
-        {/* Logo */}
-        <div className="absolute top-6 left-6 z-10">
-          <Image
-            src="/nuvem-ensino-branca.svg"
-            alt="NU.V.E.M ENSINO"
-            width={110}
-            height={89}
-            className="h-10 w-auto opacity-80"
+        {/* Selo */}
+        <div className="absolute top-5 left-5 z-10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/selo-mec-nuvem.svg"
+            alt="Selo MEC — NU.V.E.M ENSINO"
+            width={64}
+            height={64}
+            className="drop-shadow-lg"
           />
         </div>
 
