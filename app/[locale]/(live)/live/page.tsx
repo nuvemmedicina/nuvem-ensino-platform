@@ -28,11 +28,11 @@ export default function LivePage() {
 
         {/* Logo branca — topo */}
         <div className="absolute top-6 left-6 z-10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/nuvem-ensino-branca.svg"
+          <Image
+            src="/nuvem-ensino-branca.png"
             alt="NU.V.E.M ENSINO"
-            height={44}
+            width={130}
+            height={105}
             className="h-11 w-auto drop-shadow-md"
           />
         </div>
@@ -106,10 +106,11 @@ export default function LivePage() {
 
         {/* Selos ISO + MEC */}
         <div className="mt-10 pt-8 border-t border-[#D8D2C8] dark:border-[#1E3540] flex justify-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/selos-mec-iso.svg"
+          <Image
+            src="/selos-iso-mec.png"
             alt="Certificações ISO 9001 e Reconhecido pelo MEC"
+            width={300}
+            height={130}
             className="h-20 w-auto"
           />
         </div>
