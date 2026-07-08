@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     siteName: "NU.V.E.M ENSINO",
     title: "NU.V.E.M ENSINO — Formação Médica de Excelência",
     description:
-      "Cursos hands-on e online de Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Certificação ISO 9001.",
+      "Curso de Aperfeiçoamento em DICI — 96h | 4 módulos + bônus, 100% online. 4h de aula ao vivo por módulo. Coordenação: Dra. Vera Lúcia Ângelo Andrade. Certificação FACOP / MEC.",
     images: [
       {
         url: "/opengraph-image",
@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "NU.V.E.M ENSINO — Formação Médica de Excelência",
     description:
-      "Cursos hands-on e online de Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Certificação ISO 9001.",
+      "Curso de Aperfeiçoamento em DICI — 96h | 4 módulos + bônus, 100% online. 4h de aula ao vivo por módulo. Coordenação: Dra. Vera Lúcia Ângelo Andrade. Certificação FACOP / MEC.",
     images: ["/opengraph-image"],
     creator: "@NuvemEnsino",
   },
