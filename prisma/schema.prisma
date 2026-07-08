@@ -290,6 +290,7 @@ model Lesson {
   description  String?    @db.Text
   type         LessonType @default(VIDEO)
   videoUrl     String?
+  audioUrl     String?
   muxAssetId   String?
   muxPlaybackId String?
   duration     Int?

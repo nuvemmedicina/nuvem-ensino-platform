@@ -409,5 +409,11 @@ export async function GET() {
     results.push("✓ Tabela LiveLead criada");
   } catch (e) { results.push(`✗ LiveLead: ${e}`); }
 
+  // ── Migração 14: coluna audioUrl na tabela Lesson (AudioCast) ──────────────
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "Lesson" ADD COLUMN IF NOT EXISTS "audioUrl" TEXT`);
+    results.push("✓ Coluna audioUrl adicionada à Lesson");
+  } catch (e) { results.push(`✗ audioUrl: ${e}`); }
+
   return NextResponse.json({ ok: true, results });
 }

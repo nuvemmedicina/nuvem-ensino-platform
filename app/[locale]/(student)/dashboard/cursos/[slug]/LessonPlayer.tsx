@@ -15,6 +15,7 @@ type Lesson = {
   description: string | null;
   duration: number | null;
   videoUrl: string | null;
+  audioUrl: string | null;
   muxPlaybackId: string | null;
   isFree: boolean;
   order: number;
@@ -280,6 +281,22 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
             </div>
           )}
         </div>
+
+        {/* AudioCast */}
+        {currentLesson?.audioUrl && (
+          <div className="bg-[#0a1f27] border-b border-border px-4 py-3 flex items-center gap-3">
+            <span className="text-[#00a3c4] shrink-0 text-lg">🎙</span>
+            <div className="flex-1 min-w-0">
+              <p className="font-sans text-[11px] font-bold uppercase tracking-widest text-[#00a3c4] mb-1">AudioCast</p>
+              <audio
+                controls
+                src={currentLesson.audioUrl}
+                className="w-full h-8"
+                style={{ accentColor: "#00a3c4" }}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Aviso de direitos autorais — exibido apenas para cursos com vídeo */}
         {(hasMux || youtubeId) && (

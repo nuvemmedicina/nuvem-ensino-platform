@@ -50,6 +50,7 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
               description: true,
               duration: true,
               videoUrl: true,
+              audioUrl: true,
               muxPlaybackId: true,
               isFree: true,
               order: true,

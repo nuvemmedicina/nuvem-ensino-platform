@@ -55,6 +55,7 @@ export async function updateLesson(lessonId: string, courseSlug: string, formDat
     data: {
       title:       formData.get("title") as string,
       videoUrl:    (formData.get("videoUrl") as string) || null,
+      audioUrl:    (formData.get("audioUrl") as string) || null,
       description: (formData.get("description") as string) || null,
       duration:    formData.get("duration") ? Math.round(parseFloat(formData.get("duration") as string) * 60) : null,
       isFree:      formData.get("isFree") === "on",

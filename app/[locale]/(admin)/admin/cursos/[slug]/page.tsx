@@ -579,6 +579,12 @@ export default async function AdminCursoEditPage({ params }: Props) {
                                 placeholder="URL do YouTube (opcional — use se não tiver vídeo Mux)"
                                 className={inputClass}
                               />
+                              <input
+                                name="audioUrl"
+                                defaultValue={lesson.audioUrl ?? ""}
+                                placeholder="🎙 AudioCast — URL do MP3 (opcional)"
+                                className={inputClass}
+                              />
                               <textarea
                                 name="description"
                                 defaultValue={lesson.description ?? ""}
