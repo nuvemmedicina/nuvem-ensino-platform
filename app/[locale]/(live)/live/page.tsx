@@ -28,12 +28,13 @@ export default function LivePage() {
 
         {/* Logo */}
         <div className="absolute top-6 left-6 z-10">
-          <span
-            className="text-white/70 text-[11px] font-normal tracking-[0.22em] uppercase"
-            style={{ fontFamily: "Georgia, serif" }}
-          >
-            NU.V.E.M ENSINO
-          </span>
+          <Image
+            src="/nuvem-ensino-branca.svg"
+            alt="NU.V.E.M ENSINO"
+            width={110}
+            height={89}
+            className="h-10 w-auto opacity-80"
+          />
         </div>
 
         {/* Legenda */}
@@ -92,6 +93,21 @@ export default function LivePage() {
         <div className="h-px bg-[#D8D2C8] dark:bg-[#1E3540] mb-8" />
 
         <LiveRegistrationForm />
+
+        {/* Selo MEC */}
+        <div className="flex items-center gap-4 mt-10 pt-8 border-t border-[#D8D2C8] dark:border-[#1E3540]">
+          <Image
+            src="/selo-mec-nuvem.svg"
+            alt="Selo MEC — NU.V.E.M ENSINO"
+            width={56}
+            height={56}
+            className="shrink-0"
+          />
+          <p className="text-xs text-[#5C747A] dark:text-[#8AADB5] leading-relaxed">
+            Curso reconhecido e desenvolvido por especialistas certificados.
+            Formação médica de excelência.
+          </p>
+        </div>
       </div>
     </div>
   );
