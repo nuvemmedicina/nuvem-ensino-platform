@@ -76,8 +76,9 @@ export default function LivePage() {
         </h1>
 
         <p className="text-sm text-[#5C747A] dark:text-[#8AADB5] leading-relaxed max-w-[44ch] mb-7">
-          Junte-se à Dra. Vera Ângelo numa aula ao vivo sobre o universo da
-          DICI e dê o próximo passo na sua formação clínica.
+          A Dra. Vera Ângelo vai apresentar ao vivo o Curso de Aperfeiçoamento
+          em DICI e revelar, com exclusividade para os presentes, uma condição
+          especial de matrícula.
         </p>
 
         {/* Box de desconto */}
