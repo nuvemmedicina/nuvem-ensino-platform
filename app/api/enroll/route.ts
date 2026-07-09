@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   try {
     const { enrollment, course, isNew } = await prisma.$transaction(async (tx) => {
       const c = await tx.course.findFirst({
-        where: { slug: courseSlug },
+        where: { slug: courseSlug, status: "PUBLISHED" },
         select: { id: true, title: true, slug: true, totalSeats: true, reservedSeats: true },
       });
       if (!c) throw Object.assign(new Error("Curso não encontrado."), { status: 404 });

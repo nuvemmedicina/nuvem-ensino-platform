@@ -19,6 +19,7 @@ export function LessonInstructorSelector({
 }) {
   const [selected, setSelected] = useState<string[]>(initialIds);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function toggle(id: string) {
@@ -29,9 +30,14 @@ export function LessonInstructorSelector({
   }
 
   function save() {
+    setError(null);
     startTransition(async () => {
-      await updateLessonInstructors(lessonId, courseSlug, selected);
-      setSaved(true);
+      try {
+        await updateLessonInstructors(lessonId, courseSlug, selected);
+        setSaved(true);
+      } catch (e) {
+        setError((e as Error).message ?? "Erro ao salvar");
+      }
     });
   }
 
@@ -62,6 +68,7 @@ export function LessonInstructorSelector({
       >
         {isPending ? <Loader2 className="w-3 h-3 animate-spin inline" /> : saved ? <Check className="w-3 h-3 inline text-green-500" /> : "Salvar"}
       </button>
+      {error && <span className="font-sans text-[10px] text-red-500">{error}</span>}
     </div>
   );
 }

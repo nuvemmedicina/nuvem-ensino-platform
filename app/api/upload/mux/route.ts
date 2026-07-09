@@ -24,19 +24,25 @@ export async function POST(req: NextRequest) {
   }
 
   // Cria um upload direto no Mux
-  const client = mux();
-  const upload = await client.video.uploads.create({
-    cors_origin: process.env.NEXT_PUBLIC_APP_URL ?? "*",
-    new_asset_settings: {
-      playback_policy: ["public"],
-      encoding_tier: "baseline", // mais barato; troque por "smart" se quiser qualidade adaptativa
-    },
-  });
+  try {
+    const client = mux();
+    const upload = await client.video.uploads.create({
+      cors_origin: process.env.NEXT_PUBLIC_APP_URL ?? "*",
+      new_asset_settings: {
+        playback_policy: ["public"],
+        encoding_tier: "baseline",
+      },
+    });
 
-  return NextResponse.json({
-    uploadId: upload.id,
-    uploadUrl: upload.url,
-  });
+    return NextResponse.json({
+      uploadId: upload.id,
+      uploadUrl: upload.url,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Erro ao criar upload no Mux";
+    console.error("Mux upload create error:", err);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
 
 // GET /api/upload/mux?uploadId=xxx
