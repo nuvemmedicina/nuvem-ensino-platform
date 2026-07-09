@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { sendEnrollmentConfirmation } from "@/lib/email";
+import { sendEnrollmentConfirmation, sendPaymentPendingEmail } from "@/lib/email";
+
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.nuvemensino.com.br";
 
 export async function POST(req: NextRequest) {
   const secret = process.env.ASAAS_WEBHOOK_TOKEN;
@@ -14,7 +16,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { event, payment } = body as {
     event: string;
-    payment?: { id: string; status: string; externalReference?: string; value: number };
+    payment?: { id: string; status: string; externalReference?: string; value: number; billingType?: string };
   };
 
   // ── Pagamento confirmado ────────────────────────────────────────────────────
@@ -37,6 +39,12 @@ export async function POST(req: NextRequest) {
         where: { id: dbPayment.id },
         data: { status: "PAID", paidAt: new Date() },
       });
+      // Certificado (fire-and-forget)
+      prisma.certificate.upsert({
+        where: { enrollmentId: dbPayment.enrollmentId },
+        create: { userId: enrollment.userId, enrollmentId: dbPayment.enrollmentId },
+        update: {},
+      }).catch((err) => console.error("Asaas certificate error:", err));
       // E-mail de confirmação (fire-and-forget)
       sendEnrollmentConfirmation({
         to: enrollment.user.email,
@@ -56,9 +64,9 @@ export async function POST(req: NextRequest) {
     if (dbPayment) {
       const enrollment = await prisma.enrollment.findUnique({
         where: { id: dbPayment.enrollmentId },
-        select: { courseId: true, status: true },
+        select: { courseId: true, status: true, userId: true },
       });
-      if (enrollment && (enrollment.status === "PENDING" || enrollment.status === "CANCELLED")) {
+      if (enrollment && enrollment.status !== "ACTIVE") {
         await prisma.$transaction([
           prisma.payment.update({
             where: { id: dbPayment.id },
@@ -73,6 +81,24 @@ export async function POST(req: NextRequest) {
             data: { reservedSeats: { decrement: 1 } },
           }),
         ]);
+        // E-mail de pagamento pendente (fire-and-forget)
+        const user = await prisma.user.findUnique({
+          where: { id: enrollment.userId },
+          select: { email: true, name: true },
+        });
+        const course = await prisma.course.findUnique({
+          where: { id: enrollment.courseId },
+          select: { title: true, slug: true },
+        });
+        if (user && course) {
+          sendPaymentPendingEmail({
+            to: user.email,
+            userName: user.name ?? "Aluno",
+            courseName: course.title,
+            method: payment?.billingType ?? "pix",
+            checkoutUrl: `${APP_URL}/checkout/${course.slug}`,
+          }).catch((err) => console.error("Asaas pending email error:", err));
+        }
       }
     }
   }

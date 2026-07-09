@@ -74,6 +74,52 @@ export async function sendEnrollmentConfirmation({
   });
 }
 
+export async function sendPaymentPendingEmail({
+  to,
+  userName,
+  courseName,
+  method,
+  checkoutUrl,
+}: {
+  to: string;
+  userName: string;
+  courseName: string;
+  method: "pix" | "boleto" | "parcelado" | string;
+  checkoutUrl: string;
+}) {
+  const methodLabel =
+    method === "pix" ? "PIX" : method === "boleto" ? "Boleto Bancário" : "Cartão de Crédito";
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Identificamos que você iniciou a inscrição no curso abaixo, mas o pagamento ainda não foi confirmado:</p>
+    <div style="background:#f0f9fa;border-left:4px solid #00475e;border-radius:8px;padding:16px 20px;margin:24px 0;">
+      <p style="margin:0;color:#00475e;font-size:16px;font-weight:600;font-family:Georgia,serif;">${courseName}</p>
+      <p style="margin:6px 0 0;color:#6b7280;font-size:13px;">Forma de pagamento: <strong>${methodLabel}</strong></p>
+    </div>
+    <p style="margin:0 0 8px;color:#374151;font-size:15px;">Se teve alguma dificuldade, é simples de resolver:</p>
+    <ul style="margin:0 0 24px;padding-left:20px;color:#6b7280;font-size:14px;line-height:1.8;">
+      <li>Verifique se os dados do pagamento estão corretos</li>
+      <li>Tente novamente pelo link abaixo</li>
+      <li>Se o problema persistir, entre em contato pelo WhatsApp</li>
+    </ul>
+    <div style="text-align:center;margin:32px 0;">
+      <a href="${checkoutUrl}"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Tentar novamente →
+      </a>
+    </div>
+    <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Precisa de ajuda? Fale conosco pelo WhatsApp <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 7229-1029</a> — respondemos rapidamente.</p>
+  `;
+
+  return getResend().emails.send({
+    from: FROM,
+    to,
+    subject: `Sua inscrição em ${courseName} está aguardando pagamento`,
+    html: baseLayout("Pagamento Pendente", body),
+  });
+}
+
 export async function sendPasswordResetEmail({
   to,
   userName,

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { CreditCard, QrCode, FileText, Loader2, Shield, CheckCircle, Zap, Copy, Check, X } from "lucide-react";
+import { CreditCard, QrCode, FileText, Loader2, Shield, CheckCircle, Zap, Copy, Check, X, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 type PaymentMethod = "pix" | "boleto" | "parcelado";
@@ -43,7 +43,32 @@ export default function CheckoutClient({
   const [paymentError, setPaymentError] = useState("");
   const [pixData, setPixData] = useState<{ image: string; copyPaste: string } | null>(null);
   const [pixCopied, setPixCopied] = useState(false);
+  const [pixSecondsLeft, setPixSecondsLeft] = useState(0);
+  const pixTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [installments, setInstallments] = useState(3);
+
+  // Temporizador do PIX (30 minutos = 1800 segundos)
+  useEffect(() => {
+    if (pixData) {
+      setPixSecondsLeft(30 * 60);
+      pixTimerRef.current = setInterval(() => {
+        setPixSecondsLeft((s) => {
+          if (s <= 1) {
+            clearInterval(pixTimerRef.current!);
+            return 0;
+          }
+          return s - 1;
+        });
+      }, 1000);
+    } else {
+      if (pixTimerRef.current) clearInterval(pixTimerRef.current);
+    }
+    return () => { if (pixTimerRef.current) clearInterval(pixTimerRef.current); };
+  }, [pixData]);
+
+  const pixMinutes = Math.floor(pixSecondsLeft / 60).toString().padStart(2, "0");
+  const pixSeconds = (pixSecondsLeft % 60).toString().padStart(2, "0");
+  const pixExpired = pixSecondsLeft === 0 && pixData !== null;
 
   const methodLabels: Record<PaymentMethod, { label: string; desc: string; icon: React.ReactNode }> = {
     pix: {
@@ -250,38 +275,63 @@ export default function CheckoutClient({
               </button>
             </div>
 
-            {/* QR Code */}
-            <div className="flex justify-center mb-4">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`data:image/png;base64,${pixData.image}`}
-                alt="QR Code PIX"
-                className="w-48 h-48 rounded-xl border border-border"
-              />
+            {/* Temporizador */}
+            <div className={`flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 mb-4 ${pixExpired ? "bg-red-50 border border-red-200" : "bg-amber-50 border border-amber-200"}`}>
+              <Clock className={`w-4 h-4 shrink-0 ${pixExpired ? "text-red-500" : "text-amber-600"}`} />
+              {pixExpired ? (
+                <p className="font-sans text-sm font-semibold text-red-600">QR Code expirado — gere um novo</p>
+              ) : (
+                <p className="font-sans text-sm text-amber-700">
+                  Expira em <strong className="tabular-nums">{pixMinutes}:{pixSeconds}</strong>
+                </p>
+              )}
             </div>
+
+            {/* QR Code */}
+            {!pixExpired && (
+              <div className="flex justify-center mb-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`data:image/png;base64,${pixData.image}`}
+                  alt="QR Code PIX"
+                  className="w-48 h-48 rounded-xl border border-border"
+                />
+              </div>
+            )}
 
             {/* Copy & paste */}
-            <div className="space-y-2">
-              <p className="font-sans text-xs text-muted text-center">ou copie o código PIX Copia e Cola</p>
-              <div className="flex gap-2">
-                <input
-                  readOnly
-                  value={pixData.copyPaste}
-                  className="flex-1 px-3 py-2 rounded-lg border border-border bg-background text-xs font-mono text-muted truncate"
-                />
-                <button
-                  onClick={copyPix}
-                  className="flex items-center gap-1.5 font-sans text-xs font-semibold px-3 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors shrink-0"
-                >
-                  {pixCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                  {pixCopied ? "Copiado!" : "Copiar"}
-                </button>
+            {!pixExpired && (
+              <div className="space-y-2">
+                <p className="font-sans text-xs text-muted text-center">ou copie o código PIX Copia e Cola</p>
+                <div className="flex gap-2">
+                  <input
+                    readOnly
+                    value={pixData.copyPaste}
+                    className="flex-1 px-3 py-2 rounded-lg border border-border bg-background text-xs font-mono text-muted truncate"
+                  />
+                  <button
+                    onClick={copyPix}
+                    className="flex items-center gap-1.5 font-sans text-xs font-semibold px-3 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors shrink-0"
+                  >
+                    {pixCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    {pixCopied ? "Copiado!" : "Copiar"}
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
-            <p className="font-sans text-[11px] text-muted/70 text-center mt-4">
-              Após o pagamento, seu acesso é liberado automaticamente.
-            </p>
+            {pixExpired ? (
+              <button
+                onClick={() => setPixData(null)}
+                className="w-full mt-4 font-sans text-sm font-semibold py-3 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors"
+              >
+                Gerar novo PIX
+              </button>
+            ) : (
+              <p className="font-sans text-[11px] text-muted/70 text-center mt-4">
+                Após o pagamento, seu acesso é liberado automaticamente.
+              </p>
+            )}
           </div>
         </div>
       )}

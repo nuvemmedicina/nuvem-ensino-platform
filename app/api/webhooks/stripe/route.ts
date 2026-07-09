@@ -49,12 +49,7 @@ export async function POST(req: Request) {
       courseSlug: enrollment.course.slug,
     }).catch((err) => console.error("Email confirmation error:", err));
 
-    // Issue certificate if course completed
-    await prisma.certificate.upsert({
-      where: { enrollmentId },
-      create: { userId: enrollment.userId, enrollmentId },
-      update: {},
-    });
+    // Certificado emitido apenas quando o aluno concluir o curso (via markComplete)
   }
 
   if (event.type === "checkout.session.expired") {
