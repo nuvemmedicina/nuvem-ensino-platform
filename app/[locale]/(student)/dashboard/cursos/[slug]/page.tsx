@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import LessonPlayer from "./LessonPlayer";
 import { CompleteCourseButton } from "./CompleteCourseButton";
 import { ModuleQuizPanel } from "./ModuleQuizPanel";
+import { CourseContentCards } from "./CourseContentCards";
 import { getTranslations } from "next-intl/server";
 
 type Props = {
@@ -337,6 +338,24 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
         </div>
       ) : (
         <>
+        {/* ── Cards de conteúdo ── */}
+        {(() => {
+          const allLessons = course.modules.flatMap((m) => m.lessons);
+          const audioTotal = allLessons.filter((l) => l.audioUrl).length;
+          const quizModules = course.modules.filter((m) => m.quiz);
+          const quizTotal = quizModules.length;
+          const quizPassed = quizModules.filter((m) =>
+            moduleQuizAttempts.some((a) => a.quizId === m.quiz!.id && a.passed)
+          ).length;
+          return (
+            <CourseContentCards
+              quizTotal={quizTotal}
+              quizPassed={quizPassed}
+              audioTotal={audioTotal}
+            />
+          );
+        })()}
+
         {/* ── Provas de módulo ── */}
         {course.modules.some((m) => m.quiz) && (
           <div className="mx-4 lg:mx-6 mt-4 mb-2 space-y-3">
