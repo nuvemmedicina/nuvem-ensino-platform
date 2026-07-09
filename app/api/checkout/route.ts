@@ -132,15 +132,9 @@ export async function POST(req: Request) {
         status:        "PENDING",
         amount:        finalPrice,
         stripeIntentId: checkoutSession.payment_intent as string | undefined,
+        couponId:      appliedCoupon?.id ?? null,
       },
     });
-
-    if (appliedCoupon) {
-      await prisma.$transaction([
-        prisma.coupon.update({ where: { id: appliedCoupon.id }, data: { usesCount: { increment: 1 } } }),
-        prisma.couponUsage.create({ data: { couponId: appliedCoupon.id, courseId: dbCourse.id, userId: session.user.id } }),
-      ]);
-    }
 
     return NextResponse.json({ url: checkoutSession.url });
   }
@@ -186,15 +180,9 @@ export async function POST(req: Request) {
           status:        "PENDING",
           amount:        finalPrice,
           asaasPaymentId: payment.id,
+          couponId:      appliedCoupon?.id ?? null,
         },
       });
-
-      if (appliedCoupon) {
-        await prisma.$transaction([
-          prisma.coupon.update({ where: { id: appliedCoupon.id }, data: { usesCount: { increment: 1 } } }),
-          prisma.couponUsage.create({ data: { couponId: appliedCoupon.id, courseId: dbCourse.id, userId: session.user.id } }),
-        ]);
-      }
 
       // PIX: return QR code to show inline
       if (method === "pix") {

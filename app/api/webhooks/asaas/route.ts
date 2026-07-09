@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   if ((event === "PAYMENT_CONFIRMED" || event === "PAYMENT_RECEIVED") && payment?.id) {
     const dbPayment = await prisma.payment.findFirst({
       where: { asaasPaymentId: payment.id },
-      select: { id: true, enrollmentId: true, status: true },
+      select: { id: true, enrollmentId: true, status: true, couponId: true },
     });
 
     if (dbPayment && dbPayment.status !== "PAID") {
@@ -39,6 +39,13 @@ export async function POST(req: NextRequest) {
         where: { id: dbPayment.id },
         data: { status: "PAID", paidAt: new Date() },
       });
+      // Incrementar cupom apenas agora que o pagamento foi confirmado
+      if (dbPayment.couponId) {
+        prisma.$transaction([
+          prisma.coupon.update({ where: { id: dbPayment.couponId }, data: { usesCount: { increment: 1 } } }),
+          prisma.couponUsage.create({ data: { couponId: dbPayment.couponId, courseId: enrollment.courseId, userId: enrollment.userId } }),
+        ]).catch((err) => console.error("Asaas coupon usage error:", err));
+      }
       // Certificado (fire-and-forget)
       prisma.certificate.upsert({
         where: { enrollmentId: dbPayment.enrollmentId },

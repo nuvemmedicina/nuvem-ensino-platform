@@ -415,5 +415,11 @@ export async function GET() {
     results.push("✓ Coluna audioUrl adicionada à Lesson");
   } catch (e) { results.push(`✗ audioUrl: ${e}`); }
 
+  // ── Migração 15: coluna couponId na tabela Payment ───────────────────────
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "Payment" ADD COLUMN IF NOT EXISTS "couponId" TEXT`);
+    results.push("✓ Coluna couponId adicionada à Payment");
+  } catch (e) { results.push(`✗ couponId: ${e}`); }
+
   return NextResponse.json({ ok: true, results });
 }

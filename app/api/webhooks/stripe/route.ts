@@ -22,6 +22,11 @@ export async function POST(req: Request) {
     const enrollmentId = session.metadata?.enrollmentId;
     if (!enrollmentId) return NextResponse.json({ ok: true });
 
+    const updatedPayment = await prisma.payment.findFirst({
+      where: { enrollmentId, status: "PENDING" },
+      select: { id: true, couponId: true },
+    });
+
     await prisma.payment.updateMany({
       where: { enrollmentId, status: "PENDING" },
       data: {
@@ -49,6 +54,13 @@ export async function POST(req: Request) {
       courseSlug: enrollment.course.slug,
     }).catch((err) => console.error("Email confirmation error:", err));
 
+    // Incrementar cupom apenas agora que o pagamento foi confirmado
+    if (updatedPayment?.couponId) {
+      prisma.$transaction([
+        prisma.coupon.update({ where: { id: updatedPayment.couponId }, data: { usesCount: { increment: 1 } } }),
+        prisma.couponUsage.create({ data: { couponId: updatedPayment.couponId, courseId: enrollment.courseId, userId: enrollment.userId } }),
+      ]).catch((err) => console.error("Stripe coupon usage error:", err));
+    }
     // Certificado emitido apenas quando o aluno concluir o curso (via markComplete)
   }
 

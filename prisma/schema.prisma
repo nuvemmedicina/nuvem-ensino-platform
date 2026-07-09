@@ -389,6 +389,7 @@ model Payment {
   mpPaymentId     String?
   mpOrderId       String?
   asaasPaymentId  String?
+  couponId        String?
   receiptUrl     String?
   nfseId         String?
   paidAt         DateTime?

@@ -43,6 +43,7 @@ export default function CheckoutClient({
   const [paymentError, setPaymentError] = useState("");
   const [pixData, setPixData] = useState<{ image: string; copyPaste: string } | null>(null);
   const [pixCopied, setPixCopied] = useState(false);
+  const [cpfError, setCpfError] = useState("");
   const [pixSecondsLeft, setPixSecondsLeft] = useState(0);
   const pixTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [installments, setInstallments] = useState(3);
@@ -94,6 +95,21 @@ export default function CheckoutClient({
   const formatted = (v: number) =>
     new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
 
+  function validateCpf(value: string): boolean {
+    const digits = value.replace(/\D/g, "");
+    if (digits.length !== 11 || /^(\d)\1+$/.test(digits)) return false;
+    let sum = 0;
+    for (let i = 0; i < 9; i++) sum += parseInt(digits[i]) * (10 - i);
+    let r = (sum * 10) % 11;
+    if (r === 10 || r === 11) r = 0;
+    if (r !== parseInt(digits[9])) return false;
+    sum = 0;
+    for (let i = 0; i < 10; i++) sum += parseInt(digits[i]) * (11 - i);
+    r = (sum * 10) % 11;
+    if (r === 10 || r === 11) r = 0;
+    return r === parseInt(digits[10]);
+  }
+
   async function applyCoupon() {
     if (!couponCode.trim()) return;
     setIsCouponLoading(true);
@@ -120,6 +136,10 @@ export default function CheckoutClient({
 
   async function handlePayment() {
     setPaymentError("");
+    setCpfError("");
+    const cpfDigits = cpf.replace(/\D/g, "");
+    if (!cpfDigits) { setCpfError("CPF é obrigatório."); return; }
+    if (!validateCpf(cpfDigits)) { setCpfError("CPF inválido. Verifique os números e tente novamente."); return; }
     startTransition(async () => {
       try {
         const res = await fetch("/api/checkout", {
@@ -409,8 +429,9 @@ export default function CheckoutClient({
                   setCpf(digits.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, (_, a, b, c, d) => d ? `${a}.${b}.${c}-${d}` : c ? `${a}.${b}.${c}` : b ? `${a}.${b}` : a));
                 }}
                 placeholder="000.000.000-00"
-                className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/40 focus:outline-none focus:border-primary/50 font-mono"
+                className={`w-full px-3 py-2.5 rounded-lg border bg-background text-sm text-foreground placeholder:text-muted/40 focus:outline-none font-mono ${cpfError ? "border-red-400 focus:border-red-400" : "border-border focus:border-primary/50"}`}
               />
+              {cpfError && <p className="font-sans text-xs text-red-500 mt-1">{cpfError}</p>}
             </div>
 
             {/* WhatsApp */}
