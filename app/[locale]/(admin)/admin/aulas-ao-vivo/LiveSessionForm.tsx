@@ -66,6 +66,12 @@ export default function LiveSessionForm({ courses }: { courses: Course[] }) {
         <input name="location" placeholder="Ex: NU.V.E.M Medicina, BH" className={inputClass} />
       </div>
 
+      <div>
+        <label className={labelClass}>Imagem de capa (URL)</label>
+        <input name="thumbnailUrl" type="url" placeholder="https://..." className={inputClass} />
+        <p className="font-sans text-[10px] text-muted mt-1">Cole a URL da arte do evento. Aparece no card da aula para o aluno.</p>
+      </div>
+
       <button type="submit" className="w-full font-sans text-sm font-semibold px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors mt-1">
         Criar sessão
       </button>

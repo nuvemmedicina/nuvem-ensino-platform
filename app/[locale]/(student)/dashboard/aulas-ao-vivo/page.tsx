@@ -38,6 +38,7 @@ type SessionData = {
   meetUrl: string | null;
   location: string | null;
   recordingUrl: string | null;
+  thumbnailUrl: string | null;
   course: { title: string; slug: string };
 };
 
@@ -100,21 +101,41 @@ function SessionCard({
       }`}
       style={{ background: "var(--color-surface)" }}
     >
-      {/* Thumbnail lateral com gradiente */}
+      {/* Thumbnail lateral */}
       <div
-        className={`relative hidden sm:flex w-36 shrink-0 bg-gradient-to-br ${gradient} flex-col items-center justify-center gap-1 select-none`}
+        className={`relative hidden sm:flex w-36 shrink-0 overflow-hidden ${
+          s.thumbnailUrl ? "" : `bg-gradient-to-br ${gradient}`
+        } flex-col items-center justify-center gap-1 select-none`}
       >
-        <span className="font-serif text-2xl font-bold text-white/90 leading-none">
-          {initials}
-        </span>
-        {!past && (
-          <span className="flex items-center gap-1 font-sans text-[9px] font-bold uppercase tracking-widest text-white/60 mt-1">
-            <Radio className="w-2.5 h-2.5" />
+        {s.thumbnailUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={s.thumbnailUrl}
+            alt={s.title}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        ) : (
+          <>
+            <span className="font-serif text-2xl font-bold text-white/90 leading-none">
+              {initials}
+            </span>
+            {!past && (
+              <span className="flex items-center gap-1 font-sans text-[9px] font-bold uppercase tracking-widest text-white/60 mt-1">
+                <Radio className="w-2.5 h-2.5" />
+                ao vivo
+              </span>
+            )}
+            {past && s.recordingUrl && (
+              <PlayCircle className="w-5 h-5 text-white/40 mt-1" />
+            )}
+          </>
+        )}
+        {/* Badge AO VIVO sobre a imagem */}
+        {s.thumbnailUrl && !past && (
+          <span className="absolute bottom-2 left-2 flex items-center gap-1 font-sans text-[9px] font-bold uppercase tracking-widest bg-black/60 text-white px-1.5 py-0.5 rounded">
+            <Radio className="w-2 h-2" />
             ao vivo
           </span>
-        )}
-        {past && s.recordingUrl && (
-          <PlayCircle className="w-5 h-5 text-white/40 mt-1" />
         )}
         {/* Reflexo diagonal */}
         <div className="absolute inset-0 bg-gradient-to-tl from-white/5 to-transparent pointer-events-none" />

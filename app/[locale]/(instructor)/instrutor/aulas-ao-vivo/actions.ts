@@ -47,8 +47,9 @@ export async function createLiveSession(formData: FormData) {
   const date        = formData.get("date") as string;
   const startTime   = formData.get("startTime") as string;
   const endTime     = formData.get("endTime") as string;
-  const meetUrl     = (formData.get("meetUrl") as string) || null;
-  const location    = (formData.get("location") as string) || null;
+  const meetUrl      = (formData.get("meetUrl") as string) || null;
+  const location     = (formData.get("location") as string) || null;
+  const thumbnailUrl = (formData.get("thumbnailUrl") as string) || null;
 
   const course = await prisma.course.findFirst({
     where: { id: courseId, instructorId: instructor.id },
@@ -61,7 +62,7 @@ export async function createLiveSession(formData: FormData) {
       courseId, title, description,
       startAt: parseBRT(date, startTime),
       endAt:   parseBRT(date, endTime),
-      meetUrl, location,
+      meetUrl, location, thumbnailUrl,
     },
   });
 
@@ -85,6 +86,7 @@ export async function updateLiveSession(id: string, formData: FormData) {
       meetUrl:      (formData.get("meetUrl") as string) || null,
       location:     (formData.get("location") as string) || null,
       recordingUrl: (formData.get("recordingUrl") as string) || null,
+      thumbnailUrl: (formData.get("thumbnailUrl") as string) || null,
     },
   });
 

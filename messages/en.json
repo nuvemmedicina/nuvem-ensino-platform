@@ -279,7 +279,7 @@
       "viewCertificate": "View certificate",
       "enrollmentConfirmed": "Enrollment confirmed! Welcome to the course.",
       "nextLive": "Next live session",
-      "joinMeet": "Join Meet",
+      "joinMeet": "Join Class",
       "addToCalendar": "+ Google Calendar",
       "videoComingSoon": "Video coming soon",
       "selectLesson": "Select a lesson",
@@ -331,7 +331,7 @@
       "noScheduled": "No live classes scheduled for your courses yet.",
       "upcomingSection": "Upcoming",
       "pastSection": "Past",
-      "joinMeet": "Join Meet",
+      "joinMeet": "Join Class",
       "addToCalendar": "+ Google Calendar",
       "watchRecording": "Watch recording"
     }

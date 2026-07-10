@@ -279,7 +279,7 @@
       "viewCertificate": "Ver certificado",
       "enrollmentConfirmed": "¡Inscripción confirmada! Bienvenido al curso.",
       "nextLive": "Próxima clase en vivo",
-      "joinMeet": "Entrar al Meet",
+      "joinMeet": "Entrar a la Clase",
       "addToCalendar": "+ Google Calendar",
       "videoComingSoon": "Vídeo próximamente",
       "selectLesson": "Selecciona una clase",
@@ -331,7 +331,7 @@
       "noScheduled": "No hay clases en vivo programadas para tus cursos aún.",
       "upcomingSection": "Próximas",
       "pastSection": "Anteriores",
-      "joinMeet": "Entrar al Meet",
+      "joinMeet": "Entrar a la Clase",
       "addToCalendar": "+ Google Calendar",
       "watchRecording": "Ver grabación"
     }

@@ -23,14 +23,15 @@ export async function createLiveSession(formData: FormData) {
   const date        = formData.get("date") as string;
   const startTime   = formData.get("startTime") as string;
   const endTime     = formData.get("endTime") as string;
-  const meetUrl     = (formData.get("meetUrl") as string) || null;
-  const location    = (formData.get("location") as string) || null;
+  const meetUrl      = (formData.get("meetUrl") as string) || null;
+  const location     = (formData.get("location") as string) || null;
+  const thumbnailUrl = (formData.get("thumbnailUrl") as string) || null;
 
   const startAt = parseBRT(date, startTime);
   const endAt   = parseBRT(date, endTime);
 
   await prisma.liveSession.create({
-    data: { courseId, title, description, startAt, endAt, meetUrl, location },
+    data: { courseId, title, description, startAt, endAt, meetUrl, location, thumbnailUrl },
   });
 
   revalidatePath("/admin/aulas-ao-vivo");
@@ -54,6 +55,7 @@ export async function updateLiveSession(id: string, formData: FormData) {
       meetUrl:      (formData.get("meetUrl") as string) || null,
       location:     (formData.get("location") as string) || null,
       recordingUrl: (formData.get("recordingUrl") as string) || null,
+      thumbnailUrl: (formData.get("thumbnailUrl") as string) || null,
     },
   });
 

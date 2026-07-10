@@ -14,6 +14,7 @@ type Session = {
   meetUrl: string | null;
   location: string | null;
   recordingUrl: string | null;
+  thumbnailUrl: string | null;
   reminder24h: boolean;
   reminder1h: boolean;
   course: { title: string; slug: string };
@@ -181,7 +182,7 @@ function SessionCard({
 
           <div>
             <label className="block font-sans text-[10px] font-semibold text-muted uppercase tracking-wider mb-1">
-              Link Google Meet
+              Link da aula
             </label>
             <input
               name="meetUrl"
@@ -216,7 +217,23 @@ function SessionCard({
               className={inputClass}
             />
             <p className="font-sans text-[10px] text-muted mt-1">
-              Cole aqui o link da gravação do Google Meet, YouTube, etc. Os alunos verão um botão "Assistir gravação".
+              Cole aqui o link da gravação. Os alunos verão um botão "Assistir gravação".
+            </p>
+          </div>
+
+          <div>
+            <label className="block font-sans text-[10px] font-semibold text-muted uppercase tracking-wider mb-1">
+              Imagem de capa (URL)
+            </label>
+            <input
+              name="thumbnailUrl"
+              type="url"
+              defaultValue={s.thumbnailUrl ?? ""}
+              placeholder="https://..."
+              className={inputClass}
+            />
+            <p className="font-sans text-[10px] text-muted mt-1">
+              Arte do evento. Aparece no card da aula para o aluno.
             </p>
           </div>
 
@@ -261,7 +278,7 @@ function SessionCard({
               rel="noopener noreferrer"
               className="flex items-center gap-1 font-sans text-xs text-primary hover:underline"
             >
-              <Video className="w-3 h-3" /> Google Meet
+              <Video className="w-3 h-3" /> Link da aula
             </a>
           )}
           {s.recordingUrl && (
