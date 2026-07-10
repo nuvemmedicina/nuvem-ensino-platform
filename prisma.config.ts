@@ -11,7 +11,5 @@ export default defineConfig({
   },
   datasource: {
     url: process.env["DATABASE_URL"],
-    // Neon: usar conexão direta (sem PgBouncer) para migrations
-    directUrl: process.env["DIRECT_URL"] ?? process.env["DATABASE_URL"],
   },
 });
