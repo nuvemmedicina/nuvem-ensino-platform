@@ -229,7 +229,7 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
 
       {/* Próxima aula ao vivo */}
       {nextLiveSession && (
-        <div className="mx-4 lg:mx-6 mt-4 bg-primary/10 border border-primary/20 rounded-xl px-4 py-4">
+        <div className="mx-4 lg:mx-6 mt-6 mb-6 bg-primary/10 border border-primary/20 rounded-xl px-4 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <p className="font-sans text-[10px] font-bold uppercase tracking-widest text-primary mb-0.5">
