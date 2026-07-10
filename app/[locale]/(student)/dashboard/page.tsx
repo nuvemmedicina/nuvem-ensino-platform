@@ -51,7 +51,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   const heroPct = heroEnrollment ? calcProgress(heroEnrollment.progress, heroTotalLessons) : 0;
 
   return (
-    <div className="-mx-6 -mt-6 lg:-mx-8 lg:-mt-8 min-h-screen" style={{ backgroundColor: "#d3ebee" }}>
+    <div className="-mx-6 -mt-6 lg:-mx-8 lg:-mt-8 min-h-screen bg-background">
 
       {/* ── HERO ── */}
       {heroEnrollment ? (
@@ -136,7 +136,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
       )}
 
       {/* ── CONTEÚDO ── */}
-      <div className="px-4 lg:px-8 py-8 space-y-10" style={{ backgroundColor: "#d3ebee" }}>
+      <div className="px-4 lg:px-8 py-8 space-y-10 bg-background">
 
         {/* Stats chips */}
         <div className="flex items-center gap-3 flex-wrap">
@@ -206,8 +206,8 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         {/* Vazio */}
         {enrollments.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <p className="font-serif text-2xl text-white/30 mb-2">Nenhum curso ainda</p>
-            <p className="font-sans text-sm text-white/40 mb-6">Explore nossa grade de cursos para médicos</p>
+            <p className="font-serif text-2xl text-muted mb-2">Nenhum curso ainda</p>
+            <p className="font-sans text-sm text-muted/70 mb-6">Explore nossa grade de cursos para médicos</p>
             <Link href="/cursos" className="font-sans text-sm font-bold px-6 py-3 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors">
               Explorar cursos
             </Link>
@@ -234,10 +234,10 @@ function CourseCard({
   return (
     <Link
       href={href}
-      className="group relative shrink-0 w-[200px] sm:w-[240px] rounded-xl overflow-hidden bg-canvas border border-white/10 hover:border-primary/50 hover:scale-105 transition-all duration-300 shadow-lg"
+      className="group relative shrink-0 w-[200px] sm:w-[260px] rounded-xl overflow-hidden bg-canvas border border-white/10 hover:border-primary/50 hover:scale-105 transition-all duration-300 shadow-lg"
     >
       {/* Thumbnail */}
-      <div className="relative w-full aspect-video bg-black/40">
+      <div className="relative w-full aspect-[5/4] bg-black/40">
         {thumbnail ? (
           <Image src={thumbnail} alt={title} fill className="object-cover object-center group-hover:opacity-80 transition-opacity" sizes="240px" />
         ) : (
