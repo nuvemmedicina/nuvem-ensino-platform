@@ -1,8 +1,8 @@
 -- Add releaseDate to Module (null = available immediately, future date = drip)
-ALTER TABLE "Module" ADD COLUMN "releaseDate" TIMESTAMP(3);
+ALTER TABLE "Module" ADD COLUMN IF NOT EXISTS "releaseDate" TIMESTAMP(3);
 
 -- Create ModuleInstructor join table
-CREATE TABLE "ModuleInstructor" (
+CREATE TABLE IF NOT EXISTS "ModuleInstructor" (
     "id"           TEXT NOT NULL,
     "moduleId"     TEXT NOT NULL,
     "instructorId" TEXT NOT NULL,
@@ -12,14 +12,22 @@ CREATE TABLE "ModuleInstructor" (
 );
 
 -- Unique constraint: one instructor appears once per module
-CREATE UNIQUE INDEX "ModuleInstructor_moduleId_instructorId_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "ModuleInstructor_moduleId_instructorId_key"
     ON "ModuleInstructor"("moduleId", "instructorId");
 
--- Foreign keys
-ALTER TABLE "ModuleInstructor"
-    ADD CONSTRAINT "ModuleInstructor_moduleId_fkey"
-    FOREIGN KEY ("moduleId") REFERENCES "Module"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+-- Foreign keys (skip if already exist)
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'ModuleInstructor_moduleId_fkey') THEN
+    ALTER TABLE "ModuleInstructor"
+      ADD CONSTRAINT "ModuleInstructor_moduleId_fkey"
+      FOREIGN KEY ("moduleId") REFERENCES "Module"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+  END IF;
+END $$;
 
-ALTER TABLE "ModuleInstructor"
-    ADD CONSTRAINT "ModuleInstructor_instructorId_fkey"
-    FOREIGN KEY ("instructorId") REFERENCES "Instructor"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'ModuleInstructor_instructorId_fkey') THEN
+    ALTER TABLE "ModuleInstructor"
+      ADD CONSTRAINT "ModuleInstructor_instructorId_fkey"
+      FOREIGN KEY ("instructorId") REFERENCES "Instructor"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+  END IF;
+END $$;
