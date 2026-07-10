@@ -16,6 +16,7 @@ import {
   deleteLesson,
   deleteModule,
   updateModuleReleaseDate,
+  removeLessonVideo,
 } from "./actions";
 import { ModuleInstructorSelector } from "./ModuleInstructorSelector";
 import { LessonInstructorSelector } from "./LessonInstructorSelector";
@@ -641,14 +642,23 @@ export default async function AdminCursoEditPage({ params }: Props) {
                         {/* Mux video section */}
                         <div className="mt-1 pt-3 border-t border-border/50">
                           {lesson.muxPlaybackId ? (
-                            <div className="flex items-center gap-2 text-green-600">
-                              <CheckCircle className="w-4 h-4 shrink-0" />
-                              <span className="font-sans text-xs font-semibold">
+                            <div className="flex items-center gap-2">
+                              <CheckCircle className="w-4 h-4 shrink-0 text-green-600" />
+                              <span className="font-sans text-xs font-semibold text-green-600">
                                 Vídeo Mux ativo
                               </span>
                               <span className="font-sans text-[10px] text-muted font-mono">
                                 {lesson.muxPlaybackId.slice(0, 12)}…
                               </span>
+                              <form action={removeLessonVideo.bind(null, lesson.id, slug)} className="ml-auto">
+                                <button
+                                  type="submit"
+                                  className="font-sans text-[10px] text-red-400 hover:text-red-600 hover:underline transition-colors"
+                                  onClick={(e) => { if (!confirm("Remover vídeo desta aula?")) e.preventDefault(); }}
+                                >
+                                  Remover vídeo
+                                </button>
+                              </form>
                             </div>
                           ) : lesson.muxAssetId ? (
                             <div className="flex items-center gap-2 text-amber-600">

@@ -145,6 +145,15 @@ export async function deleteLesson(lessonId: string, courseSlug: string) {
   revalidatePath(`/admin/cursos/${courseSlug}`);
 }
 
+export async function removeLessonVideo(lessonId: string, courseSlug: string) {
+  await requireAdmin();
+  await prisma.lesson.update({
+    where: { id: lessonId },
+    data: { muxAssetId: null, muxPlaybackId: null },
+  });
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
 export async function deleteModule(moduleId: string, courseSlug: string) {
   await requireAdmin();
   await prisma.module.delete({ where: { id: moduleId } });
