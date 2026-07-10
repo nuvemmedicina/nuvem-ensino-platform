@@ -155,13 +155,13 @@ function SessionCard({ session: s }: { session: Session }) {
 
           <div>
             <label className="block font-sans text-[10px] font-semibold text-muted uppercase tracking-wider mb-1">
-              Link Google Meet
+              Link da aula
             </label>
             <input
               name="meetUrl"
               type="url"
               defaultValue={s.meetUrl ?? ""}
-              placeholder="https://meet.google.com/..."
+              placeholder="https://youtube.com/live/... ou meet.google.com/..."
               className={inputClass}
             />
           </div>
@@ -235,7 +235,7 @@ function SessionCard({ session: s }: { session: Session }) {
               rel="noopener noreferrer"
               className="flex items-center gap-1 font-sans text-xs text-primary hover:underline"
             >
-              <Video className="w-3 h-3" /> Google Meet
+              <Video className="w-3 h-3" /> Link da aula
             </a>
           )}
           {s.recordingUrl && (
