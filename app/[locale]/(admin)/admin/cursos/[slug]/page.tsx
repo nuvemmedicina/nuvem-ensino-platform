@@ -41,6 +41,7 @@ import {
 } from "./moduleQuizActions";
 import { DeleteButton } from "./DeleteButton";
 import { MuxUploader } from "./MuxUploader";
+import { RemoveVideoButton } from "./RemoveVideoButton";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
@@ -650,15 +651,7 @@ export default async function AdminCursoEditPage({ params }: Props) {
                               <span className="font-sans text-[10px] text-muted font-mono">
                                 {lesson.muxPlaybackId.slice(0, 12)}…
                               </span>
-                              <form action={removeLessonVideo.bind(null, lesson.id, slug)} className="ml-auto">
-                                <button
-                                  type="submit"
-                                  className="font-sans text-[10px] text-red-400 hover:text-red-600 hover:underline transition-colors"
-                                  onClick={(e) => { if (!confirm("Remover vídeo desta aula?")) e.preventDefault(); }}
-                                >
-                                  Remover vídeo
-                                </button>
-                              </form>
+                              <RemoveVideoButton action={removeLessonVideo.bind(null, lesson.id, slug)} />
                             </div>
                           ) : lesson.muxAssetId ? (
                             <div className="flex items-center gap-2 text-amber-600">
