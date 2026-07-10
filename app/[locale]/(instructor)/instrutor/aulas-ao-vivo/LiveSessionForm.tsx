@@ -57,8 +57,8 @@ export default function LiveSessionForm({ courses }: { courses: Course[] }) {
       </div>
 
       <div>
-        <label className={labelClass}>Link Google Meet (opcional)</label>
-        <input name="meetUrl" type="url" placeholder="https://meet.google.com/..." className={inputClass} />
+        <label className={labelClass}>Link da aula (opcional)</label>
+        <input name="meetUrl" type="url" placeholder="https://youtube.com/live/... ou meet.google.com/..." className={inputClass} />
       </div>
 
       <div>
