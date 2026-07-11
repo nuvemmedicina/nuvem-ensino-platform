@@ -68,6 +68,15 @@ export async function findOrCreateCustomer(
   name: string,
   cpfCnpj?: string,
 ): Promise<AsaasCustomer> {
+  // Busca primeiro pelo CPF/CNPJ (chave real de identidade no Asaas) para não criar
+  // um cliente duplicado quando o aluno usa uma conta/e-mail diferente da plataforma.
+  if (cpfCnpj) {
+    const byCpf = await req<{ data: AsaasCustomer[] }>(
+      `/customers?cpfCnpj=${encodeURIComponent(cpfCnpj)}&limit=1`,
+    );
+    if (byCpf.data.length > 0) return byCpf.data[0];
+  }
+
   const list = await req<{ data: AsaasCustomer[] }>(
     `/customers?email=${encodeURIComponent(email)}&limit=1`,
   );
@@ -128,6 +137,11 @@ export async function createPayment(
         : {}),
     }),
   });
+}
+
+/** Cancela uma cobrança pendente no Asaas (usado ao substituir uma cobrança expirada/abandonada). */
+export async function cancelAsaasPayment(paymentId: string): Promise<void> {
+  await req(`/payments/${paymentId}`, { method: "DELETE" });
 }
 
 // ─── PIX QR Code ──────────────────────────────────────────────────────────────

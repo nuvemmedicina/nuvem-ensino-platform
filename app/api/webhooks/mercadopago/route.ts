@@ -47,9 +47,9 @@ export async function POST(req: Request) {
     // Release reserved seat
     const enrollment = await prisma.enrollment.findUnique({
       where: { id: enrollmentId },
-      select: { courseId: true },
+      select: { courseId: true, status: true },
     });
-    if (enrollment) {
+    if (enrollment && enrollment.status === "PENDING") {
       await prisma.enrollment.update({
         where: { id: enrollmentId },
         data: { status: "CANCELLED" },

@@ -7,12 +7,14 @@ import { ChevronLeft, Users } from "lucide-react";
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
 const statusColors: Record<string, string> = {
+  PENDING:   "text-amber-600 bg-amber-500/10 border-amber-500/20",
   ACTIVE:    "text-green-600 bg-green-500/10 border-green-500/20",
   COMPLETED: "text-blue-600 bg-blue-500/10 border-blue-500/20",
   CANCELLED: "text-muted bg-border/50 border-border",
   REFUNDED:  "text-red-500 bg-red-500/10 border-red-500/20",
 };
 const statusLabels: Record<string, string> = {
+  PENDING:   "Aguardando Pagamento",
   ACTIVE:    "Ativo",
   COMPLETED: "Concluído",
   CANCELLED: "Cancelado",

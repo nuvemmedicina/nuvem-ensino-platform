@@ -6,6 +6,7 @@ import {
   findOrCreateCustomer,
   createPayment,
   getPixQrCode,
+  cancelAsaasPayment,
 } from "@/lib/asaas";
 
 export async function POST(req: Request) {
@@ -81,9 +82,9 @@ export async function POST(req: Request) {
         await tx.course.update({ where: { id: c.id }, data: { reservedSeats: { increment: 1 } } });
 
       const enr = existing
-        ? await tx.enrollment.update({ where: { id: existing.id }, data: { status: "CANCELLED" } })
+        ? await tx.enrollment.update({ where: { id: existing.id }, data: { status: "PENDING" } })
         : await tx.enrollment.create({
-            data: { userId: session.user.id, courseId: c.id, status: "CANCELLED" },
+            data: { userId: session.user.id, courseId: c.id, status: "PENDING" },
           });
 
       return { course: c, enrollment: enr };
@@ -157,6 +158,22 @@ export async function POST(req: Request) {
         method === "pix"      ? "PIX"         :
         method === "boleto"   ? "BOLETO"       :
         /* parcelado */         "CREDIT_CARD";
+
+      // Cancela cobranças pendentes anteriores desta matrícula antes de gerar uma nova,
+      // para não acumular parcelamentos/Pix duplicados a cada nova tentativa do aluno.
+      const stalePayments = await prisma.payment.findMany({
+        where: { enrollmentId: enrollment.id, status: "PENDING", asaasPaymentId: { not: null } },
+        select: { id: true, asaasPaymentId: true },
+      });
+      for (const stale of stalePayments) {
+        await cancelAsaasPayment(stale.asaasPaymentId!).catch(() => {});
+      }
+      if (stalePayments.length > 0) {
+        await prisma.payment.updateMany({
+          where: { id: { in: stalePayments.map((p) => p.id) } },
+          data: { status: "FAILED" },
+        });
+      }
 
       const payment = await createPayment({
         customerId:        customer.id,
