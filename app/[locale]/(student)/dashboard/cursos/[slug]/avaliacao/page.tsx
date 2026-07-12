@@ -28,9 +28,14 @@ export default async function AvaliacaoPage({ params }: Props) {
     redirect(`/cursos/${slug}`);
   }
 
-  const existing = await prisma.courseEvaluation.findUnique({
-    where: { userId_courseId: { userId: session.user.id, courseId: course.id } },
-  });
+  let existing = null;
+  try {
+    existing = await prisma.courseEvaluation.findUnique({
+      where: { userId_courseId: { userId: session.user.id, courseId: course.id } },
+    });
+  } catch {
+    // tabela ainda não existe (migration pendente) — ignora
+  }
 
   const action = submitEvaluation.bind(null, course.id, slug);
 
