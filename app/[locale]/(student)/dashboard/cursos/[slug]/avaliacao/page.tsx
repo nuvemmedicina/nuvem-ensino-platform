@@ -83,18 +83,15 @@ export default async function AvaliacaoPage({ params }: Props) {
         </div>
 
         <div className="p-6">
-          <div className="flex gap-5 items-start">
+          <div className="flex gap-6 items-start">
             {/* Foto */}
             <div className="shrink-0">
-              <div
-                className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 border-2 border-primary/20 overflow-hidden"
-              >
+              <div className="w-28 h-28 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-md">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="https://www.nuvemmedicina.com.br/wp-content/uploads/2023/03/dra-vera-angelo.jpg"
+                  src="/instructors/dra-vera-angelo.jpg"
                   alt="Dra. Vera Ângelo"
-                  className="w-full h-full object-cover"
-                  onError={undefined}
+                  className="w-full h-full object-cover object-top"
                 />
               </div>
             </div>
@@ -102,11 +99,14 @@ export default async function AvaliacaoPage({ params }: Props) {
             {/* Info */}
             <div className="flex-1 min-w-0">
               <h2 className="font-serif text-lg font-medium text-foreground">Dra. Vera Ângelo</h2>
-              <p className="font-sans text-xs text-primary font-semibold mb-2">Diretora Científica · Nuvem Medicina</p>
+              <p className="font-sans text-xs text-primary font-semibold mb-3">Diretora Científica · NU.V.E.M Ensino</p>
               <p className="font-sans text-sm text-muted leading-relaxed">
-                Médica gastroenterologista com vasta experiência em distúrbios da interação cérebro-intestino (DICI).
-                Coordena o conteúdo científico da plataforma Nuvem Ensino, garantindo excelência e atualização contínua
-                do material didático.
+                Médica gastroenterologista com mais de 30 anos de dedicação à saúde digestiva e à formação acadêmica.
+                Especialista em Neurogastroenterologia e Manometria Digestiva pelo Hospital Israelita Albert Einstein,
+                possui Mestrado e Doutorado em Patologia pela UFMG. Sua trajetória é marcada pela vanguarda no estudo
+                da Motilidade Digestiva, Microbiota Intestinal e Testes Respiratórios. Autora de livros e publicações
+                científicas de relevância, é palestrante frequente em congressos nacionais e internacionais.
+                Atualmente, lidera a disseminação de conhecimento especializado como Diretora Científica da NU.V.E.M Ensino.
               </p>
 
               {/* Links */}
