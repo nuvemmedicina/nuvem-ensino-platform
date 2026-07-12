@@ -7,6 +7,7 @@ export function ModuleAccordion({
   title,
   index,
   lessonCount,
+  countLabel = "tema",
   locked,
   defaultOpen = false,
   header,
@@ -15,6 +16,7 @@ export function ModuleAccordion({
   title: string;
   index: number;
   lessonCount: number;
+  countLabel?: string;
   locked: boolean;
   defaultOpen?: boolean;
   header: React.ReactNode;
@@ -53,7 +55,7 @@ export function ModuleAccordion({
 
         {/* Badges */}
         <span className="font-sans text-[10px] text-muted shrink-0">
-          {lessonCount} aula{lessonCount !== 1 ? "s" : ""}
+          {lessonCount} {countLabel}{lessonCount !== 1 ? "s" : ""}
         </span>
         {locked && (
           <span className="font-sans text-[10px] text-amber-600 shrink-0">🔒</span>

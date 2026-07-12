@@ -255,8 +255,22 @@ model Module {
 
   course      Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
   lessons     Lesson[]
+  topics      Topic[]
   instructors ModuleInstructor[]
   quiz        ModuleQuiz?
+}
+
+model Topic {
+  id          String   @id @default(cuid())
+  moduleId    String
+  title       String
+  description String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  module  Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
 }
 
 model ModuleInstructor {
@@ -286,6 +300,7 @@ model LessonInstructor {
 model Lesson {
   id           String     @id @default(cuid())
   moduleId     String
+  topicId      String?
   title        String
   description  String?    @db.Text
   type         LessonType @default(VIDEO)
@@ -303,6 +318,7 @@ model Lesson {
   updatedAt    DateTime   @updatedAt
 
   module    Module          @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  topic     Topic?          @relation(fields: [topicId], references: [id])
   materials Material[]
   quiz      Quiz?
   progress  Progress[]

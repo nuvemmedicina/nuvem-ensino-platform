@@ -139,6 +139,57 @@ export async function createLesson(moduleId: string, courseSlug: string, formDat
   revalidatePath(`/admin/cursos/${courseSlug}`);
 }
 
+export async function createTopic(moduleId: string, courseSlug: string, formData: FormData) {
+  await requireAdmin();
+  const existing = await prisma.topic.findMany({ where: { moduleId }, select: { order: true } });
+  const maxOrder = existing.reduce((m, r) => Math.max(m, r.order), 0);
+  await prisma.topic.create({
+    data: {
+      moduleId,
+      title: formData.get("title") as string,
+      order: maxOrder + 1,
+    },
+  });
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
+export async function updateTopic(topicId: string, courseSlug: string, formData: FormData) {
+  await requireAdmin();
+  await prisma.topic.update({
+    where: { id: topicId },
+    data: { title: formData.get("title") as string },
+  });
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
+export async function deleteTopic(topicId: string, courseSlug: string) {
+  await requireAdmin();
+  await prisma.topic.delete({ where: { id: topicId } });
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
+export async function createLessonUnderTopic(
+  topicId: string,
+  moduleId: string,
+  courseSlug: string,
+  formData: FormData,
+) {
+  await requireAdmin();
+  const existing = await prisma.lesson.findMany({ where: { topicId }, select: { order: true } });
+  const maxOrder = existing.reduce((m, r) => Math.max(m, r.order), 0);
+  await prisma.lesson.create({
+    data: {
+      moduleId,
+      topicId,
+      title:    formData.get("title") as string,
+      videoUrl: (formData.get("videoUrl") as string) || null,
+      order:    maxOrder + 1,
+      type:     "VIDEO",
+    },
+  });
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
 export async function deleteLesson(lessonId: string, courseSlug: string) {
   await requireAdmin();
   await prisma.lesson.delete({ where: { id: lessonId } });
