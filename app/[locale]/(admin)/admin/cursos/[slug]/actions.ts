@@ -101,8 +101,8 @@ export async function updateLessonInstructors(
 
 export async function updateModule(moduleId: string, courseSlug: string, formData: FormData) {
   await requireAdmin();
-  await prisma.topic.update({
-    where: { id: topicId },
+  await prisma.module.update({
+    where: { id: moduleId },
     data: { title: formData.get("title") as string },
   });
   revalidatePath(`/admin/cursos/${courseSlug}`);
