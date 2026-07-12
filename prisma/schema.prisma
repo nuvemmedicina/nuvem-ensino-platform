@@ -98,6 +98,7 @@ model User {
   forumReplies       ForumReply[]
   forumLikes         ForumLike[]
   moduleQuizAttempts ModuleQuizAttempt[]
+  courseEvaluations  CourseEvaluation[]
 }
 
 model Account {
@@ -222,6 +223,7 @@ model Course {
   tags          CourseTag[]
   liveSessions  LiveSession[]
   forumPosts    ForumPost[]
+  evaluations   CourseEvaluation[]
 }
 
 model Tag {
@@ -664,6 +666,28 @@ model LiveLead {
 
   @@index([eventSlug])
   @@index([email])
+}
+
+// ─── COURSE EVALUATION ───────────────────────────────────────────────────────
+
+model CourseEvaluation {
+  id                  String   @id @default(cuid())
+  courseId            String
+  userId              String
+  overallRating       Int      // 1–5
+  contentRating       Int      // 1–5
+  instructorRating    Int      // 1–5
+  platformRating      Int      // 1–5
+  wouldRecommend      Boolean
+  highlight           String?  @db.Text
+  suggestion          String?  @db.Text
+  createdAt           DateTime @default(now())
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([courseId])
 }
 
 // ─── LIVE SESSIONS ────────────────────────────────────────────────────────────

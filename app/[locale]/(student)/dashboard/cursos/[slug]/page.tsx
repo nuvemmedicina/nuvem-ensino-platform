@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, Award, Video, ExternalLink, Calendar, BarChart2 } from "lucide-react";
+import { ChevronLeft, Award, Video, ExternalLink, Calendar, BarChart2, Star } from "lucide-react";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import LessonPlayer from "./LessonPlayer";
@@ -216,6 +216,13 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
           >
             <BarChart2 className="w-4 h-4" />
             Desempenho
+          </Link>
+          <Link
+            href={`/dashboard/cursos/${slug}/avaliacao`}
+            className="flex items-center gap-1.5 font-sans text-xs font-semibold text-muted hover:text-amber-500 transition-colors"
+          >
+            <Star className="w-4 h-4" />
+            Avaliar
           </Link>
           {enrollment.certificate && (
             <Link
