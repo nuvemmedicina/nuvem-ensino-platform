@@ -20,7 +20,7 @@ import {
   deleteLesson,
   deleteModule,
   updateModuleReleaseDate,
-  updateModuleApostila,
+  updateTopicApostila,
   removeLessonVideo,
 } from "./actions";
 import { ModuleInstructorSelector } from "./ModuleInstructorSelector";
@@ -568,15 +568,7 @@ export default async function AdminCursoEditPage({ params }: Props) {
                         <span className="font-sans text-[10px] text-amber-600 shrink-0">🔒 Bloqueado</span>
                       )}
                     </form>
-                    {/* Apostila do módulo */}
-                    <div className="px-4 py-3 bg-background/30 border-b border-border">
-                      <ApostilaUploader
-                        moduleId={mod.id}
-                        courseSlug={slug}
-                        currentUrl={mod.apostilaUrl ?? null}
-                        updateAction={updateModuleApostila}
-                      />
-                    </div>
+
                     {/* Docentes do módulo */}
                     <div className="flex items-center gap-2 px-4 py-2 bg-background/30 border-b border-border">
                       <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted shrink-0">Docentes</span>
@@ -624,6 +616,15 @@ export default async function AdminCursoEditPage({ params }: Props) {
                           </div>
                         }
                       >
+                        {/* Apostila do tema */}
+                        <div className="px-3 py-2 border-b border-border/50 bg-background/30">
+                          <ApostilaUploader
+                            moduleId={topic.id}
+                            courseSlug={slug}
+                            currentUrl={topic.apostilaUrl ?? null}
+                            updateAction={updateTopicApostila}
+                          />
+                        </div>
                         {/* Aulas do tema */}
                         <div className="divide-y divide-border/40">
                           {topic.lessons.map((lesson) => {

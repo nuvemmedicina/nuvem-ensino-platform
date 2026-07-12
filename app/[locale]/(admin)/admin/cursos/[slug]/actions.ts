@@ -101,8 +101,8 @@ export async function updateLessonInstructors(
 
 export async function updateModule(moduleId: string, courseSlug: string, formData: FormData) {
   await requireAdmin();
-  await prisma.module.update({
-    where: { id: moduleId },
+  await prisma.topic.update({
+    where: { id: topicId },
     data: { title: formData.get("title") as string },
   });
   revalidatePath(`/admin/cursos/${courseSlug}`);
@@ -214,17 +214,17 @@ export async function deleteModule(moduleId: string, courseSlug: string) {
 export async function updateModuleReleaseDate(moduleId: string, courseSlug: string, formData: FormData) {
   await requireAdmin();
   const raw = formData.get("releaseDate") as string;
-  await prisma.module.update({
-    where: { id: moduleId },
+  await prisma.topic.update({
+    where: { id: topicId },
     data: { releaseDate: raw ? new Date(raw) : null },
   });
   revalidatePath(`/admin/cursos/${courseSlug}`);
 }
 
-export async function updateModuleApostila(moduleId: string, courseSlug: string, url: string | null) {
+export async function updateTopicApostila(topicId: string, courseSlug: string, url: string | null) {
   await requireAdmin();
-  await prisma.module.update({
-    where: { id: moduleId },
+  await prisma.topic.update({
+    where: { id: topicId },
     data: { apostilaUrl: url },
   });
   revalidatePath(`/admin/cursos/${courseSlug}`);
