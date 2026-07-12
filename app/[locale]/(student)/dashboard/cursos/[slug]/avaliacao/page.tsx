@@ -89,7 +89,7 @@ export default async function AvaliacaoPage({ params }: Props) {
               <div className="w-28 h-28 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-md">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/instructors/dra-vera-angelo.jpg"
+                  src="/instructors/dra-vera-angelo-1.jpeg"
                   alt="Dra. Vera Ângelo"
                   className="w-full h-full object-cover object-top"
                 />
