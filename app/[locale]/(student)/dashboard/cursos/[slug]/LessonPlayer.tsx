@@ -22,12 +22,19 @@ type Lesson = {
   instructors?: { instructor: { user: { name: string | null } } }[];
 };
 
+type Topic = {
+  id: string;
+  title: string;
+  order: number;
+  lessons: Lesson[];
+};
+
 type Module = {
   id: string;
   title: string;
   order: number;
   releaseDate: Date | string | null;
-  lessons: Lesson[];
+  topics: Topic[];
   instructors?: { instructor: { user: { name: string | null } } }[];
 };
 
@@ -98,10 +105,10 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
   const t = useTranslations("dashboard.courses");
   const router = useRouter();
 
-  const allLessons = modules.flatMap((m) => (isModuleLocked(m) ? [] : m.lessons));
+  const allLessons = modules.flatMap((m) => isModuleLocked(m) ? [] : m.topics.flatMap((t) => t.lessons));
   const firstLesson = allLessons[0] ?? null;
-  const requestedLesson = initialLessonId ? modules.flatMap((m) => m.lessons).find((l) => l.id === initialLessonId) ?? null : null;
-  const requestedModule = requestedLesson ? modules.find((m) => m.lessons.some((l) => l.id === requestedLesson.id)) : null;
+  const requestedLesson = initialLessonId ? modules.flatMap((m) => m.topics.flatMap((t) => t.lessons)).find((l) => l.id === initialLessonId) ?? null : null;
+  const requestedModule = requestedLesson ? modules.find((m) => m.topics.some((t) => t.lessons.some((l) => l.id === requestedLesson.id))) : null;
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(
     requestedLesson && requestedModule && !isModuleLocked(requestedModule) ? requestedLesson : firstLesson
   );
@@ -172,7 +179,7 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
           if (idx !== -1 && idx < allLessons.length - 1) {
             setCurrentLesson(allLessons[idx + 1]);
             const nextLesson = allLessons[idx + 1];
-            const nextModule = modules.find((m) => m.lessons.some((l) => l.id === nextLesson.id));
+            const nextModule = modules.find((m) => m.topics.some((t) => t.lessons.some((l) => l.id === nextLesson.id)));
             if (nextModule) setOpenModules((prev) => ({ ...prev, [nextModule.id]: true }));
           }
         }
@@ -313,11 +320,14 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>
               {(() => {
-                const mod = modules.find((m) => m.lessons.some((l) => l.id === currentLesson?.id));
+                const mod = modules.find((m) => m.topics.some((t) => t.lessons.some((l) => l.id === currentLesson?.id)));
+                const topic = mod?.topics.find((t) => t.lessons.some((l) => l.id === currentLesson?.id));
                 const lessonInstructors = currentLesson?.instructors ?? [];
                 return mod ? (
                   <div className="mb-1">
-                    <p className="font-sans text-xs text-muted">{mod.title}</p>
+                    <p className="font-sans text-xs text-muted">
+                      {mod.title}{topic ? <span className="text-muted/60"> › {topic.title}</span> : null}
+                    </p>
                     {lessonInstructors.length > 0 && (
                       <p className="font-sans text-xs text-primary/80 font-medium">
                         {lessonInstructors.map((li) => li.instructor.user.name).filter(Boolean).join(" · ")}
@@ -480,52 +490,58 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
 
                 {!locked && openModules[mod.id] && (
                   <div className="pb-2">
-                    {mod.lessons.map((lesson) => {
-                      const isActive = lesson.id === currentLesson?.id;
-                      const isDone = progress[lesson.id];
-
-                      return (
-                        <button
-                          key={lesson.id}
-                          onClick={() => setCurrentLesson(lesson)}
-                          className={`w-full flex items-start gap-3 px-4 py-2.5 text-left transition-colors ${
-                            isActive
-                              ? "bg-primary/10 border-l-2 border-primary"
-                              : "hover:bg-background border-l-2 border-transparent"
-                          }`}
-                        >
-                          <div className="mt-0.5 shrink-0">
-                            {isDone ? (
-                              <CheckCircle className="w-4 h-4 text-green-500" />
-                            ) : isActive ? (
-                              <PlayCircle className="w-4 h-4 text-primary" />
-                            ) : (
-                              <Circle className="w-4 h-4 text-muted/40" />
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className={`font-sans text-xs leading-snug ${isActive ? "text-primary font-semibold" : "text-foreground"}`}>
-                              {lesson.title}
-                            </p>
-                            {lesson.instructors && lesson.instructors.length > 0 && (
-                              <p className="font-sans text-[10px] text-muted/70 mt-0.5 leading-snug">
-                                {lesson.instructors.map((li) => li.instructor.user.name).filter(Boolean).join(" · ")}
-                              </p>
-                            )}
-                            {lesson.duration && (
-                              <p className="font-sans text-[10px] text-muted mt-0.5">
-                                {formatDuration(lesson.duration)}
-                              </p>
-                            )}
-                          </div>
-                          {lesson.isFree && !isDone && (
-                            <span className="font-sans text-[9px] font-semibold uppercase tracking-wider text-accent bg-accent/10 px-1.5 py-0.5 rounded shrink-0">
-                              {t("free")}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
+                    {mod.topics.map((topic) => (
+                      <div key={topic.id}>
+                        <p className="px-4 pt-2.5 pb-1 font-sans text-[10px] font-bold uppercase tracking-widest text-muted/60">
+                          {topic.title}
+                        </p>
+                        {topic.lessons.map((lesson) => {
+                          const isActive = lesson.id === currentLesson?.id;
+                          const isDone = progress[lesson.id];
+                          return (
+                            <button
+                              key={lesson.id}
+                              onClick={() => setCurrentLesson(lesson)}
+                              className={`w-full flex items-start gap-3 pl-6 pr-4 py-2.5 text-left transition-colors ${
+                                isActive
+                                  ? "bg-primary/10 border-l-2 border-primary"
+                                  : "hover:bg-background border-l-2 border-transparent"
+                              }`}
+                            >
+                              <div className="mt-0.5 shrink-0">
+                                {isDone ? (
+                                  <CheckCircle className="w-4 h-4 text-green-500" />
+                                ) : isActive ? (
+                                  <PlayCircle className="w-4 h-4 text-primary" />
+                                ) : (
+                                  <Circle className="w-4 h-4 text-muted/40" />
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className={`font-sans text-xs leading-snug ${isActive ? "text-primary font-semibold" : "text-foreground"}`}>
+                                  {lesson.title}
+                                </p>
+                                {lesson.instructors && lesson.instructors.length > 0 && (
+                                  <p className="font-sans text-[10px] text-muted/70 mt-0.5 leading-snug">
+                                    {lesson.instructors.map((li) => li.instructor.user.name).filter(Boolean).join(" · ")}
+                                  </p>
+                                )}
+                                {lesson.duration && (
+                                  <p className="font-sans text-[10px] text-muted mt-0.5">
+                                    {formatDuration(lesson.duration)}
+                                  </p>
+                                )}
+                              </div>
+                              {lesson.isFree && !isDone && (
+                                <span className="font-sans text-[9px] font-semibold uppercase tracking-wider text-accent bg-accent/10 px-1.5 py-0.5 rounded shrink-0">
+                                  {t("free")}
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>

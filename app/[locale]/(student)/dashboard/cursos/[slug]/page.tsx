@@ -43,32 +43,37 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
               },
             },
           },
-          lessons: {
+          topics: {
             orderBy: { order: "asc" },
-            select: {
-              id: true,
-              title: true,
-              description: true,
-              duration: true,
-              videoUrl: true,
-              audioUrl: true,
-              muxPlaybackId: true,
-              isFree: true,
-              order: true,
-              instructors: {
-                include: { instructor: { include: { user: true } } },
+            include: {
+              lessons: {
                 orderBy: { order: "asc" },
-              },
-              quiz: {
-                include: {
-                  questions: {
+                select: {
+                  id: true,
+                  title: true,
+                  description: true,
+                  duration: true,
+                  videoUrl: true,
+                  audioUrl: true,
+                  muxPlaybackId: true,
+                  isFree: true,
+                  order: true,
+                  instructors: {
+                    include: { instructor: { include: { user: true } } },
+                    orderBy: { order: "asc" },
+                  },
+                  quiz: {
                     include: {
-                      options: {
-                        select: { id: true, text: true, order: true },
+                      questions: {
+                        include: {
+                          options: {
+                            select: { id: true, text: true, order: true },
+                            orderBy: { order: "asc" },
+                          },
+                        },
                         orderBy: { order: "asc" },
                       },
                     },
-                    orderBy: { order: "asc" },
                   },
                 },
               },
@@ -101,9 +106,11 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
   // Monta mapa lessonId → quiz (sem isCorrect para o aluno)
   const quizzesMap: Record<string, { id: string; title: string; questions: Array<{ id: string; text: string; order: number; options: Array<{ id: string; text: string; order: number }> }> }> = {};
   for (const mod of course.modules) {
-    for (const lesson of mod.lessons) {
-      if (lesson.quiz) {
-        quizzesMap[lesson.id] = lesson.quiz;
+    for (const topic of mod.topics) {
+      for (const lesson of topic.lessons) {
+        if (lesson.quiz) {
+          quizzesMap[lesson.id] = lesson.quiz;
+        }
       }
     }
   }
@@ -141,16 +148,19 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
     if (!locked) return mod;
     return {
       ...mod,
-      lessons: mod.lessons.map((lesson) => ({
-        ...lesson,
-        videoUrl: null,
-        muxPlaybackId: null,
+      topics: mod.topics.map((topic) => ({
+        ...topic,
+        lessons: topic.lessons.map((lesson) => ({
+          ...lesson,
+          videoUrl: null,
+          muxPlaybackId: null,
+        })),
       })),
     };
   });
 
   // Busca anotações do aluno para todas as aulas deste curso
-  const allLessonIds = course.modules.flatMap((m) => m.lessons.map((l) => l.id));
+  const allLessonIds = course.modules.flatMap((m) => m.topics.flatMap((t) => t.lessons.map((l) => l.id)));
   const notesData = await prisma.note.findMany({
     where: { userId: session.user.id, lessonId: { in: allLessonIds } },
     select: { lessonId: true, content: true },
@@ -259,7 +269,7 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
       )}
 
       {/* ── Link de aula externa (Google Meet / plataforma online) ── */}
-      {course.contentUrl && course.modules.flatMap((m) => m.lessons).length === 0 ? (
+      {course.contentUrl && course.modules.flatMap((m) => m.topics.flatMap((t) => t.lessons)).length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 py-16">
           <div className="w-full max-w-lg">
             {/* Player placeholder */}
@@ -340,7 +350,7 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
         <>
         {/* ── Cards de conteúdo ── */}
         {(() => {
-          const allLessons = course.modules.flatMap((m) => m.lessons);
+          const allLessons = course.modules.flatMap((m) => m.topics.flatMap((t) => t.lessons));
           const audioTotal = allLessons.filter((l) => l.audioUrl).length;
           const quizModules = course.modules.filter((m) => m.quiz);
           const quizTotal = quizModules.length;
