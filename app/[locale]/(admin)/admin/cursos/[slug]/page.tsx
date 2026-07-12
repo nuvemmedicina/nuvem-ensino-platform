@@ -42,6 +42,7 @@ import {
 import { DeleteButton } from "./DeleteButton";
 import { MuxUploader } from "./MuxUploader";
 import { RemoveVideoButton } from "./RemoveVideoButton";
+import { ModuleAccordion } from "./ModuleAccordion";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
@@ -501,7 +502,7 @@ export default async function AdminCursoEditPage({ params }: Props) {
         </h2>
 
         <div className="flex flex-col gap-6">
-          {course.modules.map((mod) => {
+          {course.modules.map((mod, modIndex) => {
             const deleteModAction = deleteModule.bind(null, mod.id, slug);
             const createLessonAction = createLesson.bind(null, mod.id, slug);
 
@@ -510,53 +511,64 @@ export default async function AdminCursoEditPage({ params }: Props) {
             const releaseDateValue = mod.releaseDate
               ? new Date(mod.releaseDate).toISOString().slice(0, 16)
               : "";
+            const isLocked = !!mod.releaseDate && new Date(mod.releaseDate) > new Date();
 
             return (
-              <div key={mod.id} className="border border-border rounded-xl overflow-hidden">
-                {/* Module header */}
-                <div className="flex items-center gap-2 px-4 py-3 bg-background border-b border-border">
-                  <form action={updateModuleAction} className="flex items-center gap-2 flex-1 min-w-0">
-                    <input
-                      name="title"
-                      defaultValue={mod.title}
-                      required
-                      className={`${inputClass} text-sm font-semibold flex-1`}
-                    />
-                    <button type="submit" className={btnGhost}>Salvar</button>
-                  </form>
-                  <DeleteButton
-                    action={deleteModAction}
-                    confirm={`Excluir módulo "${mod.title}" e todas as suas aulas?`}
-                    className={btnDanger}
-                  />
-                </div>
-                {/* Release date (drip) */}
-                <form action={updateReleaseDateAction} className="flex items-center gap-2 px-4 py-2.5 bg-background/50 border-b border-border">
-                  <label className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted shrink-0">
-                    Liberar em
-                  </label>
-                  <input
-                    name="releaseDate"
-                    type="datetime-local"
-                    defaultValue={releaseDateValue}
-                    className={`${inputClass} text-xs flex-1`}
-                  />
-                  <button type="submit" className={btnGhost}>Salvar</button>
-                  {mod.releaseDate && new Date(mod.releaseDate) > new Date() && (
-                    <span className="font-sans text-[10px] text-amber-600 shrink-0">🔒 Bloqueado</span>
-                  )}
-                </form>
-
-                {/* Docentes do módulo */}
-                <div className="flex items-center gap-2 px-4 py-2 bg-background/30 border-b border-border">
-                  <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted shrink-0">Docentes</span>
-                  <ModuleInstructorSelector
-                    moduleId={mod.id}
-                    courseSlug={slug}
-                    allInstructors={allInstructors.map((i) => ({ id: i.id, name: i.user.name, title: i.title }))}
-                    initialIds={mod.instructors.map((mi) => mi.instructorId)}
-                  />
-                </div>
+              <ModuleAccordion
+                key={mod.id}
+                title={mod.title}
+                index={modIndex}
+                lessonCount={mod.lessons.length}
+                locked={isLocked}
+                defaultOpen={modIndex === 0}
+                header={
+                  <>
+                    {/* Editar título + excluir */}
+                    <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
+                      <form action={updateModuleAction} className="flex items-center gap-2 flex-1 min-w-0">
+                        <input
+                          name="title"
+                          defaultValue={mod.title}
+                          required
+                          className={`${inputClass} text-sm font-semibold flex-1`}
+                        />
+                        <button type="submit" className={btnGhost}>Salvar</button>
+                      </form>
+                      <DeleteButton
+                        action={deleteModAction}
+                        confirm={`Excluir módulo "${mod.title}" e todas as suas aulas?`}
+                        className={btnDanger}
+                      />
+                    </div>
+                    {/* Release date (drip) */}
+                    <form action={updateReleaseDateAction} className="flex items-center gap-2 px-4 py-2.5 bg-background/50 border-b border-border">
+                      <label className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted shrink-0">
+                        Liberar em
+                      </label>
+                      <input
+                        name="releaseDate"
+                        type="datetime-local"
+                        defaultValue={releaseDateValue}
+                        className={`${inputClass} text-xs flex-1`}
+                      />
+                      <button type="submit" className={btnGhost}>Salvar</button>
+                      {isLocked && (
+                        <span className="font-sans text-[10px] text-amber-600 shrink-0">🔒 Bloqueado</span>
+                      )}
+                    </form>
+                    {/* Docentes do módulo */}
+                    <div className="flex items-center gap-2 px-4 py-2 bg-background/30 border-b border-border">
+                      <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted shrink-0">Docentes</span>
+                      <ModuleInstructorSelector
+                        moduleId={mod.id}
+                        courseSlug={slug}
+                        allInstructors={allInstructors.map((i) => ({ id: i.id, name: i.user.name, title: i.title }))}
+                        initialIds={mod.instructors.map((mi) => mi.instructorId)}
+                      />
+                    </div>
+                  </>
+                }
+              >
 
                 {/* Lessons */}
                 <div className="divide-y divide-border">
@@ -906,7 +918,7 @@ export default async function AdminCursoEditPage({ params }: Props) {
                     </div>
                   )}
                 </div>
-              </div>
+              </ModuleAccordion>
             );
           })}
         </div>
