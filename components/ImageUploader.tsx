@@ -1,17 +1,14 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { upload } from "@vercel/blob/client";
 import Image from "next/image";
 import { ImagePlus, Loader2, X, AlertCircle, Link as LinkIcon } from "lucide-react";
 
 type Props = {
-  /** name of the hidden input that stores the final URL */
   name: string;
-  /** initial URL already saved in DB */
   initialUrl?: string | null;
-  /** Vercel Blob folder: "instructors" or "courses" */
-  folder: "instructors" | "courses";
-  /** aspect ratio hint shown in the drop-zone */
+  folder: "instructors" | "courses" | string;
   aspectHint?: string;
   label?: string;
 };
@@ -34,19 +31,16 @@ export function ImageUploader({
     setError(null);
     setUploading(true);
     try {
-      const form = new FormData();
-      form.append("file", file);
-      form.append("folder", folder);
-
-      const res = await fetch("/api/upload/image", { method: "POST", body: form });
-      let data: { url?: string; error?: string } = {};
-      try { data = await res.json(); } catch { /* empty body */ }
-
-      if (!res.ok) throw new Error(data.error ?? `Erro ao fazer upload (HTTP ${res.status}).`);
-      if (!data.url) throw new Error("URL não retornada pelo servidor.");
-      setUrl(data.url);
+      const ext = file.name.split(".").pop() ?? "jpg";
+      const filename = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const blob = await upload(filename, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload/image",
+        contentType: file.type,
+      });
+      setUrl(blob.url);
     } catch (err) {
-      setError((err as Error).message);
+      setError(err instanceof Error ? err.message : "Erro no upload");
     } finally {
       setUploading(false);
     }
@@ -60,64 +54,38 @@ export function ImageUploader({
 
   return (
     <div>
-      {/* Hidden input stores the URL that gets submitted with the form */}
       <input type="hidden" name={name} value={url} />
 
       {url ? (
-        /* Preview */
         <div className="relative group w-full">
           <div className="relative w-full rounded-xl overflow-hidden border border-border bg-background"
                style={{ aspectRatio: aspectHint.replace(":", "/") }}>
-            <Image
-              src={url}
-              alt={label}
-              fill
-              className="object-cover"
-              unoptimized
-            />
+            <Image src={url} alt={label} fill className="object-cover" unoptimized />
           </div>
-          {/* Overlay on hover: trocar ou remover */}
           <div className="absolute inset-0 rounded-xl bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-            <button
-              type="button"
-              onClick={() => inputRef.current?.click()}
-              className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg bg-white text-foreground hover:bg-white/90 transition-colors"
-            >
+            <button type="button" onClick={() => inputRef.current?.click()}
+              className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg bg-white text-foreground hover:bg-white/90 transition-colors">
               Trocar
             </button>
-            <button
-              type="button"
-              onClick={() => setUrl("")}
-              className="p-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors"
-              title="Remover imagem"
-            >
+            <button type="button" onClick={() => setUrl("")}
+              className="p-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors" title="Remover imagem">
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       ) : (
-        /* Drop zone */
-        <button
-          type="button"
-          onClick={() => inputRef.current?.click()}
-          onDrop={handleDrop}
-          onDragOver={(e) => e.preventDefault()}
+        <button type="button" onClick={() => inputRef.current?.click()}
+          onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}
           disabled={uploading}
-          className="w-full flex flex-col items-center justify-center gap-2 py-8 border-2 border-dashed border-border rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-colors text-muted cursor-pointer disabled:opacity-60"
-        >
+          className="w-full flex flex-col items-center justify-center gap-2 py-8 border-2 border-dashed border-border rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-colors text-muted cursor-pointer disabled:opacity-60">
           {uploading ? (
-            <>
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
-              <span className="font-sans text-xs">Enviando…</span>
-            </>
+            <><Loader2 className="w-6 h-6 animate-spin text-primary" /><span className="font-sans text-xs">Enviando…</span></>
           ) : (
             <>
               <ImagePlus className="w-6 h-6" />
               <span className="font-sans text-xs font-medium">Clique ou arraste uma imagem</span>
-              <span className="font-sans text-[10px] text-muted/60">JPG, PNG ou WEBP · máx. 5 MB</span>
-              {aspectHint && (
-                <span className="font-sans text-[10px] text-muted/50">Proporção ideal: {aspectHint}</span>
-              )}
+              <span className="font-sans text-[10px] text-muted/60">JPG, PNG ou WEBP · máx. 10 MB</span>
+              {aspectHint && <span className="font-sans text-[10px] text-muted/50">Proporção ideal: {aspectHint}</span>}
             </>
           )}
         </button>
@@ -130,45 +98,23 @@ export function ImageUploader({
         </div>
       )}
 
-      {/* Opção de colar URL diretamente */}
       {!url && (
         <div className="mt-2">
           {!showUrlInput ? (
-            <button
-              type="button"
-              onClick={() => setShowUrlInput(true)}
-              className="flex items-center gap-1.5 font-sans text-xs text-muted hover:text-foreground transition-colors"
-            >
-              <LinkIcon className="w-3 h-3" />
-              Ou cole uma URL de imagem
+            <button type="button" onClick={() => setShowUrlInput(true)}
+              className="flex items-center gap-1.5 font-sans text-xs text-muted hover:text-foreground transition-colors">
+              <LinkIcon className="w-3 h-3" /> Ou cole uma URL de imagem
             </button>
           ) : (
             <div className="flex gap-2">
-              <input
-                type="url"
-                value={urlInputVal}
-                onChange={(e) => setUrlInputVal(e.target.value)}
-                placeholder="https://..."
-                className="flex-1 px-3 py-1.5 rounded-lg border border-border bg-background text-xs text-foreground focus:outline-none focus:border-primary/50"
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  if (urlInputVal.trim()) {
-                    setUrl(urlInputVal.trim());
-                    setShowUrlInput(false);
-                    setUrlInputVal("");
-                  }
-                }}
-                className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors"
-              >
+              <input type="url" value={urlInputVal} onChange={(e) => setUrlInputVal(e.target.value)}
+                placeholder="https://..." className="flex-1 px-3 py-1.5 rounded-lg border border-border bg-background text-xs text-foreground focus:outline-none focus:border-primary/50" />
+              <button type="button" onClick={() => { if (urlInputVal.trim()) { setUrl(urlInputVal.trim()); setShowUrlInput(false); setUrlInputVal(""); } }}
+                className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors">
                 Usar
               </button>
-              <button
-                type="button"
-                onClick={() => { setShowUrlInput(false); setUrlInputVal(""); }}
-                className="font-sans text-xs px-2 py-1.5 rounded-lg border border-border text-muted hover:text-foreground transition-colors"
-              >
+              <button type="button" onClick={() => { setShowUrlInput(false); setUrlInputVal(""); }}
+                className="font-sans text-xs px-2 py-1.5 rounded-lg border border-border text-muted hover:text-foreground transition-colors">
                 Cancelar
               </button>
             </div>
@@ -176,16 +122,8 @@ export function ImageUploader({
         </div>
       )}
 
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif"
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) handleFile(file);
-        }}
-      />
+      <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden"
+        onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFile(file); e.target.value = ""; }} />
     </div>
   );
 }
