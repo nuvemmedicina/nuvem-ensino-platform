@@ -185,7 +185,7 @@ export default async function AvaliacaoPage({ params }: Props) {
           </a>
 
           {/* Google Review */}
-          <
+          <a
             href="https://g.page/r/CQQmzgdp8IZoEAE/review"
             target="_blank"
             rel="noopener noreferrer"
