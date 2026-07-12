@@ -152,7 +152,19 @@
       "PowerShell(Invoke-WebRequest -Uri \"https://nuvemensino.com.br/api/admin/reativar-matricula\" -Method POST -ContentType \"application/json\" -Body '{\"email\":\"anapgs.mkt@gmail.com\",\"courseSlug\":\"dici-neurogastroenterologia-2026\"}')",
       "PowerShell(Invoke-WebRequest -Uri \"https://nuvemensino.com.br/api/admin/reativar-matricula\" -Method POST -ContentType \"application/json\" -Body '{\"email\":\"anapgs.mkt@gmail.com\",\"courseSlug\":\"dici-neurogastroenterologia-2026\"}' -MaximumRedirection 5)",
       "PowerShell(Invoke-WebRequest -Uri \"https://www.nuvemensino.com.br/api/admin/reativar-matricula\" -Method POST -ContentType \"application/json\" -Body '{\"email\":\"anapgs.mkt@gmail.com\",\"courseSlug\":\"dici-neurogastroenterologia-2026\"}')",
-      "Bash(mkdir -p \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(admin\\)\\\\admin\\\\matriculas\\\\reativar\")"
+      "Bash(mkdir -p \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(admin\\)\\\\admin\\\\matriculas\\\\reativar\")",
+      "Bash(node -e \"require.resolve\\('dotenv'\\)\")",
+      "Bash(node -e \"console.log\\(require\\('@neondatabase/serverless/package.json'\\).version\\)\")",
+      "Bash(npx eslint *)",
+      "Bash(xargs grep -l \"datasource\\\\|defineConfig\")",
+      "Bash(xargs grep -l \"datasource\\\\|directUrl\")",
+      "Bash(sed -i 's/export async function updateModuleApostila\\(moduleId: string, courseSlug: string, url: string | null\\)/export async function updateTopicApostila\\(topicId: string, courseSlug: string, url: string | null\\)/' \"app/[locale]/\\(admin\\)/admin/cursos/[slug]/actions.ts\")",
+      "Bash(sed -i 's/await prisma.module.update\\({/await prisma.topic.update\\({/' \"app/[locale]/\\(admin\\)/admin/cursos/[slug]/actions.ts\")",
+      "Bash(sed -i 's/where: { id: moduleId },/where: { id: topicId },/' \"app/[locale]/\\(admin\\)/admin/cursos/[slug]/actions.ts\")",
+      "Bash(cd \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\" && sed -i 's/  updateModuleApostila,/  updateTopicApostila,/' \"app/[locale]/\\(admin\\)/admin/cursos/[slug]/page.tsx\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(admin\\)\\\\admin\\\\configuracoes\\\\ia\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(admin\\)\\\\admin\\\\flashcards\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(student\\)\\\\dashboard\\\\flashcards\\\\[groupId]\")"
     ]
   }
 }

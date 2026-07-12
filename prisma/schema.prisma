@@ -99,6 +99,7 @@ model User {
   forumLikes         ForumLike[]
   moduleQuizAttempts ModuleQuizAttempt[]
   courseEvaluations  CourseEvaluation[]
+  flashcardSessions  FlashcardStudySession[]
 }
 
 model Account {
@@ -223,7 +224,8 @@ model Course {
   tags          CourseTag[]
   liveSessions  LiveSession[]
   forumPosts    ForumPost[]
-  evaluations   CourseEvaluation[]
+  evaluations      CourseEvaluation[]
+  flashcardGroups  FlashcardGroup[]
 }
 
 model Tag {
@@ -712,3 +714,139 @@ model LiveSession {
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
+
+// ─── FLASHCARDS ───────────────────────────────────────────────────────────────
+
+enum FlashcardDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum FlashcardBackgroundType {
+  SOLID
+  GRADIENT
+  IMAGE
+}
+
+enum FlashcardLogoSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum FlashcardCardSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum FlashcardFlipAnimation {
+  HORIZONTAL_3D
+  VERTICAL_3D
+  FADE
+  SLIDE
+}
+
+enum AIProvider {
+  ANTHROPIC
+  OPENAI
+  GOOGLE
+}
+
+model FlashcardDesignConfig {
+  id               String                  @id @default(cuid())
+  backgroundType   FlashcardBackgroundType @default(SOLID)
+  backgroundValue  String                  @default("#ffffff")
+  textColor        String                  @default("#1a1a1a")
+  borderWidth      Int                     @default(1)
+  borderColor      String                  @default("#e5e7eb")
+  borderRadius     Int                     @default(12)
+  logoUrl          String?
+  logoSize         FlashcardLogoSize       @default(MEDIUM)
+  cardSize         FlashcardCardSize       @default(MEDIUM)
+  flipAnimation    FlashcardFlipAnimation  @default(HORIZONTAL_3D)
+  shuffleEnabled          Boolean @default(true)
+  spacedRepetitionEnabled Boolean @default(true)
+  isDefault        Boolean @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  groups FlashcardGroup[]
+}
+
+model FlashcardGroup {
+  id               String   @id @default(cuid())
+  title            String
+  description      String?
+  courseId         String?
+  tags             String[] @default([])
+  designConfigId   String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  course       Course?               @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  designConfig FlashcardDesignConfig? @relation(fields: [designConfigId], references: [id], onDelete: SetNull)
+  cards        Flashcard[]
+  sessions     FlashcardStudySession[]
+
+  @@index([courseId])
+}
+
+model Flashcard {
+  id         String              @id @default(cuid())
+  groupId    String
+  front      String              @db.Text
+  back       String              @db.Text
+  difficulty FlashcardDifficulty?
+  order      Int                 @default(0)
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+
+  group   FlashcardGroup    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  reviews FlashcardReview[]
+
+  @@index([groupId])
+}
+
+model FlashcardStudySession {
+  id            String    @id @default(cuid())
+  userId        String
+  groupId       String
+  startedAt     DateTime  @default(now())
+  finishedAt    DateTime?
+  cardsReviewed Int       @default(0)
+  createdAt     DateTime  @default(now())
+
+  user    User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group   FlashcardGroup      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  reviews FlashcardReview[]
+
+  @@index([userId])
+  @@index([groupId])
+}
+
+model FlashcardReview {
+  id          String              @id @default(cuid())
+  sessionId   String
+  flashcardId String
+  rating      FlashcardDifficulty
+  reviewedAt  DateTime            @default(now())
+
+  session   FlashcardStudySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  flashcard Flashcard             @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([flashcardId])
+}
+
+model AIProviderConfig {
+  id               String     @id @default(cuid())
+  provider         AIProvider
+  model            String
+  apiKeyEncrypted  String
+  isActive         Boolean    @default(false)
+  updatedAt        DateTime   @updatedAt
+
+  @@unique([provider])
+}
