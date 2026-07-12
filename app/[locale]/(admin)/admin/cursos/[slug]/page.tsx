@@ -603,8 +603,8 @@ export default async function AdminCursoEditPage({ params }: Props) {
                                 name="description"
                                 defaultValue={lesson.description ?? ""}
                                 placeholder="Descrição da aula (opcional)"
-                                rows={2}
-                                className={`${inputClass} resize-none text-xs`}
+                                rows={5}
+                                className={`${inputClass} resize-y text-xs`}
                               />
                             </div>
 
