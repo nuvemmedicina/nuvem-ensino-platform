@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/pre-migrate.mjs && DATABASE_URL=${DIRECT_URL:-$DATABASE_URL} prisma migrate resolve --rolled-back 20260625120000_add_module_release_date_and_module_instructors 2>/dev/null || true && DATABASE_URL=${DIRECT_URL:-$DATABASE_URL} prisma migrate resolve --rolled-back 20260711150000_add_enrollment_pending_status 2>/dev/null || true && DATABASE_URL=${DIRECT_URL:-$DATABASE_URL} prisma migrate resolve --rolled-back 20260712120000_add_topic 2>/dev/null || true && DATABASE_URL=${DIRECT_URL:-$DATABASE_URL} prisma migrate resolve --rolled-back 20260712180000_add_course_evaluation 2>/dev/null || true && DATABASE_URL=${DIRECT_URL:-$DATABASE_URL} prisma migrate deploy && prisma generate && next build",
+    "build": "node scripts/pre-migrate.mjs && DATABASE_URL=${DIRECT_URL:-$DATABASE_URL} prisma migrate resolve --rolled-back 20260625120000_add_module_release_date_and_module_instructors 2>/dev/null || true && DATABASE_URL=${DIRECT_URL:-$DATABASE_URL} prisma migrate resolve --rolled-back 20260711150000_add_enrollment_pending_status 2>/dev/null || true && DATABASE_URL=${DIRECT_URL:-$DATABASE_URL} prisma migrate resolve --rolled-back 20260712120000_add_topic 2>/dev/null || true && DATABASE_URL=${DIRECT_URL:-$DATABASE_URL} prisma migrate resolve --rolled-back 20260712180000_add_course_evaluation 2>/dev/null || true && DATABASE_URL=${DIRECT_URL:-$DATABASE_URL} prisma migrate resolve --rolled-back 20260712200000_add_module_apostila_url 2>/dev/null || true && DATABASE_URL=${DIRECT_URL:-$DATABASE_URL} prisma migrate deploy && prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate"

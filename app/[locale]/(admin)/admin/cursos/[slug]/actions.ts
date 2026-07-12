@@ -221,6 +221,15 @@ export async function updateModuleReleaseDate(moduleId: string, courseSlug: stri
   revalidatePath(`/admin/cursos/${courseSlug}`);
 }
 
+export async function updateModuleApostila(moduleId: string, courseSlug: string, url: string | null) {
+  await requireAdmin();
+  await prisma.module.update({
+    where: { id: moduleId },
+    data: { apostilaUrl: url },
+  });
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
 export async function deleteCourse(courseId: string) {
   await requireAdmin();
   await prisma.course.delete({ where: { id: courseId } });

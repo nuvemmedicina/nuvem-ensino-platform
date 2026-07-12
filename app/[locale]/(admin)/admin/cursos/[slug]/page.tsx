@@ -20,6 +20,7 @@ import {
   deleteLesson,
   deleteModule,
   updateModuleReleaseDate,
+  updateModuleApostila,
   removeLessonVideo,
 } from "./actions";
 import { ModuleInstructorSelector } from "./ModuleInstructorSelector";
@@ -48,6 +49,7 @@ import { MuxUploader } from "./MuxUploader";
 import { RemoveVideoButton } from "./RemoveVideoButton";
 import { ModuleAccordion } from "./ModuleAccordion";
 import { TopicAccordion } from "./TopicAccordion";
+import { ApostilaUploader } from "./ApostilaUploader";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
@@ -566,6 +568,15 @@ export default async function AdminCursoEditPage({ params }: Props) {
                         <span className="font-sans text-[10px] text-amber-600 shrink-0">🔒 Bloqueado</span>
                       )}
                     </form>
+                    {/* Apostila do módulo */}
+                    <div className="px-4 py-3 bg-background/30 border-b border-border">
+                      <ApostilaUploader
+                        moduleId={mod.id}
+                        courseSlug={slug}
+                        currentUrl={mod.apostilaUrl ?? null}
+                        updateAction={updateModuleApostila}
+                      />
+                    </div>
                     {/* Docentes do módulo */}
                     <div className="flex items-center gap-2 px-4 py-2 bg-background/30 border-b border-border">
                       <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted shrink-0">Docentes</span>

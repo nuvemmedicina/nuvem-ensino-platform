@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect, useRef } from "react";
 import MuxPlayer from "@mux/mux-player-react";
-import { CheckCircle, Circle, PlayCircle, ChevronDown, ChevronRight, NotebookPen, Check, Lock, Award, Star } from "lucide-react";
+import { CheckCircle, Circle, PlayCircle, ChevronDown, ChevronRight, NotebookPen, Check, Lock, Award, Star, FileDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { saveNote } from "./noteActions";
@@ -34,6 +34,7 @@ type Module = {
   title: string;
   order: number;
   releaseDate: Date | string | null;
+  apostilaUrl?: string | null;
   topics: Topic[];
   instructors?: { instructor: { user: { name: string | null } } }[];
 };
@@ -617,6 +618,19 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
                     />
                   )}
                 </button>
+
+                {/* Apostila do módulo */}
+                {!locked && mod.apostilaUrl && (
+                  <a
+                    href={mod.apostilaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 border-t border-border bg-primary/5 hover:bg-primary/10 transition-colors"
+                  >
+                    <FileDown className="w-3.5 h-3.5 text-primary shrink-0" />
+                    <span className="font-sans text-xs font-semibold text-primary">Apostila do módulo</span>
+                  </a>
+                )}
 
                 {!locked && openModules[mod.id] && (
                   <div className="pb-2">

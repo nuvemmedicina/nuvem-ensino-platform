@@ -252,6 +252,7 @@ model Module {
   description String?
   order       Int
   releaseDate DateTime?           // null = disponível imediatamente; data futura = drip content
+  apostilaUrl String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
