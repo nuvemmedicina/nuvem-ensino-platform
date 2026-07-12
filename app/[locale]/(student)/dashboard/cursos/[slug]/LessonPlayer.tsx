@@ -449,6 +449,136 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
             currentUserName={currentUserName}
           />
         )}
+
+        {/* ── AudioCasts — cards estilo Netflix ── */}
+        {(() => {
+          const allAudiocasts = modules.flatMap((m) =>
+            m.topics.flatMap((t) => t.lessons.filter((l) => l.audioUrl))
+          );
+          if (allAudiocasts.length === 0) return null;
+
+          const palettes = [
+            { from: "#0d2d3d", to: "#00a3c4" },
+            { from: "#1a0d2d", to: "#7c3aed" },
+            { from: "#0d2018", to: "#059669" },
+            { from: "#2d1a0d", to: "#d97706" },
+            { from: "#1e0d1a", to: "#db2777" },
+          ];
+
+          const waveHeights = [4, 9, 18, 26, 14, 22, 9, 16, 22, 7, 20, 11, 24, 8, 17, 5, 13, 21, 9, 17];
+
+          return (
+            <div className="border-t border-border">
+              <div className="px-6 pt-6 pb-2">
+                <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted">AudioCasts</p>
+              </div>
+              <div
+                className="flex gap-3 px-6 pb-6 overflow-x-auto"
+                style={{ scrollbarWidth: "thin", scrollbarColor: "var(--color-border) transparent" }}
+              >
+                {allAudiocasts.map((lesson, i) => {
+                  const pal = palettes[i % palettes.length];
+                  const isPlaying = currentLesson?.id === lesson.id;
+                  return (
+                    <button
+                      key={lesson.id}
+                      onClick={() => setCurrentLesson(lesson)}
+                      className="shrink-0 relative w-36 h-52 rounded-xl overflow-hidden group focus:outline-none"
+                      style={{
+                        transform: isPlaying ? "scale(1.04)" : undefined,
+                        boxShadow: isPlaying ? `0 0 0 2px #00a3c4, 0 8px 24px rgba(0,163,196,0.35)` : undefined,
+                        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                      }}
+                    >
+                      {/* background gradient */}
+                      <div
+                        className="absolute inset-0 transition-transform duration-300 group-hover:scale-105"
+                        style={{ background: `linear-gradient(135deg, ${pal.from} 0%, ${pal.to}80 100%)` }}
+                      />
+
+                      {/* waveform decoration */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-35 transition-opacity duration-300">
+                        <svg viewBox="0 0 82 42" className="w-28 h-14" fill="none">
+                          {waveHeights.map((h, j) => (
+                            <rect
+                              key={j}
+                              x={j * 4 + 1}
+                              y={(42 - h) / 2}
+                              width="2.5"
+                              height={h}
+                              rx="1.25"
+                              fill="white"
+                            />
+                          ))}
+                        </svg>
+                      </div>
+
+                      {/* AUDIOCAST pill */}
+                      <div className="absolute top-2.5 left-2.5">
+                        <span
+                          className="font-sans text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded"
+                          style={{ background: pal.to, color: "white" }}
+                        >
+                          AudioCast
+                        </span>
+                      </div>
+
+                      {/* playing indicator */}
+                      {isPlaying && (
+                        <div className="absolute top-2.5 right-2.5">
+                          <PlayCircle className="w-3.5 h-3.5 text-white drop-shadow" />
+                        </div>
+                      )}
+
+                      {/* bottom text */}
+                      <div className="absolute inset-x-0 bottom-0 px-2.5 py-2.5"
+                        style={{ background: "linear-gradient(to top, rgba(0,0,0,0.88) 60%, transparent)" }}>
+                        <p className="font-sans text-[11px] font-semibold text-white leading-tight line-clamp-3">
+                          {lesson.title}
+                        </p>
+                        {lesson.duration && (
+                          <p className="font-sans text-[10px] mt-1" style={{ color: "rgba(255,255,255,0.5)" }}>
+                            {formatDuration(lesson.duration)}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* hover overlay */}
+                      <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors duration-200" />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* ── Apostilas — card em breve ── */}
+        <div className="border-t border-border">
+          <div className="px-6 pt-6 pb-2">
+            <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted">Apostilas</p>
+          </div>
+          <div className="flex gap-3 px-6 pb-6">
+            <div
+              className="shrink-0 relative w-36 h-52 rounded-xl overflow-hidden opacity-40"
+              style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)" }}
+            >
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/40">
+                <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                </svg>
+                <p className="font-sans text-[10px] text-center font-medium text-white/50 leading-tight px-3">
+                  Em breve
+                </p>
+              </div>
+              <div className="absolute top-2.5 left-2.5">
+                <span className="font-sans text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-white/10 text-white/50">
+                  Apostila
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* ── Sidebar — lista de aulas ── */}
