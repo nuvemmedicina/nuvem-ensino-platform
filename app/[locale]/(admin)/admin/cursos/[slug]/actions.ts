@@ -214,8 +214,8 @@ export async function deleteModule(moduleId: string, courseSlug: string) {
 export async function updateModuleReleaseDate(moduleId: string, courseSlug: string, formData: FormData) {
   await requireAdmin();
   const raw = formData.get("releaseDate") as string;
-  await prisma.topic.update({
-    where: { id: topicId },
+  await prisma.module.update({
+    where: { id: moduleId },
     data: { releaseDate: raw ? new Date(raw) : null },
   });
   revalidatePath(`/admin/cursos/${courseSlug}`);
