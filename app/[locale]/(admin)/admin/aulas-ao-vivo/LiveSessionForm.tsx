@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { createLiveSession } from "./actions";
+import { LiveSessionImageUpload } from "./LiveSessionImageUpload";
 
 type Course = { id: string; title: string; slug: string };
 
@@ -12,10 +13,13 @@ const labelClass =
 
 export default function LiveSessionForm({ courses }: { courses: Course[] }) {
   const formRef = useRef<HTMLFormElement>(null);
+  const [thumbnailUrl, setThumbnailUrl] = useState("");
 
   async function handleSubmit(formData: FormData) {
+    formData.set("thumbnailUrl", thumbnailUrl);
     await createLiveSession(formData);
     formRef.current?.reset();
+    setThumbnailUrl("");
   }
 
   return (
@@ -67,9 +71,8 @@ export default function LiveSessionForm({ courses }: { courses: Course[] }) {
       </div>
 
       <div>
-        <label className={labelClass}>Imagem de capa (URL)</label>
-        <input name="thumbnailUrl" type="url" placeholder="https://..." className={inputClass} />
-        <p className="font-sans text-[10px] text-muted mt-1">Cole a URL da arte do evento. Aparece no card da aula para o aluno.</p>
+        <label className={labelClass}>Imagem de capa</label>
+        <LiveSessionImageUpload value={thumbnailUrl} onChange={setThumbnailUrl} />
       </div>
 
       <button type="submit" className="w-full font-sans text-sm font-semibold px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors mt-1">

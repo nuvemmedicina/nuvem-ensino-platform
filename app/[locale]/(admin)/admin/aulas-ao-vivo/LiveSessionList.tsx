@@ -4,6 +4,7 @@ import { useState } from "react";
 import { deleteLiveSession, updateLiveSession } from "./actions";
 import { Trash2, Video, MapPin, Pencil, X, Check, PlayCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { LiveSessionImageUpload } from "./LiveSessionImageUpload";
 
 type Session = {
   id: string;
@@ -100,6 +101,7 @@ function SessionCard({
 }) {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [thumbnailUrl, setThumbnailUrl] = useState(s.thumbnailUrl ?? "");
 
   const fmt = (d: Date) =>
     new Intl.DateTimeFormat(undefined, {
@@ -108,6 +110,7 @@ function SessionCard({
     }).format(new Date(d));
 
   async function handleSubmit(formData: FormData) {
+    formData.set("thumbnailUrl", thumbnailUrl);
     setSaving(true);
     await updateLiveSession(s.id, formData);
     setSaving(false);
@@ -223,18 +226,9 @@ function SessionCard({
 
           <div>
             <label className="block font-sans text-[10px] font-semibold text-muted uppercase tracking-wider mb-1">
-              Imagem de capa (URL)
+              Imagem de capa
             </label>
-            <input
-              name="thumbnailUrl"
-              type="url"
-              defaultValue={s.thumbnailUrl ?? ""}
-              placeholder="https://..."
-              className={inputClass}
-            />
-            <p className="font-sans text-[10px] text-muted mt-1">
-              Arte do evento. Aparece no card da aula para o aluno.
-            </p>
+            <LiveSessionImageUpload value={thumbnailUrl} onChange={setThumbnailUrl} />
           </div>
 
           <div className="flex items-center gap-2 pt-1">
