@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export async function extractTextFromFile(buffer: Buffer, mimeType: string, filename: string): Promise<string> {
   if (mimeType === "application/pdf" || filename.endsWith(".pdf")) {
-    const pdfModule = await import("pdf-parse");
-    const pdfParse = (pdfModule as unknown as { default: typeof pdfModule }).default ?? pdfModule;
-    const result = await (pdfParse as (b: Buffer) => Promise<{ text: string }>)(buffer);
-    return result.text;
+    // pdf-parse v2 é ESM puro — não tem .default; usamos `any` para contornar o tipo
+    const pdfParse = (await import("pdf-parse")) as any;
+    const fn = pdfParse.default ?? pdfParse;
+    const result = await fn(buffer);
+    return result.text as string;
   }
 
   if (
@@ -20,7 +22,6 @@ export async function extractTextFromFile(buffer: Buffer, mimeType: string, file
   }
 
   if (mimeType.startsWith("image/")) {
-    // Para imagens, retorna um placeholder — o texto será extraído via visão do LLM na route
     return "__IMAGE_BINARY__";
   }
 
