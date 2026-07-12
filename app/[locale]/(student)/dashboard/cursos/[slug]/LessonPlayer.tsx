@@ -554,32 +554,53 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
           );
         })()}
 
-        {/* ── Apostilas — card em breve ── */}
-        <div className="border-t border-border">
-          <div className="px-6 pt-6 pb-2">
-            <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted">Apostilas</p>
-          </div>
-          <div className="flex gap-3 px-6 pb-6">
-            <div
-              className="shrink-0 relative w-36 h-52 rounded-xl overflow-hidden opacity-40"
-              style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)" }}
-            >
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/40">
-                <svg viewBox="0 0 24 24" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                </svg>
-                <p className="font-sans text-[10px] text-center font-medium text-white/50 leading-tight px-3">
-                  Em breve
-                </p>
+        {/* ── Apostilas ── */}
+        {(() => {
+          const apostilas = modules
+            .filter((m) => !isModuleLocked(m) && m.apostilaUrl)
+            .map((m) => ({ title: m.title, url: m.apostilaUrl! }));
+          if (apostilas.length === 0) return null;
+          return (
+            <div className="border-t border-border">
+              <div className="px-6 pt-6 pb-2">
+                <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted">Apostilas</p>
               </div>
-              <div className="absolute top-2.5 left-2.5">
-                <span className="font-sans text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-white/10 text-white/50">
-                  Apostila
-                </span>
+              <div className="flex gap-3 px-6 pb-6 overflow-x-auto">
+                {apostilas.map((ap, i) => (
+                  <a
+                    key={i}
+                    href={ap.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0 relative w-36 h-52 rounded-xl overflow-hidden group"
+                    style={{ background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)" }}
+                  >
+                    <div className="absolute inset-0 flex flex-col items-end justify-end p-3 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+                      <p className="font-sans text-[11px] font-semibold text-white leading-tight line-clamp-3 w-full">
+                        {ap.title}
+                      </p>
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-30 transition-opacity">
+                      <svg viewBox="0 0 24 24" className="w-14 h-14" fill="none" stroke="white" strokeWidth="1">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                      </svg>
+                    </div>
+                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1">
+                      <span className="font-sans text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-white/15 text-white/80">
+                        Apostila
+                      </span>
+                    </div>
+                    <div className="absolute bottom-10 right-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="bg-white/20 backdrop-blur-sm rounded-full p-1.5">
+                        <FileDown className="w-3.5 h-3.5 text-white" />
+                      </div>
+                    </div>
+                  </a>
+                ))}
               </div>
             </div>
-          </div>
-        </div>
+          );
+        })()}
       </div>
 
       {/* ── Sidebar — lista de aulas ── */}
