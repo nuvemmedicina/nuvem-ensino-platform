@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import { upload } from "@vercel/blob/client";
 import { FileText, Upload, Trash2, ExternalLink, Loader2 } from "lucide-react";
 
 type Props = {
@@ -22,20 +23,22 @@ export function ApostilaUploader({ moduleId, courseSlug, currentUrl, updateActio
       setError("Apenas arquivos PDF são permitidos.");
       return;
     }
+    if (file.size > 50 * 1024 * 1024) {
+      setError("Arquivo muito grande. Máximo 50 MB.");
+      return;
+    }
     setError(null);
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("folder", "apostilas");
-      const res = await fetch("/api/upload/pdf", { method: "POST", body: fd });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Erro no upload");
-      const newUrl: string = data.url;
-      setUrl(newUrl);
-      startTransition(() => updateAction(moduleId, courseSlug, newUrl));
+      const blob = await upload(`apostilas/${moduleId}-${Date.now()}.pdf`, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload/pdf",
+        contentType: "application/pdf",
+      });
+      setUrl(blob.url);
+      startTransition(() => updateAction(moduleId, courseSlug, blob.url));
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Erro desconhecido");
+      setError(e instanceof Error ? e.message : "Erro no upload");
     } finally {
       setUploading(false);
     }
