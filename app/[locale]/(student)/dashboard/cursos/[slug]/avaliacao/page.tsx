@@ -54,20 +54,11 @@ export default async function AvaliacaoPage({ params }: Props) {
         <span className="font-sans text-sm text-foreground font-medium">{course.title}</span>
       </div>
 
-      <div className="flex items-center gap-6 mb-6">
-        <div>
-          <h1 className="font-serif text-2xl font-medium text-foreground mb-1">Avaliação do curso</h1>
-          <p className="font-sans text-sm text-muted">
-            Sua opinião é muito importante para continuar aprimorando a qualidade do conteúdo.
-          </p>
-        </div>
-        {/* Selos ISO 9001 + MEC */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/selos-mec-iso.svg"
-          alt="ISO 9001 · Reconhecido pelo MEC"
-          className="h-20 shrink-0 opacity-90"
-        />
+      <div className="mb-6">
+        <h1 className="font-serif text-2xl font-medium text-foreground mb-1">Avaliação do curso</h1>
+        <p className="font-sans text-sm text-muted">
+          Sua opinião é muito importante para continuar aprimorando a qualidade do conteúdo.
+        </p>
       </div>
 
       {/* Formulário */}
@@ -200,6 +191,16 @@ export default async function AvaliacaoPage({ params }: Props) {
             Avaliar no Google
           </a>
         </div>
+      </div>
+
+      {/* ── Selos ── */}
+      <div className="mt-8 flex justify-center">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/selos-mec-iso.svg"
+          alt="ISO 9001 · Reconhecido pelo MEC"
+          className="h-24 opacity-80"
+        />
       </div>
     </div>
   );
