@@ -151,7 +151,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           ))}
         </div>
 
-        {/* Carrossel: Em andamento */}
+        {/* Grid: Em andamento */}
         {activeEnrollments.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-4">
@@ -160,7 +160,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
                 Ver todos <ChevronRight className="w-3 h-3" />
               </Link>
             </div>
-            <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-none -mx-4 lg:-mx-8 px-4 lg:px-8">
+            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4">
               {activeEnrollments.map((e) => {
                 const total = e.course.modules.reduce((s, m) => s + m.lessons.length, 0);
                 const pct = calcProgress(e.progress, total);
@@ -180,13 +180,13 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           </section>
         )}
 
-        {/* Carrossel: Concluídos */}
+        {/* Grid: Concluídos */}
         {completedEnrollments.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-sans text-base font-semibold text-foreground">Cursos concluídos</h2>
             </div>
-            <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-none -mx-4 lg:-mx-8 px-4 lg:px-8">
+            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4">
               {completedEnrollments.map((e) => (
                 <CourseCard
                   key={e.id}
@@ -234,44 +234,48 @@ function CourseCard({
   return (
     <Link
       href={href}
-      className="group relative shrink-0 w-[200px] sm:w-[260px] rounded-xl overflow-hidden bg-canvas border border-white/10 hover:border-primary/50 hover:scale-105 transition-all duration-300 shadow-lg"
+      className="group relative flex flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/15"
+      style={{ background: "var(--color-surface)" }}
     >
-      {/* Thumbnail */}
-      <div className="relative w-full aspect-[5/4] bg-black/40">
+      {/* Poster */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#0e4f6b] to-[#1a8fa8]" style={{ paddingBottom: "140%" }}>
         {thumbnail ? (
-          <Image src={thumbnail} alt={title} fill className="object-cover object-center group-hover:opacity-80 transition-opacity" sizes="240px" />
+          <Image
+            src={thumbnail}
+            alt={title}
+            fill
+            className="absolute inset-0 object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 20vw"
+          />
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center">
             <Play className="w-8 h-8 text-white/30" />
           </div>
         )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-        {/* Play overlay */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
-            <Play className="w-4 h-4 fill-black text-black ml-0.5" />
-          </div>
-        </div>
-
-        {/* Completed badge */}
+        {/* Badge */}
         {completed && (
-          <div className="absolute top-2 right-2 flex items-center gap-1 bg-green-500/90 text-white font-sans text-[10px] font-bold px-2 py-0.5 rounded-full">
-            <Award className="w-3 h-3" /> Concluído
-          </div>
+          <span className="absolute top-3 left-3 flex items-center gap-1 font-sans text-[9px] font-bold uppercase tracking-widest bg-green-500 text-white px-2 py-1 rounded-full shadow-lg">
+            <Award className="w-2.5 h-2.5" /> Concluído
+          </span>
         )}
-      </div>
 
-      {/* Info */}
-      <div className="p-3">
-        <h3 className="font-sans text-xs font-semibold text-white leading-snug line-clamp-2 mb-1">{title}</h3>
-        <p className="font-sans text-[10px] text-white/40">{instructorName} · {hours}h</p>
-
-        {/* Progress bar */}
-        {pct > 0 && pct < 100 && (
-          <div className="mt-2 h-0.5 bg-white/10 rounded-full overflow-hidden">
-            <div className="h-full bg-primary rounded-full" style={{ width: `${pct}%` }} />
-          </div>
-        )}
+        {/* Info sobreposta */}
+        <div className="absolute bottom-0 left-0 right-0 p-3">
+          <p className="font-sans text-[9px] font-bold uppercase tracking-widest text-white/60 mb-1">
+            {instructorName} · {hours}h
+          </p>
+          <p className="font-sans text-sm font-bold text-white leading-snug line-clamp-2">
+            {title}
+          </p>
+          {/* Progress bar */}
+          {pct > 0 && pct < 100 && (
+            <div className="mt-2 h-0.5 bg-white/20 rounded-full overflow-hidden">
+              <div className="h-full bg-primary rounded-full" style={{ width: `${pct}%` }} />
+            </div>
+          )}
+        </div>
       </div>
     </Link>
   );
