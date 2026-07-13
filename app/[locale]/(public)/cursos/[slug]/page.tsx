@@ -101,12 +101,17 @@ export default async function CoursePage({ params }: Props) {
       modules: {
         orderBy: { order: "asc" },
         include: {
-          lessons: {
+          topics: {
             orderBy: { order: "asc" },
             include: {
-              instructors: {
-                include: { instructor: { include: { user: true } } },
+              lessons: {
                 orderBy: { order: "asc" },
+                include: {
+                  instructors: {
+                    include: { instructor: { include: { user: true } } },
+                    orderBy: { order: "asc" },
+                  },
+                },
               },
             },
           },
@@ -393,24 +398,34 @@ export default async function CoursePage({ params }: Props) {
                       </div>
                       <ChevronRight className="w-4 h-4 text-muted shrink-0 transition-transform group-open:rotate-90" />
                     </summary>
-                    <ul className="px-5 pb-4 flex flex-col gap-2 border-t border-border">
-                      {mod.lessons.map((lesson) => (
-                        <li
-                          key={lesson.id}
-                          className="flex items-start gap-3 py-1.5"
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0 mt-2" />
-                          <div>
-                            <p className="font-sans text-sm text-muted">{lesson.title}</p>
-                            {lesson.instructors.length > 0 && (
-                              <p className="font-sans text-xs text-muted/60 mt-0.5">
-                                {lesson.instructors.map((li) => li.instructor.user.name).filter(Boolean).join(" · ")}
-                              </p>
-                            )}
+                    <div className="border-t border-border">
+                      {mod.topics.map((topic) => (
+                        <div key={topic.id}>
+                          {/* Tema header */}
+                          <div className="px-5 pt-3 pb-1">
+                            <p className="font-sans text-xs font-bold uppercase tracking-widest text-primary/70">
+                              {topic.title}
+                            </p>
                           </div>
-                        </li>
+                          {/* Aulas do tema */}
+                          <ul className="px-5 pb-3 flex flex-col gap-1">
+                            {topic.lessons.map((lesson) => (
+                              <li key={lesson.id} className="flex items-start gap-3 py-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0 mt-2" />
+                                <div>
+                                  <p className="font-sans text-sm text-muted">{lesson.title}</p>
+                                  {lesson.instructors.length > 0 && (
+                                    <p className="font-sans text-xs text-muted/60 mt-0.5">
+                                      {lesson.instructors.map((li) => li.instructor.user.name).filter(Boolean).join(" · ")}
+                                    </p>
+                                  )}
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </details>
                 ))}
               </div>
