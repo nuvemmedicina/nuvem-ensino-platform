@@ -74,51 +74,53 @@ function SessionCard({
 
   return (
     <div
-      className={`group flex flex-col sm:flex-row overflow-hidden rounded-2xl border border-border transition-all duration-300 ${
-        past ? "opacity-50 grayscale" : "hover:shadow-lg hover:shadow-primary/10 hover:border-primary/20"
+      className={`group flex flex-col overflow-hidden rounded-2xl border border-border transition-all duration-300 ${
+        past ? "opacity-50 grayscale" : "hover:shadow-xl hover:shadow-primary/10 hover:border-primary/20"
       }`}
       style={{ background: "var(--color-surface)" }}
     >
       {/* Thumbnail */}
-      <div className="relative w-full sm:w-48 shrink-0 aspect-video sm:aspect-auto overflow-hidden bg-gradient-to-br from-[#0e4f6b] to-[#1a8fa8]">
+      <div className="relative w-full overflow-hidden bg-gradient-to-br from-[#0e4f6b] to-[#1a8fa8]" style={{ height: "220px" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={cover}
           alt={s.title}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
         {!past && (
-          <span className="absolute top-2 left-2 flex items-center gap-1 font-sans text-[9px] font-bold uppercase tracking-widest bg-primary text-white px-2 py-1 rounded-full shadow-lg">
+          <span className="absolute top-3 left-3 flex items-center gap-1 font-sans text-[9px] font-bold uppercase tracking-widest bg-primary text-white px-2.5 py-1 rounded-full shadow-lg">
             <Radio className="w-2.5 h-2.5" />
             ao vivo
           </span>
         )}
+        {/* Date overlay on image */}
+        <div className="absolute bottom-3 left-4 right-4">
+          <span className="flex items-center gap-1.5 font-sans text-xs text-white/80">
+            <Calendar className="w-3.5 h-3.5 shrink-0 text-white/60" />
+            <span className="capitalize">{fmtDate.format(new Date(s.startAt))}</span>
+            <span className="text-white/40">·</span>
+            <span>{fmtTime.format(new Date(s.startAt))}</span>
+            {s.location && (
+              <>
+                <span className="text-white/40 ml-1">·</span>
+                <MapPin className="w-3 h-3 shrink-0 text-white/60 ml-0.5" />
+                <span className="truncate">{s.location}</span>
+              </>
+            )}
+          </span>
+        </div>
       </div>
 
       {/* Info + Ações */}
       <div className="flex flex-col justify-between gap-3 p-4 flex-1 min-w-0">
         <div>
-          <p className="font-sans text-[10px] font-semibold uppercase tracking-widest text-muted mb-1 truncate">
+          <p className="font-sans text-[10px] font-semibold uppercase tracking-widest text-muted mb-1.5 line-clamp-1">
             {s.course.title}
           </p>
-          <p className="font-sans text-base font-bold text-foreground leading-snug mb-2">
+          <p className="font-sans text-base font-bold text-foreground leading-snug">
             {s.title}
           </p>
-          <div className="flex flex-col gap-1">
-            <span className="flex items-center gap-1.5 font-sans text-xs text-muted">
-              <Calendar className="w-3.5 h-3.5 shrink-0 text-primary/60" />
-              <span className="capitalize">{fmtDate.format(new Date(s.startAt))}</span>
-              <span className="text-border">·</span>
-              <span>{fmtTime.format(new Date(s.startAt))}</span>
-            </span>
-            {s.location && (
-              <span className="flex items-center gap-1.5 font-sans text-xs text-muted">
-                <MapPin className="w-3.5 h-3.5 shrink-0 text-primary/60" />
-                {s.location}
-              </span>
-            )}
-          </div>
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -252,7 +254,7 @@ export default async function AulasAoVivoPage({
       {upcoming.length > 0 && (
         <section className="mb-10">
           <SectionLabel>{t("upcomingSection")}</SectionLabel>
-          <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {upcoming.map((s, i) => (
               <SessionCard
                 key={s.id}
@@ -271,7 +273,7 @@ export default async function AulasAoVivoPage({
       {past.length > 0 && (
         <section>
           <SectionLabel>{t("pastSection")}</SectionLabel>
-          <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {past.map((s, i) => (
               <SessionCard
                 key={s.id}
