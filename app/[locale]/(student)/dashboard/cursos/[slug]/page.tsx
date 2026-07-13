@@ -293,9 +293,9 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
 
             <Link
               href={`/dashboard/cursos/${slug}/avaliacao`}
-              className="inline-flex items-center gap-2 font-sans text-xs font-semibold px-4 py-2.5 rounded-full border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors"
+              className="inline-flex items-center gap-2 font-sans text-xs font-bold px-4 py-2.5 rounded-full bg-amber-400 text-amber-900 hover:bg-amber-300 transition-colors shadow-md shadow-amber-400/30"
             >
-              <Star className="w-3.5 h-3.5" />
+              <Star className="w-3.5 h-3.5 fill-amber-700" />
               Avaliar
             </Link>
           </div>

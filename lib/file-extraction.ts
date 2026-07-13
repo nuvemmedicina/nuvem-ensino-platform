@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function extractTextFromFile(buffer: Buffer, mimeType: string, filename: string): Promise<string> {
   if (mimeType === "application/pdf" || filename.endsWith(".pdf")) {
+    // DOMMatrix não existe no Node.js mas é exigido pelo pdfjs-dist; polyfill mínimo suficiente para extração de texto
+    if (typeof (globalThis as any).DOMMatrix === "undefined") {
+      (globalThis as any).DOMMatrix = class {};
+    }
     // pdf-parse v2 é ESM puro — não tem .default; usamos `any` para contornar o tipo
     const pdfParse = (await import("pdf-parse")) as any;
     const fn = pdfParse.default ?? pdfParse;
