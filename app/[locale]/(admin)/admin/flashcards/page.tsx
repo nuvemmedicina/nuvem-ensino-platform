@@ -6,7 +6,10 @@ export const dynamic = "force-dynamic";
 export default async function AdminFlashcardsPage() {
   const [groups, courses, defaultDesign] = await Promise.all([
     prisma.flashcardGroup.findMany({
-      include: { _count: { select: { cards: true } }, course: { select: { title: true, slug: true } } },
+      include: {
+        _count: { select: { cards: true } },
+        course: { select: { title: true, slug: true, thumbnailUrl: true } },
+      },
       orderBy: { createdAt: "desc" },
     }),
     prisma.course.findMany({ select: { id: true, title: true, slug: true }, orderBy: { title: "asc" } }),

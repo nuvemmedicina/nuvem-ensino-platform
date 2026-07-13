@@ -2,14 +2,14 @@
 
 import { useState, useRef } from "react";
 import { upload } from "@vercel/blob/client";
-import { Plus, Upload, Pencil, Trash2, BookOpen, Loader2, AlertTriangle, X, Check, Sparkles } from "lucide-react";
+import { Plus, Upload, Pencil, Trash2, BookOpen, Loader2, AlertTriangle, X, Check, Sparkles, LayersIcon } from "lucide-react";
 
 type Group = {
   id: string;
   title: string;
   description: string | null;
   tags: string[];
-  course: { title: string; slug: string } | null;
+  course: { title: string; slug: string; thumbnailUrl: string | null } | null;
   _count: { cards: number };
 };
 type Course = { id: string; title: string; slug: string };
@@ -19,6 +19,23 @@ type GeneratedCard = { front: string; back: string };
 const inputClass = "w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground focus:outline-none focus:border-primary/50";
 const btnPrimary = "inline-flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors disabled:opacity-50";
 const btnGhost = "inline-flex items-center gap-2 font-sans text-sm font-medium px-3 py-1.5 rounded-lg border border-border hover:bg-surface transition-colors";
+
+/* Stacked-cards illustration rendered inside the poster area */
+function FlashcardIllustration({ count }: { count: number }) {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center">
+      {/* back card */}
+      <div className="absolute w-28 h-20 rounded-xl border border-white/20 bg-white/10 rotate-6 translate-y-1" />
+      {/* middle card */}
+      <div className="absolute w-28 h-20 rounded-xl border border-white/25 bg-white/15 rotate-2" />
+      {/* front card */}
+      <div className="absolute w-28 h-20 rounded-xl border border-white/40 bg-white/25 -rotate-2 flex flex-col items-center justify-center gap-1.5 shadow-lg">
+        <LayersIcon className="w-5 h-5 text-white/70" />
+        <span className="font-sans text-[11px] font-bold text-white/80 tabular-nums">{count} card{count !== 1 ? "s" : ""}</span>
+      </div>
+    </div>
+  );
+}
 
 export function FlashcardsAdminClient({
   groups: initial,
@@ -39,6 +56,7 @@ export function FlashcardsAdminClient({
   const [cardCount, setCardCount] = useState(10);
   const [aiError, setAiError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   async function handleGenerate() {
     const file = fileRef.current?.files?.[0];
@@ -46,15 +64,12 @@ export function FlashcardsAdminClient({
     setGenerating(true);
     setAiError(null);
     try {
-      // Step 1: upload file directly to Vercel Blob (avoids 4.5 MB serverless limit)
       const ext = file.name.split(".").pop() ?? "bin";
       const blob = await upload(`flashcard-sources/${Date.now()}.${ext}`, file, {
         access: "public",
         handleUploadUrl: "/api/upload/pdf",
         contentType: file.type,
       });
-
-      // Step 2: generate with blob URL (small JSON payload)
       const res = await fetch("/api/admin/flashcards/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -82,9 +97,10 @@ export function FlashcardsAdminClient({
     const data = await res.json();
     setSaving(false);
     if (!res.ok) return;
-    setGroups((prev) => [{ ...data, course: courses.find((c) => c.id === courseId) ?? null }, ...prev]);
+    const linkedCourse = courses.find((c) => c.id === courseId);
+    setGroups((prev) => [{ ...data, course: linkedCourse ? { ...linkedCourse, thumbnailUrl: null } : null }, ...prev]);
     setModal(null);
-    setTitle(""); setDescription(""); setCourseId(""); setGeneratedCards([]);
+    setTitle(""); setDescription(""); setCourseId(""); setGeneratedCards([]); setFileName(null);
   }
 
   async function handleDelete(id: string) {
@@ -93,47 +109,102 @@ export function FlashcardsAdminClient({
     setGroups((prev) => prev.filter((g) => g.id !== id));
   }
 
+  function openAI() { setModal("ai"); setGeneratedCards([]); setAiError(null); setFileName(null); }
+  function closeModal() { setModal(null); setTitle(""); setDescription(""); setCourseId(""); setGeneratedCards([]); setAiError(null); setFileName(null); }
+
   return (
     <div>
       {/* Action buttons */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-8">
         <button onClick={() => setModal("manual")} className={btnPrimary}>
           <Plus className="w-4 h-4" /> Criar Grupo
         </button>
-        <button onClick={() => setModal("ai")} className="inline-flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:opacity-90 transition-opacity">
+        <button onClick={openAI} className="inline-flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:opacity-90 transition-opacity">
           <Sparkles className="w-4 h-4" /> Criar com IA
         </button>
       </div>
 
-      {/* Groups list */}
+      {/* Netflix grid */}
       {groups.length === 0 ? (
-        <div className="text-center py-16 text-muted">
-          <BookOpen className="w-10 h-10 mx-auto mb-3 opacity-30" />
+        <div className="text-center py-24 text-muted">
+          <LayersIcon className="w-10 h-10 mx-auto mb-3 opacity-20" />
           <p className="font-sans text-sm">Nenhum grupo de flashcards ainda.</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
-          {groups.map((g) => (
-            <div key={g.id} className="flex items-center gap-4 bg-surface border border-border rounded-xl px-5 py-4 hover:border-primary/30 transition-colors">
-              <div className="flex-1 min-w-0">
-                <h3 className="font-sans text-sm font-semibold text-foreground">{g.title}</h3>
-                <div className="flex items-center gap-3 mt-0.5 flex-wrap">
-                  <span className="font-sans text-xs text-muted">{g._count.cards} card{g._count.cards !== 1 ? "s" : ""}</span>
-                  {g.course && <span className="font-sans text-xs text-primary">📚 {g.course.title}</span>}
-                  {g.tags.map((t) => <span key={t} className="font-sans text-[10px] text-muted bg-border/60 px-1.5 py-0.5 rounded">{t}</span>)}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          {groups.map((g) => {
+            const thumb = g.course?.thumbnailUrl ?? null;
+            return (
+              <div key={g.id} className="group relative flex flex-col rounded-xl overflow-hidden border border-border bg-surface hover:border-primary/40 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+
+                {/* Poster thumbnail area */}
+                <div className="relative aspect-[2/3] shrink-0 overflow-hidden bg-gradient-to-b from-violet-900 to-indigo-950">
+                  {thumb ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={thumb} alt={g.title} className="absolute inset-0 w-full h-full object-cover opacity-40" />
+                  ) : null}
+
+                  {/* gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+
+                  {/* Card count badge */}
+                  <span className="absolute top-2.5 left-2.5 font-sans text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-violet-500/90 text-white">
+                    {g._count.cards} cards
+                  </span>
+
+                  {/* Stacked cards illustration */}
+                  <FlashcardIllustration count={g._count.cards} />
+
+                  {/* Hover actions overlay */}
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <a
+                      href={`/dashboard/flashcards/${g.id}`}
+                      target="_blank"
+                      className="flex items-center gap-1.5 font-sans text-[11px] font-bold px-3 py-1.5 rounded-lg bg-white text-zinc-900 hover:bg-white/90 transition-colors"
+                    >
+                      <BookOpen className="w-3 h-3" /> Estudar
+                    </a>
+                    <button className="flex items-center gap-1.5 font-sans text-[11px] font-bold px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors">
+                      <Pencil className="w-3 h-3" /> Editar
+                    </button>
+                  </div>
+
+                  {/* Course name at bottom of poster */}
+                  {g.course && (
+                    <div className="absolute bottom-0 left-0 right-0 px-3 pb-2.5">
+                      <p className="font-sans text-[10px] text-white/60 truncate">📚 {g.course.title}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Card body */}
+                <div className="flex flex-col gap-2 px-3 py-2.5 flex-1">
+                  <h2 className="font-serif text-sm font-medium text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                    {g.title}
+                  </h2>
+
+                  {g.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {g.tags.map((t) => (
+                        <span key={t} className="font-sans text-[9px] text-muted bg-border/60 px-1.5 py-0.5 rounded">{t}</span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Delete button */}
+                  <div className="flex items-center gap-1 border-t border-border/50 pt-2 -mx-3 px-3 mt-auto">
+                    <button
+                      onClick={() => handleDelete(g.id)}
+                      className="p-1.5 rounded-md text-muted/50 hover:text-red-500 hover:bg-red-500/10 transition-colors ml-auto"
+                      title="Excluir"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-1 shrink-0">
-                <a href={`/dashboard/flashcards/${g.id}`} target="_blank" className={btnGhost} title="Ver como aluno">
-                  <BookOpen className="w-3.5 h-3.5" />
-                </a>
-                <button className={btnGhost} title="Editar"><Pencil className="w-3.5 h-3.5" /></button>
-                <button onClick={() => handleDelete(g.id)} className="p-1.5 rounded-lg text-muted/50 hover:text-red-500 hover:bg-red-500/10 transition-colors" title="Excluir">
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -145,7 +216,7 @@ export function FlashcardsAdminClient({
               <h2 className="font-serif text-xl font-medium">
                 {modal === "ai" ? "✨ Criar Grupo com IA" : "Criar Grupo de Flashcards"}
               </h2>
-              <button onClick={() => setModal(null)} className="text-muted hover:text-foreground"><X className="w-5 h-5" /></button>
+              <button onClick={closeModal} className="text-muted hover:text-foreground"><X className="w-5 h-5" /></button>
             </div>
 
             <div className="p-6 space-y-4">
@@ -173,11 +244,17 @@ export function FlashcardsAdminClient({
                   </div>
                   <p className="font-sans text-xs text-muted">Aceita PDF, DOCX, TXT ou imagem. A IA gerará os flashcards automaticamente.</p>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 flex-wrap">
                     <label className="flex items-center gap-2 cursor-pointer font-sans text-sm font-medium px-3 py-1.5 border border-dashed border-violet-400 rounded-lg text-violet-700 hover:bg-violet-100 transition-colors">
                       <Upload className="w-4 h-4" />
-                      {fileRef.current?.files?.[0]?.name ?? "Selecionar arquivo"}
-                      <input ref={fileRef} type="file" className="hidden" accept=".pdf,.docx,.txt,image/*" onChange={() => setGeneratedCards([])} />
+                      {fileName ?? "Selecionar arquivo"}
+                      <input
+                        ref={fileRef}
+                        type="file"
+                        className="hidden"
+                        accept=".pdf,.docx,.txt,image/*"
+                        onChange={(e) => { setGeneratedCards([]); setFileName(e.target.files?.[0]?.name ?? null); }}
+                      />
                     </label>
                     <div className="flex items-center gap-2">
                       <label className="font-sans text-xs text-muted">Qtd:</label>
@@ -195,7 +272,6 @@ export function FlashcardsAdminClient({
                     </div>
                   )}
 
-                  {/* Aviso de revisão médica */}
                   {generatedCards.length > 0 && (
                     <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex gap-2 dark:bg-amber-900/10 dark:border-amber-800">
                       <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
@@ -205,7 +281,6 @@ export function FlashcardsAdminClient({
                     </div>
                   )}
 
-                  {/* Generated cards preview/editor */}
                   {generatedCards.length > 0 && (
                     <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
                       <p className="font-sans text-xs font-semibold text-muted uppercase tracking-wider">{generatedCards.length} cards gerados — edite se necessário:</p>
@@ -238,7 +313,7 @@ export function FlashcardsAdminClient({
               )}
 
               <div className="flex justify-end gap-3 pt-2">
-                <button onClick={() => setModal(null)} className={btnGhost}>Cancelar</button>
+                <button onClick={closeModal} className={btnGhost}>Cancelar</button>
                 <button
                   onClick={handleSave}
                   disabled={saving || !title.trim() || (modal === "ai" && generatedCards.length === 0)}
