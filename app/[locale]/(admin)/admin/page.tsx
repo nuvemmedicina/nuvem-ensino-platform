@@ -105,7 +105,14 @@ export default async function AdminOverviewPage({
     }),
     prisma.liveSession.findMany({
       where: { startAt: { gte: now } },
-      include: { course: { select: { title: true } } },
+      include: {
+        course: {
+          select: {
+            title: true,
+            _count: { select: { enrollments: { where: { status: "ACTIVE" } } } },
+          },
+        },
+      },
       orderBy: { startAt: "asc" },
       take: 5,
     }),
@@ -352,7 +359,7 @@ export default async function AdminOverviewPage({
                 )}
                 <div className="shrink-0 text-right">
                   <span className="font-sans text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
-                    {totalLiveLeads} inscritos
+                    {live.course._count.enrollments} matriculados
                   </span>
                 </div>
               </div>
