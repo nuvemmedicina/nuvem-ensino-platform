@@ -615,35 +615,68 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
             <div className="px-6 pt-6 pb-2">
               <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted">Referências</p>
             </div>
-            <div className="flex flex-col gap-2 px-6 pb-6">
-              {courseReferences.map((ref) => (
-                <a
-                  key={ref.id}
-                  href={ref.fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl border border-border hover:border-primary/40 hover:bg-primary/5 transition-colors group"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                    <svg viewBox="0 0 24 24" className="w-4 h-4 text-primary" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-sans text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
-                      {ref.title}
-                    </p>
-                    {ref.fileSize && (
-                      <p className="font-sans text-xs text-muted">
-                        {ref.fileSize < 1024 * 1024
-                          ? `${(ref.fileSize / 1024).toFixed(0)} KB`
-                          : `${(ref.fileSize / (1024 * 1024)).toFixed(1)} MB`}
+            <div className="flex gap-3 px-6 pb-6 overflow-x-auto">
+              {courseReferences.map((ref) => {
+                const sizeTxt = ref.fileSize
+                  ? ref.fileSize < 1024 * 1024
+                    ? `${(ref.fileSize / 1024).toFixed(0)} KB`
+                    : `${(ref.fileSize / (1024 * 1024)).toFixed(1)} MB`
+                  : null;
+                // pick a deterministic gradient based on index
+                const gradients = [
+                  "linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)",
+                  "linear-gradient(135deg,#0d1b2a 0%,#1b263b 50%,#415a77 100%)",
+                  "linear-gradient(135deg,#1b0000 0%,#3d0000 50%,#6b0f1a 100%)",
+                  "linear-gradient(135deg,#0a2e1a 0%,#145a32 50%,#1e8449 100%)",
+                  "linear-gradient(135deg,#1a0533 0%,#3d1566 50%,#6c3483 100%)",
+                  "linear-gradient(135deg,#1a1000 0%,#4a3000 50%,#7d5a00 100%)",
+                ];
+                const grad = gradients[courseReferences.indexOf(ref) % gradients.length];
+                return (
+                  <a
+                    key={ref.id}
+                    href={ref.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0 relative w-36 h-52 rounded-xl overflow-hidden group"
+                    style={{ background: grad }}
+                  >
+                    {/* gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                    {/* PDF icon watermark */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-15 group-hover:opacity-25 transition-opacity">
+                      <svg viewBox="0 0 24 24" className="w-16 h-16" fill="none" stroke="white" strokeWidth="0.8">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                      </svg>
+                    </div>
+
+                    {/* badge */}
+                    <div className="absolute top-2.5 left-2.5">
+                      <span className="font-sans text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-white/15 text-white/80">
+                        Referência
+                      </span>
+                    </div>
+
+                    {/* title + size */}
+                    <div className="absolute bottom-0 left-0 right-0 p-3">
+                      <p className="font-sans text-[11px] font-semibold text-white leading-tight line-clamp-3">
+                        {ref.title}
                       </p>
-                    )}
-                  </div>
-                  <FileDown className="w-4 h-4 text-muted group-hover:text-primary transition-colors shrink-0" />
-                </a>
-              ))}
+                      {sizeTxt && (
+                        <p className="font-sans text-[9px] text-white/50 mt-1">{sizeTxt}</p>
+                      )}
+                    </div>
+
+                    {/* download icon on hover */}
+                    <div className="absolute bottom-12 right-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="bg-white/20 backdrop-blur-sm rounded-full p-1.5">
+                        <FileDown className="w-3.5 h-3.5 text-white" />
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
             </div>
           </div>
         )}
