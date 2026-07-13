@@ -16,7 +16,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       body,
       request: req,
       onBeforeGenerateToken: async (pathname) => ({
-        allowedContentTypes: ["application/pdf"],
+        allowedContentTypes: [
+          "application/pdf",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "text/plain",
+          "image/jpeg",
+          "image/png",
+          "image/webp",
+          "image/gif",
+        ],
         maximumSizeInBytes: 50 * 1024 * 1024, // 50 MB
         tokenPayload: JSON.stringify({ pathname }),
       }),

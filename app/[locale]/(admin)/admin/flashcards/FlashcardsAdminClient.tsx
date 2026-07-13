@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { upload } from "@vercel/blob/client";
 import { Plus, Upload, Pencil, Trash2, BookOpen, Loader2, AlertTriangle, X, Check, Sparkles } from "lucide-react";
 
 type Group = {
@@ -44,14 +45,29 @@ export function FlashcardsAdminClient({
     if (!file) { setAiError("Selecione um arquivo"); return; }
     setGenerating(true);
     setAiError(null);
-    const fd = new FormData();
-    fd.append("file", file);
-    fd.append("count", String(cardCount));
-    const res = await fetch("/api/admin/flashcards/generate", { method: "POST", body: fd });
-    const data = await res.json();
-    setGenerating(false);
-    if (!res.ok) { setAiError(data.error ?? "Erro na geração"); return; }
-    setGeneratedCards(data.flashcards ?? []);
+    try {
+      // Step 1: upload file directly to Vercel Blob (avoids 4.5 MB serverless limit)
+      const ext = file.name.split(".").pop() ?? "bin";
+      const blob = await upload(`flashcard-sources/${Date.now()}.${ext}`, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload/pdf",
+        contentType: file.type,
+      });
+
+      // Step 2: generate with blob URL (small JSON payload)
+      const res = await fetch("/api/admin/flashcards/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blobUrl: blob.url, filename: file.name, mimeType: file.type, count: cardCount }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setAiError(data.error ?? "Erro na geração"); return; }
+      setGeneratedCards(data.flashcards ?? []);
+    } catch (err) {
+      setAiError(err instanceof Error ? err.message : "Erro inesperado");
+    } finally {
+      setGenerating(false);
+    }
   }
 
   async function handleSave() {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { getActiveAIProvider } from "@/lib/ai/flashcard-generator";
 import { extractTextFromFile } from "@/lib/file-extraction";
+import { z } from "zod";
 
 async function requireAdmin(req: NextRequest) {
   const session = await auth();
@@ -12,28 +13,42 @@ async function requireAdmin(req: NextRequest) {
   return null;
 }
 
+const schema = z.object({
+  blobUrl: z.string().url(),
+  filename: z.string(),
+  mimeType: z.string(),
+  count: z.number().int().min(1).max(50).default(10),
+});
+
 export async function POST(req: NextRequest) {
   const deny = await requireAdmin(req);
   if (deny) return deny;
 
-  const formData = await req.formData();
-  const file = formData.get("file") as File | null;
-  const countRaw = formData.get("count");
-  const count = countRaw ? parseInt(String(countRaw)) : 10;
+  const body = await req.json();
+  const parsed = schema.safeParse(body);
+  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
 
-  if (!file) return NextResponse.json({ error: "Nenhum arquivo enviado" }, { status: 400 });
+  const { blobUrl, filename, mimeType, count } = parsed.data;
 
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
+  // Download the file from Vercel Blob
+  let buffer: Buffer;
+  try {
+    const res = await fetch(blobUrl);
+    if (!res.ok) throw new Error(`Falha ao baixar arquivo: ${res.status}`);
+    buffer = Buffer.from(await res.arrayBuffer());
+  } catch (err) {
+    return NextResponse.json({ error: err instanceof Error ? err.message : "Erro ao baixar arquivo" }, { status: 400 });
+  }
 
+  // Extract text
   let content: string;
   try {
-    content = await extractTextFromFile(buffer, file.type, file.name);
+    content = await extractTextFromFile(buffer, mimeType, filename);
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : "Erro ao extrair texto" }, { status: 400 });
   }
 
-  // Imagens: usar visão do Anthropic diretamente
+  // Images: use Anthropic vision directly
   if (content === "__IMAGE_BINARY__") {
     try {
       const Anthropic = (await import("@anthropic-ai/sdk")).default;
@@ -44,7 +59,7 @@ export async function POST(req: NextRequest) {
       const apiKey = decryptApiKey(cfg.apiKeyEncrypted);
       const client = new Anthropic({ apiKey });
       const base64 = buffer.toString("base64");
-      const mediaType = file.type as "image/jpeg" | "image/png" | "image/gif" | "image/webp";
+      const mediaType = mimeType as "image/jpeg" | "image/png" | "image/gif" | "image/webp";
       const msg = await client.messages.create({
         model: cfg.model,
         max_tokens: 4096,
@@ -58,8 +73,7 @@ export async function POST(req: NextRequest) {
       });
       const text = msg.content.find((b) => b.type === "text")?.text ?? "[]";
       const match = text.match(/\[[\s\S]*\]/);
-      const flashcards = match ? JSON.parse(match[0]) : [];
-      return NextResponse.json({ flashcards });
+      return NextResponse.json({ flashcards: match ? JSON.parse(match[0]) : [] });
     } catch (err) {
       return NextResponse.json({ error: err instanceof Error ? err.message : "Erro ao processar imagem" }, { status: 500 });
     }
@@ -73,3 +87,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: err instanceof Error ? err.message : "Erro na geração" }, { status: 500 });
   }
 }
+
+export const maxDuration = 60;
