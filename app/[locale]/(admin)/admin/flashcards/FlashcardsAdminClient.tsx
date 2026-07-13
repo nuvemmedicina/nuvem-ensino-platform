@@ -46,7 +46,8 @@ export function FlashcardsAdminClient({
   defaultDesign: DesignConfig;
 }) {
   const [groups, setGroups] = useState(initial);
-  const [modal, setModal] = useState<"manual" | "ai" | null>(null);
+  const [modal, setModal] = useState<"manual" | "ai" | "edit" | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [courseId, setCourseId] = useState("");
@@ -110,7 +111,35 @@ export function FlashcardsAdminClient({
   }
 
   function openAI() { setModal("ai"); setGeneratedCards([]); setAiError(null); setFileName(null); }
-  function closeModal() { setModal(null); setTitle(""); setDescription(""); setCourseId(""); setGeneratedCards([]); setAiError(null); setFileName(null); }
+
+  function openEdit(g: Group) {
+    setEditingId(g.id);
+    setTitle(g.title);
+    setDescription(g.description ?? "");
+    setCourseId(g.course ? courses.find((c) => c.slug === g.course!.slug)?.id ?? "" : "");
+    setModal("edit");
+  }
+
+  async function handleUpdate() {
+    if (!editingId || !title.trim()) return;
+    setSaving(true);
+    const res = await fetch(`/api/admin/flashcards/groups/${editingId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, description: description || null, courseId: courseId || null }),
+    });
+    const data = await res.json();
+    setSaving(false);
+    if (!res.ok) return;
+    const linkedCourse = courses.find((c) => c.id === courseId);
+    setGroups((prev) => prev.map((g) => g.id === editingId
+      ? { ...g, title: data.title, description: data.description, course: linkedCourse ? { ...linkedCourse, thumbnailUrl: g.course?.thumbnailUrl ?? null } : null }
+      : g
+    ));
+    closeModal();
+  }
+
+  function closeModal() { setModal(null); setTitle(""); setDescription(""); setCourseId(""); setGeneratedCards([]); setAiError(null); setFileName(null); setEditingId(null); }
 
   return (
     <div>
@@ -164,7 +193,10 @@ export function FlashcardsAdminClient({
                     >
                       <BookOpen className="w-3 h-3" /> Estudar
                     </a>
-                    <button className="flex items-center gap-1.5 font-sans text-[11px] font-bold px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors">
+                    <button
+                      onClick={() => openEdit(g)}
+                      className="flex items-center gap-1.5 font-sans text-[11px] font-bold px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors"
+                    >
                       <Pencil className="w-3 h-3" /> Editar
                     </button>
                   </div>
@@ -214,7 +246,7 @@ export function FlashcardsAdminClient({
           <div className="bg-background border border-border rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <h2 className="font-serif text-xl font-medium">
-                {modal === "ai" ? "✨ Criar Grupo com IA" : "Criar Grupo de Flashcards"}
+                {modal === "ai" ? "✨ Criar Grupo com IA" : modal === "edit" ? "Editar Grupo" : "Criar Grupo de Flashcards"}
               </h2>
               <button onClick={closeModal} className="text-muted hover:text-foreground"><X className="w-5 h-5" /></button>
             </div>
@@ -315,12 +347,12 @@ export function FlashcardsAdminClient({
               <div className="flex justify-end gap-3 pt-2">
                 <button onClick={closeModal} className={btnGhost}>Cancelar</button>
                 <button
-                  onClick={handleSave}
+                  onClick={modal === "edit" ? handleUpdate : handleSave}
                   disabled={saving || !title.trim() || (modal === "ai" && generatedCards.length === 0)}
                   className={btnPrimary}
                 >
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-                  Salvar grupo
+                  {modal === "edit" ? "Salvar alterações" : "Salvar grupo"}
                 </button>
               </div>
             </div>
