@@ -160,7 +160,7 @@ export function FlashcardsAdminClient({
           <p className="font-sans text-sm">Nenhum grupo de flashcards ainda.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {groups.map((g) => {
             const thumb = g.course?.thumbnailUrl ?? null;
             return (
