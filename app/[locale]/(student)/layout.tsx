@@ -1,8 +1,19 @@
-﻿import { auth } from "@/auth";
+"use server";
+
+import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { LayoutDashboard, BookOpen, Award, User, Video, MessageCircle, Users } from "lucide-react";
+import {
+  LayoutDashboard,
+  BookOpen,
+  Award,
+  User,
+  Video,
+  MessageCircle,
+  Users,
+  LogOut,
+} from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
 import { getTranslations } from "next-intl/server";
 
@@ -19,79 +30,92 @@ export default async function StudentLayout({
   const session = await auth();
   if (!session) redirect("/entrar?callbackUrl=/dashboard");
 
+  const firstName = session.user?.name?.split(" ")[0] ?? "Dr.";
+  const initials = session.user?.name
+    ? session.user.name
+        .split(" ")
+        .slice(0, 2)
+        .map((n: string) => n[0])
+        .join("")
+        .toUpperCase()
+    : "A";
+
   const navLinks = [
-    { label: t("panel"),       href: "/dashboard",                icon: LayoutDashboard },
-    { label: t("myCourses"),   href: "/dashboard/cursos",         icon: BookOpen },
-    { label: t("liveLessons"), href: "/dashboard/aulas-ao-vivo",  icon: Video },
-    { label: t("certificates"),href: "/dashboard/certificados",   icon: Award },
-    { label: t("profile"),     href: "/dashboard/perfil",         icon: User },
-    { label: "Comunidade",     href: "/dashboard/comunidade",     icon: Users },
+    { label: "Início",       href: "/dashboard",               icon: LayoutDashboard },
+    { label: t("myCourses"), href: "/dashboard/cursos",        icon: BookOpen },
+    { label: "Ao vivo",      href: "/dashboard/aulas-ao-vivo", icon: Video },
+    { label: t("certificates"), href: "/dashboard/certificados", icon: Award },
+    { label: t("profile"),   href: "/dashboard/perfil",        icon: User },
+    { label: "Comunidade",   href: "/dashboard/comunidade",    icon: Users },
   ];
 
   return (
     <div className="min-h-screen bg-background flex">
       {/* ── Sidebar desktop ── */}
-      <aside className="hidden md:flex flex-col w-60 bg-canvas shrink-0 sticky top-0 h-screen">
-        <div className="px-5 py-5 border-b border-white/10">
+      <aside className="hidden md:flex flex-col w-56 bg-surface border-r border-border shrink-0 sticky top-0 h-screen">
+        {/* Logo */}
+        <div className="px-5 py-5 border-b border-border">
           <Link href="/">
             <Image
               src="/logo.png"
               alt="NU.V.E.M ENSINO"
               width={100}
               height={78}
-              className="h-9 w-auto brightness-0 invert opacity-90"
+              className="h-8 w-auto"
             />
           </Link>
         </div>
 
-        <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
+        {/* Nav */}
+        <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5">
           {navLinks.map(({ label, href, icon: Icon }) => (
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl font-sans text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg font-sans text-sm text-muted hover:text-foreground hover:bg-background transition-all"
             >
-              <Icon className="w-4 h-4 shrink-0" />
+              <Icon className="w-4 h-4 shrink-0 text-muted" />
               {label}
             </Link>
           ))}
         </nav>
 
-        {/* WhatsApp suporte */}
+        {/* Suporte */}
         <div className="px-3 pb-2">
           <a
             href="https://wa.me/5531722910291"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl font-sans text-sm text-white/60 hover:text-white hover:bg-white/5 transition-all"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg font-sans text-sm text-muted hover:text-foreground hover:bg-background transition-all"
           >
-            <MessageCircle className="w-4 h-4 shrink-0 text-green-400" />
-            Suporte via WhatsApp
+            <MessageCircle className="w-4 h-4 shrink-0 text-green-500" />
+            Suporte
           </a>
         </div>
 
-        <div className="px-3 py-4 border-t border-white/10">
-          <div className="flex items-center gap-3 px-3 py-2 mb-1">
-            <div className="w-8 h-8 rounded-full bg-primary/40 flex items-center justify-center shrink-0">
+        {/* User */}
+        <div className="px-3 py-4 border-t border-border">
+          <div className="flex items-center gap-3 px-2 py-2 mb-1">
+            <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 overflow-hidden">
               {session.user?.image ? (
                 <Image
                   src={session.user.image}
                   alt={session.user.name ?? ""}
                   width={32}
                   height={32}
-                  className="rounded-full"
+                  className="rounded-full w-full h-full object-cover"
                 />
               ) : (
-                <span className="font-sans text-xs font-semibold text-white">
-                  {session.user?.name?.[0]?.toUpperCase() ?? "A"}
+                <span className="font-sans text-xs font-semibold text-primary">
+                  {initials}
                 </span>
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-sans text-xs font-medium text-white/80 truncate">
+              <p className="font-sans text-xs font-semibold text-foreground truncate">
                 {session.user?.name}
               </p>
-              <p className="font-sans text-[10px] text-white/40 truncate">
+              <p className="font-sans text-[10px] text-muted truncate">
                 {session.user?.email}
               </p>
             </div>
@@ -103,7 +127,7 @@ export default async function StudentLayout({
       {/* ── Main content ── */}
       <main className="flex-1 min-w-0 flex flex-col">
         {/* Mobile header */}
-        <header className="md:hidden sticky top-0 z-40 bg-canvas border-b border-white/10 shrink-0">
+        <header className="md:hidden sticky top-0 z-40 bg-surface border-b border-border shrink-0">
           <div className="flex items-center justify-between px-4 h-14">
             <Link href="/">
               <Image
@@ -111,18 +135,20 @@ export default async function StudentLayout({
                 alt="NU.V.E.M ENSINO"
                 width={100}
                 height={78}
-                className="h-8 w-auto brightness-0 invert opacity-90"
+                className="h-8 w-auto"
               />
             </Link>
-            <SignOutButton />
+            <div className="flex items-center gap-2">
+              <span className="font-sans text-xs text-muted">Olá, {firstName}</span>
+              <SignOutButton />
+            </div>
           </div>
-          {/* Nav row */}
           <nav className="flex overflow-x-auto gap-1 px-3 pb-2 scrollbar-none">
             {navLinks.map(({ label, href }) => (
               <Link
                 key={href}
-                href={href as "/dashboard" | "/dashboard/cursos" | "/dashboard/aulas-ao-vivo" | "/dashboard/certificados" | "/dashboard/perfil"}
-                className="shrink-0 font-sans text-xs text-white/60 hover:text-white/90 px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors whitespace-nowrap"
+                href={href}
+                className="shrink-0 font-sans text-xs text-muted hover:text-foreground px-3 py-1.5 rounded-lg hover:bg-background transition-colors whitespace-nowrap"
               >
                 {label}
               </Link>
@@ -130,7 +156,8 @@ export default async function StudentLayout({
           </nav>
         </header>
 
-        <div className="p-6 lg:p-8">{children}</div>
+        {/* Page content */}
+        <div className="flex-1 p-6 lg:p-8">{children}</div>
       </main>
     </div>
   );
