@@ -101,7 +101,7 @@ export default async function AvaliacaoPage({ params }: Props) {
               </p>
 
               {/* Links */}
-              <div className="flex flex-wrap gap-2 mt-4">
+              <div className="flex flex-wrap justify-center gap-2 mt-4">
                 <a
                   href="https://www.nuvemmedicina.com.br/dra-vera-angelo"
                   target="_blank"
