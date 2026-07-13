@@ -385,18 +385,28 @@ export default function LessonPlayerClient({
 
           {/* AudioCast player bar */}
           {currentLesson?.audioUrl && (
-            <div className="bg-canvas border-b border-canvas-border px-5 py-3 flex items-center gap-3 max-w-5xl mx-auto w-full">
-              <span className="text-primary text-lg shrink-0">🎙</span>
-              <div className="flex-1 min-w-0">
-                <p className="font-sans text-[11px] font-bold uppercase tracking-widest text-primary mb-1">
-                  AudioCast
-                </p>
-                <audio
-                  controls
-                  src={currentLesson.audioUrl}
-                  className="w-full h-8"
-                  style={{ accentColor: "#00a3c4" }}
-                />
+            <div className="max-w-5xl mx-auto w-full px-5 lg:px-8 mt-4 mb-1">
+              <div className="bg-canvas rounded-2xl border border-canvas-border px-5 py-4 flex items-center gap-4 shadow-sm">
+                {/* Icon */}
+                <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center shrink-0">
+                  <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary fill-none stroke-current" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3Z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" x2="12" y1="19" y2="22"/>
+                  </svg>
+                </div>
+                {/* Label + player */}
+                <div className="flex-1 min-w-0">
+                  <p className="font-sans text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-1.5">
+                    AudioCast desta aula
+                  </p>
+                  <audio
+                    controls
+                    src={currentLesson.audioUrl}
+                    className="w-full h-9"
+                    style={{ accentColor: "#00475E" }}
+                  />
+                </div>
               </div>
             </div>
           )}
