@@ -12,9 +12,9 @@ import {
   Video,
   MessageCircle,
   Users,
-  LogOut,
 } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
+import MobileNav from "./MobileNav";
 import { getTranslations } from "next-intl/server";
 
 export default async function StudentLayout({
@@ -126,35 +126,13 @@ export default async function StudentLayout({
 
       {/* ── Main content ── */}
       <main className="flex-1 min-w-0 flex flex-col">
-        {/* Mobile header */}
-        <header className="md:hidden sticky top-0 z-40 bg-surface border-b border-border shrink-0">
-          <div className="flex items-center justify-between px-4 h-14">
-            <Link href="/">
-              <Image
-                src="/logo.png"
-                alt="NU.V.E.M ENSINO"
-                width={100}
-                height={78}
-                className="h-8 w-auto"
-              />
-            </Link>
-            <div className="flex items-center gap-2">
-              <span className="font-sans text-xs text-muted">Olá, {firstName}</span>
-              <SignOutButton />
-            </div>
-          </div>
-          <nav className="flex overflow-x-auto gap-1 px-3 pb-2 scrollbar-none">
-            {navLinks.map(({ label, href }) => (
-              <Link
-                key={href}
-                href={href}
-                className="shrink-0 font-sans text-xs text-muted hover:text-foreground px-3 py-1.5 rounded-lg hover:bg-background transition-colors whitespace-nowrap"
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
-        </header>
+        {/* Mobile hamburger nav */}
+        <MobileNav
+          userName={session.user?.name ?? null}
+          userEmail={session.user?.email ?? null}
+          userImage={session.user?.image ?? null}
+          initials={initials}
+        />
 
         {/* Page content */}
         <div className="flex-1 p-6 lg:p-8">{children}</div>
