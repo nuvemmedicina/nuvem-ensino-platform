@@ -24,6 +24,11 @@ export async function POST(req: NextRequest) {
   const ext = filename.split(".").pop() ?? "bin";
   const key = `references/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
-  const { uploadUrl, publicUrl } = await getR2UploadUrl(key, contentType, fileSize);
-  return NextResponse.json({ uploadUrl, publicUrl, key });
+  try {
+    const { uploadUrl, publicUrl } = await getR2UploadUrl(key, contentType, fileSize);
+    return NextResponse.json({ uploadUrl, publicUrl, key });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: `Erro R2: ${msg}` }, { status: 500 });
+  }
 }
