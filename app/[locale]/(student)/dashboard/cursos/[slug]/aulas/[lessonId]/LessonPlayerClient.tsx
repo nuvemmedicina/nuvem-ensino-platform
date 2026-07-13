@@ -338,9 +338,9 @@ export default function LessonPlayerClient({
         {/* ── Player column ── */}
         <div className="flex-1 min-w-0 overflow-y-auto">
           {/* Video area */}
-          <div className="bg-black">
+          <div>
             <div className="w-full max-w-5xl mx-auto">
-              <div className="aspect-video w-full">
+              <div className="aspect-video w-full bg-black">
                 {hasMux ? (
                   <MuxPlayer
                     key={currentLesson!.muxPlaybackId!}
