@@ -721,6 +721,7 @@ model LiveSession {
   thumbnailUrl String?
   reminder24h Boolean   @default(false)
   reminder1h  Boolean   @default(false)
+  eventSlug   String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

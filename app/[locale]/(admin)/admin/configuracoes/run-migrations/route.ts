@@ -421,5 +421,19 @@ export async function GET() {
     results.push("✓ Coluna couponId adicionada à Payment");
   } catch (e) { results.push(`✗ couponId: ${e}`); }
 
+  // ── Migração 16: eventSlug na LiveSession ────────────────────────────────
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TABLE "LiveSession" ADD COLUMN IF NOT EXISTS "eventSlug" TEXT`);
+    results.push("✓ LiveSession.eventSlug adicionado");
+  } catch (e) { results.push(`✗ LiveSession.eventSlug: ${e}`); }
+
+  try {
+    await prisma.$executeRawUnsafe(`
+      UPDATE "LiveSession" SET "eventSlug" = 'dici-live-julho-2026'
+      WHERE title ILIKE '%ROMA V%' AND "eventSlug" IS NULL
+    `);
+    results.push("✓ eventSlug setado para Roma V");
+  } catch (e) { results.push(`✗ UPDATE Roma V eventSlug: ${e}`); }
+
   return NextResponse.json({ ok: true, results });
 }
