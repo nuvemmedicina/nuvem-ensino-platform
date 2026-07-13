@@ -413,11 +413,13 @@ export default function LessonPlayerClient({
 
           {/* Copyright notice */}
           {(hasMux || youtubeId) && (
-            <div className="bg-amber-50 border-b border-amber-200 px-5 py-2 flex items-start gap-2 max-w-5xl mx-auto w-full">
-              <span className="text-amber-600 text-xs mt-0.5 shrink-0">⚠</span>
-              <p className="font-sans text-[11px] text-amber-800 leading-relaxed">
-                É proibida a reprodução total ou parcial das aulas por qualquer meio ou processo. A violação de direitos autorais constitui crime (art. 184 do CP e Lei nº 9.610/98).
-              </p>
+            <div className="max-w-5xl mx-auto w-full px-5 lg:px-8 mt-3">
+              <div className="flex items-center gap-2.5 bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5">
+                <span className="text-amber-500 text-sm shrink-0">⚠</span>
+                <p className="font-sans text-[11px] text-amber-700 leading-relaxed">
+                  É proibida a reprodução total ou parcial das aulas por qualquer meio. Violação constitui crime (art. 184 do CP e Lei nº 9.610/98).
+                </p>
+              </div>
             </div>
           )}
 
