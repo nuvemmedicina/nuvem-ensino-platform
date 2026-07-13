@@ -110,7 +110,6 @@ export default async function AdminOverviewPage({
         title: true,
         startAt: true,
         location: true,
-        eventSlug: true,
         course: {
           select: {
             title: true,
@@ -363,15 +362,9 @@ export default async function AdminOverviewPage({
                   </div>
                 )}
                 <div className="shrink-0 text-right">
-                  {live.eventSlug && liveLeadMap[live.eventSlug] != null ? (
-                    <span className="font-sans text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
-                      {liveLeadMap[live.eventSlug]} inscritos
-                    </span>
-                  ) : (
-                    <span className="font-sans text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
-                      {live.course._count.enrollments} matriculados
-                    </span>
-                  )}
+                  <span className="font-sans text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+                    {live.course._count.enrollments} matriculados
+                  </span>
                 </div>
               </div>
             ))}
