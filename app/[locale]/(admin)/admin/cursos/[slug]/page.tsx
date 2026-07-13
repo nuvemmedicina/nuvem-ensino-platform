@@ -50,6 +50,7 @@ import { RemoveVideoButton } from "./RemoveVideoButton";
 import { ModuleAccordion } from "./ModuleAccordion";
 import { TopicAccordion } from "./TopicAccordion";
 import { ApostilaUploader } from "./ApostilaUploader";
+import { ReferencesManager } from "./ReferencesManager";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
@@ -66,7 +67,8 @@ const btnDanger =
 export default async function AdminCursoEditPage({ params }: Props) {
   const { slug } = await params;
 
-  const course = await prisma.course.findFirst({
+  const [courseRaw, courseReferences] = await Promise.all([
+    prisma.course.findFirst({
     where: { slug },
     include: {
       modules: {
@@ -103,7 +105,13 @@ export default async function AdminCursoEditPage({ params }: Props) {
         },
       },
     },
-  });
+  }),
+    prisma.courseReference.findMany({
+      where: { course: { slug } },
+      orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+    }),
+  ]);
+  const course = courseRaw;
 
   if (!course) notFound();
 
@@ -1004,6 +1012,15 @@ export default async function AdminCursoEditPage({ params }: Props) {
             </button>
           </form>
         </div>
+      </section>
+
+      {/* Referências do curso */}
+      <section className="bg-surface border border-border rounded-2xl p-6 space-y-4">
+        <div>
+          <h2 className="font-serif text-xl font-medium text-foreground">Referências</h2>
+          <p className="font-sans text-sm text-muted mt-0.5">Artigos e documentos de referência disponíveis para os alunos matriculados.</p>
+        </div>
+        <ReferencesManager courseSlug={slug} initial={courseReferences} />
       </section>
 
       {/* Link para ver o curso público */}

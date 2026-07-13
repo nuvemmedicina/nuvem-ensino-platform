@@ -226,6 +226,19 @@ model Course {
   forumPosts    ForumPost[]
   evaluations      CourseEvaluation[]
   flashcardGroups  FlashcardGroup[]
+  references       CourseReference[]
+}
+
+model CourseReference {
+  id        String   @id @default(cuid())
+  courseId  String
+  title     String
+  fileUrl   String
+  fileSize  Int?     // bytes
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 model Tag {

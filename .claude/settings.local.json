@@ -164,7 +164,9 @@
       "Bash(cd \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\" && sed -i 's/  updateModuleApostila,/  updateTopicApostila,/' \"app/[locale]/\\(admin\\)/admin/cursos/[slug]/page.tsx\")",
       "Bash(mkdir -p \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(admin\\)\\\\admin\\\\configuracoes\\\\ia\")",
       "Bash(mkdir -p \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(admin\\)\\\\admin\\\\flashcards\")",
-      "Bash(mkdir -p \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(student\\)\\\\dashboard\\\\flashcards\\\\[groupId]\")"
+      "Bash(mkdir -p \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(student\\)\\\\dashboard\\\\flashcards\\\\[groupId]\")",
+      "Bash(npm list *)",
+      "Bash(grep -n \"FaqEditor\\\\|faqJson\\\\|Módulos e Aulas\\\\|section.*Módulos\\\\|MÓDULOS\\\\|Estrutura do curso\\\\|</main>\\\\|</div>.*{/\\\\*.*fim\\\\|return \\(\" \"app/[locale]/\\(admin\\)/admin/cursos/[slug]/page.tsx\")"
     ]
   }
 }

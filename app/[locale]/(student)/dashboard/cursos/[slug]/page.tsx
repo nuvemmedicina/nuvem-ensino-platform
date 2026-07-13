@@ -170,6 +170,11 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
     notesMap[n.lessonId] = n.content;
   }
 
+  const courseReferences = await prisma.courseReference.findMany({
+    where: { courseId: course.id },
+    orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+  });
+
   const nextLiveSession = await prisma.liveSession.findFirst({
     where: { courseId: course.id, startAt: { gte: new Date() } },
     orderBy: { startAt: "asc" },
@@ -415,6 +420,7 @@ export default async function CoursePlayerPage({ params, searchParams }: Props) 
           currentUserId={session.user.id}
           currentUserRole={(session.user as { role?: string }).role ?? "STUDENT"}
           currentUserName={session.user.name ?? null}
+          courseReferences={courseReferences}
         />
         </>
       )}
