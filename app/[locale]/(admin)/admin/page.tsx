@@ -66,6 +66,7 @@ export default async function AdminOverviewPage({
     topCourses,
     recentEnrollments,
     upcomingLives,
+    liveLeadCounts,
   ] = await Promise.all([
     prisma.payment.aggregate({ _sum: { amount: true }, where: { status: "PAID" } }),
     prisma.payment.aggregate({ _sum: { amount: true }, where: { status: "PAID", paidAt: { gte: startThisMonth } } }),
@@ -104,17 +105,11 @@ export default async function AdminOverviewPage({
     }),
     prisma.liveSession.findMany({
       where: { startAt: { gte: now } },
-      include: {
-        course: {
-          select: {
-            title: true,
-            _count: { select: { enrollments: { where: { status: "ACTIVE" } } } },
-          },
-        },
-      },
+      include: { course: { select: { title: true } } },
       orderBy: { startAt: "asc" },
       take: 5,
     }),
+    prisma.liveLead.groupBy({ by: ["eventSlug"], _count: { _all: true } }),
   ]);
 
   const dateLocale      = locale === "en" ? "en-US" : locale === "es" ? "es-ES" : "pt-BR";
@@ -130,6 +125,10 @@ export default async function AdminOverviewPage({
   const deltaRev        = pctDelta(revThisMonthVal, revLastMonthVal);
   const deltaStudents   = pctDelta(newStudents30d, newStudentsPrev30d);
   const conversionRate  = totalNonFreeAttempts > 0 ? (totalPaidCount / totalNonFreeAttempts) * 100 : null;
+
+  const liveLeadMap: Record<string, number> = {};
+  for (const g of liveLeadCounts) liveLeadMap[g.eventSlug] = g._count._all;
+  const totalLiveLeads = liveLeadCounts.reduce((s, g) => s + g._count._all, 0);
 
   const monthBuckets: Record<string, number> = {};
   for (let i = 5; i >= 0; i--) {
@@ -321,11 +320,16 @@ export default async function AdminOverviewPage({
       {/* ── Próximas Lives ── */}
       {upcomingLives.length > 0 && (
         <div className="bg-surface border border-border rounded-2xl overflow-hidden">
-          <div className="px-5 py-4 border-b border-border flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-red-500/10 flex items-center justify-center">
-              <Radio className="w-3.5 h-3.5 text-red-500" />
+          <div className="px-5 py-4 border-b border-border flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-lg bg-red-500/10 flex items-center justify-center">
+                <Radio className="w-3.5 h-3.5 text-red-500" />
+              </div>
+              <p className="font-sans text-xs font-bold text-foreground uppercase tracking-wider">Próximas Aulas ao Vivo</p>
             </div>
-            <p className="font-sans text-xs font-bold text-foreground uppercase tracking-wider">Próximas Aulas ao Vivo</p>
+            <a href="/admin/live-leads" className="font-sans text-xs font-semibold text-primary hover:underline">
+              {totalLiveLeads} inscrições no formulário →
+            </a>
           </div>
           <div className="divide-y divide-border">
             {upcomingLives.map((live) => (
@@ -348,7 +352,7 @@ export default async function AdminOverviewPage({
                 )}
                 <div className="shrink-0 text-right">
                   <span className="font-sans text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
-                    {live.course._count.enrollments} alunos
+                    {totalLiveLeads} inscritos
                   </span>
                 </div>
               </div>
