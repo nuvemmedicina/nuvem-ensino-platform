@@ -74,10 +74,10 @@ export default async function AvaliacaoPage({ params }: Props) {
         </div>
 
         <div className="p-6">
-          <div className="flex gap-6 items-start">
+          <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 sm:items-start items-center text-center sm:text-left">
             {/* Foto */}
             <div className="shrink-0">
-              <div className="w-28 h-28 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-md">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-md">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/instructors/dra-vera-angelo-1.jpeg"
