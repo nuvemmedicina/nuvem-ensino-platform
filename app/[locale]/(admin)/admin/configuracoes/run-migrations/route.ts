@@ -437,6 +437,7 @@ export async function GET() {
 
   // ── Migração 17: matricular instrutores nos próprios cursos ───────────────
   try {
+    // Instrutor principal do curso
     const courses = await prisma.course.findMany({
       select: { id: true, instructor: { select: { userId: true } } },
     });
@@ -449,7 +450,24 @@ export async function GET() {
       });
       enrolled++;
     }
-    results.push(`✓ Instrutores matriculados: ${enrolled} curso(s) processado(s)`);
+
+    // Docentes de módulo
+    const moduleInstructors = await prisma.moduleInstructor.findMany({
+      select: {
+        instructor: { select: { userId: true } },
+        module: { select: { courseId: true } },
+      },
+    });
+    for (const mi of moduleInstructors) {
+      await prisma.enrollment.upsert({
+        where: { userId_courseId: { userId: mi.instructor.userId, courseId: mi.module.courseId } },
+        create: { userId: mi.instructor.userId, courseId: mi.module.courseId, status: "ACTIVE" },
+        update: { status: "ACTIVE" },
+      });
+      enrolled++;
+    }
+
+    results.push(`✓ Instrutores matriculados: ${enrolled} registro(s) processado(s)`);
   } catch (e) { results.push(`✗ Matrícula de instrutores: ${e}`); }
 
   return NextResponse.json({ ok: true, results });
