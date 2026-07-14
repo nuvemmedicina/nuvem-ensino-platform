@@ -40,7 +40,13 @@ export default async function InstructorCursoEditPage({ params }: Props) {
   if (!instructor) redirect("/dashboard");
 
   const course = await prisma.course.findFirst({
-    where: { slug, instructorId: instructor.id },
+    where: {
+      slug,
+      OR: [
+        { instructorId: instructor.id },
+        { modules: { some: { instructors: { some: { instructorId: instructor.id } } } } },
+      ],
+    },
     include: {
       modules: {
         orderBy: { order: "asc" },
