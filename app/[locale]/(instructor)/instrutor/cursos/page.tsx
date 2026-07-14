@@ -2,7 +2,8 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import Image from "next/image";
+import { Plus, PlayCircle, Settings } from "lucide-react";
 import { createCourse } from "./actions";
 
 export default async function InstructorCursosPage({
@@ -22,11 +23,6 @@ export default async function InstructorCursosPage({
 
   if (!instructor) redirect("/dashboard");
 
-  const statusColors: Record<string, string> = {
-    PUBLISHED: "text-green-600 bg-green-500/10 border-green-500/20",
-    DRAFT: "text-amber-600 bg-amber-500/10 border-amber-500/20",
-    ARCHIVED: "text-muted bg-border/50 border-border",
-  };
   const statusLabels: Record<string, string> = {
     PUBLISHED: "Publicado",
     DRAFT: "Rascunho",
@@ -49,6 +45,7 @@ export default async function InstructorCursosPage({
 
   return (
     <div>
+      {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="font-serif text-3xl font-light text-foreground">Meus Cursos</h1>
@@ -56,7 +53,6 @@ export default async function InstructorCursosPage({
             {courses.length} {courses.length === 1 ? "curso" : "cursos"}
           </p>
         </div>
-        {/* Create course form */}
         <form action={createCourse} className="flex items-center gap-2">
           <input
             name="title"
@@ -89,49 +85,68 @@ export default async function InstructorCursosPage({
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4">
           {courses.map((course) => {
-            const totalLessons = course.modules.reduce(
-              (s, m) => s + m.lessons.length,
-              0
-            );
-            const statusColor = statusColors[course.status] ?? statusColors.DRAFT;
-            const statusLabel = statusLabels[course.status] ?? course.status;
+            const totalLessons = course.modules.reduce((s, m) => s + m.lessons.length, 0);
 
             return (
-              <Link
-                key={course.id}
-                href={`/instrutor/cursos/${course.slug}`}
-                className="flex items-center justify-between gap-4 px-6 py-4 bg-surface border border-border rounded-2xl hover:border-primary/40 hover:shadow-sm transition-all group"
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-1 flex-wrap">
-                    <span
-                      className={`font-sans text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${statusColor}`}
-                    >
-                      {statusLabel}
-                    </span>
+              <div key={course.id} className="group relative flex flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/15 bg-surface">
+                {/* Poster */}
+                <div className="relative overflow-hidden bg-gradient-to-br from-[#0e4f6b] to-[#1a8fa8]" style={{ paddingBottom: "140%" }}>
+                  {course.thumbnailUrl && (
+                    <Image
+                      src={course.thumbnailUrl}
+                      alt={course.title}
+                      fill
+                      className="absolute inset-0 object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 33vw, 20vw"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+
+                  {/* Badge status */}
+                  <span className={`absolute top-3 left-3 font-sans text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded-full ${
+                    course.status === "PUBLISHED" ? "bg-green-500 text-white" :
+                    course.status === "DRAFT"     ? "bg-amber-400 text-amber-900" :
+                                                    "bg-white/20 text-white"
+                  }`}>
+                    {statusLabels[course.status] ?? course.status}
+                  </span>
+
+                  {/* Info sobreposta */}
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-sans text-[9px] font-bold uppercase tracking-widest text-white/50">
+                        {totalLessons} aulas
+                      </span>
+                      <span className="text-white/30">·</span>
+                      <span className="font-sans text-[9px] font-bold uppercase tracking-widest text-white/50">
+                        {course._count.enrollments} alunos
+                      </span>
+                    </div>
+                    <p className="font-sans text-sm font-bold text-white leading-snug line-clamp-2">
+                      {course.title}
+                    </p>
                   </div>
-                  <h2 className="font-serif text-base font-medium text-foreground leading-snug group-hover:text-primary transition-colors line-clamp-1">
-                    {course.title}
-                  </h2>
                 </div>
 
-                <div className="flex items-center gap-6 shrink-0 text-right">
-                  <div className="hidden sm:block">
-                    <p className="font-sans text-xs text-muted">Aulas</p>
-                    <p className="font-sans text-sm font-semibold text-foreground">
-                      {totalLessons}
-                    </p>
-                  </div>
-                  <div className="hidden sm:block">
-                    <p className="font-sans text-xs text-muted">Matrículas</p>
-                    <p className="font-sans text-sm font-semibold text-foreground">
-                      {course._count.enrollments}
-                    </p>
-                  </div>
+                {/* Botões */}
+                <div className="flex flex-col gap-1.5 p-2.5">
+                  <Link
+                    href={`/dashboard/cursos/${course.slug}`}
+                    target="_blank"
+                    className="w-full flex items-center justify-center gap-1.5 font-sans text-[11px] font-bold px-3 py-2 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors"
+                  >
+                    <PlayCircle className="w-3.5 h-3.5" /> Assistir
+                  </Link>
+                  <Link
+                    href={`/instrutor/cursos/${course.slug}`}
+                    className="w-full flex items-center justify-center gap-1.5 font-sans text-[11px] font-semibold px-3 py-2 rounded-xl border border-border text-muted hover:text-foreground hover:border-primary/40 transition-colors"
+                  >
+                    <Settings className="w-3 h-3" /> Gerenciar
+                  </Link>
                 </div>
-              </Link>
+              </div>
             );
           })}
         </div>
