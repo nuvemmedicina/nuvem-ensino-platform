@@ -121,9 +121,21 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           </div>
         </div>
       ) : (
-        <div className="relative flex items-end px-8 lg:px-12 pb-12 bg-gradient-to-br from-canvas to-primary/20" style={{ minHeight: 280 }}>
-          <div>
-            <h1 className="font-serif text-3xl font-light text-white mb-2">
+        <div className="relative w-full overflow-hidden" style={{ aspectRatio: "21/9", minHeight: 280, maxHeight: 520 }}>
+          <Image
+            src="/capa.webp"
+            alt="Nuvem Ensino"
+            fill
+            className="object-cover"
+            style={{ objectPosition: "center center" }}
+            priority
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-black/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
+          <div className="absolute inset-0 flex flex-col justify-end px-8 lg:px-12 pb-10 lg:pb-14">
+            <h1 className="font-serif text-3xl lg:text-5xl font-medium text-white mb-2 leading-tight">
               Olá, {firstName}
             </h1>
             <p className="font-sans text-sm text-white/60 mb-6">Explore os nossos cursos</p>
