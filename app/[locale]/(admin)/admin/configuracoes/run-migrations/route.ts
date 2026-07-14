@@ -435,5 +435,22 @@ export async function GET() {
     results.push("✓ eventSlug setado para Roma V");
   } catch (e) { results.push(`✗ UPDATE Roma V eventSlug: ${e}`); }
 
+  // ── Migração 17: matricular instrutores nos próprios cursos ───────────────
+  try {
+    const courses = await prisma.course.findMany({
+      select: { id: true, instructor: { select: { userId: true } } },
+    });
+    let enrolled = 0;
+    for (const course of courses) {
+      await prisma.enrollment.upsert({
+        where: { userId_courseId: { userId: course.instructor.userId, courseId: course.id } },
+        create: { userId: course.instructor.userId, courseId: course.id, status: "ACTIVE" },
+        update: { status: "ACTIVE" },
+      });
+      enrolled++;
+    }
+    results.push(`✓ Instrutores matriculados: ${enrolled} curso(s) processado(s)`);
+  } catch (e) { results.push(`✗ Matrícula de instrutores: ${e}`); }
+
   return NextResponse.json({ ok: true, results });
 }

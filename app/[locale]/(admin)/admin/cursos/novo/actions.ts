@@ -22,10 +22,25 @@ function slugify(text: string) {
     .replace(/-+/g, "-");
 }
 
+async function enrollInstructorInCourse(courseId: string, instructorId: string) {
+  const instructor = await prisma.instructor.findUnique({
+    where: { id: instructorId },
+    select: { userId: true },
+  });
+  if (!instructor) return;
+
+  await prisma.enrollment.upsert({
+    where: { userId_courseId: { userId: instructor.userId, courseId } },
+    create: { userId: instructor.userId, courseId, status: "ACTIVE" },
+    update: { status: "ACTIVE" },
+  });
+}
+
 export async function createCourse(formData: FormData) {
   await requireAdmin();
 
   const title = formData.get("title") as string;
+  const instructorId = formData.get("instructorId") as string;
   const baseSlug = slugify(title);
 
   // ensure unique slug
@@ -35,7 +50,7 @@ export async function createCourse(formData: FormData) {
     slug = `${baseSlug}-${suffix++}`;
   }
 
-  await prisma.course.create({
+  const course = await prisma.course.create({
     data: {
       slug,
       title,
@@ -44,12 +59,14 @@ export async function createCourse(formData: FormData) {
       hours:        parseInt(formData.get("hours") as string) || 1,
       status:       "DRAFT",
       category:     (formData.get("category") as "HANDS_ON" | "ONLINE" | "HYBRID") || "ONLINE",
-      instructorId: formData.get("instructorId") as string,
+      instructorId,
       thumbnailUrl:        (formData.get("thumbnailUrl") as string) || null,
       contentUrl:          (formData.get("contentUrl") as string) || null,
       externalCheckoutUrl: (formData.get("externalCheckoutUrl") as string) || null,
     },
   });
+
+  await enrollInstructorInCourse(course.id, instructorId);
 
   revalidatePath("/admin/cursos");
   redirect(`/admin/cursos/${slug}`);

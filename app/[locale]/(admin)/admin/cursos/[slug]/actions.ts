@@ -11,11 +11,25 @@ async function requireAdmin() {
   if (!session?.user?.id || role !== "ADMIN") throw new Error("Não autorizado.");
 }
 
+async function enrollInstructorInCourse(courseId: string, instructorId: string) {
+  const instructor = await prisma.instructor.findUnique({
+    where: { id: instructorId },
+    select: { userId: true },
+  });
+  if (!instructor) return;
+  await prisma.enrollment.upsert({
+    where: { userId_courseId: { userId: instructor.userId, courseId } },
+    create: { userId: instructor.userId, courseId, status: "ACTIVE" },
+    update: { status: "ACTIVE" },
+  });
+}
+
 export async function updateCourse(courseId: string, slug: string, formData: FormData) {
   await requireAdmin();
 
   const str = (key: string) => (formData.get(key) as string) || null;
   const newSlug = (formData.get("slug") as string).trim() || slug;
+  const instructorId = formData.get("instructorId") as string | null;
 
   if (newSlug !== slug) {
     const conflict = await prisma.course.findUnique({ where: { slug: newSlug } });
@@ -40,6 +54,8 @@ export async function updateCourse(courseId: string, slug: string, formData: For
       totalSeats:     formData.get("totalSeats") ? parseInt(formData.get("totalSeats") as string) : null,
     },
   });
+  if (instructorId) await enrollInstructorInCourse(courseId, instructorId);
+
   revalidatePath(`/admin/cursos/${slug}`);
   revalidatePath(`/admin/cursos/${newSlug}`);
   revalidatePath("/admin/cursos");
