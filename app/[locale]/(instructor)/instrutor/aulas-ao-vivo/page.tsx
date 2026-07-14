@@ -15,7 +15,7 @@ export default async function InstructorAulasAoVivoPage({
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/instrutor/aulas-ao-vivo");
 
   const role = (session.user as { role?: string }).role;
-  if (role !== "INSTRUCTOR") redirect("/dashboard");
+  if (role !== "INSTRUCTOR" && role !== "ADMIN") redirect("/dashboard");
 
   const instructor = await prisma.instructor.findUnique({
     where: { userId: session.user.id },
@@ -23,48 +23,58 @@ export default async function InstructorAulasAoVivoPage({
   });
   if (!instructor) redirect("/dashboard");
 
-  // Only fetch courses belonging to this instructor
+  const courseFilter = {
+    OR: [
+      { instructorId: instructor.id },
+      { modules: { some: { instructors: { some: { instructorId: instructor.id } } } } },
+    ],
+  };
+
   const [courses, liveSessions] = await Promise.all([
     prisma.course.findMany({
-      where: { instructorId: instructor.id },
+      where: courseFilter,
       select: { id: true, title: true, slug: true },
       orderBy: { title: "asc" },
     }),
     prisma.liveSession.findMany({
-      where: { course: { instructorId: instructor.id } },
-      include: { course: { select: { title: true, slug: true } } },
+      where: { course: courseFilter },
+      include: { course: { select: { title: true, slug: true, thumbnailUrl: true } } },
       orderBy: { startAt: "asc" },
     }),
   ]);
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="mb-8">
-        <h1 className="font-serif text-2xl font-medium text-foreground">Aulas ao Vivo</h1>
-        <p className="font-sans text-sm text-muted mt-1">
-          Gerencie as sessões ao vivo dos seus cursos
-        </p>
+    <div className="max-w-5xl">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4 mb-8">
+        <div>
+          <h1 className="font-serif text-3xl font-light text-foreground">Aulas ao Vivo</h1>
+          <p className="font-sans text-sm text-muted mt-1">
+            Gerencie as sessões ao vivo dos seus cursos
+          </p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        <div className="lg:col-span-2">
-          <div className="bg-surface border border-border rounded-2xl p-6">
-            <h2 className="font-sans text-sm font-semibold text-foreground mb-5">
-              Nova Sessão
-            </h2>
-            {courses.length === 0 ? (
-              <p className="font-sans text-sm text-muted">
-                Nenhum curso disponível. O administrador precisa atribuir cursos ao seu perfil primeiro.
-              </p>
-            ) : (
-              <LiveSessionForm courses={courses} />
-            )}
-          </div>
+      {/* Formulário nova sessão */}
+      {courses.length > 0 && (
+        <div className="bg-surface border border-border rounded-2xl p-6 mb-8">
+          <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-5">
+            Agendar nova sessão
+          </h2>
+          <LiveSessionForm courses={courses} />
         </div>
-        <div className="lg:col-span-3">
-          <LiveSessionList sessions={liveSessions} />
+      )}
+
+      {courses.length === 0 && (
+        <div className="bg-surface border border-border rounded-2xl p-8 text-center mb-8">
+          <p className="font-sans text-sm text-muted">
+            Nenhum curso disponível. O administrador precisa atribuir cursos ao seu perfil primeiro.
+          </p>
         </div>
-      </div>
+      )}
+
+      {/* Lista de sessões */}
+      <LiveSessionList sessions={liveSessions} />
     </div>
   );
 }
