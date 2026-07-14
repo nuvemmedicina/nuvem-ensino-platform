@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, Plus, CheckCircle, Users } from "lucide-react";
+import { ChevronLeft, Plus, CheckCircle, Users, PlayCircle } from "lucide-react";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import {
@@ -78,13 +78,23 @@ export default async function InstructorCursoEditPage({ params }: Props) {
         <h1 className="font-serif text-2xl font-medium text-foreground line-clamp-2">
           {course.title}
         </h1>
-        <Link
-          href={`/instrutor/cursos/${course.slug}/inscritos`}
-          className="shrink-0 flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2 rounded-lg border border-border text-foreground hover:border-primary/40 hover:text-primary transition-colors"
-        >
-          <Users className="w-4 h-4" />
-          Ver inscritos
-        </Link>
+        <div className="flex items-center gap-2 shrink-0">
+          <Link
+            href={`/dashboard/cursos/${course.slug}`}
+            target="_blank"
+            className="flex items-center gap-2 font-sans text-sm font-bold px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors shadow-md shadow-primary/20"
+          >
+            <PlayCircle className="w-4 h-4" />
+            Assistir curso
+          </Link>
+          <Link
+            href={`/instrutor/cursos/${course.slug}/inscritos`}
+            className="flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2 rounded-lg border border-border text-foreground hover:border-primary/40 hover:text-primary transition-colors"
+          >
+            <Users className="w-4 h-4" />
+            Ver inscritos
+          </Link>
+        </div>
       </div>
 
       {/* ── Dados do curso ── */}
@@ -390,9 +400,6 @@ export default async function InstructorCursoEditPage({ params }: Props) {
       <div className="flex gap-3">
         <Link href={`/cursos/${slug}`} target="_blank" className={btnGhost}>
           Ver página pública ↗
-        </Link>
-        <Link href={`/dashboard/cursos/${slug}`} target="_blank" className={btnGhost}>
-          Ver player ↗
         </Link>
       </div>
     </div>
