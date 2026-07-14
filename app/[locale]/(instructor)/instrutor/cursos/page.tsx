@@ -34,7 +34,12 @@ export default async function InstructorCursosPage({
   };
 
   const courses = await prisma.course.findMany({
-    where: { instructorId: instructor.id },
+    where: {
+      OR: [
+        { instructorId: instructor.id },
+        { modules: { some: { instructors: { some: { instructorId: instructor.id } } } } },
+      ],
+    },
     include: {
       modules: { include: { lessons: { select: { id: true } } } },
       _count: { select: { enrollments: true } },

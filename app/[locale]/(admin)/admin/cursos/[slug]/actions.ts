@@ -86,6 +86,9 @@ export async function updateModuleInstructors(
   instructorIds: string[],
 ) {
   await requireAdmin();
+
+  const module = await prisma.module.findUnique({ where: { id: moduleId }, select: { courseId: true } });
+
   await prisma.$transaction([
     prisma.moduleInstructor.deleteMany({ where: { moduleId } }),
     ...instructorIds.map((instructorId, order) =>
@@ -94,6 +97,13 @@ export async function updateModuleInstructors(
       })
     ),
   ]);
+
+  if (module) {
+    for (const instructorId of instructorIds) {
+      await enrollInstructorInCourse(module.courseId, instructorId);
+    }
+  }
+
   revalidatePath(`/admin/cursos/${courseSlug}`);
 }
 

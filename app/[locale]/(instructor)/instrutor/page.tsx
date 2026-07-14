@@ -16,19 +16,7 @@ export default async function InstructorOverviewPage({
 
   const instructor = await prisma.instructor.findUnique({
     where: { userId: session.user.id },
-    include: {
-      courses: {
-        include: {
-          _count: { select: { enrollments: true } },
-          liveSessions: {
-            where: { startAt: { gt: new Date() } },
-            orderBy: { startAt: "asc" },
-            take: 5,
-          },
-        },
-        orderBy: { createdAt: "desc" },
-      },
-    },
+    select: { id: true, slug: true },
   });
 
   if (!instructor) {
@@ -60,12 +48,27 @@ export default async function InstructorOverviewPage({
     return null as never;
   }
 
-  const totalCourses = instructor.courses.length;
-  const totalEnrollments = instructor.courses.reduce(
-    (sum, c) => sum + c._count.enrollments,
-    0
-  );
-  const upcomingSessions = instructor.courses
+  const courses = await prisma.course.findMany({
+    where: {
+      OR: [
+        { instructorId: instructor.id },
+        { modules: { some: { instructors: { some: { instructorId: instructor.id } } } } },
+      ],
+    },
+    include: {
+      _count: { select: { enrollments: true } },
+      liveSessions: {
+        where: { startAt: { gt: new Date() } },
+        orderBy: { startAt: "asc" },
+        take: 5,
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const totalCourses = courses.length;
+  const totalEnrollments = courses.reduce((sum, c) => sum + c._count.enrollments, 0);
+  const upcomingSessions = courses
     .flatMap((c) => c.liveSessions.map((s) => ({ ...s, courseTitle: c.title })))
     .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime())
     .slice(0, 5);
@@ -150,7 +153,7 @@ export default async function InstructorOverviewPage({
                 Ver todos
               </Link>
             </div>
-            {instructor.courses.length === 0 ? (
+            {courses.length === 0 ? (
               <div className="px-6 py-8 text-center">
                 <p className="font-sans text-sm text-muted">
                   Nenhum curso atribuído ainda.
@@ -158,7 +161,7 @@ export default async function InstructorOverviewPage({
               </div>
             ) : (
               <div className="divide-y divide-border">
-                {instructor.courses.map((course) => (
+                {courses.map((course) => (
                   <Link
                     key={course.id}
                     href={`/instrutor/cursos/${course.slug}`}
