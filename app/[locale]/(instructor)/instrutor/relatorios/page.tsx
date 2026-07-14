@@ -47,9 +47,16 @@ export default async function InstructorRelatoriosPage({ params, searchParams }:
   const fmtBRL  = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
   const fmtDate = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
 
+  const courseFilter = {
+    OR: [
+      { instructorId: instructor.id },
+      { modules: { some: { instructors: { some: { instructorId: instructor.id } } } } },
+    ],
+  };
+
   // Cursos do instrutor (para o filtro)
   const myCourses = await prisma.course.findMany({
-    where: { instructorId: instructor.id },
+    where: courseFilter,
     select: { id: true, title: true },
     orderBy: { title: "asc" },
   });
