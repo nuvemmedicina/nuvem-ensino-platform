@@ -76,7 +76,7 @@ export default async function InstructorLayout({
               <p className="font-sans text-[10px] text-white/40 truncate">{session.user.email}</p>
             </div>
           </div>
-          <SignOutButton />
+          <SignOutButton dark />
         </div>
       </aside>
 
@@ -98,7 +98,7 @@ export default async function InstructorLayout({
               <span className="font-sans text-[10px] font-bold uppercase tracking-widest text-teal-400 bg-teal-400/15 border border-teal-400/25 px-2 py-1 rounded-md">
                 Instrutor
               </span>
-              <SignOutButton />
+              <SignOutButton dark />
             </div>
           </div>
           {/* Nav row */}
