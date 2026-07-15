@@ -139,202 +139,199 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
       )}
 
       {/* ── CONTEÚDO ── */}
-      <div className="px-4 lg:px-10 py-8 space-y-12">
 
-        {/* Stats chips */}
-        <div className="flex items-center gap-2.5 flex-wrap">
-          {[
-            { label: `${activeEnrollments.length} em andamento`, color: "text-primary", bg: "bg-primary/8 border-primary/20" },
-            { label: `${completedEnrollments.length} concluídos`, color: "text-green-700", bg: "bg-green-500/10 border-green-500/20" },
-            { label: `${certificates.length} certificados`, color: "text-amber-700", bg: "bg-amber-500/10 border-amber-500/20" },
-          ].map(({ label, color, bg }) => (
-            <span key={label} className={`font-sans text-xs font-semibold ${color} ${bg} border px-3 py-1.5 rounded-full`}>
-              {label}
-            </span>
-          ))}
-        </div>
+      {/* Stats chips — fundo branco */}
+      <div className="px-4 lg:px-10 py-6 bg-white flex items-center gap-2.5 flex-wrap">
+        {[
+          { label: `${activeEnrollments.length} em andamento`, color: "text-primary", bg: "bg-primary/8 border-primary/20" },
+          { label: `${completedEnrollments.length} concluídos`, color: "text-green-700", bg: "bg-green-500/10 border-green-500/20" },
+          { label: `${certificates.length} certificados`, color: "text-amber-700", bg: "bg-amber-500/10 border-amber-500/20" },
+        ].map(({ label, color, bg }) => (
+          <span key={label} className={`font-sans text-xs font-semibold ${color} ${bg} border px-3 py-1.5 rounded-full`}>
+            {label}
+          </span>
+        ))}
+      </div>
 
-        {/* ── Continuar assistindo ── */}
-        {activeEnrollments.length > 0 && (
-          <section>
-            <SectionHeader title="Continuar assistindo" href="/dashboard/cursos" />
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {activeEnrollments.map((e) => {
-                const total = e.course.modules.reduce((s, m) => s + m.lessons.length, 0);
-                const pct = calcProgress(e.progress, total);
-                return (
-                  <NetflixCourseCard
-                    key={e.id}
-                    href={`/dashboard/cursos/${e.course.slug}`}
-                    title={e.course.title}
-                    thumbnail={e.course.thumbnailUrl ?? e.course.instructor.user.image}
-                    instructorName={e.course.instructor.user.name}
-                    pct={pct}
-                    hours={e.course.hours}
-                    enrolled
-                  />
-                );
-              })}
-            </div>
-          </section>
-        )}
-
-        {/* ── Cursos concluídos ── */}
-        {completedEnrollments.length > 0 && (
-          <section>
-            <SectionHeader title="Cursos concluídos" />
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {completedEnrollments.map((e) => (
+      {/* ── Continuar assistindo — fundo cinza ── */}
+      {activeEnrollments.length > 0 && (
+        <section className="px-4 lg:px-10 py-10 bg-background">
+          <SectionHeader title="Continuar assistindo" href="/dashboard/cursos" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {activeEnrollments.map((e) => {
+              const total = e.course.modules.reduce((s, m) => s + m.lessons.length, 0);
+              const pct = calcProgress(e.progress, total);
+              return (
                 <NetflixCourseCard
                   key={e.id}
                   href={`/dashboard/cursos/${e.course.slug}`}
                   title={e.course.title}
                   thumbnail={e.course.thumbnailUrl ?? e.course.instructor.user.image}
                   instructorName={e.course.instructor.user.name}
-                  pct={100}
+                  pct={pct}
                   hours={e.course.hours}
                   enrolled
-                  completed
                 />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ── Catálogo de cursos ── */}
-        {catalogCourses.length > 0 && (
-          <section>
-            <SectionHeader
-              title="Grade de Cursos"
-              subtitle="Amplie sua formação médica"
-              href="/cursos"
-              hrefLabel="Ver todos"
-            />
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {catalogCourses.map((course) => (
-                <NetflixCourseCard
-                  key={course.id}
-                  href={`/cursos/${course.slug}`}
-                  title={course.title}
-                  thumbnail={course.thumbnailUrl ?? course.instructor.user.image}
-                  instructorName={course.instructor.user.name}
-                  hours={course.hours}
-                  price={fmtPrice(course.salePrice ?? course.price)}
-                  salePrice={course.salePrice ? fmtPrice(course.price) : undefined}
-                  enrolled={false}
-                  large
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ── Flashcards ── */}
-        {flashcardGroups.length > 0 && (
-          <section>
-            <SectionHeader
-              title="Flashcards"
-              subtitle="Fixe o conteúdo com repetição espaçada"
-              href="/dashboard/flashcards"
-              hrefLabel="Ver todos"
-            />
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {flashcardGroups.map((group) => (
-                <Link
-                  key={group.id}
-                  href={`/dashboard/flashcards/${group.id}`}
-                  className="group flex flex-col rounded-2xl border border-border bg-white hover:border-primary/30 hover:shadow-lg hover:shadow-primary/8 transition-all duration-200 overflow-hidden"
-                >
-                  {/* Banner colorido */}
-                  <div className="h-20 bg-gradient-to-br from-[#0e4f6b] to-[#1a8fa8] flex items-center justify-center">
-                    <Layers className="w-8 h-8 text-white/60" />
-                  </div>
-                  <div className="p-4 flex-1 flex flex-col gap-1">
-                    <p className="font-sans text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
-                      {group.title}
-                    </p>
-                    {group.course && (
-                      <p className="font-sans text-[10px] text-muted line-clamp-1">{group.course.title}</p>
-                    )}
-                    <p className="font-sans text-[10px] font-bold text-primary/70 mt-auto pt-2">
-                      {group._count.cards} {group._count.cards === 1 ? "card" : "cards"}
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ── Certificados ── */}
-        {certificates.length > 0 && (
-          <section>
-            <SectionHeader
-              title="Meus Certificados"
-              subtitle="Conquistas da sua formação"
-              href="/dashboard/certificados"
-              hrefLabel="Ver todos"
-            />
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {certificates.map((cert) => (
-                <Link
-                  key={cert.id}
-                  href={`/dashboard/certificados`}
-                  className="group flex flex-col rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white hover:border-amber-300 hover:shadow-lg hover:shadow-amber-500/10 transition-all duration-200 overflow-hidden"
-                >
-                  <div className="h-24 bg-gradient-to-br from-amber-400/20 to-amber-600/10 flex items-center justify-center relative overflow-hidden">
-                    {cert.course.thumbnailUrl && (
-                      <Image src={cert.course.thumbnailUrl} alt={cert.course.title} fill
-                        className="object-cover opacity-30" sizes="(max-width: 640px) 50vw, 25vw" />
-                    )}
-                    <Award className="w-10 h-10 text-amber-500 relative z-10" />
-                  </div>
-                  <div className="p-3 flex flex-col gap-1">
-                    <p className="font-sans text-xs font-bold text-amber-700 uppercase tracking-widest">Certificado</p>
-                    <p className="font-sans text-sm font-semibold text-foreground line-clamp-2 leading-snug">
-                      {cert.course.title}
-                    </p>
-                    {cert.issuedAt && (
-                      <p className="font-sans text-[10px] text-muted mt-1">
-                        {new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(cert.issuedAt))}
-                      </p>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ── Suporte WhatsApp ── */}
-        <div className="flex items-center justify-between rounded-2xl border border-border bg-white px-5 py-4">
-          <div>
-            <p className="font-sans text-sm font-semibold text-foreground">Precisa de ajuda?</p>
-            <p className="font-sans text-xs text-muted mt-0.5">Nossa equipe está disponível pelo WhatsApp</p>
+              );
+            })}
           </div>
-          <a
-            href="https://wa.me/5531722910291"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 font-sans text-sm font-bold text-white bg-green-500 hover:bg-green-600 transition-colors px-4 py-2.5 rounded-xl shrink-0 ml-4 shadow-md shadow-green-500/20"
-          >
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-            </svg>
-            Suporte
-          </a>
+        </section>
+      )}
+
+      {/* ── Cursos concluídos — fundo branco ── */}
+      {completedEnrollments.length > 0 && (
+        <section className="px-4 lg:px-10 py-10 bg-white">
+          <SectionHeader title="Cursos concluídos" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {completedEnrollments.map((e) => (
+              <NetflixCourseCard
+                key={e.id}
+                href={`/dashboard/cursos/${e.course.slug}`}
+                title={e.course.title}
+                thumbnail={e.course.thumbnailUrl ?? e.course.instructor.user.image}
+                instructorName={e.course.instructor.user.name}
+                pct={100}
+                hours={e.course.hours}
+                enrolled
+                completed
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── Grade de Cursos — fundo cinza ── */}
+      {catalogCourses.length > 0 && (
+        <section className="px-4 lg:px-10 py-10 bg-background">
+          <SectionHeader
+            title="Grade de Cursos"
+            subtitle="Amplie sua formação médica"
+            href="/cursos"
+            hrefLabel="Ver todos"
+          />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {catalogCourses.map((course) => (
+              <NetflixCourseCard
+                key={course.id}
+                href={`/cursos/${course.slug}`}
+                title={course.title}
+                thumbnail={course.thumbnailUrl ?? course.instructor.user.image}
+                instructorName={course.instructor.user.name}
+                hours={course.hours}
+                price={fmtPrice(course.salePrice ?? course.price)}
+                salePrice={course.salePrice ? fmtPrice(course.price) : undefined}
+                enrolled={false}
+                large
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── Flashcards — fundo branco ── */}
+      {flashcardGroups.length > 0 && (
+        <section className="px-4 lg:px-10 py-10 bg-white">
+          <SectionHeader
+            title="Flashcards"
+            subtitle="Fixe o conteúdo com repetição espaçada"
+            href="/dashboard/flashcards"
+            hrefLabel="Ver todos"
+          />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {flashcardGroups.map((group) => (
+              <Link
+                key={group.id}
+                href={`/dashboard/flashcards/${group.id}`}
+                className="group flex flex-col rounded-2xl border border-border bg-white hover:border-primary/30 hover:shadow-lg hover:shadow-primary/8 transition-all duration-200 overflow-hidden"
+              >
+                <div className="h-20 bg-gradient-to-br from-[#0e4f6b] to-[#1a8fa8] flex items-center justify-center">
+                  <Layers className="w-8 h-8 text-white/60" />
+                </div>
+                <div className="p-4 flex-1 flex flex-col gap-1">
+                  <p className="font-sans text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                    {group.title}
+                  </p>
+                  {group.course && (
+                    <p className="font-sans text-[10px] text-muted line-clamp-1">{group.course.title}</p>
+                  )}
+                  <p className="font-sans text-[10px] font-bold text-primary/70 mt-auto pt-2">
+                    {group._count.cards} {group._count.cards === 1 ? "card" : "cards"}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── Certificados — fundo cinza ── */}
+      {certificates.length > 0 && (
+        <section className="px-4 lg:px-10 py-10 bg-background">
+          <SectionHeader
+            title="Meus Certificados"
+            subtitle="Conquistas da sua formação"
+            href="/dashboard/certificados"
+            hrefLabel="Ver todos"
+          />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {certificates.map((cert) => (
+              <Link
+                key={cert.id}
+                href={`/dashboard/certificados`}
+                className="group flex flex-col rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white hover:border-amber-300 hover:shadow-lg hover:shadow-amber-500/10 transition-all duration-200 overflow-hidden"
+              >
+                <div className="h-24 bg-gradient-to-br from-amber-400/20 to-amber-600/10 flex items-center justify-center relative overflow-hidden">
+                  {cert.course.thumbnailUrl && (
+                    <Image src={cert.course.thumbnailUrl} alt={cert.course.title} fill
+                      className="object-cover opacity-30" sizes="(max-width: 640px) 50vw, 25vw" />
+                  )}
+                  <Award className="w-10 h-10 text-amber-500 relative z-10" />
+                </div>
+                <div className="p-3 flex flex-col gap-1">
+                  <p className="font-sans text-xs font-bold text-amber-700 uppercase tracking-widest">Certificado</p>
+                  <p className="font-sans text-sm font-semibold text-foreground line-clamp-2 leading-snug">
+                    {cert.course.title}
+                  </p>
+                  {cert.issuedAt && (
+                    <p className="font-sans text-[10px] text-muted mt-1">
+                      {new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(cert.issuedAt))}
+                    </p>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── Suporte WhatsApp — fundo branco ── */}
+      <div className="px-4 lg:px-10 py-8 bg-white flex items-center justify-between">
+        <div>
+          <p className="font-sans text-sm font-semibold text-foreground">Precisa de ajuda?</p>
+          <p className="font-sans text-xs text-muted mt-0.5">Nossa equipe está disponível pelo WhatsApp</p>
         </div>
-
-        {/* Vazio total */}
-        {enrollments.length === 0 && catalogCourses.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <BookOpen className="w-10 h-10 text-muted/40 mb-4" />
-            <p className="font-serif text-2xl text-muted mb-2">Nenhum conteúdo disponível</p>
-            <p className="font-sans text-sm text-muted/70">Os cursos aparecerão aqui assim que forem publicados.</p>
-          </div>
-        )}
-
+        <a
+          href="https://wa.me/5531722910291"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 font-sans text-sm font-bold text-white bg-green-500 hover:bg-green-600 transition-colors px-4 py-2.5 rounded-xl shrink-0 ml-4 shadow-md shadow-green-500/20"
+        >
+          <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          Suporte
+        </a>
       </div>
+
+      {/* Vazio total */}
+      {enrollments.length === 0 && catalogCourses.length === 0 && (
+        <div className="px-4 lg:px-10 flex flex-col items-center justify-center py-20 text-center">
+          <BookOpen className="w-10 h-10 text-muted/40 mb-4" />
+          <p className="font-serif text-2xl text-muted mb-2">Nenhum conteúdo disponível</p>
+          <p className="font-sans text-sm text-muted/70">Os cursos aparecerão aqui assim que forem publicados.</p>
+        </div>
+      )}
+
     </div>
   );
 }
