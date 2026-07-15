@@ -12,6 +12,8 @@ import {
   BarChart2,
   Settings,
   Ticket,
+  Layers,
+  Radio,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -24,7 +26,10 @@ const ICONS: Record<string, LucideIcon> = {
   liveSessions: Video,
   reports:      BarChart2,
   coupons:      Ticket,
+  liveLeads:    Radio,
+  flashcards:   Layers,
   settings:     Settings,
+  ai:           Settings,
 };
 
 type NavItem = { key: string; href: string; exact?: boolean; label: string };
@@ -41,21 +46,19 @@ function NavLink({ item }: { item: NavItem }) {
   return (
     <Link
       href={item.href}
-      className={`
-        group flex items-center gap-3 px-3 py-2.5 rounded-xl font-sans text-sm transition-all
-        ${active
-          ? "bg-white/10 text-white font-medium"
-          : "text-white/55 hover:text-white hover:bg-white/5"
-        }
-      `}
+      className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl font-sans text-sm transition-all ${
+        active
+          ? "bg-primary/8 text-primary font-semibold"
+          : "text-muted hover:text-foreground hover:bg-background"
+      }`}
     >
       <Icon
         className={`w-4 h-4 shrink-0 transition-colors ${
-          active ? "text-accent" : "text-white/40 group-hover:text-white/70"
+          active ? "text-primary" : "text-muted group-hover:text-foreground"
         }`}
+        strokeWidth={active ? 2.5 : 1.8}
       />
       {item.label}
-      {active && <span className="ml-auto w-1 h-1 rounded-full bg-accent" />}
     </Link>
   );
 }
