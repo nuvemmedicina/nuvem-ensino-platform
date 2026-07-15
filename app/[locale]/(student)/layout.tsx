@@ -4,18 +4,10 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  LayoutDashboard,
-  BookOpen,
-  Award,
-  User,
-  Video,
-  MessageCircle,
-  Users,
-} from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
 import MobileNav from "./MobileNav";
-import { getTranslations } from "next-intl/server";
+import SidebarNav from "./SidebarNav";
 
 export default async function StudentLayout({
   children,
@@ -24,13 +16,11 @@ export default async function StudentLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "dashboard.nav" });
+  await params;
 
   const session = await auth();
   if (!session) redirect("/entrar?callbackUrl=/dashboard");
 
-  const firstName = session.user?.name?.split(" ")[0] ?? "Dr.";
   const initials = session.user?.name
     ? session.user.name
         .split(" ")
@@ -40,21 +30,12 @@ export default async function StudentLayout({
         .toUpperCase()
     : "A";
 
-  const navLinks = [
-    { label: "Início",       href: "/dashboard",               icon: LayoutDashboard },
-    { label: t("myCourses"), href: "/dashboard/cursos",        icon: BookOpen },
-    { label: "Ao vivo",      href: "/dashboard/aulas-ao-vivo", icon: Video },
-    { label: t("certificates"), href: "/dashboard/certificados", icon: Award },
-    { label: t("profile"),   href: "/dashboard/perfil",        icon: User },
-    { label: "Comunidade",   href: "/dashboard/comunidade",    icon: Users },
-  ];
-
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-white flex">
       {/* ── Sidebar desktop ── */}
-      <aside className="hidden md:flex flex-col w-56 bg-surface border-r border-border shrink-0 sticky top-0 h-screen">
+      <aside className="hidden md:flex flex-col w-52 bg-white border-r border-border shrink-0 sticky top-0 h-screen">
         {/* Logo */}
-        <div className="px-5 py-5 border-b border-border">
+        <div className="px-5 py-5">
           <Link href="/">
             <Image
               src="/logo.png"
@@ -67,18 +48,7 @@ export default async function StudentLayout({
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5">
-          {navLinks.map(({ label, href, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg font-sans text-sm text-muted hover:text-foreground hover:bg-background transition-all"
-            >
-              <Icon className="w-4 h-4 shrink-0 text-muted" />
-              {label}
-            </Link>
-          ))}
-        </nav>
+        <SidebarNav />
 
         {/* Suporte */}
         <div className="px-3 pb-2">
