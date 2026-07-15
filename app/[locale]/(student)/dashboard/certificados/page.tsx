@@ -137,6 +137,17 @@ export default async function CertificadosPage({
                     </p>
                   </div>
                 </div>
+
+                {/* Botão de download fixo */}
+                <a
+                  href={`/api/certificates/${cert.id}/pdf`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 font-sans text-xs font-bold text-primary bg-white hover:bg-primary hover:text-white transition-all duration-200 border-t border-white/10"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Baixar certificado
+                </a>
               </div>
             );
           })}
