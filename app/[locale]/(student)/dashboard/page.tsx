@@ -206,7 +206,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
               href="/cursos"
               hrefLabel="Ver todos"
             />
-            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {catalogCourses.map((course) => (
                 <NetflixCourseCard
                   key={course.id}
@@ -218,6 +218,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
                   price={fmtPrice(course.salePrice ?? course.price)}
                   salePrice={course.salePrice ? fmtPrice(course.price) : undefined}
                   enrolled={false}
+                  large
                 />
               ))}
             </div>
@@ -301,7 +302,7 @@ function SectionHeader({
 
 // ── Netflix Course Card ───────────────────────────────────────────────────────
 function NetflixCourseCard({
-  href, title, thumbnail, instructorName, pct, hours, enrolled, completed, price, salePrice,
+  href, title, thumbnail, instructorName, pct, hours, enrolled, completed, price, salePrice, large,
 }: {
   href: string;
   title: string;
@@ -313,6 +314,7 @@ function NetflixCourseCard({
   completed?: boolean;
   price?: string;
   salePrice?: string;
+  large?: boolean;
 }) {
   return (
     <Link
@@ -324,7 +326,10 @@ function NetflixCourseCard({
         {thumbnail ? (
           <Image src={thumbnail} alt={title} fill
             className="absolute inset-0 object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 20vw" />
+            sizes={large
+              ? "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              : "(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 20vw"
+            } />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
             <Play className="w-8 h-8 text-white/30" />
