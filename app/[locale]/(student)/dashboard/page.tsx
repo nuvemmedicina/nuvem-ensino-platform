@@ -268,9 +268,9 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         </section>
       )}
 
-      {/* ── Certificados — fundo cinza ── */}
+      {/* ── Certificados — fundo branco ── */}
       {certificates.length > 0 && (
-        <section className="px-4 lg:px-10 py-10 bg-background">
+        <section className="px-4 lg:px-10 py-10 bg-white">
           <SectionHeader
             title="Meus Certificados"
             subtitle="Conquistas da sua formação"
