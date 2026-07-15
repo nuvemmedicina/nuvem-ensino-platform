@@ -63,9 +63,10 @@ export default async function InstructorOverviewPage({
   const statusLabels: Record<string, string> = { PUBLISHED: "Publicado", DRAFT: "Rascunho", ARCHIVED: "Arquivado" };
 
   return (
-    <div className="max-w-5xl space-y-10">
+    <div className="-mx-6 -mt-6 lg:-mx-8 lg:-mt-8">
 
-      {/* ── Header ── */}
+      {/* ── Header + KPIs — fundo branco ── */}
+      <div className="px-6 lg:px-8 pt-10 pb-10 bg-white space-y-8">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="font-serif text-3xl font-light text-foreground">
@@ -101,8 +102,10 @@ export default async function InstructorOverviewPage({
         ))}
       </div>
 
-      {/* ── Meus Cursos ── */}
-      <section>
+      </div>{/* fim header+kpis */}
+
+      {/* ── Meus Cursos — fundo cinza ── */}
+      <section className="px-6 lg:px-8 py-10 bg-background">
         <div className="flex items-center justify-between mb-4">
           <p className="font-sans text-xs font-bold uppercase tracking-widest text-foreground/70">Meus Cursos</p>
           <Link href="/instrutor/cursos" className="flex items-center gap-1 font-sans text-xs text-primary hover:underline">
@@ -156,9 +159,9 @@ export default async function InstructorOverviewPage({
         )}
       </section>
 
-      {/* ── Próximas Aulas ao Vivo — cards Netflix ── */}
+      {/* ── Próximas Aulas ao Vivo — fundo branco ── */}
       {upcomingSessions.length > 0 && (
-        <section>
+        <section className="px-6 lg:px-8 py-10 bg-white">
           <div className="flex items-center justify-between mb-4">
             <p className="font-sans text-xs font-bold uppercase tracking-widest text-foreground/70">Próximas Aulas ao Vivo</p>
             <Link href="/instrutor/aulas-ao-vivo" className="flex items-center gap-1 font-sans text-xs text-primary hover:underline">
@@ -225,3 +228,4 @@ export default async function InstructorOverviewPage({
     </div>
   );
 }
+

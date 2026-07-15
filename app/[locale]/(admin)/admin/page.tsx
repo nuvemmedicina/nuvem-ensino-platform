@@ -181,7 +181,10 @@ export default async function AdminOverviewPage({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="-mx-6 -mt-6 lg:-mx-8 lg:-mt-8">
+
+      {/* ── Header + KPIs — fundo branco ── */}
+      <div className="px-6 lg:px-8 pt-10 pb-10 bg-white space-y-6">
 
       {/* ── Header ── */}
       <div className="flex items-end justify-between flex-wrap gap-3">
@@ -260,7 +263,10 @@ export default async function AdminOverviewPage({
         </div>
       </div>
 
-      {/* ── Gráfico receita + Métodos ── */}
+      </div>{/* fim header+kpis */}
+
+      {/* ── Gráfico receita + Métodos — fundo cinza ── */}
+      <section className="px-6 lg:px-8 py-10 bg-background">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
         {/* Gráfico de barras */}
@@ -327,9 +333,11 @@ export default async function AdminOverviewPage({
           )}
         </div>
       </div>
+      </section>{/* fim gráficos */}
 
-      {/* ── Próximas Lives ── */}
+      {/* ── Próximas Lives — fundo branco ── */}
       {upcomingLives.length > 0 && (
+        <section className="px-6 lg:px-8 py-10 bg-white">
         <div className="bg-surface border border-border rounded-2xl overflow-hidden">
           <div className="px-5 py-4 border-b border-border flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
@@ -370,9 +378,11 @@ export default async function AdminOverviewPage({
             ))}
           </div>
         </div>
+        </section>
       )}
 
-      {/* ── Top Cursos + Últimas Matrículas ── */}
+      {/* ── Top Cursos + Últimas Matrículas — fundo cinza ── */}
+      <section className="px-6 lg:px-8 py-10 bg-background">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
         {/* Top cursos */}
@@ -456,6 +466,7 @@ export default async function AdminOverviewPage({
           )}
         </div>
       </div>
+      </section>{/* fim top cursos + matrículas */}
     </div>
   );
 }

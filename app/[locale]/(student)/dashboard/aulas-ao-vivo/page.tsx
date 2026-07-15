@@ -208,57 +208,44 @@ export default async function AulasAoVivoPage({
   const watchRecordingLabel = t("watchRecording");
 
   return (
-    <div>
-      {/* Cabeçalho */}
-      <div className="mb-8">
-        <h1 className="font-serif text-3xl font-light text-foreground">
-          {t("title")}
-        </h1>
+    <div className="-mx-6 -mt-6 lg:-mx-8 lg:-mt-8">
+      {/* Cabeçalho — fundo branco */}
+      <div className="px-6 lg:px-8 pt-10 pb-6 bg-white">
+        <h1 className="font-serif text-3xl font-light text-foreground">{t("title")}</h1>
         <p className="font-sans text-sm text-muted mt-1">{upcomingSubtitle}</p>
       </div>
 
       {/* Empty state */}
       {liveSessions.length === 0 && (
-        <div className="flex flex-col items-center gap-3 py-16 text-center">
+        <div className="px-6 lg:px-8 py-16 bg-white flex flex-col items-center gap-3 text-center">
           <CalendarX className="w-10 h-10 text-muted/40" />
           <p className="font-sans text-sm text-muted">{t("noScheduled")}</p>
         </div>
       )}
 
-      {/* Próximas */}
+      {/* Próximas — fundo cinza */}
       {upcoming.length > 0 && (
-        <section className="mb-10">
+        <section className="px-6 lg:px-8 py-10 bg-background">
           <SectionLabel>{t("upcomingSection")}</SectionLabel>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {upcoming.map((s, i) => (
-              <SessionCard
-                key={s.id}
-                session={s}
-                joinMeetLabel={joinMeetLabel}
-                addToCalendarLabel={addToCalendarLabel}
-                watchRecordingLabel={watchRecordingLabel}
-                dateLocale={dateLocale}
-              />
+            {upcoming.map((s) => (
+              <SessionCard key={s.id} session={s}
+                joinMeetLabel={joinMeetLabel} addToCalendarLabel={addToCalendarLabel}
+                watchRecordingLabel={watchRecordingLabel} dateLocale={dateLocale} />
             ))}
           </div>
         </section>
       )}
 
-      {/* Anteriores */}
+      {/* Anteriores — fundo branco */}
       {past.length > 0 && (
-        <section>
+        <section className="px-6 lg:px-8 py-10 bg-white">
           <SectionLabel>{t("pastSection")}</SectionLabel>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {past.map((s, i) => (
-              <SessionCard
-                key={s.id}
-                session={s}
-                past
-                joinMeetLabel={joinMeetLabel}
-                addToCalendarLabel={addToCalendarLabel}
-                watchRecordingLabel={watchRecordingLabel}
-                dateLocale={dateLocale}
-              />
+            {past.map((s) => (
+              <SessionCard key={s.id} session={s} past
+                joinMeetLabel={joinMeetLabel} addToCalendarLabel={addToCalendarLabel}
+                watchRecordingLabel={watchRecordingLabel} dateLocale={dateLocale} />
             ))}
           </div>
         </section>

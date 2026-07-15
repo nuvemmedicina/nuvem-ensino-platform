@@ -52,10 +52,10 @@ export default async function MeusCursosPage({ params }: { params: Promise<{ loc
   }
 
   return (
-    <div className="space-y-12">
-      {/* ── Em andamento ── */}
+    <div className="-mx-6 -mt-6 lg:-mx-8 lg:-mt-8">
+      {/* ── Em andamento — fundo branco ── */}
       {active.length > 0 && (
-        <section>
+        <section className="px-6 lg:px-8 py-10 bg-white">
           <h2 className="font-serif text-xl font-medium text-foreground mb-6">Em andamento</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {active.map((e) => {
@@ -67,9 +67,9 @@ export default async function MeusCursosPage({ params }: { params: Promise<{ loc
         </section>
       )}
 
-      {/* ── Concluídos ── */}
+      {/* ── Concluídos — fundo cinza ── */}
       {completed.length > 0 && (
-        <section>
+        <section className="px-6 lg:px-8 py-10 bg-background">
           <h2 className="font-serif text-xl font-medium text-foreground mb-6">Concluídos</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {completed.map((e) => {
