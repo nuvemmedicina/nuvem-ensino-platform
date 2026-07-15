@@ -29,78 +29,60 @@ export default function EsqueciSenhaPage() {
   }
 
   return (
-    <div className="w-full max-w-sm">
-      <div
-        className="rounded-2xl border border-white/10 p-8"
-        style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(12px)" }}
-      >
-        {state === "sent" ? (
-          /* ── State: email sent ── */
-          <div className="flex flex-col items-center text-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-accent/15 flex items-center justify-center">
-              <Mail className="w-6 h-6 text-accent" />
+    <div>
+      {state === "sent" ? (
+        <div className="flex flex-col items-center text-center gap-4">
+          <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+            <Mail className="w-6 h-6 text-primary" />
+          </div>
+          <div>
+            <h1 className="font-serif text-2xl font-light text-foreground mb-2">{t("title")}</h1>
+            <p className="font-sans text-sm text-muted leading-relaxed">{t("successMessage")}</p>
+          </div>
+          <Link href="/entrar" className="mt-2 font-sans text-sm text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5">
+            <ArrowLeft className="w-3.5 h-3.5" />
+            {t("backToLogin")}
+          </Link>
+        </div>
+      ) : (
+        <>
+          <h1 className="font-serif text-3xl font-light text-foreground mb-1">{t("title")}</h1>
+          <p className="font-sans text-sm text-muted mb-8">{t("subtitle")}</p>
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="email" className="font-sans text-xs font-semibold text-foreground/70">
+                {t("emailLabel")}
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="seu@email.com"
+                className="w-full px-4 py-3 rounded-xl bg-white border border-border text-foreground placeholder:text-muted/50 text-sm focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all"
+              />
             </div>
-            <div>
-              <h1 className="font-serif text-2xl font-light text-white mb-2">
-                {t("title")}
-              </h1>
-              <p className="font-sans text-sm text-white/50 leading-relaxed">
-                {t("successMessage")}
-              </p>
-            </div>
-            <Link
-              href="/entrar"
-              className="mt-2 font-sans text-sm text-accent/80 hover:text-accent transition-colors flex items-center gap-1.5"
+
+            <button
+              type="submit"
+              disabled={isPending}
+              className="w-full flex items-center justify-center gap-2 font-sans text-sm font-semibold px-4 py-3 rounded-xl bg-primary text-white hover:bg-primary/90 disabled:opacity-60 transition-colors mt-1"
             >
+              {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+              {t("submitButton")}
+            </button>
+          </form>
+
+          <p className="font-sans text-sm text-muted text-center mt-7">
+            <Link href="/entrar" className="font-semibold text-primary hover:text-primary/80 transition-colors flex items-center justify-center gap-1.5">
               <ArrowLeft className="w-3.5 h-3.5" />
               {t("backToLogin")}
             </Link>
-          </div>
-        ) : (
-          /* ── State: form ── */
-          <>
-            <h1 className="font-serif text-3xl font-light text-white mb-1">
-              {t("title")}
-            </h1>
-            <p className="font-sans text-sm text-white/50 mb-8">
-              {t("subtitle")}
-            </p>
-
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="email" className="font-sans text-xs font-medium text-white/60">
-                  {t("emailLabel")}
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  placeholder="seu@email.com"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/25 text-sm focus:outline-none focus:border-accent/50 transition-colors"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={isPending}
-                className="w-full flex items-center justify-center gap-2 font-sans text-sm font-semibold px-4 py-3 rounded-xl bg-accent text-accent-foreground hover:bg-accent-light disabled:opacity-60 transition-colors mt-1"
-              >
-                {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-                {t("submitButton")}
-              </button>
-            </form>
-
-            <p className="font-sans text-xs text-white/40 text-center mt-6">
-              <Link href="/entrar" className="text-accent/80 hover:text-accent transition-colors flex items-center justify-center gap-1.5">
-                <ArrowLeft className="w-3.5 h-3.5" />
-                {t("backToLogin")}
-              </Link>
-            </p>
-          </>
-        )}
-      </div>
+          </p>
+        </>
+      )}
     </div>
   );
 }
