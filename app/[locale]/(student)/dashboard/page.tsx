@@ -269,15 +269,19 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         </section>
       )}
 
-      {/* ── Certificados — fundo escuro com destaque ── */}
+      {/* ── Certificados — fundo branco com grid ── */}
       {certificates.length > 0 && (
-        <section className="px-4 lg:px-10 py-12 bg-canvas">
+        <section className="px-4 lg:px-10 py-12 bg-white relative overflow-hidden"
+          style={{
+            backgroundImage: "linear-gradient(rgba(0,71,94,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,71,94,0.06) 1px, transparent 1px)",
+            backgroundSize: "32px 32px",
+          }}
+        >
           <SectionHeader
             title="Meus Certificados"
             subtitle="Conquistas da sua formação"
             href="/dashboard/certificados"
             hrefLabel="Ver todos"
-            dark
           />
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {certificates.map((cert) => (
