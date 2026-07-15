@@ -161,7 +161,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
       {activeEnrollments.length > 0 && (
         <section className="px-4 lg:px-10 py-10 bg-background">
           <SectionHeader title="Continuar assistindo" href="/dashboard/cursos" />
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {activeEnrollments.map((e) => {
               const total = e.course.modules.reduce((s, m) => s + m.lessons.length, 0);
               const pct = calcProgress(e.progress, total);
@@ -186,7 +186,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
       {completedEnrollments.length > 0 && (
         <section className="px-4 lg:px-10 py-10 bg-white">
           <SectionHeader title="Cursos concluídos" />
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {completedEnrollments.map((e) => (
               <NetflixCourseCard
                 key={e.id}
@@ -213,7 +213,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
             href="/cursos"
             hrefLabel="Ver todos"
           />
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {catalogCourses.map((course) => (
               <NetflixCourseCard
                 key={course.id}
@@ -241,7 +241,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
             href="/dashboard/flashcards"
             hrefLabel="Ver todos"
           />
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {flashcardGroups.map((group) => (
               <Link
                 key={group.id}
@@ -277,7 +277,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
             href="/dashboard/certificados"
             hrefLabel="Ver todos"
           />
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {certificates.map((cert) => (
               <Link
                 key={cert.id}
