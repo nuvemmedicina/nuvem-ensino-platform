@@ -1,0 +1,36 @@
+{
+  "name": "NU.V.E.M ENSINO",
+  "short_name": "Nuvem Ensino",
+  "description": "Formação médica contínua — Cursos, aulas ao vivo e certificados.",
+  "start_url": "/entrar",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#002A38",
+  "theme_color": "#00475E",
+  "lang": "pt-BR",
+  "categories": ["education", "medical"],
+  "icons": [
+    {
+      "src": "/icone-nuvem.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icone-nuvem.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/capa-2.jpeg",
+      "sizes": "1080x1080",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Tela de login"
+    }
+  ]
+}

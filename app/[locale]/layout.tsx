@@ -93,6 +93,17 @@ export const metadata: Metadata = {
   verification: {
     google: "4uvseus2L5dSqz1irnL5_X0AE9souRF6j0d9gzFyWL8",
   },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Nuvem Ensino",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+    "msapplication-TileColor": "#00475E",
+    "msapplication-TileImage": "/icone-nuvem.png",
+  },
 };
 
 export function generateStaticParams() {
