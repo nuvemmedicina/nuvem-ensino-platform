@@ -8,7 +8,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       {/* ── Lado esquerdo — imagem da marca (desktop only) ── */}
       <div className="hidden lg:flex lg:w-[52%] relative overflow-hidden">
         <Image
-          src="/capa.webp"
+          src="/capa-2.jpeg"
           alt="NU.V.E.M ENSINO"
           fill
           className="object-cover"
