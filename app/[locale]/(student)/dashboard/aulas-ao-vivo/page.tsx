@@ -229,7 +229,7 @@ export default async function AulasAoVivoPage({
       {upcoming.length > 0 && (
         <section className="mb-10">
           <SectionLabel>{t("upcomingSection")}</SectionLabel>
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {upcoming.map((s, i) => (
               <SessionCard
                 key={s.id}
@@ -248,7 +248,7 @@ export default async function AulasAoVivoPage({
       {past.length > 0 && (
         <section>
           <SectionLabel>{t("pastSection")}</SectionLabel>
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {past.map((s, i) => (
               <SessionCard
                 key={s.id}
