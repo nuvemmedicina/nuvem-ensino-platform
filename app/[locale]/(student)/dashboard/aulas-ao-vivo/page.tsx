@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { MapPin, Calendar, CalendarX, PlayCircle, Radio } from "lucide-react";
 import { getTranslations } from "next-intl/server";
@@ -185,20 +184,11 @@ export default async function AulasAoVivoPage({
 
   const dateLocale = locale === "pt" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US";
 
-  const enrollments = await prisma.enrollment.findMany({
-    where: { userId: session.user.id },
-    select: { courseId: true },
+  const liveSessions = await prisma.liveSession.findMany({
+    where: { course: { status: "PUBLISHED" } },
+    include: { course: { select: { title: true, slug: true } } },
+    orderBy: { startAt: "asc" },
   });
-
-  const courseIds = enrollments.map((e) => e.courseId);
-
-  const liveSessions = courseIds.length
-    ? await prisma.liveSession.findMany({
-        where: { courseId: { in: courseIds } },
-        include: { course: { select: { title: true, slug: true } } },
-        orderBy: { startAt: "asc" },
-      })
-    : [];
 
   const now = new Date();
   const upcoming = liveSessions.filter((s) => new Date(s.startAt) >= now);
@@ -227,22 +217,8 @@ export default async function AulasAoVivoPage({
         <p className="font-sans text-sm text-muted mt-1">{upcomingSubtitle}</p>
       </div>
 
-      {/* Empty state: sem matrículas */}
-      {courseIds.length === 0 && (
-        <div className="flex flex-col items-center gap-3 py-16 text-center">
-          <CalendarX className="w-10 h-10 text-muted/40" />
-          <p className="font-sans text-sm text-muted">{t("noEnrollment")}</p>
-          <Link
-            href="/cursos"
-            className="font-sans text-xs font-semibold px-4 py-2 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors mt-1"
-          >
-            {t("browseCourses")}
-          </Link>
-        </div>
-      )}
-
-      {/* Empty state: matriculado mas sem lives */}
-      {courseIds.length > 0 && liveSessions.length === 0 && (
+      {/* Empty state */}
+      {liveSessions.length === 0 && (
         <div className="flex flex-col items-center gap-3 py-16 text-center">
           <CalendarX className="w-10 h-10 text-muted/40" />
           <p className="font-sans text-sm text-muted">{t("noScheduled")}</p>
