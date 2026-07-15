@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
-import { Play, ChevronRight, Info, ShoppingCart, BookOpen, Layers } from "lucide-react";
+import { Play, ChevronRight, Award, Info, ShoppingCart, BookOpen, Layers } from "lucide-react";
 import { CertificateCard } from "./CertificateCard";
 import { getTranslations } from "next-intl/server";
 
