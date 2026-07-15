@@ -105,7 +105,7 @@ export default async function StudentLayout({
         />
 
         {/* Page content */}
-        <div className="flex-1 p-6 lg:p-8">{children}</div>
+        <div className="flex-1 p-6 lg:p-8 pb-24 md:pb-8">{children}</div>
       </main>
     </div>
   );

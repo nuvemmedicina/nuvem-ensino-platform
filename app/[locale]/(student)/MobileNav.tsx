@@ -64,8 +64,6 @@ export default function MobileNav({ userImage, initials }: Props) {
         </div>
       </nav>
 
-      {/* Espaço para o bottom nav não cobrir o conteúdo */}
-      <div className="md:hidden h-16" style={{ paddingBottom: "env(safe-area-inset-bottom)" }} />
     </>
   );
 }
