@@ -29,10 +29,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             />
           </Link>
           <div>
-            <p className="font-sans text-xs font-bold uppercase tracking-widest text-white/40 mb-3">
+            <p className="font-sans text-sm font-bold uppercase tracking-widest text-white/50 mb-4">
               Formação médica contínua
             </p>
-            <h2 className="font-serif text-4xl font-light text-white leading-tight max-w-sm">
+            <h2 className="font-serif text-5xl xl:text-6xl font-light text-white leading-[1.1] max-w-lg">
               O conhecimento que transforma a sua prática clínica
             </h2>
           </div>
