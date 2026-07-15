@@ -227,7 +227,7 @@ export default async function AulasAoVivoPage({
       {upcoming.length > 0 && (
         <section className="px-6 lg:px-8 py-10 bg-background">
           <SectionLabel>{t("upcomingSection")}</SectionLabel>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {upcoming.map((s) => (
               <SessionCard key={s.id} session={s}
                 joinMeetLabel={joinMeetLabel} addToCalendarLabel={addToCalendarLabel}
@@ -241,7 +241,7 @@ export default async function AulasAoVivoPage({
       {past.length > 0 && (
         <section className="px-6 lg:px-8 py-10 bg-white">
           <SectionLabel>{t("pastSection")}</SectionLabel>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {past.map((s) => (
               <SessionCard key={s.id} session={s} past
                 joinMeetLabel={joinMeetLabel} addToCalendarLabel={addToCalendarLabel}
