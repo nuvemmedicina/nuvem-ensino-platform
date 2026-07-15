@@ -31,10 +31,10 @@ export default function SidebarNav() {
           <Link
             key={href}
             href={href}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl font-sans text-sm transition-all ${
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl font-sans text-sm transition-all duration-150 ${
               active
-                ? "bg-primary/8 text-primary font-semibold"
-                : "text-muted hover:text-foreground hover:bg-background"
+                ? "bg-primary/10 text-primary font-semibold"
+                : "text-muted hover:text-foreground hover:bg-primary/6 hover:translate-x-0.5"
             }`}
           >
             <Icon className={`w-4 h-4 shrink-0 ${active ? "text-primary" : ""}`} strokeWidth={active ? 2.5 : 1.8} />
