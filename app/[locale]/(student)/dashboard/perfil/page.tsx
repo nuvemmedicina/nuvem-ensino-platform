@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { User } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import SignOutButton from "@/components/SignOutButton";
 
 const inputClass =
   "w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-primary/50";
@@ -82,6 +83,10 @@ export default async function PerfilPage({
             cursos@nuvemensino.com.br
           </a>
         </p>
+
+        <div className="mt-6 pt-6 border-t border-border">
+          <SignOutButton />
+        </div>
       </div>
     </div>
   );
