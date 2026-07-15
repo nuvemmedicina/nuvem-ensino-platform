@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
-import { Play, ChevronRight, Award, Info, ShoppingCart, BookOpen, Layers } from "lucide-react";
+import { Play, ChevronRight, Info, ShoppingCart, BookOpen, Layers } from "lucide-react";
+import { CertificateCard } from "./CertificateCard";
 import { getTranslations } from "next-intl/server";
 
 async function getDashboardData(userId: string) {
@@ -280,45 +281,13 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           />
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {certificates.map((cert) => (
-              <Link
+              <CertificateCard
                 key={cert.id}
-                href={`/dashboard/certificados`}
-                className="group relative flex flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl hover:shadow-amber-500/20"
-                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}
-              >
-                {/* Imagem de fundo com overlay */}
-                <div className="relative overflow-hidden" style={{ paddingBottom: "140%" }}>
-                  {cert.enrollment.course.thumbnailUrl ? (
-                    <Image
-                      src={cert.enrollment.course.thumbnailUrl}
-                      alt={cert.enrollment.course.title}
-                      fill
-                      className="absolute inset-0 object-cover opacity-50 transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 50vw, 20vw"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-amber-900/40 to-amber-600/20" />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
-
-                  {/* Selo dourado */}
-                  <div className="absolute top-3 right-3 w-10 h-10 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center backdrop-blur-sm">
-                    <Award className="w-5 h-5 text-amber-300" />
-                  </div>
-
-                  {/* Label + título */}
-                  <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <p className="font-sans text-[9px] font-bold uppercase tracking-widest text-amber-400 mb-1">Certificado</p>
-                    <p className="font-sans text-sm font-bold text-white leading-snug line-clamp-3">
-                      {cert.enrollment.course.title}
-                    </p>
-                    <p className="font-sans text-[10px] text-white/50 mt-2">
-                      {new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(cert.issueDate))}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                id={cert.id}
+                courseTitle={cert.enrollment.course.title}
+                thumbnailUrl={cert.enrollment.course.thumbnailUrl}
+                issueDate={cert.issueDate}
+              />
           </div>
         </section>
       )}
