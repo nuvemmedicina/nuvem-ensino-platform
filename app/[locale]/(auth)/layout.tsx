@@ -61,7 +61,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </div>
 
         <p className="text-center font-sans text-[11px] text-muted/50 pb-6">
-          © {new Date().getFullYear()} NU.V.E.M ENSINO · CNPJ 42.679.051/0001-31
+          © 2026 NU.V.E.M ENSINO · CNPJ 42.679.051/0001-31
         </p>
       </div>
 
