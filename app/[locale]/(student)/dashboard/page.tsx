@@ -154,7 +154,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         {activeEnrollments.length > 0 && (
           <section>
             <SectionHeader title="Continuar assistindo" href="/dashboard/cursos" />
-            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {activeEnrollments.map((e) => {
                 const total = e.course.modules.reduce((s, m) => s + m.lessons.length, 0);
                 const pct = calcProgress(e.progress, total);
@@ -179,7 +179,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         {completedEnrollments.length > 0 && (
           <section>
             <SectionHeader title="Cursos concluídos" />
-            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {completedEnrollments.map((e) => (
                 <NetflixCourseCard
                   key={e.id}
