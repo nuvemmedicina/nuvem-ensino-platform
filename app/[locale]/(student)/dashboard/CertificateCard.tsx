@@ -68,7 +68,7 @@ export function CertificateCard({
             src={thumbnailUrl}
             alt={courseTitle}
             fill
-            className="absolute inset-0 object-cover opacity-50"
+            className="absolute inset-0 object-cover"
             sizes="(max-width: 640px) 50vw, 20vw"
           />
         ) : (
