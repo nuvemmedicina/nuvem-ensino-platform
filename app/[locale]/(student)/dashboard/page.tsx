@@ -271,12 +271,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
 
       {/* ── Certificados — fundo branco com grid ── */}
       {certificates.length > 0 && (
-        <section className="px-4 lg:px-10 py-12 bg-white relative overflow-hidden"
-          style={{
-            backgroundImage: "linear-gradient(rgba(0,71,94,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,71,94,0.06) 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }}
-        >
+        <section className="px-4 lg:px-10 py-12 bg-white relative overflow-hidden cert-grid-bg">
           <SectionHeader
             title="Meus Certificados"
             subtitle="Conquistas da sua formação"
@@ -292,6 +287,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
                 thumbnailUrl={cert.enrollment.course.thumbnailUrl}
                 issueDate={cert.issueDate}
               />
+            ))}
           </div>
         </section>
       )}

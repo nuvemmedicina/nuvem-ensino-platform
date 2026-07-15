@@ -97,3 +97,8 @@ body {
 .glow-primary {
   box-shadow: 0 0 24px rgba(0,71,94,0.20);
 }
+
+.cert-grid-bg {
+  background-image: linear-gradient(rgba(0,71,94,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,71,94,0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
