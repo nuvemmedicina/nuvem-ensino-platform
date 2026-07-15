@@ -268,37 +268,54 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         </section>
       )}
 
-      {/* ── Certificados — fundo branco ── */}
+      {/* ── Certificados — fundo escuro com destaque ── */}
       {certificates.length > 0 && (
-        <section className="px-4 lg:px-10 py-10 bg-white">
+        <section className="px-4 lg:px-10 py-12 bg-canvas">
           <SectionHeader
             title="Meus Certificados"
             subtitle="Conquistas da sua formação"
             href="/dashboard/certificados"
             hrefLabel="Ver todos"
+            dark
           />
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {certificates.map((cert) => (
               <Link
                 key={cert.id}
                 href={`/dashboard/certificados`}
-                className="group flex flex-col rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white hover:border-amber-300 hover:shadow-lg hover:shadow-amber-500/10 transition-all duration-200 overflow-hidden"
+                className="group relative flex flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl hover:shadow-amber-500/20"
+                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)" }}
               >
-                <div className="h-24 bg-gradient-to-br from-amber-400/20 to-amber-600/10 flex items-center justify-center relative overflow-hidden">
-                  {cert.enrollment.course.thumbnailUrl && (
-                    <Image src={cert.enrollment.course.thumbnailUrl} alt={cert.enrollment.course.title} fill
-                      className="object-cover opacity-30" sizes="(max-width: 640px) 50vw, 25vw" />
+                {/* Imagem de fundo com overlay */}
+                <div className="relative overflow-hidden" style={{ paddingBottom: "140%" }}>
+                  {cert.enrollment.course.thumbnailUrl ? (
+                    <Image
+                      src={cert.enrollment.course.thumbnailUrl}
+                      alt={cert.enrollment.course.title}
+                      fill
+                      className="absolute inset-0 object-cover opacity-50 transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 50vw, 20vw"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-amber-900/40 to-amber-600/20" />
                   )}
-                  <Award className="w-10 h-10 text-amber-500 relative z-10" />
-                </div>
-                <div className="p-3 flex flex-col gap-1">
-                  <p className="font-sans text-xs font-bold text-amber-700 uppercase tracking-widest">Certificado</p>
-                  <p className="font-sans text-sm font-semibold text-foreground line-clamp-2 leading-snug">
-                    {cert.enrollment.course.title}
-                  </p>
-                  <p className="font-sans text-[10px] text-muted mt-1">
-                    {new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(cert.issueDate))}
-                  </p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
+
+                  {/* Selo dourado */}
+                  <div className="absolute top-3 right-3 w-10 h-10 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center backdrop-blur-sm">
+                    <Award className="w-5 h-5 text-amber-300" />
+                  </div>
+
+                  {/* Label + título */}
+                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                    <p className="font-sans text-[9px] font-bold uppercase tracking-widest text-amber-400 mb-1">Certificado</p>
+                    <p className="font-sans text-sm font-bold text-white leading-snug line-clamp-3">
+                      {cert.enrollment.course.title}
+                    </p>
+                    <p className="font-sans text-[10px] text-white/50 mt-2">
+                      {new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(cert.issueDate))}
+                    </p>
+                  </div>
                 </div>
               </Link>
             ))}
@@ -306,8 +323,8 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         </section>
       )}
 
-      {/* ── Suporte WhatsApp — fundo branco ── */}
-      <div className="px-4 lg:px-10 py-8 bg-white flex items-center justify-between">
+      {/* ── Suporte WhatsApp — fundo cinza ── */}
+      <div className="px-4 lg:px-10 py-8 bg-background flex items-center justify-between">
         <div>
           <p className="font-sans text-sm font-semibold text-foreground">Precisa de ajuda?</p>
           <p className="font-sans text-xs text-muted mt-0.5">Nossa equipe está disponível pelo WhatsApp</p>
@@ -340,21 +357,22 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
 
 // ── Section Header ────────────────────────────────────────────────────────────
 function SectionHeader({
-  title, subtitle, href, hrefLabel = "Ver todos",
+  title, subtitle, href, hrefLabel = "Ver todos", dark = false,
 }: {
   title: string;
   subtitle?: string;
   href?: string;
   hrefLabel?: string;
+  dark?: boolean;
 }) {
   return (
     <div className="flex items-end justify-between mb-5">
       <div>
-        <h2 className="font-sans text-lg font-bold text-foreground tracking-tight">{title}</h2>
-        {subtitle && <p className="font-sans text-xs text-muted mt-0.5">{subtitle}</p>}
+        <h2 className={`font-sans text-lg font-bold tracking-tight ${dark ? "text-white" : "text-foreground"}`}>{title}</h2>
+        {subtitle && <p className={`font-sans text-xs mt-0.5 ${dark ? "text-white/50" : "text-muted"}`}>{subtitle}</p>}
       </div>
       {href && (
-        <Link href={href} className="flex items-center gap-1 font-sans text-xs font-semibold text-primary hover:text-primary/80 transition-colors shrink-0 ml-4">
+        <Link href={href} className={`flex items-center gap-1 font-sans text-xs font-semibold transition-colors shrink-0 ml-4 ${dark ? "text-amber-300 hover:text-amber-200" : "text-primary hover:text-primary/80"}`}>
           {hrefLabel} <ChevronRight className="w-3.5 h-3.5" />
         </Link>
       )}
