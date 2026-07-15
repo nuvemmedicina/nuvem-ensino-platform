@@ -23,8 +23,12 @@ async function getDashboardData(userId: string) {
     }),
     prisma.certificate.findMany({
       where: { userId },
-      include: { course: { select: { title: true, slug: true, thumbnailUrl: true } } },
-      orderBy: { issuedAt: "desc" },
+      include: {
+        enrollment: {
+          include: { course: { select: { title: true, slug: true, thumbnailUrl: true } } },
+        },
+      },
+      orderBy: { issueDate: "desc" },
     }),
     prisma.course.findMany({
       where: { status: "PUBLISHED" },
@@ -281,8 +285,8 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
                 className="group flex flex-col rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white hover:border-amber-300 hover:shadow-lg hover:shadow-amber-500/10 transition-all duration-200 overflow-hidden"
               >
                 <div className="h-24 bg-gradient-to-br from-amber-400/20 to-amber-600/10 flex items-center justify-center relative overflow-hidden">
-                  {cert.course.thumbnailUrl && (
-                    <Image src={cert.course.thumbnailUrl} alt={cert.course.title} fill
+                  {cert.enrollment.course.thumbnailUrl && (
+                    <Image src={cert.enrollment.course.thumbnailUrl} alt={cert.enrollment.course.title} fill
                       className="object-cover opacity-30" sizes="(max-width: 640px) 50vw, 25vw" />
                   )}
                   <Award className="w-10 h-10 text-amber-500 relative z-10" />
@@ -290,13 +294,11 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
                 <div className="p-3 flex flex-col gap-1">
                   <p className="font-sans text-xs font-bold text-amber-700 uppercase tracking-widest">Certificado</p>
                   <p className="font-sans text-sm font-semibold text-foreground line-clamp-2 leading-snug">
-                    {cert.course.title}
+                    {cert.enrollment.course.title}
                   </p>
-                  {cert.issuedAt && (
-                    <p className="font-sans text-[10px] text-muted mt-1">
-                      {new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(cert.issuedAt))}
-                    </p>
-                  )}
+                  <p className="font-sans text-[10px] text-muted mt-1">
+                    {new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(cert.issueDate))}
+                  </p>
                 </div>
               </Link>
             ))}
