@@ -7,6 +7,7 @@ import { X, Send, Loader2, Sparkles, RotateCcw } from "lucide-react";
 type Message = { role: "user" | "assistant"; content: string };
 
 type CourseContext = {
+  courseId?: string;
   courseTitle?: string;
   moduleTitle?: string;
   lessonTitle?: string;

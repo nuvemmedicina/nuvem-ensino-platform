@@ -27,6 +27,29 @@ export async function POST(req: NextRequest) {
   const apiKey = decryptApiKey(cfg.apiKeyEncrypted);
   const userName = session.user.name?.split(" ")[0] ?? "Aluno";
 
+  // Busca contexto RAG — chunks relevantes à última pergunta do aluno
+  let ragContext = "";
+  try {
+    const lastUserMsg = [...messages].reverse().find((m) => m.role === "user")?.content ?? "";
+    if (lastUserMsg) {
+      const courseId = (context as { courseId?: string } | undefined)?.courseId;
+      const ragRes = await fetch(
+        `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/api/admin/rag/search`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json", cookie: req.headers.get("cookie") ?? "" },
+          body: JSON.stringify({ query: lastUserMsg, courseId, topK: 5 }),
+        }
+      );
+      if (ragRes.ok) {
+        const { chunks } = await ragRes.json() as { chunks: string[] };
+        if (chunks.length > 0) {
+          ragContext = "\n\n---\nTrechos relevantes do material do curso:\n" + chunks.map((c, i) => `[${i + 1}] ${c}`).join("\n\n");
+        }
+      }
+    }
+  } catch { /* RAG é opcional — não bloqueia o chat */ }
+
   // Monta contexto de estudo
   const studyContext = [
     context?.courseTitle && `Curso atual: ${context.courseTitle}`,
@@ -38,7 +61,7 @@ export async function POST(req: NextRequest) {
 
 Sua missão é ajudar ${userName} a estudar e compreender o conteúdo médico com clareza, rigor científico e didática.
 
-${studyContext ? `Contexto de estudo: ${studyContext}` : ""}
+${studyContext ? `Contexto de estudo: ${studyContext}` : ""}${ragContext}
 
 Diretrizes:
 - Responda sempre em português do Brasil

@@ -228,6 +228,7 @@ model Course {
   evaluations      CourseEvaluation[]
   flashcardGroups  FlashcardGroup[]
   references       CourseReference[]
+  contentChunks    ContentChunk[]
 }
 
 model CourseReference {
@@ -864,4 +865,24 @@ model AIProviderConfig {
   updatedAt        DateTime   @updatedAt
 
   @@unique([provider])
+}
+
+// ─── RAG — CONTEÚDO INDEXADO ──────────────────────────────────────────────────
+
+model ContentChunk {
+  id         String   @id @default(cuid())
+  courseId   String
+  moduleId   String?
+  lessonId   String?
+  sourceType String   // "lesson_content" | "material" | "description"
+  sourceId   String   // id do material ou lesson
+  chunkIndex Int
+  text       String   @db.Text
+  embedding  Unsupported("vector(1536)")?
+  createdAt  DateTime @default(now())
+
+  course Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([courseId])
+  @@index([lessonId])
 }

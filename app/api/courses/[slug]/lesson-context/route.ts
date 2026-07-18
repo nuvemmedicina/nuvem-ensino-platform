@@ -35,6 +35,7 @@ export async function GET(
   const lesson = module?.lessons[0];
 
   return NextResponse.json({
+    courseId: course.id,
     courseTitle: course.title,
     moduleTitle: module?.title ?? null,
     lessonTitle: lesson?.title ?? null,
