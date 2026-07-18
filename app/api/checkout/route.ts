@@ -98,6 +98,25 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
   }
 
+  // ── Cupom 100% — matrícula gratuita imediata ─────────────────────────────
+  if (finalPrice === 0 || method === "free") {
+    await prisma.$transaction([
+      prisma.enrollment.update({ where: { id: enrollment.id }, data: { status: "ACTIVE" } }),
+      prisma.payment.create({
+        data: {
+          enrollmentId: enrollment.id,
+          method:       "FREE",
+          status:       "CONFIRMED",
+          amount:       0,
+          couponId:     appliedCoupon?.id ?? null,
+        },
+      }),
+      ...(appliedCoupon ? [prisma.coupon.update({ where: { id: appliedCoupon.id }, data: { usesCount: { increment: 1 } } })] : []),
+      ...(appliedCoupon ? [prisma.couponUsage.create({ data: { couponId: appliedCoupon.id, courseId: dbCourse.id, userId: session.user.id } })] : []),
+    ]);
+    return NextResponse.json({ url: `${appUrl}/dashboard/cursos/${courseSlug}?sucesso=1` });
+  }
+
   // ── Stripe (international card) ──────────────────────────────────────────
   if (method === "stripe") {
     if (!process.env.STRIPE_SECRET_KEY)

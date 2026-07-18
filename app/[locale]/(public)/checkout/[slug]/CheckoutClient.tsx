@@ -137,6 +137,24 @@ export default function CheckoutClient({
   async function handlePayment() {
     setPaymentError("");
     setCpfError("");
+
+    // Cupom 100% — não exige CPF nem método de pagamento
+    if (finalPrice === 0) {
+      startTransition(async () => {
+        try {
+          const res = await fetch("/api/checkout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ courseSlug: slug, method: "free", couponCode: couponApplied ? couponCode : undefined }),
+          });
+          const data = await res.json();
+          if (data.url) window.location.href = data.url;
+          else if (data.error) setPaymentError(data.error);
+        } catch { setPaymentError("Erro ao processar. Tente novamente."); }
+      });
+      return;
+    }
+
     const cpfDigits = cpf.replace(/\D/g, "");
     if (!cpfDigits) { setCpfError("CPF é obrigatório."); return; }
     if (!validateCpf(cpfDigits)) { setCpfError("CPF inválido. Verifique os números e tente novamente."); return; }
