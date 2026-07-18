@@ -83,6 +83,7 @@ export const routing = defineRouting({
       en: "/contact",
       es: "/contacto",
     },
+    "/dra-vera": "/dra-vera",
   },
 });
 
