@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { getActiveAIProvider } from "@/lib/ai/flashcard-generator";
 import { extractTextFromFile } from "@/lib/file-extraction";
+import { z } from "zod";
 
 async function requireAdmin() {
   const session = await auth();
@@ -9,19 +10,30 @@ async function requireAdmin() {
   return !session?.user?.id || (role !== "ADMIN" && role !== "INSTRUCTOR");
 }
 
+const schema = z.object({
+  blobUrl: z.string().url(),
+  filename: z.string(),
+  mimeType: z.string(),
+  count: z.number().int().min(1).max(50).default(10),
+});
+
 export async function POST(req: NextRequest) {
   if (await requireAdmin()) return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
 
-  const form = await req.formData();
-  const file = form.get("file") as File | null;
-  const count = Math.min(50, Math.max(1, Number(form.get("count") ?? "10")));
+  const body = await req.json();
+  const parsed = schema.safeParse(body);
+  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
 
-  if (!file) return NextResponse.json({ error: "Arquivo não enviado" }, { status: 400 });
-  if (file.size > 50 * 1024 * 1024) return NextResponse.json({ error: "Arquivo muito grande (máx 50 MB)" }, { status: 400 });
+  const { blobUrl, filename, mimeType, count } = parsed.data;
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const mimeType = file.type;
-  const filename = file.name;
+  let buffer: Buffer;
+  try {
+    const res = await fetch(blobUrl);
+    if (!res.ok) throw new Error(`Falha ao baixar arquivo: ${res.status}`);
+    buffer = Buffer.from(await res.arrayBuffer());
+  } catch (err) {
+    return NextResponse.json({ error: err instanceof Error ? err.message : "Erro ao baixar arquivo" }, { status: 400 });
+  }
 
   // Imagens: visão direta via Anthropic
   if (mimeType.startsWith("image/")) {
@@ -54,12 +66,12 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // PDF / DOCX / TXT: extrai texto e gera via provedor ativo
+  // PDF / DOCX / TXT
   let content: string;
   try {
     content = await extractTextFromFile(buffer, mimeType, filename);
   } catch (err) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : "Erro ao extrair texto do arquivo" }, { status: 400 });
+    return NextResponse.json({ error: err instanceof Error ? err.message : "Erro ao extrair texto" }, { status: 400 });
   }
 
   try {

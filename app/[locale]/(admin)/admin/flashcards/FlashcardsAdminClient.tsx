@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { upload } from "@vercel/blob/client";
 import { Plus, Upload, Pencil, Trash2, BookOpen, Loader2, AlertTriangle, X, Check, Sparkles, LayersIcon } from "lucide-react";
 
 type Group = {
@@ -64,15 +65,27 @@ export function FlashcardsAdminClient({
     setGenerating(true);
     setAiError(null);
     try {
-      const form = new FormData();
-      form.append("file", file);
-      form.append("count", String(cardCount));
-      const res = await fetch("/api/admin/flashcards/generate", { method: "POST", body: form });
+      const ext = file.name.split(".").pop() ?? "bin";
+      const blob = await upload(`flashcard-sources/${Date.now()}.${ext}`, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload/pdf",
+        contentType: file.type,
+      });
+      const res = await fetch("/api/admin/flashcards/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blobUrl: blob.url, filename: file.name, mimeType: file.type, count: cardCount }),
+      });
       const data = await res.json();
       if (!res.ok) { setAiError(data.error ?? "Erro na geração"); return; }
       setGeneratedCards(data.flashcards ?? []);
     } catch (err) {
-      setAiError(err instanceof Error ? err.message : "Erro inesperado");
+      const msg = err instanceof Error ? err.message : "Erro inesperado";
+      if (msg.includes("BLOB_READ_WRITE_TOKEN") || msg.includes("token") || msg.includes("upload")) {
+        setAiError("Configure o Vercel Blob: adicione BLOB_READ_WRITE_TOKEN nas variáveis de ambiente do projeto no Vercel.");
+      } else {
+        setAiError(msg);
+      }
     } finally {
       setGenerating(false);
     }
