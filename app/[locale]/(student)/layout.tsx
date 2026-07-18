@@ -8,6 +8,7 @@ import { MessageCircle } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
 import MobileNav from "./MobileNav";
 import SidebarNav from "./SidebarNav";
+import { NuveteWidget } from "./NuveteWidget";
 
 export default async function StudentLayout({
   children,
@@ -107,6 +108,9 @@ export default async function StudentLayout({
         {/* Page content */}
         <div className="flex-1 p-6 lg:p-8 pb-24 md:pb-8">{children}</div>
       </main>
+
+      {/* Nuvete — assistente de estudos IA */}
+      <NuveteWidget userName={session.user?.name?.split(" ")[0] ?? "Aluno"} />
     </div>
   );
 }
