@@ -856,6 +856,25 @@ model FlashcardReview {
   @@index([flashcardId])
 }
 
+// ─── AVALIAÇÃO DE APRESENTAÇÃO ────────────────────────────────────────────────
+
+model PresentationEvaluation {
+  id                String   @id @default(cuid())
+  presenterSlug     String
+  overallRating     Int
+  contentRating     Int
+  didacticsRating   Int
+  applicability     Int
+  wouldRecommend    Boolean
+  highlight         String?  @db.Text
+  nextTopicSuggest  String?  @db.Text
+  respondentName    String?
+  respondentEmail   String?
+  createdAt         DateTime @default(now())
+
+  @@index([presenterSlug])
+}
+
 model AIProviderConfig {
   id               String     @id @default(cuid())
   provider         AIProvider
