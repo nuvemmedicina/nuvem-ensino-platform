@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
         // Parcelamento atrasado: suspende acesso sem cancelar definitivamente
         await prisma.$transaction([
           prisma.payment.update({ where: { id: dbPayment.id }, data: { status: "FAILED" } }),
-          prisma.enrollment.update({ where: { id: dbPayment.enrollmentId }, data: { status: "SUSPENDED" } }),
+          prisma.enrollment.update({ where: { id: dbPayment.enrollmentId }, data: { status: "SUSPENDED" as never } }),
         ]);
         const [user, course] = await Promise.all([
           prisma.user.findUnique({ where: { id: enrollment.userId }, select: { email: true, name: true } }),
@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
         select: { courseId: true, status: true },
       });
       if (enrollment && (enrollment.status === "PENDING" || enrollment.status === "ACTIVE")) {
-        const newStatus = enrollment.status === "ACTIVE" ? "SUSPENDED" : "CANCELLED";
+        const newStatus = (enrollment.status === "ACTIVE" ? "SUSPENDED" : "CANCELLED") as never;
         await prisma.$transaction([
           prisma.payment.update({ where: { id: dbPayment.id }, data: { status: "FAILED" } }),
           prisma.enrollment.update({ where: { id: dbPayment.enrollmentId }, data: { status: newStatus } }),
