@@ -166,7 +166,27 @@
       "Bash(mkdir -p \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(admin\\)\\\\admin\\\\flashcards\")",
       "Bash(mkdir -p \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(student\\)\\\\dashboard\\\\flashcards\\\\[groupId]\")",
       "Bash(npm list *)",
-      "Bash(grep -n \"FaqEditor\\\\|faqJson\\\\|Módulos e Aulas\\\\|section.*Módulos\\\\|MÓDULOS\\\\|Estrutura do curso\\\\|</main>\\\\|</div>.*{/\\\\*.*fim\\\\|return \\(\" \"app/[locale]/\\(admin\\)/admin/cursos/[slug]/page.tsx\")"
+      "Bash(grep -n \"FaqEditor\\\\|faqJson\\\\|Módulos e Aulas\\\\|section.*Módulos\\\\|MÓDULOS\\\\|Estrutura do curso\\\\|</main>\\\\|</div>.*{/\\\\*.*fim\\\\|return \\(\" \"app/[locale]/\\(admin\\)/admin/cursos/[slug]/page.tsx\")",
+      "Bash(node scripts/make-admin.mjs)",
+      "Bash(gh api *)",
+      "PowerShell(head)",
+      "Bash(identify \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\public\\\\capa-2.jpeg\")",
+      "Bash(mkdir -p \"C:/Users/Ana Paula/nuvem-ensino-platform/app/[locale]/\\(admin\\)/admin/pagamentos\")",
+      "Skill(dataviz)",
+      "Skill(dataviz:*)",
+      "Bash(mkdir -p \"C:/Users/Ana Paula/nuvem-ensino-platform/app/api/courses/[slug]/lesson-context\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\prisma\\\\migrations\\\\20260718200000_add_rag_content_chunks\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\api\\\\admin\\\\rag\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\prisma\\\\migrations\\\\20260718220000_add_presentation_evaluation\")",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "mcp__claude-in-chrome__navigate",
+      "mcp__claude-in-chrome__read_console_messages",
+      "mcp__claude-in-chrome__javascript_tool",
+      "mcp__claude-in-chrome__read_network_requests",
+      "Bash(node -e \"const lr = require\\('./node_modules/lucide-react'\\); const icons = ['Star', 'CheckCircle', 'Loader2', 'Globe', 'GraduationCap', 'BookOpen', 'Award']; icons.forEach\\(i => console.log\\(i + ':', typeof lr[i]\\)\\)\")",
+      "Bash(node -e \"const m = require\\('./messages/pt.json'\\); console.log\\(Object.keys\\(m\\)\\)\")",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/next-intl/package.json'\\).version\\)\")",
+      "Bash(mkdir \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(standalone\\)\\\\dra-vera\" 2>/dev/null; echo \"done\")"
     ]
   }
 }
