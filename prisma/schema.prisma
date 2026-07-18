@@ -33,6 +33,7 @@ enum EnrollmentStatus {
   COMPLETED
   CANCELLED
   REFUNDED
+  SUSPENDED
 }
 
 enum PaymentStatus {

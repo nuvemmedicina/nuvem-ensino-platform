@@ -34,6 +34,7 @@ export default async function AdminLayout({
     { key: "overview",     href: "/admin",               exact: true,  label: t("overview") },
     { key: "courses",      href: "/admin/cursos",                       label: t("courses") },
     { key: "enrollments",  href: "/admin/matriculas",                   label: t("enrollments") },
+    { key: "payments",     href: "/admin/pagamentos",                    label: "Pagamentos" },
     { key: "users",        href: "/admin/usuarios",                     label: t("users") },
     { key: "instructors",  href: "/admin/instrutores",                  label: t("instructors") },
     { key: "liveSessions", href: "/admin/aulas-ao-vivo",                label: t("liveSessions") },

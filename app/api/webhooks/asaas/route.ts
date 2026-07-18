@@ -39,20 +39,17 @@ export async function POST(req: NextRequest) {
         where: { id: dbPayment.id },
         data: { status: "PAID", paidAt: new Date() },
       });
-      // Incrementar cupom apenas agora que o pagamento foi confirmado
       if (dbPayment.couponId) {
         prisma.$transaction([
           prisma.coupon.update({ where: { id: dbPayment.couponId }, data: { usesCount: { increment: 1 } } }),
           prisma.couponUsage.create({ data: { couponId: dbPayment.couponId, courseId: enrollment.courseId, userId: enrollment.userId } }),
         ]).catch((err) => console.error("Asaas coupon usage error:", err));
       }
-      // Certificado (fire-and-forget)
       prisma.certificate.upsert({
         where: { enrollmentId: dbPayment.enrollmentId },
         create: { userId: enrollment.userId, enrollmentId: dbPayment.enrollmentId },
         update: {},
       }).catch((err) => console.error("Asaas certificate error:", err));
-      // E-mail de confirmação (fire-and-forget)
       sendEnrollmentConfirmation({
         to: enrollment.user.email,
         userName: enrollment.user.name ?? "Aluno",
@@ -62,8 +59,10 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // ── Pagamento vencido ou cancelado → cancela matrícula e libera vaga ────────
-  if ((event === "PAYMENT_OVERDUE" || event === "PAYMENT_DELETED" || event === "PAYMENT_CHARGEBACK_REQUESTED") && payment?.id) {
+  // ── Pagamento vencido ───────────────────────────────────────────────────────
+  // PENDING  → CANCELLED (vaga liberada)
+  // ACTIVE   → SUSPENDED (parcelamento atrasado, acesso suspenso)
+  if (event === "PAYMENT_OVERDUE" && payment?.id) {
     const dbPayment = await prisma.payment.findFirst({
       where: { asaasPaymentId: payment.id },
       select: { id: true, enrollmentId: true },
@@ -73,30 +72,16 @@ export async function POST(req: NextRequest) {
         where: { id: dbPayment.enrollmentId },
         select: { courseId: true, status: true, userId: true },
       });
-      if (enrollment && enrollment.status === "PENDING") {
+      if (enrollment?.status === "PENDING") {
         await prisma.$transaction([
-          prisma.payment.update({
-            where: { id: dbPayment.id },
-            data: { status: "FAILED" },
-          }),
-          prisma.enrollment.update({
-            where: { id: dbPayment.enrollmentId },
-            data: { status: "CANCELLED" },
-          }),
-          prisma.course.update({
-            where: { id: enrollment.courseId },
-            data: { reservedSeats: { decrement: 1 } },
-          }),
+          prisma.payment.update({ where: { id: dbPayment.id }, data: { status: "FAILED" } }),
+          prisma.enrollment.update({ where: { id: dbPayment.enrollmentId }, data: { status: "CANCELLED" } }),
+          prisma.course.update({ where: { id: enrollment.courseId }, data: { reservedSeats: { decrement: 1 } } }),
         ]);
-        // E-mail de pagamento pendente (fire-and-forget)
-        const user = await prisma.user.findUnique({
-          where: { id: enrollment.userId },
-          select: { email: true, name: true },
-        });
-        const course = await prisma.course.findUnique({
-          where: { id: enrollment.courseId },
-          select: { title: true, slug: true },
-        });
+        const [user, course] = await Promise.all([
+          prisma.user.findUnique({ where: { id: enrollment.userId }, select: { email: true, name: true } }),
+          prisma.course.findUnique({ where: { id: enrollment.courseId }, select: { title: true, slug: true } }),
+        ]);
         if (user && course) {
           sendPaymentPendingEmail({
             to: user.email,
@@ -106,6 +91,49 @@ export async function POST(req: NextRequest) {
             checkoutUrl: `${APP_URL}/checkout/${course.slug}`,
           }).catch((err) => console.error("Asaas pending email error:", err));
         }
+      } else if (enrollment?.status === "ACTIVE") {
+        // Parcelamento atrasado: suspende acesso sem cancelar definitivamente
+        await prisma.$transaction([
+          prisma.payment.update({ where: { id: dbPayment.id }, data: { status: "FAILED" } }),
+          prisma.enrollment.update({ where: { id: dbPayment.enrollmentId }, data: { status: "SUSPENDED" } }),
+        ]);
+        const [user, course] = await Promise.all([
+          prisma.user.findUnique({ where: { id: enrollment.userId }, select: { email: true, name: true } }),
+          prisma.course.findUnique({ where: { id: enrollment.courseId }, select: { title: true, slug: true } }),
+        ]);
+        if (user && course) {
+          sendPaymentPendingEmail({
+            to: user.email,
+            userName: user.name ?? "Aluno",
+            courseName: course.title,
+            method: payment?.billingType ?? "pix",
+            checkoutUrl: `${APP_URL}/checkout/${course.slug}`,
+          }).catch((err) => console.error("Asaas suspended email error:", err));
+        }
+      }
+    }
+  }
+
+  // ── Pagamento deletado ou chargeback → cancela/suspende ────────────────────
+  if ((event === "PAYMENT_DELETED" || event === "PAYMENT_CHARGEBACK_REQUESTED" || event === "PAYMENT_CHARGEBACK_DISPUTE") && payment?.id) {
+    const dbPayment = await prisma.payment.findFirst({
+      where: { asaasPaymentId: payment.id },
+      select: { id: true, enrollmentId: true },
+    });
+    if (dbPayment) {
+      const enrollment = await prisma.enrollment.findUnique({
+        where: { id: dbPayment.enrollmentId },
+        select: { courseId: true, status: true },
+      });
+      if (enrollment && (enrollment.status === "PENDING" || enrollment.status === "ACTIVE")) {
+        const newStatus = enrollment.status === "ACTIVE" ? "SUSPENDED" : "CANCELLED";
+        await prisma.$transaction([
+          prisma.payment.update({ where: { id: dbPayment.id }, data: { status: "FAILED" } }),
+          prisma.enrollment.update({ where: { id: dbPayment.enrollmentId }, data: { status: newStatus } }),
+          ...(enrollment.status === "PENDING"
+            ? [prisma.course.update({ where: { id: enrollment.courseId }, data: { reservedSeats: { decrement: 1 } } })]
+            : []),
+        ]);
       }
     }
   }
@@ -122,14 +150,8 @@ export async function POST(req: NextRequest) {
         select: { courseId: true },
       });
       await prisma.$transaction([
-        prisma.payment.update({
-          where: { id: dbPayment.id },
-          data: { status: "REFUNDED" },
-        }),
-        prisma.enrollment.update({
-          where: { id: dbPayment.enrollmentId },
-          data: { status: "REFUNDED" },
-        }),
+        prisma.payment.update({ where: { id: dbPayment.id }, data: { status: "REFUNDED" } }),
+        prisma.enrollment.update({ where: { id: dbPayment.enrollmentId }, data: { status: "REFUNDED" } }),
         ...(enrollment
           ? [prisma.course.update({ where: { id: enrollment.courseId }, data: { reservedSeats: { decrement: 1 } } })]
           : []),
