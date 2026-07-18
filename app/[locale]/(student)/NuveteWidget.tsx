@@ -136,8 +136,8 @@ export function NuveteWidget({ userName }: { userName: string }) {
     <>
       {/* ── Chat panel ── */}
       {open && (
-        <div className="fixed bottom-20 right-4 md:right-6 z-50 w-[calc(100vw-2rem)] max-w-sm flex flex-col shadow-2xl rounded-2xl overflow-hidden border border-border bg-white"
-          style={{ height: "min(560px, calc(100vh - 96px))" }}>
+        <div className="fixed bottom-[5.5rem] md:bottom-24 right-4 md:right-6 z-50 w-[calc(100vw-2rem)] max-w-sm flex flex-col shadow-2xl rounded-2xl overflow-hidden border border-border bg-white"
+          style={{ height: "min(520px, calc(100vh - 160px))" }}>
 
           {/* Header */}
           <div className="bg-primary px-4 py-3 flex items-center gap-3">
@@ -235,11 +235,14 @@ export function NuveteWidget({ userName }: { userName: string }) {
       {/* ── FAB button ── */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-4 right-4 md:right-6 z-50 w-13 h-13 rounded-full bg-primary text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center"
-        style={{ width: 52, height: 52 }}
+        className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center overflow-hidden border-2 border-white"
+        style={{ width: 52, height: 52, background: "var(--primary)" }}
         aria-label="Abrir Nuvete"
       >
-        {open ? <X className="w-5 h-5" /> : <Sparkles className="w-5 h-5" />}
+        {open
+          ? <X className="w-5 h-5 text-white" />
+          : <img src="/nuvete.jpg" alt="Nuvete" style={{ width: 52, height: 52, objectFit: "cover" }} />
+        }
       </button>
     </>
   );
