@@ -106,7 +106,7 @@ export async function POST(req: Request) {
         data: {
           enrollmentId: enrollment.id,
           method:       "FREE",
-          status:       "CONFIRMED",
+          status:       "PAID",
           amount:       0,
           couponId:     appliedCoupon?.id ?? null,
         },
