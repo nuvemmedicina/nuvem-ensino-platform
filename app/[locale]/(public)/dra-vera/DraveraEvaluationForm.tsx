@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Star, CheckCircle, Loader2, Instagram, Linkedin } from "lucide-react";
-import Image from "next/image";
+import { Star, CheckCircle, Loader2 } from "lucide-react";
 
 function StarRating({
   name, label, value, onChange,

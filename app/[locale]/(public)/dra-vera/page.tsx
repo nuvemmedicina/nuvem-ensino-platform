@@ -1,6 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Instagram, Linkedin, Globe, GraduationCap, Microscope, BookOpen, Award } from "lucide-react";
+import { Globe, GraduationCap, BookOpen, Award } from "lucide-react";
+
+function IconInstagram() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
+function IconLinkedin() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
 import { DraveraEvaluationForm } from "./DraveraEvaluationForm";
 
 export const metadata = {
@@ -12,19 +27,19 @@ const socials = [
   {
     label: "Instagram Dra. Vera",
     href: "https://www.instagram.com/veraluciaangeloandrade/",
-    icon: <Instagram className="w-4 h-4" />,
+    icon: <IconInstagram />,
     handle: "@veraluciaangeloandrade",
   },
   {
     label: "LinkedIn",
     href: "https://www.linkedin.com/in/vera-lucia-angelo-andrade-b545b02a/",
-    icon: <Linkedin className="w-4 h-4" />,
+    icon: <IconLinkedin />,
     handle: "Vera Lucia Angelo Andrade",
   },
   {
     label: "Instagram NU.V.E.M ENSINO",
     href: "https://www.instagram.com/nuvemensino/",
-    icon: <Instagram className="w-4 h-4" />,
+    icon: <IconInstagram />,
     handle: "@nuvemensino",
   },
   {
