@@ -233,18 +233,17 @@ export function NuveteWidget({ userName }: { userName: string }) {
         </div>
       )}
 
-      {/* ── FAB button ── */}
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center overflow-hidden border-2 border-white"
-        style={{ width: 52, height: 52, background: "var(--primary)" }}
-        aria-label="Abrir Nuvete"
-      >
-        {open
-          ? <X className="w-5 h-5 text-white" />
-          : <img src="/nuvete.jpg" alt="Nuvete" style={{ width: 52, height: 52, objectFit: "cover" }} />
-        }
-      </button>
+      {/* ── FAB button — oculto quando chat aberto ── */}
+      {!open && (
+        <button
+          onClick={() => setOpen(true)}
+          className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center overflow-hidden border-2 border-white"
+          style={{ width: 52, height: 52, background: "var(--primary)" }}
+          aria-label="Abrir Nuvete"
+        >
+          <img src="/nuvete.jpg" alt="Nuvete" style={{ width: 52, height: 52, objectFit: "cover" }} />
+        </button>
+      )}
     </>
   );
 }
