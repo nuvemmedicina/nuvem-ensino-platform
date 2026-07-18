@@ -16,10 +16,13 @@ export function EnrollmentTable({
 }) {
   const [courseFilter, setCourseFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [paymentTypeFilter, setPaymentTypeFilter] = useState("all");
 
   const filtered = enrollments.filter((e) => {
     if (courseFilter !== "all" && e.courseId !== courseFilter) return false;
     if (statusFilter !== "all" && e.status !== statusFilter) return false;
+    if (paymentTypeFilter === "free" && e.payment !== null) return false;
+    if (paymentTypeFilter === "paid" && e.payment === null) return false;
     return true;
   });
 
@@ -49,6 +52,17 @@ export function EnrollmentTable({
           <option value="COMPLETED">Concluída</option>
           <option value="CANCELLED">Cancelada</option>
           <option value="REFUNDED">Reembolsada</option>
+          <option value="SUSPENDED">Suspensa</option>
+        </select>
+
+        <select
+          value={paymentTypeFilter}
+          onChange={(e) => setPaymentTypeFilter(e.target.value)}
+          className="font-sans text-sm px-3 py-2 rounded-lg border border-border bg-surface text-foreground focus:outline-none focus:border-primary/50"
+        >
+          <option value="all">Pagas e gratuitas</option>
+          <option value="paid">Somente pagas</option>
+          <option value="free">Somente gratuitas</option>
         </select>
 
         <span className="font-sans text-sm text-muted self-center">
