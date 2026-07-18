@@ -15,10 +15,17 @@ type CourseContext = {
 function NuveteAvatar({ size = 32 }: { size?: number }) {
   return (
     <div
-      className="rounded-full bg-primary flex items-center justify-center shrink-0 text-white font-bold"
-      style={{ width: size, height: size, fontSize: size * 0.38 }}
+      className="rounded-full shrink-0 overflow-hidden bg-primary/10"
+      style={{ width: size, height: size }}
     >
-      N
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/nuvete.jpg"
+        alt="Nuvete"
+        width={size}
+        height={size}
+        style={{ width: size, height: size, objectFit: "cover" }}
+      />
     </div>
   );
 }
