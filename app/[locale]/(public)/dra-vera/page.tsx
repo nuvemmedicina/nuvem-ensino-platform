@@ -88,7 +88,7 @@ export default function DraveraPage() {
             <div className="-mt-12 mb-4 flex items-end justify-between">
               <div className="w-24 h-24 rounded-full border-4 border-white overflow-hidden bg-primary/10 shrink-0">
                 <Image
-                  src="/vera.jpg"
+                  src="/vera.jpeg"
                   alt="Dra. Vera Ângelo"
                   width={96}
                   height={96}
