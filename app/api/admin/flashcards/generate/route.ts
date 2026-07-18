@@ -2,54 +2,29 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { getActiveAIProvider } from "@/lib/ai/flashcard-generator";
 import { extractTextFromFile } from "@/lib/file-extraction";
-import { z } from "zod";
 
-async function requireAdmin(req: NextRequest) {
+async function requireAdmin() {
   const session = await auth();
   const role = (session?.user as { role?: string } | undefined)?.role;
-  if (!session?.user?.id || (role !== "ADMIN" && role !== "INSTRUCTOR")) {
-    return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
-  }
-  return null;
+  return !session?.user?.id || (role !== "ADMIN" && role !== "INSTRUCTOR");
 }
 
-const schema = z.object({
-  blobUrl: z.string().url(),
-  filename: z.string(),
-  mimeType: z.string(),
-  count: z.number().int().min(1).max(50).default(10),
-});
-
 export async function POST(req: NextRequest) {
-  const deny = await requireAdmin(req);
-  if (deny) return deny;
+  if (await requireAdmin()) return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
 
-  const body = await req.json();
-  const parsed = schema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  const form = await req.formData();
+  const file = form.get("file") as File | null;
+  const count = Math.min(50, Math.max(1, Number(form.get("count") ?? "10")));
 
-  const { blobUrl, filename, mimeType, count } = parsed.data;
+  if (!file) return NextResponse.json({ error: "Arquivo não enviado" }, { status: 400 });
+  if (file.size > 50 * 1024 * 1024) return NextResponse.json({ error: "Arquivo muito grande (máx 50 MB)" }, { status: 400 });
 
-  // Download the file from Vercel Blob
-  let buffer: Buffer;
-  try {
-    const res = await fetch(blobUrl);
-    if (!res.ok) throw new Error(`Falha ao baixar arquivo: ${res.status}`);
-    buffer = Buffer.from(await res.arrayBuffer());
-  } catch (err) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : "Erro ao baixar arquivo" }, { status: 400 });
-  }
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const mimeType = file.type;
+  const filename = file.name;
 
-  // Extract text
-  let content: string;
-  try {
-    content = await extractTextFromFile(buffer, mimeType, filename);
-  } catch (err) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : "Erro ao extrair texto" }, { status: 400 });
-  }
-
-  // Images: use Anthropic vision directly
-  if (content === "__IMAGE_BINARY__") {
+  // Imagens: visão direta via Anthropic
+  if (mimeType.startsWith("image/")) {
     try {
       const Anthropic = (await import("@anthropic-ai/sdk")).default;
       const { prisma } = await import("@/lib/prisma");
@@ -67,7 +42,7 @@ export async function POST(req: NextRequest) {
           role: "user",
           content: [
             { type: "image", source: { type: "base64", media_type: mediaType, data: base64 } },
-            { type: "text", text: `Gere exatamente ${count} flashcards médicos baseados nesta imagem. Responda APENAS com JSON: [{ "front": "...", "back": "..." }]` },
+            { type: "text", text: `Gere exatamente ${count} flashcards médicos baseados nesta imagem. Responda APENAS com JSON válido: [{ "front": "...", "back": "..." }]` },
           ],
         }],
       });
@@ -77,6 +52,14 @@ export async function POST(req: NextRequest) {
     } catch (err) {
       return NextResponse.json({ error: err instanceof Error ? err.message : "Erro ao processar imagem" }, { status: 500 });
     }
+  }
+
+  // PDF / DOCX / TXT: extrai texto e gera via provedor ativo
+  let content: string;
+  try {
+    content = await extractTextFromFile(buffer, mimeType, filename);
+  } catch (err) {
+    return NextResponse.json({ error: err instanceof Error ? err.message : "Erro ao extrair texto do arquivo" }, { status: 400 });
   }
 
   try {
