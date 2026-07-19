@@ -34,8 +34,8 @@ function YoutubeIcon() {
 
 const socialLinks = {
   vera: [
-    { label: "Instagram", href: "https://www.instagram.com/dravera.angeo/", icon: <InstagramIcon /> },
-    { label: "LinkedIn", href: "https://www.linkedin.com/in/vera-l%C3%BAcia-%C3%A2ngelo-andrade-33b7b8137/", icon: <LinkedinIcon /> },
+    { label: "Instagram", href: "https://www.instagram.com/veraangelo/", icon: <InstagramIcon /> },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/vera-lucia-angelo-andrade-b545b02a/", icon: <LinkedinIcon /> },
   ],
   nuvemEnsino: [
     { label: "@nuvemensino", href: "https://www.instagram.com/nuvemensino/", icon: <InstagramIcon /> },
