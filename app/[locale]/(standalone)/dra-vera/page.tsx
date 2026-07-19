@@ -137,8 +137,11 @@ export default function DraveraPage() {
               <h1 className="font-serif text-3xl font-semibold text-white mb-1">
                 Vera Lúcia Ângelo Andrade
               </h1>
-              <p className="text-sm text-white/70 mb-5">
-                Médica Gastroenterologista · Autora · Palestrante
+              <p className="text-sm text-white/70 mb-1">
+                Médica Gastroenterologista · Mestre e Doutora em Patologia
+              </p>
+              <p className="text-xs text-white/50 mb-5">
+                CRM: 22284 MG · RQE: 10411 | 22736 · Diretora Científica da NU.V.E.M Ensino
               </p>
               <div className="flex flex-wrap justify-center sm:justify-start gap-2">
                 {socialLinks.vera.map((s) => (
@@ -178,28 +181,20 @@ export default function DraveraPage() {
             <div>
               <p className="font-semibold text-foreground mb-1">Formação</p>
               <ul className="space-y-1 text-muted">
-                <li>Medicina — Universidade Federal de Minas Gerais (UFMG)</li>
-                <li>Residência em Clínica Médica</li>
-                <li>Especialização em Gastroenterologia</li>
+                <li>Médica Gastroenterologista</li>
+                <li>Especialista em Doenças Funcionais Gastrointestinais e Manometria Digestiva — Hospital Israelita Albert Einstein</li>
+                <li>Mestre e Doutora em Patologia — Universidade Federal de Minas Gerais (UFMG)</li>
               </ul>
             </div>
             <div className="h-px bg-border" />
             <div>
               <p className="font-semibold text-foreground mb-1">Atuação</p>
               <ul className="space-y-1 text-muted">
-                <li>Médica Gastroenterologista</li>
-                <li>Autora de 5 livros de referência em Gastroenterologia</li>
-                <li>Palestrante em congressos médicos nacionais</li>
-                <li>Instrutora na Nuvem Ensino</li>
+                <li>30 anos de experiência na formação de profissionais em Motilidade Digestiva, Neurogastroenterologia, Microbiota Intestinal e Testes Respiratórios</li>
+                <li>Palestrante em eventos nacionais e internacionais</li>
+                <li>Autora de vários livros e publicações científicas</li>
+                <li>Diretora Científica da NU.V.E.M Ensino</li>
               </ul>
-            </div>
-            <div className="h-px bg-border" />
-            <div>
-              <p className="font-semibold text-foreground mb-1">Foco clínico</p>
-              <p className="text-muted">
-                Doenças funcionais, motilidade digestiva, testes respiratórios, hepatologia
-                e educação médica continuada em Gastroenterologia.
-              </p>
             </div>
           </div>
         </section>
