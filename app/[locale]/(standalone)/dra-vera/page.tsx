@@ -119,10 +119,10 @@ export default function DraveraPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <div className="bg-[#00475e] text-white">
-        <div className="max-w-2xl mx-auto px-6 py-12">
-          <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6">
-            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden border-2 border-white/20 shrink-0 shadow-lg">
+      <div className="bg-white border-b border-border">
+        <div className="max-w-2xl mx-auto px-6 py-10">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden border border-border shrink-0 shadow-sm">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/instructors/dra-vera-angelo-1.jpeg"
@@ -131,16 +131,16 @@ export default function DraveraPage() {
               />
             </div>
             <div className="text-center sm:text-left">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/60 mb-1">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-muted mb-1">
                 Dra.
               </p>
-              <h1 className="font-serif text-3xl font-semibold text-white mb-1">
+              <h1 className="font-serif text-3xl font-semibold text-foreground mb-1">
                 Vera Lúcia Ângelo Andrade
               </h1>
-              <p className="text-sm text-white/70 mb-1">
+              <p className="text-sm text-muted mb-0.5">
                 Médica Gastroenterologista · Mestre e Doutora em Patologia
               </p>
-              <p className="text-xs text-white/50 mb-5">
+              <p className="text-xs text-muted/70 mb-5">
                 CRM: 22284 MG · RQE: 10411 | 22736 · Diretora Científica da NU.V.E.M Ensino
               </p>
               <div className="flex flex-wrap justify-center sm:justify-start gap-2">
@@ -150,7 +150,7 @@ export default function DraveraPage() {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-sm text-white/90"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-border hover:border-primary/40 hover:text-primary transition-colors text-sm text-foreground"
                   >
                     {s.icon}
                     {s.label}
