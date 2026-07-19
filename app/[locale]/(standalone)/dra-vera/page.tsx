@@ -257,27 +257,27 @@ export default function DraveraPage() {
             Conecte-se
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-border p-5 shadow-sm">
+            <div className="rounded-2xl border border-border p-5 shadow-sm text-center sm:text-left">
               <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-3">
                 Nuvem Ensino
               </p>
               <div className="space-y-2">
                 {socialLinks.nuvemEnsino.map((s) => (
                   <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors">
+                    className="flex items-center justify-center sm:justify-start gap-2 text-sm text-foreground hover:text-primary transition-colors">
                     <span className="text-muted">{s.icon}</span>{s.label}
                   </a>
                 ))}
               </div>
             </div>
-            <div className="rounded-2xl border border-border p-5 shadow-sm">
+            <div className="rounded-2xl border border-border p-5 shadow-sm text-center sm:text-left">
               <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-3">
                 Nuvem Medicina
               </p>
               <div className="space-y-2">
                 {socialLinks.nuvemMedicina.map((s) => (
                   <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors">
+                    className="flex items-center justify-center sm:justify-start gap-2 text-sm text-foreground hover:text-primary transition-colors">
                     <span className="text-muted">{s.icon}</span>{s.label}
                   </a>
                 ))}
