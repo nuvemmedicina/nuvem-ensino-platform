@@ -71,82 +71,136 @@ const socialLinks = {
   ],
 };
 
+const books = [
+  {
+    file: "Casos Comentados de Gastroenterologia e Hepatologia.png",
+    title: "Casos Comentados de Gastroenterologia e Hepatologia",
+  },
+  {
+    file: "perguntas-e-respostas-comentadas-de-gastrenterologia-clinica-e-hepatologia..png",
+    title: "Perguntas e Respostas Comentadas de Gastrenterologia Clínica e Hepatologia",
+  },
+  {
+    file: "testes-respiratorios-em-gastrenterologia-hidrogenio-metano-e-helicobacter-pylori..png",
+    title: "Testes Respiratórios em Gastrenterologia",
+  },
+  {
+    file: "Doenças Funcionais Na Gastrenterologia.png",
+    title: "Doenças Funcionais na Gastrenterologia",
+  },
+  {
+    file: "Métodos Diagnósticos em Doenças Funcionais e Motilidade Digestiva.png",
+    title: "Métodos Diagnósticos em Doenças Funcionais e Motilidade Digestiva",
+  },
+];
+
+const upcomingEvents = [
+  {
+    date: "Agosto 2026",
+    title: "Gastroenterologia na Prática Clínica",
+    location: "Online · Nuvem Ensino",
+    href: "https://nuvemensino.com.br/cursos",
+  },
+  {
+    date: "Setembro 2026",
+    title: "Doenças Funcionais e Motilidade",
+    location: "Online · Nuvem Ensino",
+    href: "https://nuvemensino.com.br/cursos",
+  },
+  {
+    date: "Outubro 2026",
+    title: "Workshop de Casos Comentados",
+    location: "A confirmar",
+    href: "https://nuvemensino.com.br/cursos",
+  },
+];
+
 export default function DraveraPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
       <div className="bg-[#00475e] text-white">
-        <div className="max-w-2xl mx-auto px-6 py-12 text-center">
-          <div className="w-24 h-24 rounded-full bg-white/20 mx-auto mb-5 flex items-center justify-center text-4xl font-serif font-bold text-white/90">
-            VA
-          </div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/60 mb-2">
-            Dra.
-          </p>
-          <h1 className="font-serif text-3xl font-semibold text-white mb-1">
-            Vera Lúcia Ângelo Andrade
-          </h1>
-          <p className="text-sm text-white/70 mb-6">
-            Médica · Especialista em Medicina Intensiva
-          </p>
-          <div className="flex justify-center gap-3">
-            {socialLinks.vera.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-sm text-white/90"
-              >
-                {s.icon}
-                {s.label}
-              </a>
-            ))}
+        <div className="max-w-2xl mx-auto px-6 py-12">
+          <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6">
+            <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden border-2 border-white/20 shrink-0 shadow-lg">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/instructors/dra-vera-angelo-1.jpeg"
+                alt="Dra. Vera Lúcia Ângelo Andrade"
+                className="w-full h-full object-cover object-top"
+              />
+            </div>
+            <div className="text-center sm:text-left">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/60 mb-1">
+                Dra.
+              </p>
+              <h1 className="font-serif text-3xl font-semibold text-white mb-1">
+                Vera Lúcia Ângelo Andrade
+              </h1>
+              <p className="text-sm text-white/70 mb-5">
+                Médica Gastroenterologista · Autora · Palestrante
+              </p>
+              <div className="flex flex-wrap justify-center sm:justify-start gap-2">
+                {socialLinks.vera.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-sm text-white/90"
+                  >
+                    {s.icon}
+                    {s.label}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-2xl mx-auto px-6 py-10 space-y-10">
-        {/* Livros */}
+
+        {/* Formulário de Avaliação */}
         <section>
           <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">
-            Publicações
+            Avalie a apresentação
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {[
-              {
-                file: "Casos Comentados de Gastroenterologia e Hepatologia.png",
-                title: "Casos Comentados de Gastroenterologia e Hepatologia",
-              },
-              {
-                file: "perguntas-e-respostas-comentadas-de-gastrenterologia-clinica-e-hepatologia..png",
-                title: "Perguntas e Respostas Comentadas de Gastrenterologia Clínica e Hepatologia",
-              },
-              {
-                file: "testes-respiratorios-em-gastrenterologia-hidrogenio-metano-e-helicobacter-pylori..png",
-                title: "Testes Respiratórios em Gastrenterologia",
-              },
-              {
-                file: "Doenças Funcionais Na Gastrenterologia.png",
-                title: "Doenças Funcionais na Gastrenterologia",
-              },
-              {
-                file: "Métodos Diagnósticos em Doenças Funcionais e Motilidade Digestiva.png",
-                title: "Métodos Diagnósticos em Doenças Funcionais e Motilidade Digestiva",
-              },
-            ].map((book) => (
-              <div key={book.file} className="flex flex-col gap-2">
-                <div className="rounded-xl overflow-hidden border border-border bg-white shadow-sm aspect-[3/4]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/Livros/${encodeURIComponent(book.file)}`}
-                    alt={book.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <p className="text-xs text-muted leading-snug px-0.5">{book.title}</p>
-              </div>
-            ))}
+          <DraveraEvaluationForm />
+        </section>
+
+        {/* Currículo */}
+        <section>
+          <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">
+            Currículo
+          </h2>
+          <div className="rounded-2xl border border-border bg-white p-6 space-y-4 text-sm text-foreground">
+            <div>
+              <p className="font-semibold text-foreground mb-1">Formação</p>
+              <ul className="space-y-1 text-muted">
+                <li>Medicina — Universidade Federal de Minas Gerais (UFMG)</li>
+                <li>Residência em Clínica Médica</li>
+                <li>Especialização em Gastroenterologia</li>
+              </ul>
+            </div>
+            <div className="h-px bg-border" />
+            <div>
+              <p className="font-semibold text-foreground mb-1">Atuação</p>
+              <ul className="space-y-1 text-muted">
+                <li>Médica Gastroenterologista</li>
+                <li>Autora de 5 livros de referência em Gastroenterologia</li>
+                <li>Palestrante em congressos médicos nacionais</li>
+                <li>Instrutora na Nuvem Ensino</li>
+              </ul>
+            </div>
+            <div className="h-px bg-border" />
+            <div>
+              <p className="font-semibold text-foreground mb-1">Foco clínico</p>
+              <p className="text-muted">
+                Doenças funcionais, motilidade digestiva, testes respiratórios, hepatologia
+                e educação médica continuada em Gastroenterologia.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -156,33 +210,14 @@ export default function DraveraPage() {
             Próximos cursos e eventos
           </h2>
           <div className="space-y-3">
-            {[
-              {
-                date: "Agosto 2026",
-                title: "Gastroenterologia na Prática Clínica",
-                location: "Online · Nuvem Ensino",
-                href: "https://nuvemensino.com.br/cursos",
-              },
-              {
-                date: "Setembro 2026",
-                title: "Doenças Funcionais e Motilidade",
-                location: "Online · Nuvem Ensino",
-                href: "https://nuvemensino.com.br/cursos",
-              },
-              {
-                date: "Outubro 2026",
-                title: "Workshop de Casos Comentados",
-                location: "A confirmar",
-                href: "https://nuvemensino.com.br/cursos",
-              },
-            ].map((event) => (
+            {upcomingEvents.map((event) => (
               <div
                 key={event.title}
                 className="rounded-2xl border border-border bg-white p-5 flex items-center justify-between gap-4"
               >
                 <div className="flex gap-4 items-start">
-                  <div className="min-w-[72px] rounded-xl bg-[#00475e]/8 px-3 py-2 text-center">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#00475e]/70">
+                  <div className="min-w-[72px] rounded-xl bg-[#00475e]/10 px-3 py-2 text-center">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#00475e]">
                       {event.date.split(" ")[0]}
                     </p>
                     <p className="text-xs text-[#00475e]/60">{event.date.split(" ")[1]}</p>
@@ -208,56 +243,12 @@ export default function DraveraPage() {
           </p>
         </section>
 
-        {/* Currículo */}
-        <section>
-          <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">
-            Currículo
-          </h2>
-          <div className="rounded-2xl border border-border bg-white p-6 space-y-4 text-sm text-foreground">
-            <div>
-              <p className="font-semibold text-foreground mb-1">Formação</p>
-              <ul className="space-y-1 text-muted">
-                <li>Medicina — Universidade Federal de Minas Gerais (UFMG)</li>
-                <li>Residência em Clínica Médica</li>
-                <li>Especialização em Medicina Intensiva (AMIB)</li>
-              </ul>
-            </div>
-            <div className="h-px bg-border" />
-            <div>
-              <p className="font-semibold text-foreground mb-1">Atuação</p>
-              <ul className="space-y-1 text-muted">
-                <li>Intensivista em UTI adulto</li>
-                <li>Docente e palestrante em Medicina Intensiva</li>
-                <li>Membro fundador da Nuvem Medicina</li>
-                <li>Instrutora na Nuvem Ensino</li>
-              </ul>
-            </div>
-            <div className="h-px bg-border" />
-            <div>
-              <p className="font-semibold text-foreground mb-1">Foco clínico</p>
-              <p className="text-muted">
-                Ventilação mecânica, sepse, suporte hemodinâmico, raciocínio clínico
-                em pacientes críticos e educação médica continuada.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Formulário de Avaliação */}
-        <section>
-          <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">
-            Avalie a apresentação
-          </h2>
-          <DraveraEvaluationForm />
-        </section>
-
         {/* Redes sociais */}
         <section>
           <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">
             Conecte-se
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Nuvem Ensino */}
             <div className="rounded-2xl border border-border bg-white p-5">
               <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-3">
                 Nuvem Ensino
@@ -277,8 +268,6 @@ export default function DraveraPage() {
                 ))}
               </div>
             </div>
-
-            {/* Nuvem Medicina */}
             <div className="rounded-2xl border border-border bg-white p-5">
               <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-3">
                 Nuvem Medicina
@@ -298,6 +287,28 @@ export default function DraveraPage() {
                 ))}
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Livros */}
+        <section>
+          <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">
+            Publicações
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
+            {books.map((book) => (
+              <div key={book.file} className="flex flex-col gap-2">
+                <div className="rounded-xl overflow-hidden border border-border bg-white shadow-sm aspect-[3/4]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/Livros/${encodeURIComponent(book.file)}`}
+                    alt={book.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p className="text-xs text-muted leading-snug px-0.5">{book.title}</p>
+              </div>
+            ))}
           </div>
         </section>
 
