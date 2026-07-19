@@ -43,7 +43,7 @@ const socialLinks = {
   ],
   nuvemMedicina: [
     { label: "@nuvemmedicina", href: "https://www.instagram.com/nuvemmedicina/", icon: <InstagramIcon /> },
-    { label: "YouTube", href: "https://www.youtube.com/@nuvemmedicina", icon: <YoutubeIcon /> },
+    { label: "YouTube", href: "https://www.youtube.com/@NuvemMedicina", icon: <YoutubeIcon /> },
   ],
 };
 
