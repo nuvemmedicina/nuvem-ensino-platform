@@ -170,7 +170,7 @@ export default function DraveraPage() {
       {/* ── CURRÍCULO — fundo branco ── */}
       <div className="bg-white py-12 px-6">
         <div className="max-w-2xl mx-auto">
-          <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">
+          <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4 text-center">
             Currículo
           </h2>
           <div className="rounded-2xl border border-border bg-white p-6 space-y-5 text-sm shadow-sm">
@@ -205,7 +205,7 @@ export default function DraveraPage() {
       {/* ── AGENDA — fundo cinza ── */}
       <div className="bg-[#f1f5f5] py-12 px-6">
         <div className="max-w-2xl mx-auto">
-          <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">
+          <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4 text-center">
             Próximos cursos e eventos
           </h2>
           <div className="space-y-3">
@@ -247,7 +247,7 @@ export default function DraveraPage() {
       {/* ── REDES SOCIAIS — fundo branco ── */}
       <div className="bg-white py-12 px-6">
         <div className="max-w-2xl mx-auto">
-          <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">
+          <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4 text-center">
             Conecte-se
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -285,7 +285,7 @@ export default function DraveraPage() {
       <div className="bg-[#f1f5f5] py-12 px-6">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted">
+            <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted text-center flex-1">
               Publicações · Editora Rubio
             </h2>
             <a
