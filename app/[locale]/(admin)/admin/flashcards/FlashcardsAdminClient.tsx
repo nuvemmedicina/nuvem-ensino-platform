@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { upload } from "@vercel/blob/client";
+import { uploadFileToBlob } from "@/app/actions/uploadToBlob";
 import { Plus, Upload, Pencil, Trash2, BookOpen, Loader2, AlertTriangle, X, Check, Sparkles, LayersIcon } from "lucide-react";
 
 type Group = {
@@ -65,46 +65,21 @@ export function FlashcardsAdminClient({
     setGenerating(true);
     setAiError(null);
 
-    // Primeiro verifica se o servidor tem o token configurado
-    const tokenCheck = await fetch("/api/upload/pdf", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "blob.generate-client-token", payload: { pathname: "test.pdf", callbackUrl: window.location.href, multipart: false, clientPayload: null } }),
-    }).catch(() => null);
-
-    if (!tokenCheck || tokenCheck.status === 500 || tokenCheck.status === 400) {
-      const errData = await tokenCheck?.json().catch(() => ({}));
-      const msg = (errData as { error?: string })?.error ?? "";
-      if (msg.toLowerCase().includes("token") || msg.toLowerCase().includes("blob") || !tokenCheck) {
-        setAiError("BLOB_READ_WRITE_TOKEN não configurado. Acesse Vercel → Storage → nuvem-ensino-images → Settings e conecte o projeto marcando a opção 'Add a read-write token'.");
-        setGenerating(false);
-        return;
-      }
-    }
-
     try {
-      const ext = file.name.split(".").pop() ?? "bin";
-      const blob = await upload(`flashcard-sources/${Date.now()}.${ext}`, file, {
-        access: "public",
-        handleUploadUrl: "/api/upload/pdf",
-        contentType: file.type,
-      });
+      const fd = new FormData();
+      fd.append("file", file);
+      const blobUrl = await uploadFileToBlob(fd);
       const res = await fetch("/api/admin/flashcards/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ blobUrl: blob.url, filename: file.name, mimeType: file.type, count: cardCount }),
+        body: JSON.stringify({ blobUrl, filename: file.name, mimeType: file.type, count: cardCount }),
       });
       const data = await res.json();
       if (!res.ok) { setAiError(data.error ?? "Erro na geração"); return; }
       setGeneratedCards(data.flashcards ?? []);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      // "a is not a function" é erro minificado do @vercel/blob quando o token não está configurado
-      if (msg.includes("not a function") || msg.includes("BLOB") || msg.includes("token")) {
-        setAiError("Erro de upload: verifique se BLOB_READ_WRITE_TOKEN está nas variáveis de ambiente do Vercel e faça um novo deploy.");
-      } else {
-        setAiError(msg);
-      }
+      setAiError(msg || "Erro ao gerar flashcards. Tente novamente.");
     } finally {
       setGenerating(false);
     }
