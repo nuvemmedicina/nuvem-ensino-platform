@@ -98,27 +98,29 @@ export default function DraveraPage() {
   return (
     <div className="min-h-screen bg-white">
 
-      {/* ── CAPA HERO — foto em destaque ── */}
-      <div className="relative h-[70vw] max-h-[520px] sm:max-h-[600px] overflow-hidden bg-[#001f2d]">
-        {/* Foto */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/instructors/dra-vera-angelo-1.jpeg"
-          alt="Dra. Vera Lúcia Ângelo Andrade"
-          className="absolute inset-0 w-full h-full object-cover object-[center_15%]"
-        />
-        {/* Gradiente: transparente no topo, escuro na base */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#001f2d] via-[#001f2d]/40 to-transparent" />
-
-        {/* Logo */}
-        <div className="absolute top-6 left-6 z-10">
+      {/* ── CAPA HERO ── */}
+      <div className="bg-[#001f2d]">
+        {/* Foto — ocupa toda a largura, sem texto sobreposto no mobile */}
+        <div className="relative w-full overflow-hidden" style={{ aspectRatio: "4/3" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M ENSINO" className="h-9 w-auto drop-shadow-md" />
+          <img
+            src="/instructors/dra-vera-angelo-1.jpeg"
+            alt="Dra. Vera Lúcia Ângelo Andrade"
+            className="absolute inset-0 w-full h-full object-cover object-[center_20%]"
+          />
+          {/* Gradiente leve apenas nos cantos */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#001f2d]/60 via-transparent to-[#001f2d]/30" />
+
+          {/* Logo */}
+          <div className="absolute top-5 left-5 z-10">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M ENSINO" className="h-8 w-auto drop-shadow-md" />
+          </div>
         </div>
 
-        {/* Nome e links */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 px-6 pb-8 sm:px-10">
-          <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#C9A84C] mb-2">
+        {/* Texto — abaixo da foto no mobile, sempre visível */}
+        <div className="px-6 py-7 sm:px-10">
+          <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#C9A84C] mb-1">
             Dra.
           </p>
           <h1 className="font-serif text-3xl sm:text-4xl font-normal text-white leading-tight mb-1">
@@ -137,7 +139,7 @@ export default function DraveraPage() {
                 href={s.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-colors text-sm text-white"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 border border-white/20 hover:bg-white/20 transition-colors text-sm text-white"
               >
                 {s.icon}
                 {s.label}
