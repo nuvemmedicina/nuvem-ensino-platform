@@ -322,7 +322,7 @@ export default function DraveraPage() {
       </div>
 
       <footer className="bg-white text-center text-xs text-muted/60 py-6 border-t border-border">
-        © {new Date().getFullYear()} Nuvem Ensino · Todos os direitos reservados
+        © {new Date().getFullYear()} NU.V.E.M ENSINO · Todos os direitos reservados
       </footer>
     </div>
   );
