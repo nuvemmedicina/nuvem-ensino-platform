@@ -48,11 +48,26 @@ const socialLinks = {
 };
 
 const books = [
-  { file: "Casos Comentados de Gastroenterologia e Hepatologia.png", title: "Casos Comentados de Gastroenterologia e Hepatologia" },
-  { file: "perguntas-e-respostas-comentadas-de-gastrenterologia-clinica-e-hepatologia..png", title: "Perguntas e Respostas Comentadas de Gastrenterologia Clínica e Hepatologia" },
-  { file: "testes-respiratorios-em-gastrenterologia-hidrogenio-metano-e-helicobacter-pylori..png", title: "Testes Respiratórios em Gastrenterologia" },
-  { file: "Doenças Funcionais Na Gastrenterologia.png", title: "Doenças Funcionais na Gastrenterologia" },
-  { file: "Métodos Diagnósticos em Doenças Funcionais e Motilidade Digestiva.png", title: "Métodos Diagnósticos em Doenças Funcionais e Motilidade Digestiva" },
+  {
+    title: "Perguntas e Respostas Comentadas de Gastrenterologia Clínica e Hepatologia",
+    href: "https://rubio.com.br/livro/a62313/9786588340998/perguntas-e-respostas-comentadas-de-gastrenterologia-clinica-e-hepatologia.html",
+  },
+  {
+    title: "Testes Respiratórios em Gastrenterologia — Hidrogênio, Metano e Helicobacter Pylori",
+    href: "https://rubio.com.br/livro/a62312/9786588340974/testes-respiratorios-em-gastrenterologia-hidrogenio-metano-e-helicobacter-pylori.html",
+  },
+  {
+    title: "Métodos Diagnósticos em Doenças Funcionais e Motilidade Digestiva",
+    href: "https://rubio.com.br/livro/c58906/9786588340844/metodos-diagnosticos-em-doencas-funcionais-e-motilidade-digestiva-do-nucleo-de-fisiologia-gastrintes.html",
+  },
+  {
+    title: "Doenças Funcionais na Gastrenterologia",
+    href: "https://rubio.com.br/livro/a61637/9786588340783/doencas-funcionais-na-gastrenterologia.html",
+  },
+  {
+    title: "Casos Comentados de Gastroenterologia e Hepatologia",
+    href: "https://rubio.com.br/livro/a57235/9786588340028/casos-comentados-de-gastrenterologia-e-hepatologia.html",
+  },
 ];
 
 const upcomingEvents = [
@@ -247,18 +262,18 @@ export default function DraveraPage() {
           <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-6">
             Publicações
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
+          <div className="flex flex-col gap-3">
             {books.map((book) => (
-              <div key={book.file} className="flex flex-col gap-2">
-                <div className="rounded-xl overflow-hidden border border-border bg-white shadow-md aspect-[3/4]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/Livros/${encodeURIComponent(book.file)}`}
-                    alt={book.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <p className="text-xs text-muted leading-snug px-0.5">{book.title}</p>
+              <div key={book.href} className="rounded-2xl border border-border bg-white shadow-sm p-5 flex items-center justify-between gap-4">
+                <p className="text-sm font-medium text-foreground leading-snug">{book.title}</p>
+                <a
+                  href={book.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 px-4 py-2 rounded-full bg-[#00475e] text-white text-xs font-semibold hover:bg-[#00475e]/90 transition-colors whitespace-nowrap"
+                >
+                  Comprar
+                </a>
               </div>
             ))}
           </div>
