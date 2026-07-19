@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard, BookOpen, Video, Award, User, Users, Layers,
+  LayoutDashboard, BookOpen, Video, Award, User, Users,
 } from "lucide-react";
 
 const navLinks = [
   { label: "Início",       href: "/dashboard",                icon: LayoutDashboard },
   { label: "Meus Cursos",  href: "/dashboard/cursos",         icon: BookOpen },
   { label: "Ao vivo",      href: "/dashboard/aulas-ao-vivo",  icon: Video },
-  { label: "Flashcards",   href: "/dashboard/flashcards",     icon: Layers },
   { label: "Certificados", href: "/dashboard/certificados",   icon: Award },
   { label: "Perfil",       href: "/dashboard/perfil",         icon: User },
   { label: "Comunidade",   href: "/dashboard/comunidade",     icon: Users },

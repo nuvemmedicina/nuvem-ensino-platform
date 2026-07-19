@@ -186,7 +186,10 @@
       "Bash(node -e \"const lr = require\\('./node_modules/lucide-react'\\); const icons = ['Star', 'CheckCircle', 'Loader2', 'Globe', 'GraduationCap', 'BookOpen', 'Award']; icons.forEach\\(i => console.log\\(i + ':', typeof lr[i]\\)\\)\")",
       "Bash(node -e \"const m = require\\('./messages/pt.json'\\); console.log\\(Object.keys\\(m\\)\\)\")",
       "Bash(node -e \"console.log\\(require\\('./node_modules/next-intl/package.json'\\).version\\)\")",
-      "Bash(mkdir \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(standalone\\)\\\\dra-vera\" 2>/dev/null; echo \"done\")"
+      "Bash(mkdir \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\app\\\\[locale]\\\\\\(standalone\\)\\\\dra-vera\" 2>/dev/null; echo \"done\")",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\\\\public\" -Recurse | Where-Object { $_.Name -match \"vera|dra\" -or $_.DirectoryName -match \"vera\" } | Select-Object FullName)",
+      "Bash(cd \"C:\\\\Users\\\\Ana Paula\\\\nuvem-ensino-platform\" && sed -i 's/font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4\"/font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4 text-center\"/g' \"app/[locale]/\\(standalone\\)/dra-vera/page.tsx\")",
+      "Bash(node -e \"const p = require\\('C:/Users/Ana Paula/nuvem-ensino-platform/node_modules/@vercel/blob/package.json'\\); console.log\\(JSON.stringify\\(p.exports, null, 2\\)\\)\")"
     ]
   }
 }

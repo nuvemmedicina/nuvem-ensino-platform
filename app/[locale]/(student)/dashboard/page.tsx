@@ -3,12 +3,12 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
-import { Play, ChevronRight, Award, Info, ShoppingCart, BookOpen, Layers } from "lucide-react";
+import { Play, ChevronRight, Award, Info, ShoppingCart, BookOpen } from "lucide-react";
 import { CertificateCard } from "./CertificateCard";
 import { getTranslations } from "next-intl/server";
 
 async function getDashboardData(userId: string) {
-  const [enrollments, certificates, allCourses, flashcardGroups] = await Promise.all([
+  const [enrollments, certificates, allCourses] = await Promise.all([
     prisma.enrollment.findMany({
       where: { userId, status: { in: ["ACTIVE", "COMPLETED"] } },
       include: {
@@ -39,13 +39,8 @@ async function getDashboardData(userId: string) {
       },
       orderBy: { createdAt: "desc" },
     }),
-    prisma.flashcardGroup.findMany({
-      include: { _count: { select: { cards: true } }, course: { select: { title: true } } },
-      orderBy: { createdAt: "desc" },
-      take: 10,
-    }),
   ]);
-  return { enrollments, certificates, allCourses, flashcardGroups };
+  return { enrollments, certificates, allCourses };
 }
 
 function calcProgress(progress: { completed: boolean }[], totalLessons: number): number {
@@ -63,7 +58,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
 
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard");
-  const { enrollments, certificates, allCourses, flashcardGroups } = await getDashboardData(session.user.id);
+  const { enrollments, certificates, allCourses } = await getDashboardData(session.user.id);
 
   const activeEnrollments = enrollments.filter((e) => e.status === "ACTIVE");
   const completedEnrollments = enrollments.filter((e) => e.status === "COMPLETED");
@@ -233,41 +228,6 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         </section>
       )}
 
-      {/* ── Flashcards — fundo branco ── */}
-      {flashcardGroups.length > 0 && (
-        <section className="px-4 lg:px-10 py-10 bg-white">
-          <SectionHeader
-            title="Flashcards"
-            subtitle="Fixe o conteúdo com repetição espaçada"
-            href="/dashboard/flashcards"
-            hrefLabel="Ver todos"
-          />
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {flashcardGroups.map((group) => (
-              <Link
-                key={group.id}
-                href={`/dashboard/flashcards/${group.id}`}
-                className="group flex flex-col rounded-2xl border border-border bg-white hover:border-primary/30 hover:shadow-lg hover:shadow-primary/8 transition-all duration-200 overflow-hidden"
-              >
-                <div className="h-20 bg-gradient-to-br from-[#0e4f6b] to-[#1a8fa8] flex items-center justify-center">
-                  <Layers className="w-8 h-8 text-white/60" />
-                </div>
-                <div className="p-4 flex-1 flex flex-col gap-1">
-                  <p className="font-sans text-sm font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
-                    {group.title}
-                  </p>
-                  {group.course && (
-                    <p className="font-sans text-[10px] text-muted line-clamp-1">{group.course.title}</p>
-                  )}
-                  <p className="font-sans text-[10px] font-bold text-primary/70 mt-auto pt-2">
-                    {group._count.cards} {group._count.cards === 1 ? "card" : "cards"}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* ── Certificados — fundo branco com grid ── */}
       {certificates.length > 0 && (

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { LayoutDashboard, BookOpen, Video, Layers, User } from "lucide-react";
+import { LayoutDashboard, BookOpen, Video, User } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 type Props = {
@@ -16,7 +16,6 @@ const bottomTabs = [
   { label: "Início",     href: "/dashboard",                icon: LayoutDashboard },
   { label: "Cursos",     href: "/dashboard/cursos",         icon: BookOpen },
   { label: "Ao vivo",    href: "/dashboard/aulas-ao-vivo",  icon: Video },
-  { label: "Flashcards", href: "/dashboard/flashcards",     icon: Layers },
   { label: "Perfil",     href: "/dashboard/perfil",         icon: User },
 ];
 
