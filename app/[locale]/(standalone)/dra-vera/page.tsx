@@ -71,9 +71,27 @@ const books = [
 ];
 
 const upcomingEvents = [
-  { date: "Agosto 2026", title: "Gastroenterologia na Prática Clínica", location: "Online · Nuvem Ensino", href: "https://nuvemensino.com.br/cursos" },
-  { date: "Setembro 2026", title: "Doenças Funcionais e Motilidade", location: "Online · Nuvem Ensino", href: "https://nuvemensino.com.br/cursos" },
-  { date: "Outubro 2026", title: "Workshop de Casos Comentados", location: "A confirmar", href: "https://nuvemensino.com.br/cursos" },
+  {
+    date: "22 Jul 2026",
+    title: "Live Exclusiva — Curso DICI",
+    detail: "19h30 · Desconto especial para participantes",
+    location: "Online · Ao vivo",
+    href: "https://www.nuvemensino.com.br/live",
+  },
+  {
+    date: "Jul 2026",
+    title: "Testes Respiratórios de H₂, CH₄ e H₂S",
+    detail: "Hands-on teórico-prático com equipamentos Dynamed e Health Go",
+    location: "Presencial · Nuvem Ensino",
+    href: "https://www.nuvemensino.com.br/cursos/testes-respiratorios-h2-ch4-h2s-julho",
+  },
+  {
+    date: "2026",
+    title: "Curso de Aperfeiçoamento em DICI",
+    detail: "Neurogastroenterologia e Métodos Diagnósticos Complementares",
+    location: "Online · Nuvem Ensino",
+    href: "https://www.nuvemensino.com.br/cursos/dici-neurogastroenterologia-2026",
+  },
 ];
 
 export default function DraveraPage() {
@@ -199,7 +217,8 @@ export default function DraveraPage() {
                   </div>
                   <div>
                     <p className="font-sans text-sm font-semibold text-foreground">{event.title}</p>
-                    <p className="text-xs text-muted mt-0.5">{event.location}</p>
+                    <p className="text-xs text-muted mt-0.5">{event.detail}</p>
+                    <p className="text-xs text-muted/60 mt-0.5">{event.location}</p>
                   </div>
                 </div>
                 <a
