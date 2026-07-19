@@ -173,23 +173,29 @@ export default function DraveraPage() {
           <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">
             Currículo
           </h2>
-          <div className="rounded-2xl border border-border bg-white p-6 space-y-4 text-sm shadow-sm">
+          <div className="rounded-2xl border border-border bg-white p-6 space-y-5 text-sm shadow-sm">
             <div>
-              <p className="font-semibold text-foreground mb-2">Formação</p>
-              <ul className="space-y-1.5 text-muted">
-                <li>Médica Gastroenterologista</li>
-                <li>Especialista em Doenças Funcionais Gastrointestinais e Manometria Digestiva — Hospital Israelita Albert Einstein</li>
-                <li>Mestre e Doutora em Patologia — Universidade Federal de Minas Gerais (UFMG)</li>
+              <p className="font-semibold text-foreground mb-2">Formação Acadêmica e Especialização</p>
+              <ul className="space-y-1.5 text-muted list-disc list-inside">
+                <li>Gastroenterologista com especialização em Neurogastroenterologia e Manometria Digestiva pelo Hospital Israelita Albert Einstein</li>
+                <li>Mestre e Doutora em Patologia pela Universidade Federal de Minas Gerais (UFMG)</li>
               </ul>
             </div>
             <div className="h-px bg-border" />
             <div>
-              <p className="font-semibold text-foreground mb-2">Atuação</p>
-              <ul className="space-y-1.5 text-muted">
-                <li>30 anos de experiência na formação de profissionais em Motilidade Digestiva, Neurogastroenterologia, Microbiota Intestinal e Testes Respiratórios</li>
-                <li>Palestrante em eventos nacionais e internacionais</li>
-                <li>Autora de vários livros e publicações científicas</li>
+              <p className="font-semibold text-foreground mb-2">Trajetória e Experiência</p>
+              <ul className="space-y-1.5 text-muted list-disc list-inside">
+                <li>Há 30 anos atuando na formação de profissionais em Motilidade Digestiva, Neurogastroenterologia, Microbiota Intestinal e Testes Respiratórios</li>
+                <li>Palestrante em congressos nacionais e internacionais</li>
+                <li>Autora de livros e diversas publicações científicas na área</li>
+              </ul>
+            </div>
+            <div className="h-px bg-border" />
+            <div>
+              <p className="font-semibold text-foreground mb-2">Liderança Atual</p>
+              <ul className="space-y-1.5 text-muted list-disc list-inside">
                 <li>Diretora Científica da NU.V.E.M Ensino</li>
+                <li>Diretora Técnica da NU.V.E.M Medicina</li>
               </ul>
             </div>
           </div>
