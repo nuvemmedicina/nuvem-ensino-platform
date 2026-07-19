@@ -107,6 +107,107 @@ export default function DraveraPage() {
       </div>
 
       <div className="max-w-2xl mx-auto px-6 py-10 space-y-10">
+        {/* Livros */}
+        <section>
+          <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">
+            Publicações
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {[
+              {
+                file: "Casos Comentados de Gastroenterologia e Hepatologia.png",
+                title: "Casos Comentados de Gastroenterologia e Hepatologia",
+              },
+              {
+                file: "perguntas-e-respostas-comentadas-de-gastrenterologia-clinica-e-hepatologia..png",
+                title: "Perguntas e Respostas Comentadas de Gastrenterologia Clínica e Hepatologia",
+              },
+              {
+                file: "testes-respiratorios-em-gastrenterologia-hidrogenio-metano-e-helicobacter-pylori..png",
+                title: "Testes Respiratórios em Gastrenterologia",
+              },
+              {
+                file: "Doenças Funcionais Na Gastrenterologia.png",
+                title: "Doenças Funcionais na Gastrenterologia",
+              },
+              {
+                file: "Métodos Diagnósticos em Doenças Funcionais e Motilidade Digestiva.png",
+                title: "Métodos Diagnósticos em Doenças Funcionais e Motilidade Digestiva",
+              },
+            ].map((book) => (
+              <div key={book.file} className="flex flex-col gap-2">
+                <div className="rounded-xl overflow-hidden border border-border bg-white shadow-sm aspect-[3/4]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/Livros/${encodeURIComponent(book.file)}`}
+                    alt={book.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p className="text-xs text-muted leading-snug px-0.5">{book.title}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Agenda */}
+        <section>
+          <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">
+            Próximos cursos e eventos
+          </h2>
+          <div className="space-y-3">
+            {[
+              {
+                date: "Agosto 2026",
+                title: "Gastroenterologia na Prática Clínica",
+                location: "Online · Nuvem Ensino",
+                href: "https://nuvemensino.com.br/cursos",
+              },
+              {
+                date: "Setembro 2026",
+                title: "Doenças Funcionais e Motilidade",
+                location: "Online · Nuvem Ensino",
+                href: "https://nuvemensino.com.br/cursos",
+              },
+              {
+                date: "Outubro 2026",
+                title: "Workshop de Casos Comentados",
+                location: "A confirmar",
+                href: "https://nuvemensino.com.br/cursos",
+              },
+            ].map((event) => (
+              <div
+                key={event.title}
+                className="rounded-2xl border border-border bg-white p-5 flex items-center justify-between gap-4"
+              >
+                <div className="flex gap-4 items-start">
+                  <div className="min-w-[72px] rounded-xl bg-[#00475e]/8 px-3 py-2 text-center">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#00475e]/70">
+                      {event.date.split(" ")[0]}
+                    </p>
+                    <p className="text-xs text-[#00475e]/60">{event.date.split(" ")[1]}</p>
+                  </div>
+                  <div>
+                    <p className="font-sans text-sm font-semibold text-foreground">{event.title}</p>
+                    <p className="text-xs text-muted mt-0.5">{event.location}</p>
+                  </div>
+                </div>
+                <a
+                  href={event.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 px-4 py-2 rounded-full bg-[#00475e] text-white text-xs font-semibold hover:bg-[#00475e]/90 transition-colors whitespace-nowrap"
+                >
+                  Inscrever-se
+                </a>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-muted/60 mt-3 text-center">
+            Datas sujeitas a alteração. Acompanhe nas redes sociais para atualizações.
+          </p>
+        </section>
+
         {/* Currículo */}
         <section>
           <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">
