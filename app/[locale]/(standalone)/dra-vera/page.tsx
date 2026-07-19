@@ -134,7 +134,7 @@ export default function DraveraPage() {
             Médica Gastroenterologista · Mestre e Doutora em Patologia
           </p>
           <p className="text-xs text-white/50 mb-6">
-            CRM: 22284 MG · RQE: 10411 | 22736 · Diretora Científica da NU.V.E.M Ensino
+            CRM: 22284 MG · RQE: 10411 | 22736
           </p>
           <div className="flex flex-wrap gap-2">
             {socialLinks.vera.map((s) => (
