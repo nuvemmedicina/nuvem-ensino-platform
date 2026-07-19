@@ -50,7 +50,7 @@ export default function LivePage() {
       </div>
 
       {/* ── Painel do formulário ── */}
-      <div className="bg-white dark:bg-[#132830] flex flex-col justify-center px-8 py-14 lg:px-16 lg:py-20">
+      <div className="bg-white flex flex-col justify-center px-8 py-14 lg:px-16 lg:py-20">
         {/* Badge ao vivo */}
         <div className="inline-flex items-center gap-2 bg-red-600 text-white text-[10px] font-black tracking-[0.18em] uppercase px-3.5 py-1.5 rounded-full w-fit mb-7 animate-pulse">
           <span className="w-1.5 h-1.5 rounded-full bg-white" />
@@ -58,7 +58,7 @@ export default function LivePage() {
         </div>
 
         <h1
-          className="text-[#00475E] dark:text-[#1A8CAA] leading-[1.15] mb-4"
+          className="text-[#00475E] leading-[1.15] mb-4"
           style={{
             fontFamily: "Georgia, serif",
             fontSize: "clamp(1.55rem, 3vw, 2.3rem)",
@@ -66,32 +66,32 @@ export default function LivePage() {
           }}
         >
           Descubra o Curso que vai{" "}
-          <em className="not-italic text-[#0C1E24] dark:text-white">transformar</em>{" "}
+          <em className="not-italic text-[#0C1E24]">transformar</em>{" "}
           sua prática clínica em DICI
         </h1>
 
-        <p className="text-sm text-[#5C747A] dark:text-[#8AADB5] leading-relaxed max-w-[44ch] mb-7">
+        <p className="text-sm text-[#5C747A] leading-relaxed max-w-[44ch] mb-7">
           A Dra. Vera Ângelo vai apresentar ao vivo o Curso de Aperfeiçoamento
           em DICI e revelar, com exclusividade para os presentes, uma condição
           especial de matrícula.
         </p>
 
         {/* Box de desconto */}
-        <div className="flex items-start gap-3 bg-[#F5EDD4] dark:bg-[#2A2210] border border-[#B8973A] rounded-xl px-4 py-3.5 mb-8">
+        <div className="flex items-start gap-3 bg-[#F5EDD4] border border-[#B8973A] rounded-xl px-4 py-3.5 mb-8">
           <span className="text-xl mt-0.5 shrink-0">🎁</span>
-          <p className="text-sm text-[#0C1E24] dark:text-[#EAE6E0] leading-relaxed">
+          <p className="text-sm text-[#0C1E24] leading-relaxed">
             <strong className="text-[#B8973A] font-bold">Desconto exclusivo para participantes da live.</strong>
             <br />
             Válido apenas durante a transmissão. Garanta sua presença para aproveitar.
           </p>
         </div>
 
-        <div className="h-px bg-[#D8D2C8] dark:bg-[#1E3540] mb-8" />
+        <div className="h-px bg-[#D8D2C8] mb-8" />
 
         <LiveRegistrationForm />
 
         {/* Selos ISO + MEC */}
-        <div className="mt-10 pt-8 border-t border-[#D8D2C8] dark:border-[#1E3540] flex justify-center">
+        <div className="mt-10 pt-8 border-t border-[#D8D2C8] flex justify-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/selos-iso-mec.png" alt="Certificações ISO 9001 e Reconhecido pelo MEC" className="h-20 w-auto" />
         </div>
