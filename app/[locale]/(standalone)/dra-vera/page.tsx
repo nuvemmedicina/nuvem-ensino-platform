@@ -284,9 +284,19 @@ export default function DraveraPage() {
       {/* ── LIVROS — fundo cinza ── */}
       <div className="bg-[#f1f5f5] py-12 px-6">
         <div className="max-w-2xl mx-auto">
-          <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-6">
-            Publicações
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted">
+              Publicações · Editora Rubio
+            </h2>
+            <a
+              href="https://rubio.com.br/busca?q=Andrade%2C+Vera+L%C3%BAcia+%C3%82ngelo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-[#00475e] font-semibold hover:underline"
+            >
+              Ver todas →
+            </a>
+          </div>
           <div className="flex flex-col gap-3">
             {books.map((book) => (
               <div key={book.href} className="rounded-2xl border border-border bg-white shadow-sm p-5 flex items-center justify-between gap-4">
