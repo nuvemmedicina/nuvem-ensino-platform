@@ -99,37 +99,41 @@ export default function DraveraPage() {
     <div className="min-h-screen bg-white">
 
       {/* ── CAPA HERO ── */}
-      <div className="bg-[#001f2d]">
-        {/* Foto — ocupa toda a largura, sem texto sobreposto no mobile */}
+      <div className="bg-[#001f2d] lg:grid lg:grid-cols-2 lg:min-h-[520px]">
+        {/* Foto */}
         <div className="relative w-full overflow-hidden" style={{ aspectRatio: "4/3" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/instructors/dra-vera-angelo-1.jpeg"
             alt="Dra. Vera Lúcia Ângelo Andrade"
-            className="absolute inset-0 w-full h-full object-cover object-[center_20%]"
+            className="absolute inset-0 w-full h-full object-cover object-[50%_25%] lg:object-[50%_15%]"
           />
-          {/* Gradiente leve apenas nos cantos */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#001f2d]/60 via-transparent to-[#001f2d]/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#001f2d]/50 via-transparent to-[#001f2d]/20 lg:bg-gradient-to-r lg:from-transparent lg:to-[#001f2d]/60" />
 
-          {/* Logo */}
-          <div className="absolute top-5 left-5 z-10">
+          {/* Logo — só no mobile (no desktop fica no painel de texto) */}
+          <div className="absolute top-5 left-5 z-10 lg:hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M ENSINO" className="h-8 w-auto drop-shadow-md" />
           </div>
         </div>
 
-        {/* Texto — abaixo da foto no mobile, sempre visível */}
-        <div className="px-6 py-7 sm:px-10">
+        {/* Texto */}
+        <div className="px-6 py-7 lg:px-12 lg:py-0 lg:flex lg:flex-col lg:justify-center">
+          {/* Logo — só no desktop */}
+          <div className="hidden lg:block mb-10">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M ENSINO" className="h-9 w-auto" />
+          </div>
           <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#C9A84C] mb-1">
             Dra.
           </p>
-          <h1 className="font-serif text-3xl sm:text-4xl font-normal text-white leading-tight mb-1">
+          <h1 className="font-serif text-3xl lg:text-5xl font-normal text-white leading-tight mb-2">
             Vera Lúcia Ângelo Andrade
           </h1>
           <p className="text-sm text-white/70 mb-1">
             Médica Gastroenterologista · Mestre e Doutora em Patologia
           </p>
-          <p className="text-xs text-white/50 mb-5">
+          <p className="text-xs text-white/50 mb-6">
             CRM: 22284 MG · RQE: 10411 | 22736 · Diretora Científica da NU.V.E.M Ensino
           </p>
           <div className="flex flex-wrap gap-2">
