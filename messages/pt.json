@@ -50,6 +50,34 @@
       "cta": "Ver Cursos",
       "ctaSecondary": "Conheça a Plataforma"
     },
+    "heroCarousel": {
+      "slide2": {
+        "badge": "Corpo Docente",
+        "title": "Aprenda com quem",
+        "titleHighlight": "pratica",
+        "titleSuffix": "todos os dias",
+        "description": "Corpo docente formado por médicos e especialistas atuantes, unindo teoria e prática clínica real.",
+        "cta": "Conheça os Instrutores",
+        "ctaSecondary": "Ver Cursos"
+      },
+      "slide3": {
+        "badge": "Qualidade Certificada",
+        "title": "Certificação",
+        "titleHighlight": "ISO 9001",
+        "titleSuffix": "em Gestão de Qualidade",
+        "description": "Rigor e padronização reconhecidos internacionalmente em cada etapa da nossa formação médica.",
+        "cta": "Saiba Mais",
+        "ctaSecondary": "Ver Cursos"
+      },
+      "slide4": {
+        "badge": "Roma V",
+        "title": "LIVE: O Novo Marco da Gastroenterologia em",
+        "titleHighlight": "DICI",
+        "description": "Participe da aula ao vivo sobre Distúrbios da Interação Cérebro-Intestino com a Dra. Vera Ângelo.",
+        "cta": "Inscrever-se Agora",
+        "ctaSecondary": "Detalhes do Curso"
+      }
+    },
     "modalities": {
       "title": "Modalidades de Ensino",
       "subtitle": "Escolha o formato que melhor se adapta à sua rotina",

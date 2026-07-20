@@ -50,6 +50,34 @@
       "cta": "View Courses",
       "ctaSecondary": "Explore the Platform"
     },
+    "heroCarousel": {
+      "slide2": {
+        "badge": "Faculty",
+        "title": "Learn from those who",
+        "titleHighlight": "practice",
+        "titleSuffix": "every day",
+        "description": "A faculty of practicing physicians and specialists, blending theory with real clinical experience.",
+        "cta": "Meet the Instructors",
+        "ctaSecondary": "View Courses"
+      },
+      "slide3": {
+        "badge": "Certified Quality",
+        "title": "Certified",
+        "titleHighlight": "ISO 9001",
+        "titleSuffix": "Quality Management",
+        "description": "Internationally recognized rigor and standardization at every stage of our medical training.",
+        "cta": "Learn More",
+        "ctaSecondary": "View Courses"
+      },
+      "slide4": {
+        "badge": "Rome V",
+        "title": "LIVE: The New Milestone in Gastroenterology on",
+        "titleHighlight": "DICI",
+        "description": "Join the live class on Disorders of Gut-Brain Interaction with Dr. Vera Ângelo.",
+        "cta": "Register Now",
+        "ctaSecondary": "Course Details"
+      }
+    },
     "modalities": {
       "title": "Teaching Modalities",
       "subtitle": "Choose the format that best fits your routine",

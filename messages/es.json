@@ -50,6 +50,34 @@
       "cta": "Ver Cursos",
       "ctaSecondary": "Conocer la Plataforma"
     },
+    "heroCarousel": {
+      "slide2": {
+        "badge": "Cuerpo Docente",
+        "title": "Aprende con quienes",
+        "titleHighlight": "practican",
+        "titleSuffix": "todos los días",
+        "description": "Cuerpo docente formado por médicos y especialistas activos, uniendo teoría y práctica clínica real.",
+        "cta": "Conoce a los Instructores",
+        "ctaSecondary": "Ver Cursos"
+      },
+      "slide3": {
+        "badge": "Calidad Certificada",
+        "title": "Certificación",
+        "titleHighlight": "ISO 9001",
+        "titleSuffix": "en Gestión de Calidad",
+        "description": "Rigor y estandarización reconocidos internacionalmente en cada etapa de nuestra formación médica.",
+        "cta": "Saber Más",
+        "ctaSecondary": "Ver Cursos"
+      },
+      "slide4": {
+        "badge": "Roma V",
+        "title": "EN VIVO: El Nuevo Hito de la Gastroenterología en",
+        "titleHighlight": "DICI",
+        "description": "Participa en la clase en vivo sobre Trastornos de la Interacción Cerebro-Intestino con la Dra. Vera Ángelo.",
+        "cta": "Inscribirse Ahora",
+        "ctaSecondary": "Detalles del Curso"
+      }
+    },
     "modalities": {
       "title": "Modalidades de Enseñanza",
       "subtitle": "Elige el formato que mejor se adapta a tu rutina",

@@ -4,6 +4,9 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 import { Monitor, Clock, ArrowRight } from "lucide-react";
+import HeroCarousel from "@/components/hero-carousel";
+import HeroStats from "@/components/hero-stats";
+import { getHeroSlides } from "@/lib/hero-slides";
 
 export async function generateMetadata({
   params,
@@ -44,12 +47,6 @@ const instructorFallback: Record<string, { photo?: string; bio?: string }> = {
   "dr-felipe-nelson":   { photo: "/instructors/felipe-nelson.jpg",    bio: "Gastroenterologista pela USP-Ribeirão Preto, doutor pela USP. Especialista em manometria esofágica de alta resolução, pHmetria e impedancio-pHmetria, com anos de experiência clínica." },
 };
 
-const stats = [
-  { value: "+500", label: "Médicos formados" },
-  { value: "6",    label: "Cursos especializados" },
-  { value: "10+",  label: "Anos de experiência" },
-];
-
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
@@ -74,6 +71,7 @@ const jsonLd = {
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
+  const heroSlides = getHeroSlides((key) => t(key));
 
   // Instrutores do banco
   const dbInstructors = await prisma.instructor.findMany({
@@ -145,104 +143,20 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     <div className="flex flex-col min-h-full bg-background">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative flex flex-col items-center justify-center text-center px-4 pt-28 pb-0 overflow-hidden bg-canvas">
-
-        {/* Grid de fundo */}
-        <div aria-hidden className="pointer-events-none absolute inset-0"
-          style={{
-            backgroundImage: `linear-gradient(rgba(203,228,230,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(203,228,230,0.025) 1px, transparent 1px)`,
-            backgroundSize: "48px 48px",
-          }}
-        />
-
-        {/* Orb esquerdo */}
-        <div aria-hidden className="pointer-events-none absolute -left-32 top-1/4 w-96 h-96 rounded-full opacity-20 blur-3xl"
-          style={{ background: "radial-gradient(circle, rgba(0,71,94,0.8) 0%, transparent 70%)" }}
-        />
-        {/* Orb direito */}
-        <div aria-hidden className="pointer-events-none absolute -right-24 top-1/3 w-80 h-80 rounded-full opacity-15 blur-3xl"
-          style={{ background: "radial-gradient(circle, rgba(203,228,230,0.6) 0%, transparent 70%)" }}
-        />
-
-        {/* Selo ISO decorativo fundo (quase invisível) */}
-        <div aria-hidden className="pointer-events-none absolute -right-16 top-1/2 -translate-y-1/2 opacity-[0.04] hidden sm:block">
-          <Image src="/selo-iso-9001.png" alt="" width={520} height={520} className="w-[520px]" />
-        </div>
-
-        {/* Selo ISO visível — acima do badge, no fluxo do conteúdo */}
-        <div className="relative mb-6">
-          <Image
-            src="/selo-iso-9001.png"
-            alt="Certificação ISO 9001"
-            width={80}
-            height={80}
-            className="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]"
-          />
-        </div>
-
-        {/* Badge */}
-        <div className="relative flex items-center gap-2 mb-7">
-          <span className="animate-dot w-1.5 h-1.5 rounded-full bg-accent block" />
-          <span className="font-sans text-xs font-semibold tracking-[0.25em] uppercase text-accent/80">
-            {t("hero.badge")}
-          </span>
-        </div>
-
-        {/* Título */}
-        <h1 className="relative font-serif text-5xl sm:text-6xl lg:text-7xl font-light text-white leading-tight max-w-3xl mb-6">
-          {t("hero.title")}{" "}
-          <em className="not-italic italic font-medium"
-            style={{ background: "linear-gradient(135deg, #CBE4E6 0%, #7BC5CA 50%, #CBE4E6 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-            {t("hero.titleHighlight")}
-          </em>
-        </h1>
-
-        <p className="relative font-sans text-base sm:text-lg text-white/55 max-w-xl leading-relaxed mb-10">
-          {t("hero.description")}
-        </p>
-
-        {/* CTAs */}
-        <div className="relative flex flex-col sm:flex-row gap-4 items-center mb-16">
-          <Link href="/cursos"
-            className="group relative font-sans text-sm font-semibold px-8 py-3.5 rounded-full bg-accent text-accent-foreground transition-all duration-300 hover:shadow-[0_0_32px_rgba(203,228,230,0.4)] hover:scale-[1.03]">
-            {t("hero.cta")}
-            <span className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.15), transparent)" }} />
-          </Link>
-          <Link href="/sobre"
-            className="font-sans text-sm font-semibold px-8 py-3.5 rounded-full border border-accent/40 text-accent hover:border-accent hover:bg-accent/10 transition-all duration-300">
-            {t("hero.ctaSecondary")}
-          </Link>
-        </div>
-
-      </section>
+      {/* ── Hero (carrossel) ─────────────────────────────────────────────── */}
+      <HeroCarousel slides={heroSlides} />
 
       {/* ── Stats strip ──────────────────────────────────────────────────── */}
-      <div className="bg-canvas-card border-y border-white/[0.06]">
-        <div className="max-w-4xl mx-auto px-6 py-7 sm:py-8">
-          <div className="flex items-center justify-around">
-            {stats.map((s, i) => (
-              <div key={s.label} className="relative flex flex-col items-center px-3 sm:px-8">
-                {/* Separador vertical */}
-                {i > 0 && (
-                  <span aria-hidden className="absolute -left-px top-1/2 -translate-y-1/2 h-7 w-px bg-white/[0.10]" />
-                )}
-                <span className="font-serif text-xl sm:text-3xl font-semibold text-white leading-none">
-                  {s.value}
-                </span>
-                <span className="font-sans text-[10px] sm:text-[11px] text-white/40 mt-1.5 text-center leading-snug max-w-[72px] sm:max-w-none">
-                  {s.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <HeroStats />
 
       {/* ── Modalidades ──────────────────────────────────────────────────── */}
-      <section className="bg-background py-24 px-4">
-        <div className="max-w-5xl mx-auto">
+      <section className="relative py-24 px-4 overflow-hidden"
+        style={{
+          backgroundColor: "#FFFFFF",
+          backgroundImage: `linear-gradient(rgba(0,71,94,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,71,94,0.06) 1px, transparent 1px)`,
+          backgroundSize: "48px 48px",
+        }}>
+        <div className="max-w-5xl mx-auto relative">
           <div className="text-center mb-14">
             <h2 className="font-serif text-3xl sm:text-4xl font-light text-foreground mb-3">
               {t("modalities.title")}
@@ -253,7 +167,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {modalities.map((cat) => (
               <Link key={cat.label} href={cat.href}
-                className="shimmer-card group relative flex flex-col gap-6 p-8 rounded-2xl bg-surface border border-border overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/50 hover:shadow-[0_8px_32px_rgba(0,71,94,0.12)]">
+                className="shimmer-card group relative flex flex-col gap-6 p-8 rounded-2xl border border-white/50 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40"
+                style={{
+                  background: "rgba(255,255,255,0.45)",
+                  backdropFilter: "blur(20px) saturate(160%)",
+                  WebkitBackdropFilter: "blur(20px) saturate(160%)",
+                  boxShadow: "0 8px 32px rgba(0,71,94,0.08), inset 0 1px 0 rgba(255,255,255,0.6)",
+                }}>
 
                 {/* Gradient reveal no hover */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${cat.accentColor} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
@@ -397,11 +317,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
       {/* ── Cursos Online ────────────────────────────────────────────────── */}
       {onlineCourses.length > 0 && (
-        <section className="bg-canvas py-24 px-4 relative overflow-hidden">
-          {/* Grid sutil */}
+        <section className="bg-white py-24 px-4 relative overflow-hidden">
+          {/* Grid quadriculado */}
           <div aria-hidden className="pointer-events-none absolute inset-0"
             style={{
-              backgroundImage: `linear-gradient(rgba(203,228,230,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(203,228,230,0.015) 1px, transparent 1px)`,
+              backgroundImage: `linear-gradient(rgba(0,71,94,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,71,94,0.05) 1px, transparent 1px)`,
               backgroundSize: "48px 48px",
             }}
           />
@@ -411,20 +331,20 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-8 h-8 rounded-lg bg-accent/15 border border-accent/20 flex items-center justify-center">
-                    <Monitor className="w-4 h-4 text-accent" />
+                  <div className="w-8 h-8 rounded-lg bg-primary/8 border border-primary/15 flex items-center justify-center">
+                    <Monitor className="w-4 h-4 text-primary" />
                   </div>
-                  <span className="font-sans text-xs font-semibold tracking-widest uppercase text-accent/70">Online</span>
+                  <span className="font-sans text-xs font-semibold tracking-widest uppercase text-primary/70">Online</span>
                 </div>
-                <h2 className="font-serif text-3xl sm:text-4xl font-light text-white mb-2">
+                <h2 className="font-serif text-3xl sm:text-4xl font-light text-foreground mb-2">
                   Aprenda no seu ritmo
                 </h2>
-                <p className="font-sans text-sm text-white/45">
+                <p className="font-sans text-sm text-muted">
                   Aulas ao vivo e gravadas com acesso flexível, onde você estiver.
                 </p>
               </div>
               <Link href="/cursos"
-                className="group inline-flex items-center gap-2 font-sans text-xs font-semibold text-white/50 hover:text-white transition-colors shrink-0">
+                className="group inline-flex items-center gap-2 font-sans text-xs font-semibold text-muted hover:text-primary transition-colors shrink-0">
                 Ver todos
                 <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
               </Link>
@@ -442,7 +362,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 return (
                   <Link key={course.slug}
                     href={{ pathname: "/cursos/[slug]", params: { slug: course.slug } }}
-                    className="shimmer-card group flex flex-col rounded-2xl border border-white/15 bg-white/[0.10] hover:bg-white/[0.15] hover:border-accent/40 transition-all duration-300 hover:-translate-y-1.5 overflow-hidden">
+                    className="shimmer-card group flex flex-col rounded-2xl border border-border bg-surface hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(0,71,94,0.12)] transition-all duration-300 hover:-translate-y-1.5 overflow-hidden">
 
                     {/* Thumbnail ou placeholder */}
                     <div className="relative h-56 sm:h-48 overflow-hidden bg-canvas-card">
@@ -476,25 +396,25 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
                     <div className="flex flex-col flex-1 p-5 gap-3">
                       <div>
-                        <p className="font-sans text-[11px] text-white/50 mb-1">{instructorName}</p>
-                        <h3 className="font-serif text-lg font-medium text-white leading-snug group-hover:text-accent transition-colors duration-200">
+                        <p className="font-sans text-[11px] text-muted mb-1">{instructorName}</p>
+                        <h3 className="font-serif text-lg font-medium text-foreground leading-snug group-hover:text-primary transition-colors duration-200">
                           {course.title}
                         </h3>
                       </div>
 
-                      <p className="font-sans text-xs text-white/55 leading-relaxed flex-1 line-clamp-2">{desc}</p>
+                      <p className="font-sans text-xs text-muted leading-relaxed flex-1 line-clamp-2">{desc}</p>
 
-                      <div className="flex items-center justify-between pt-3 border-t border-white/12">
+                      <div className="flex items-center justify-between pt-3 border-t border-border">
                         <div>
-                          <span className="font-serif text-lg font-semibold text-white">
+                          <span className="font-serif text-lg font-semibold text-foreground">
                             {price === 0 ? "Gratuito" : new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(price)}
                           </span>
                           <div className="flex items-center gap-1 mt-0.5">
-                            <Clock className="w-3 h-3 text-white/40" />
-                            <span className="font-sans text-[10px] text-white/45">{course.hours}h</span>
+                            <Clock className="w-3 h-3 text-muted" />
+                            <span className="font-sans text-[10px] text-muted">{course.hours}h</span>
                           </div>
                         </div>
-                        <span className="font-sans text-xs font-semibold px-3.5 py-1.5 rounded-full border border-accent/30 text-accent group-hover:bg-accent group-hover:text-accent-foreground group-hover:border-accent transition-all duration-200">
+                        <span className="font-sans text-xs font-semibold px-3.5 py-1.5 rounded-full border border-primary/30 text-primary group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-200">
                           Saiba mais
                         </span>
                       </div>
@@ -606,7 +526,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       {/* ── CTA Final ────────────────────────────────────────────────────── */}
       <section className="relative py-24 px-4 overflow-hidden"
         style={{
-          backgroundColor: "#CBE4E6",
+          backgroundColor: "#FFFFFF",
           backgroundImage: `linear-gradient(rgba(0,71,94,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,71,94,0.06) 1px, transparent 1px)`,
           backgroundSize: "48px 48px",
         }}>
@@ -620,14 +540,19 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <div className="relative max-w-2xl mx-auto text-center">
           {/* Card central com borda gradiente */}
           <div className="relative p-[1px] rounded-3xl"
-            style={{ background: "linear-gradient(135deg, rgba(0,71,94,0.4) 0%, rgba(0,71,94,0.1) 50%, rgba(0,71,94,0.4) 100%)" }}>
+            style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(0,71,94,0.15) 50%, rgba(255,255,255,0.9) 100%)" }}>
             <div className="relative rounded-3xl py-16 px-8 sm:px-12"
-              style={{ background: "rgba(255,255,255,0.65)", backdropFilter: "blur(12px)" }}>
+              style={{
+                background: "rgba(255,255,255,0.35)",
+                backdropFilter: "blur(20px) saturate(160%)",
+                WebkitBackdropFilter: "blur(20px) saturate(160%)",
+                boxShadow: "0 8px 32px rgba(0,71,94,0.10), inset 0 1px 0 rgba(255,255,255,0.6)",
+              }}>
 
               <h2 className="font-serif text-3xl sm:text-4xl font-light text-primary mb-4">
                 {t("cta.title")}
               </h2>
-              <p className="font-sans text-sm text-primary/60 mb-10 leading-relaxed max-w-md mx-auto">
+              <p className="font-sans text-base sm:text-lg text-primary/60 mb-10 leading-relaxed max-w-md mx-auto">
                 {t("cta.description")}
               </p>
               <Link href="/cursos"
