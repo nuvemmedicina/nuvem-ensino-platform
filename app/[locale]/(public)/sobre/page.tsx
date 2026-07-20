@@ -307,33 +307,50 @@ export default async function SobrePage({
       )}
 
       {/* CTA */}
-      <section
-        className="py-20 px-4 text-center"
+      <section className="relative py-24 px-4 overflow-hidden"
         style={{
-          backgroundColor: "#CBE4E6",
-          backgroundImage: `
-            linear-gradient(rgba(0,71,94,0.07) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0,71,94,0.07) 1px, transparent 1px)
-          `,
-          backgroundSize: "40px 40px",
-        }}
-      >
-        <div
-          className="max-w-2xl mx-auto py-16 px-8 rounded-3xl border border-primary/15"
-          style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(8px)" }}
-        >
-          <h2 className="font-serif text-3xl sm:text-4xl font-light text-primary mb-4">
-            {t("cta.title")}
-          </h2>
-          <p className="font-sans text-sm text-primary/70 mb-8 leading-relaxed">
-            {t("cta.description")}
-          </p>
-          <Link
-            href="/cursos"
-            className="inline-block font-sans text-sm font-semibold px-10 py-4 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
-          >
-            {t("cta.button")}
-          </Link>
+          backgroundColor: "#FFFFFF",
+          backgroundImage: `linear-gradient(rgba(0,71,94,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,71,94,0.06) 1px, transparent 1px)`,
+          backgroundSize: "48px 48px",
+        }}>
+
+        {/* Orbs decorativos */}
+        <div aria-hidden className="pointer-events-none absolute -top-20 -left-20 w-80 h-80 rounded-full blur-3xl opacity-30"
+          style={{ background: "radial-gradient(circle, rgba(0,71,94,0.4), transparent 70%)" }} />
+        <div aria-hidden className="pointer-events-none absolute -bottom-20 -right-20 w-80 h-80 rounded-full blur-3xl opacity-20"
+          style={{ background: "radial-gradient(circle, rgba(0,71,94,0.5), transparent 70%)" }} />
+
+        <div className="relative max-w-2xl mx-auto text-center">
+          {/* Card central com borda gradiente */}
+          <div className="relative p-[1px] rounded-3xl"
+            style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(0,71,94,0.15) 50%, rgba(255,255,255,0.9) 100%)" }}>
+            <div className="relative rounded-3xl py-16 px-8 sm:px-12"
+              style={{
+                background: "rgba(255,255,255,0.35)",
+                backdropFilter: "blur(20px) saturate(160%)",
+                WebkitBackdropFilter: "blur(20px) saturate(160%)",
+                boxShadow: "0 8px 32px rgba(0,71,94,0.10), inset 0 1px 0 rgba(255,255,255,0.6)",
+              }}>
+
+              <h2 className="font-serif text-3xl sm:text-4xl font-light text-primary mb-4">
+                {t("cta.title")}
+              </h2>
+              <p className="font-sans text-base sm:text-lg text-primary/60 mb-10 leading-relaxed max-w-md mx-auto">
+                {t("cta.description")}
+              </p>
+              <Link href="/cursos"
+                className="group relative inline-flex items-center gap-2 font-sans text-sm font-semibold px-10 py-4 rounded-full bg-primary text-white transition-all duration-300 hover:shadow-[0_8px_32px_rgba(0,71,94,0.4)] hover:scale-[1.03]">
+                <span>{t("cta.button")}</span>
+                <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 transition-transform group-hover:translate-x-1">
+                  <path fillRule="evenodd" d="M2 8a.5.5 0 01.5-.5h9.293L9.146 4.854a.5.5 0 11.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L11.793 8.5H2.5A.5.5 0 012 8z" />
+                </svg>
+                {/* Shimmer no botão */}
+                <span className="absolute inset-0 rounded-full overflow-hidden">
+                  <span className="absolute inset-0 -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-700 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                </span>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
