@@ -17,7 +17,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { localizedCourse } from "@/lib/i18n-content";
 import { auth } from "@/auth";
-import { isLiveDiciPromoActive, liveDiciPromoDeadlineLabel } from "@/lib/live-dici-promo";
+import { isLiveDiciPromoActive, liveDiciPromoDeadlineLabel, LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
 import ShareButton from "./ShareButton";
 
 
@@ -206,7 +206,17 @@ export default async function CoursePage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd) }}
       />
       {/* ── Hero do curso ── */}
-      <section className="bg-canvas px-4 py-16">
+      <section
+        className="bg-canvas px-4 py-16 bg-cover bg-center"
+        style={
+          course.slug === LIVE_DICI_SLUG
+            ? {
+                backgroundImage:
+                  "linear-gradient(to bottom, rgba(12,30,36,0.55), rgba(12,30,36,0.88)), url(/dici-hero-bg.svg)",
+              }
+            : undefined
+        }
+      >
         <div className="max-w-5xl mx-auto">
           {/* Breadcrumb + Share */}
           <div className="flex items-center justify-between mb-8">

@@ -1,0 +1,118 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="30%" cy="40%" r="90%">
+      <stop offset="0%" stop-color="#0e3a4d"/>
+      <stop offset="55%" stop-color="#0a2733"/>
+      <stop offset="100%" stop-color="#0C1E24"/>
+    </radialGradient>
+
+    <radialGradient id="brainGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7fd9d1" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#5eb8c4" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#5eb8c4" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="gutGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#C9A84C" stop-opacity="0.42"/>
+      <stop offset="60%" stop-color="#C9A84C" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="pathStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7fd9d1" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#C9A84C" stop-opacity="0.75"/>
+    </linearGradient>
+
+    <filter id="softBlur" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="mediumBlur" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <filter id="tinyBlur" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2.2"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+
+  <!-- ambient glow fields -->
+  <circle cx="330" cy="300" r="360" fill="url(#brainGlow)"/>
+  <circle cx="1270" cy="560" r="380" fill="url(#gutGlow)"/>
+
+  <!-- faint concentric rings, quiet rhythm -->
+  <g opacity="0.06" stroke="#7fd9d1" fill="none" stroke-width="1">
+    <circle cx="330" cy="300" r="140"/>
+    <circle cx="330" cy="300" r="210"/>
+    <circle cx="330" cy="300" r="280"/>
+  </g>
+  <g opacity="0.05" stroke="#C9A84C" fill="none" stroke-width="1">
+    <circle cx="1270" cy="560" r="150"/>
+    <circle cx="1270" cy="560" r="220"/>
+    <circle cx="1270" cy="560" r="290"/>
+  </g>
+
+  <!-- brain silhouette, simplified -->
+  <g filter="url(#tinyBlur)" opacity="0.5">
+    <path d="M330 190
+             c-70 0 -118 46 -122 100
+             c-24 10 -38 34 -30 60
+             c-10 20 -2 46 20 58
+             c2 34 34 62 72 62
+             c10 16 30 26 50 24
+             c26 20 66 18 88 -6
+             c34 2 62 -22 64 -54
+             c22 -14 30 -42 18 -66
+             c8 -30 -8 -60 -38 -70
+             c-8 -34 -42 -58 -80 -56
+             c-10 -30 -42 -52 -42 -52 z"
+          fill="none" stroke="#a9ece6" stroke-width="2.5"/>
+    <path d="M330 210 c30 6 46 30 44 56 c22 4 34 26 26 46 c14 10 18 30 6 46"
+          fill="none" stroke="#a9ece6" stroke-width="1.6" opacity="0.7"/>
+    <path d="M300 236 c-18 10 -26 30 -18 50 c-14 8 -20 26 -10 42"
+          fill="none" stroke="#a9ece6" stroke-width="1.6" opacity="0.7"/>
+  </g>
+
+  <!-- gut / intestinal coil silhouette, simplified -->
+  <g filter="url(#tinyBlur)" opacity="0.5">
+    <path d="M1270 470
+             c40 -30 90 -18 108 16
+             c26 4 42 30 32 56
+             c22 12 28 40 10 60
+             c10 24 -4 50 -30 58
+             c-4 26 -30 44 -56 38
+             c-16 20 -46 22 -66 6
+             c-30 6 -58 -14 -62 -44
+             c-24 -10 -34 -38 -22 -60
+             c-14 -20 -8 -48 14 -60
+             c-4 -28 16 -54 44 -56
+             c6 -22 26 -34 46 -30 z"
+          fill="none" stroke="#e8cf8f" stroke-width="2.5"/>
+    <path d="M1230 500 c20 8 30 28 24 46 c18 6 26 26 16 42 c14 8 18 26 8 40"
+          fill="none" stroke="#e8cf8f" stroke-width="1.6" opacity="0.7"/>
+  </g>
+
+  <!-- vagus-nerve pathway connecting the two -->
+  <path d="M 430 330 C 650 260, 900 520, 1150 500"
+        fill="none" stroke="url(#pathStroke)" stroke-width="2" opacity="0.55"/>
+  <path d="M 430 330 C 650 260, 900 520, 1150 500"
+        fill="none" stroke="url(#pathStroke)" stroke-width="8" opacity="0.12" filter="url(#softBlur)"/>
+
+  <!-- signal pulses along the path -->
+  <g filter="url(#mediumBlur)">
+    <circle cx="560" cy="288" r="5" fill="#a9ece6" opacity="0.8"/>
+    <circle cx="760" cy="330" r="4" fill="#c9e8e4" opacity="0.6"/>
+    <circle cx="940" cy="470" r="5" fill="#e8cf8f" opacity="0.7"/>
+    <circle cx="1080" cy="498" r="4" fill="#e8cf8f" opacity="0.6"/>
+  </g>
+
+  <!-- sparse ambient particles for depth -->
+  <g fill="#a9ece6" opacity="0.18">
+    <circle cx="120" cy="620" r="2"/>
+    <circle cx="200" cy="720" r="1.5"/>
+    <circle cx="80" cy="480" r="1.5"/>
+    <circle cx="1450" cy="220" r="2"/>
+    <circle cx="1500" cy="740" r="1.5"/>
+    <circle cx="1380" cy="120" r="1.5"/>
+  </g>
+</svg>
