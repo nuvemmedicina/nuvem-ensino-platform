@@ -641,10 +641,7 @@ export default function CheckoutClient({
             )}
 
             <div className="flex flex-col gap-3 text-sm font-sans mb-5">
-              <div className="flex flex-col gap-1">
-                <span className="text-muted">{courseName}</span>
-                <span className="text-foreground font-medium">{formatted(price)}</span>
-              </div>
+              <span className="text-foreground font-medium leading-snug">{courseName}</span>
               <div className="flex justify-between text-muted">
                 <span>{t("hoursLabel")}</span>
                 <span>{hours}h</span>
