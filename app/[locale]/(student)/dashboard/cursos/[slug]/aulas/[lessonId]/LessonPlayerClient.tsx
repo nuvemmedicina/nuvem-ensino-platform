@@ -397,7 +397,7 @@ export default function LessonPlayerClient({
                 </div>
                 {/* Label + player */}
                 <div className="flex-1 min-w-0">
-                  <p className="font-sans text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-1.5">
+                  <p className="font-sans text-[10px] font-bold uppercase tracking-widest text-accent/80 mb-1.5">
                     AudioCast desta aula
                   </p>
                   <audio
