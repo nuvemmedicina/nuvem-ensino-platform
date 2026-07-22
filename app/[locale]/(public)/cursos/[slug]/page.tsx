@@ -698,7 +698,18 @@ export default async function CoursePage({ params }: Props) {
       }
 
       {/* ── FAQ ── */}
-      <section className="py-16 px-4 bg-background">
+      <section
+        className={course.slug === LIVE_DICI_SLUG ? "py-16 px-4 bg-white" : "py-16 px-4 bg-background"}
+        style={
+          course.slug === LIVE_DICI_SLUG
+            ? {
+                backgroundImage:
+                  "linear-gradient(to right, rgba(12,30,36,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(12,30,36,0.05) 1px, transparent 1px)",
+                backgroundSize: "28px 28px",
+              }
+            : undefined
+        }
+      >
         <div className="max-w-3xl mx-auto">
           <h2 className="font-serif text-2xl font-medium text-foreground text-center mb-10">
             Perguntas Frequentes
