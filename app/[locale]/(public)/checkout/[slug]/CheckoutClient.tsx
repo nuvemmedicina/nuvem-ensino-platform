@@ -16,6 +16,7 @@ type Props = {
   userName: string;
   userPhone: string;
   hasPayment: boolean;
+  promoNotice?: string;
 };
 
 export default function CheckoutClient({
@@ -27,6 +28,7 @@ export default function CheckoutClient({
   userName,
   userPhone,
   hasPayment,
+  promoNotice,
 }: Props) {
   const t = useTranslations("checkout");
   const router = useRouter();
@@ -511,7 +513,7 @@ export default function CheckoutClient({
             {method === "parcelado" && (
               <div className="mt-4 bg-background rounded-xl p-4 font-sans text-sm text-muted">
                 <p className="font-semibold text-foreground mb-3">{t("installments")}</p>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((n) => (
                   <button
                     key={n}
                     type="button"
@@ -572,6 +574,15 @@ export default function CheckoutClient({
             <h2 className="font-sans text-sm font-semibold text-foreground mb-5">
               {t("orderSummary")}
             </h2>
+
+            {promoNotice && (
+              <div className="flex items-center gap-1.5 bg-red-500/10 border border-red-400/30 rounded-full px-3 py-1.5 mb-4 w-fit">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shrink-0" />
+                <p className="font-sans text-[11px] font-semibold text-red-600 uppercase tracking-wide">
+                  {promoNotice}
+                </p>
+              </div>
+            )}
 
             <div className="flex flex-col gap-3 text-sm font-sans mb-5">
               <div className="flex justify-between">

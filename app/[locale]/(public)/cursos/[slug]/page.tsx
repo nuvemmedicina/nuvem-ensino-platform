@@ -17,6 +17,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { localizedCourse } from "@/lib/i18n-content";
 import { auth } from "@/auth";
+import { isLiveDiciPromoActive, liveDiciPromoDeadlineLabel } from "@/lib/live-dici-promo";
 import ShareButton from "./ShareButton";
 
 
@@ -273,6 +274,14 @@ export default async function CoursePage({ params }: Props) {
                 className="rounded-2xl border border-white/10 p-6"
                 style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(8px)" }}
               >
+                {isLiveDiciPromoActive(course.slug) && (
+                  <div className="inline-flex items-center gap-1.5 bg-red-500/15 border border-red-400/30 rounded-full px-3 py-1 mb-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+                    <p className="font-sans text-[11px] font-semibold text-red-300 uppercase tracking-wide">
+                      Preço promocional da Live — válido por 72h, até {liveDiciPromoDeadlineLabel()}
+                    </p>
+                  </div>
+                )}
                 <p className="font-serif text-4xl font-semibold text-accent mb-1">
                   {new Intl.NumberFormat("pt-BR", {
                     style: "currency",
@@ -581,6 +590,14 @@ export default async function CoursePage({ params }: Props) {
 
           {/* CTA mobile */}
           <div className="lg:hidden bg-surface border border-border rounded-2xl p-6">
+            {isLiveDiciPromoActive(course.slug) && (
+              <div className="inline-flex items-center gap-1.5 bg-red-500/10 border border-red-400/30 rounded-full px-3 py-1 mb-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                <p className="font-sans text-[11px] font-semibold text-red-600 uppercase tracking-wide">
+                  Preço promocional da Live — válido por 72h, até {liveDiciPromoDeadlineLabel()}
+                </p>
+              </div>
+            )}
             <p className="font-serif text-3xl font-semibold text-primary mb-1">
               {new Intl.NumberFormat("pt-BR", {
                 style: "currency",

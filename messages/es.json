@@ -204,7 +204,7 @@
       "stripe": { "label": "Tarjeta internacional", "desc": "Visa, Mastercard, Amex (USD/EUR)" },
       "pix": { "label": "PIX", "desc": "Aprobación inmediata" },
       "boleto": { "label": "Boleto bancario", "desc": "Vence en 3 días hábiles" },
-      "parcelado": { "label": "Tarjeta en cuotas", "desc": "Hasta 10 cuotas con tarjeta nacional" }
+      "parcelado": { "label": "Tarjeta de Crédito", "desc": "Hasta 12 cuotas" }
     }
   },
   "auth": {

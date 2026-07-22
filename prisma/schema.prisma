@@ -370,6 +370,11 @@ model Enrollment {
   completedAt DateTime?
   expiresAt   DateTime?
 
+  // UTM de campanha (preenchido apenas quando a matrícula vem de uma landing/checkout de campanha)
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   course   Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
   payments    Payment[]

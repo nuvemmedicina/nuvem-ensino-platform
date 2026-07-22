@@ -204,7 +204,7 @@
       "stripe": { "label": "Cartão internacional", "desc": "Visa, Mastercard, Amex (USD/EUR)" },
       "pix": { "label": "PIX", "desc": "Aprovação imediata" },
       "boleto": { "label": "Boleto bancário", "desc": "Vence em 3 dias úteis" },
-      "parcelado": { "label": "Cartão parcelado", "desc": "Até 10x no cartão nacional" }
+      "parcelado": { "label": "Cartão de Crédito", "desc": "Até 12x no cartão" }
     }
   },
   "auth": {
@@ -603,7 +603,7 @@
       },
       {
         "q": "Posso parcelar o pagamento?",
-        "a": "Sim, aceitamos parcelamento em até 10x no cartão de crédito. Para pagamento à vista via Pix, pode haver desconto. Verifique na página do curso."
+        "a": "Sim, aceitamos parcelamento em até 12x no cartão de crédito. Para pagamento à vista via Pix, pode haver desconto. Verifique na página do curso."
       },
       {
         "q": "Qual é a política de reembolso?",

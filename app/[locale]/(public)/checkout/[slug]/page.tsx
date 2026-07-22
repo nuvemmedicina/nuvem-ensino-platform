@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { localizedCourse } from "@/lib/i18n-content";
+import { isLiveDiciPromoActive, liveDiciPromoDeadlineLabel } from "@/lib/live-dici-promo";
 import CheckoutClient from "./CheckoutClient";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
@@ -64,6 +65,11 @@ export default async function CheckoutPage({ params }: Props) {
       userName={session.user?.name ?? ""}
       userPhone={dbUser?.phone ?? ""}
       hasPayment={hasPayment}
+      promoNotice={
+        isLiveDiciPromoActive(slug)
+          ? `Preço promocional da Live — válido por 72h, até ${liveDiciPromoDeadlineLabel()}`
+          : undefined
+      }
     />
   );
 }
