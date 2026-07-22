@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { localizedCourse } from "@/lib/i18n-content";
-import { isLiveDiciPromoActive, liveDiciPromoDeadlineLabel } from "@/lib/live-dici-promo";
+import { isLiveDiciPromoActive, liveDiciPromoDeadlineLabel, LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
 import CheckoutClient from "./CheckoutClient";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
@@ -43,17 +43,19 @@ export default async function CheckoutPage({ params }: Props) {
   if (course.externalCheckoutUrl) redirect(course.externalCheckoutUrl);
 
   const session = await auth();
-  if (!session) redirect(`/entrar?callbackUrl=/checkout/${slug}`);
+  // Checkout como convidado (sem login) só é permitido para o curso da live —
+  // os demais cursos continuam exigindo login antes de comprar, como sempre.
+  const allowGuestCheckout = slug === LIVE_DICI_SLUG;
+  if (!session && !allowGuestCheckout) redirect(`/entrar?callbackUrl=/checkout/${slug}`);
 
   const lc = localizedCourse(course, locale);
   const mpTokenDb = await prisma.platformSetting.findUnique({ where: { key: "mp_access_token" } });
   const hasPayment = !!(process.env.STRIPE_SECRET_KEY || process.env.ASAAS_API_KEY || process.env.MP_ACCESS_TOKEN || mpTokenDb?.value);
 
-  // Pré-carregar WhatsApp salvo do usuário
-  const dbUser = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { phone: true },
-  });
+  // Pré-carregar WhatsApp salvo do usuário (só quando há sessão)
+  const dbUser = session
+    ? await prisma.user.findUnique({ where: { id: session.user.id }, select: { phone: true } })
+    : null;
 
   return (
     <CheckoutClient
@@ -61,10 +63,11 @@ export default async function CheckoutPage({ params }: Props) {
       courseName={lc.title}
       price={Number(course.price)}
       hours={course.hours}
-      userEmail={session.user?.email ?? ""}
-      userName={session.user?.name ?? ""}
+      userEmail={session?.user?.email ?? ""}
+      userName={session?.user?.name ?? ""}
       userPhone={dbUser?.phone ?? ""}
       hasPayment={hasPayment}
+      isGuest={!session}
       promoNotice={
         isLiveDiciPromoActive(slug)
           ? `Preço promocional da Live — válido por 72h, até ${liveDiciPromoDeadlineLabel()}`

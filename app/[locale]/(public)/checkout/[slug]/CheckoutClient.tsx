@@ -17,6 +17,7 @@ type Props = {
   userPhone: string;
   hasPayment: boolean;
   promoNotice?: string;
+  isGuest?: boolean;
 };
 
 export default function CheckoutClient({
@@ -29,6 +30,7 @@ export default function CheckoutClient({
   userPhone,
   hasPayment,
   promoNotice,
+  isGuest = false,
 }: Props) {
   const t = useTranslations("checkout");
   const router = useRouter();
@@ -49,6 +51,10 @@ export default function CheckoutClient({
   const [pixSecondsLeft, setPixSecondsLeft] = useState(0);
   const pixTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [installments, setInstallments] = useState(3);
+  const [guestName, setGuestName] = useState(userName);
+  const [guestEmail, setGuestEmail] = useState(userEmail);
+  const [guestNameError, setGuestNameError] = useState("");
+  const [guestEmailError, setGuestEmailError] = useState("");
 
   // Temporizador do PIX (30 minutos = 1800 segundos)
   useEffect(() => {
@@ -136,9 +142,21 @@ export default function CheckoutClient({
     }
   }
 
+  function validateGuestFields(): boolean {
+    if (!isGuest) return true;
+    let ok = true;
+    if (guestName.trim().length < 2) { setGuestNameError("Informe seu nome completo."); ok = false; }
+    else setGuestNameError("");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestEmail)) { setGuestEmailError("E-mail inválido."); ok = false; }
+    else setGuestEmailError("");
+    return ok;
+  }
+
   async function handlePayment() {
     setPaymentError("");
     setCpfError("");
+
+    if (!validateGuestFields()) return;
 
     // Cupom 100% — não exige CPF nem método de pagamento
     if (finalPrice === 0) {
@@ -147,7 +165,13 @@ export default function CheckoutClient({
           const res = await fetch("/api/checkout", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ courseSlug: slug, method: "free", couponCode: couponApplied ? couponCode : undefined }),
+            body: JSON.stringify({
+              courseSlug: slug,
+              method: "free",
+              couponCode: couponApplied ? couponCode : undefined,
+              name: isGuest ? guestName.trim() : undefined,
+              email: isGuest ? guestEmail.trim() : undefined,
+            }),
           });
           const data = await res.json();
           if (data.url) window.location.href = data.url;
@@ -172,6 +196,8 @@ export default function CheckoutClient({
             installments: method === "parcelado" ? installments : 1,
             whatsapp: whatsapp.trim() || undefined,
             cpf: cpf.replace(/\D/g, "") || undefined,
+            name: isGuest ? guestName.trim() : undefined,
+            email: isGuest ? guestEmail.trim() : undefined,
           }),
         });
         const data = await res.json();
@@ -419,21 +445,51 @@ export default function CheckoutClient({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
                 <label className="font-sans text-xs text-muted">{t("name")}</label>
-                <input
-                  readOnly
-                  value={userName}
-                  className="px-3 py-2.5 rounded-lg border border-border bg-background/50 text-sm text-foreground/70"
-                />
+                {isGuest ? (
+                  <>
+                    <input
+                      value={guestName}
+                      onChange={(e) => setGuestName(e.target.value)}
+                      placeholder="Seu nome completo"
+                      className={`px-3 py-2.5 rounded-lg border bg-background text-sm text-foreground placeholder:text-muted/40 focus:outline-none ${guestNameError ? "border-red-400" : "border-border focus:border-primary/50"}`}
+                    />
+                    {guestNameError && <p className="font-sans text-xs text-red-500 mt-0.5">{guestNameError}</p>}
+                  </>
+                ) : (
+                  <input
+                    readOnly
+                    value={userName}
+                    className="px-3 py-2.5 rounded-lg border border-border bg-background/50 text-sm text-foreground/70"
+                  />
+                )}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="font-sans text-xs text-muted">{t("email")}</label>
-                <input
-                  readOnly
-                  value={userEmail}
-                  className="px-3 py-2.5 rounded-lg border border-border bg-background/50 text-sm text-foreground/70"
-                />
+                {isGuest ? (
+                  <>
+                    <input
+                      type="email"
+                      value={guestEmail}
+                      onChange={(e) => setGuestEmail(e.target.value)}
+                      placeholder="voce@email.com"
+                      className={`px-3 py-2.5 rounded-lg border bg-background text-sm text-foreground placeholder:text-muted/40 focus:outline-none ${guestEmailError ? "border-red-400" : "border-border focus:border-primary/50"}`}
+                    />
+                    {guestEmailError && <p className="font-sans text-xs text-red-500 mt-0.5">{guestEmailError}</p>}
+                  </>
+                ) : (
+                  <input
+                    readOnly
+                    value={userEmail}
+                    className="px-3 py-2.5 rounded-lg border border-border bg-background/50 text-sm text-foreground/70"
+                  />
+                )}
               </div>
             </div>
+            {isGuest && (
+              <p className="font-sans text-[11px] text-muted mt-3">
+                Você vai receber um e-mail para criar sua senha de acesso assim que a matrícula for confirmada.
+              </p>
+            )}
             {/* CPF */}
             <div className="flex flex-col gap-1.5 mt-1">
               <label className="font-sans text-xs text-muted flex items-center gap-1">

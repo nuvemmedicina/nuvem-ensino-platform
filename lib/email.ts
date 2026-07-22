@@ -153,6 +153,40 @@ export async function sendPasswordResetEmail({
   });
 }
 
+export async function sendSetPasswordEmail({
+  to,
+  userName,
+  courseName,
+  token,
+}: {
+  to: string;
+  userName: string;
+  courseName: string;
+  token: string;
+}) {
+  const link = `${APP_URL}/resetar-senha?token=${token}`;
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Sua matrícula em <strong>${courseName}</strong> foi recebida. Falta só um passo: crie uma senha para acessar sua área do aluno.</p>
+    <div style="text-align:center;margin:32px 0;">
+      <a href="${link}"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Criar minha senha
+      </a>
+    </div>
+    <p style="margin:0 0 8px;color:#6b7280;font-size:13px;">⏱ Este link expira em <strong>1 hora</strong>. Se expirar, use "Esqueci minha senha" na tela de login com o e-mail ${to}.</p>
+    <p style="margin:0;color:#9ca3af;font-size:12px;">Ou copie e cole este endereço no navegador:<br/><span style="color:#00475e;word-break:break-all;">${link}</span></p>
+  `;
+
+  return getResend().emails.send({
+    from: FROM,
+    to,
+    subject: `Crie sua senha de acesso — ${courseName}`,
+    html: baseLayout("Bem-vindo(a)!", body),
+  });
+}
+
 export async function sendEmailVerificationEmail({
   to,
   userName,
