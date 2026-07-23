@@ -21,8 +21,9 @@ export function EnrollmentTable({
   const filtered = enrollments.filter((e) => {
     if (courseFilter !== "all" && e.courseId !== courseFilter) return false;
     if (statusFilter !== "all" && e.status !== statusFilter) return false;
-    if (paymentTypeFilter === "free" && e.payment !== null) return false;
-    if (paymentTypeFilter === "paid" && e.payment === null) return false;
+    const isFree = e.payment === null || e.payment.method === "FREE";
+    if (paymentTypeFilter === "free" && !isFree) return false;
+    if (paymentTypeFilter === "paid" && isFree) return false;
     return true;
   });
 

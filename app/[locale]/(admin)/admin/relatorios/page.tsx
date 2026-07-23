@@ -76,7 +76,7 @@ export default async function RelatoriosPage({ params, searchParams }: Props) {
         user:   { select: { name: true, email: true } },
         course: { select: { title: true, price: true } },
         payments: {
-          select: { id: true, method: true, status: true, amount: true, paidAt: true },
+          select: { id: true, method: true, status: true, amount: true, paidAt: true, couponId: true },
           orderBy: { createdAt: "desc" },
           take: 1,
         },
@@ -85,6 +85,14 @@ export default async function RelatoriosPage({ params, searchParams }: Props) {
       take: 1000,
     }),
   ]);
+
+  // Payment.couponId não tem relação navegável direta com Coupon no schema —
+  // resolve os códigos à parte e monta um mapa id -> code.
+  const couponIds = [...new Set(enrollments.map((e) => e.payments[0]?.couponId).filter((id): id is string => !!id))];
+  const coupons = couponIds.length
+    ? await prisma.coupon.findMany({ where: { id: { in: couponIds } }, select: { id: true, code: true } })
+    : [];
+  const couponCodeById = new Map(coupons.map((c) => [c.id, c.code]));
 
   // Totais — conta receita dos pagamentos PAID + valor do curso quando PENDING (compromisso)
   const totalReceita = enrollments.reduce((s, e) => {
@@ -147,6 +155,7 @@ export default async function RelatoriosPage({ params, searchParams }: Props) {
                   <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">{t("colStudent")}</th>
                   <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden md:table-cell">{t("colCourse")}</th>
                   <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden sm:table-cell">{t("colMethod")}</th>
+                  <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider hidden sm:table-cell">Cupom</th>
                   <th className="px-5 py-3 text-left font-sans text-xs font-semibold text-muted uppercase tracking-wider">Status pgto</th>
                   <th className="px-5 py-3 text-right font-sans text-xs font-semibold text-muted uppercase tracking-wider">{t("colValue")}</th>
                 </tr>
@@ -159,6 +168,7 @@ export default async function RelatoriosPage({ params, searchParams }: Props) {
                   const mc = methodColor[method] ?? methodColor.FREE;
                   const pc = payStatusColor[payStatus] ?? payStatusColor.PENDING;
                   const amount = pay ? toNum(pay.amount) : 0;
+                  const couponCode = pay?.couponId ? (couponCodeById.get(pay.couponId) ?? null) : null;
 
                   return (
                     <tr key={enr.id} className="hover:bg-background/50 transition-colors">
@@ -191,6 +201,15 @@ export default async function RelatoriosPage({ params, searchParams }: Props) {
                         </span>
                       </td>
 
+                      {/* Cupom */}
+                      <td className="px-5 py-3.5 hidden sm:table-cell">
+                        {couponCode ? (
+                          <span className="font-sans text-xs font-mono text-foreground">{couponCode}</span>
+                        ) : (
+                          <span className="font-sans text-xs text-muted">—</span>
+                        )}
+                      </td>
+
                       {/* Status pagamento */}
                       <td className="px-5 py-3.5">
                         <span className={`font-sans text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${pc}`}>
@@ -211,7 +230,7 @@ export default async function RelatoriosPage({ params, searchParams }: Props) {
 
               <tfoot>
                 <tr className="border-t-2 border-border bg-background">
-                  <td colSpan={5} className="px-5 py-3 font-sans text-sm font-semibold text-muted">
+                  <td colSpan={6} className="px-5 py-3 font-sans text-sm font-semibold text-muted">
                     {totalInscritos === 1 ? t("totalOne", { count: 1 }) : t("totalPlural", { count: totalInscritos })}
                   </td>
                   <td className="px-5 py-3 text-right font-sans text-sm font-bold text-foreground">

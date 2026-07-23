@@ -23,7 +23,7 @@ type Props = {
     user: { name: string | null; email: string; phone: string | null };
     course: { title: string; slug: string; totalSeats: number | null };
     _count: { attendances: number };
-    payment: { status: string; method: string; amount: number } | null;
+    payment: { status: string; method: string; amount: number; couponCode: string | null } | null;
   };
   dateLocale: string;
 };
@@ -115,12 +115,24 @@ export function EnrollmentRow({ enrollment: e, dateLocale }: Props) {
       </td>
       <td className="px-5 py-3.5 hidden md:table-cell">
         {e.payment ? (
-          <div className="flex flex-col gap-0.5">
-            <span className={`font-sans text-xs font-semibold ${e.payment.status === "PAID" ? "text-green-600" : "text-amber-500"}`}>
-              {e.payment.status === "PAID" ? "Pago" : "Aguardando"}
-            </span>
-            <span className="font-sans text-[10px] text-muted">{fmtBRL.format(e.payment.amount)}</span>
-          </div>
+          e.payment.method === "FREE" ? (
+            <div className="flex flex-col gap-0.5">
+              <span className="font-sans text-xs font-semibold text-blue-600">Grátis</span>
+              {e.payment.couponCode && (
+                <span className="font-sans text-[10px] text-muted">Cupom: {e.payment.couponCode}</span>
+              )}
+            </div>
+          ) : (
+            <div className="flex flex-col gap-0.5">
+              <span className={`font-sans text-xs font-semibold ${e.payment.status === "PAID" ? "text-green-600" : "text-amber-500"}`}>
+                {e.payment.status === "PAID" ? "Pago" : "Aguardando"}
+              </span>
+              <span className="font-sans text-[10px] text-muted">{fmtBRL.format(e.payment.amount)}</span>
+              {e.payment.couponCode && (
+                <span className="font-sans text-[10px] text-muted">Cupom: {e.payment.couponCode}</span>
+              )}
+            </div>
+          )
         ) : (
           <span className="font-sans text-xs text-muted">Grátis</span>
         )}

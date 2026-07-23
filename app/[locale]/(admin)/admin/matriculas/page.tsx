@@ -17,7 +17,7 @@ export default async function AdminMatriculasPage({
         user:   { select: { name: true, email: true, phone: true } },
         course: { select: { id: true, title: true, slug: true, totalSeats: true } },
         _count: { select: { attendances: { where: { status: { in: ["PRESENT", "LATE"] } } } } },
-        payments: { select: { id: true, status: true, method: true, amount: true }, orderBy: { createdAt: "desc" }, take: 1 },
+        payments: { select: { id: true, status: true, method: true, amount: true, couponId: true }, orderBy: { createdAt: "desc" }, take: 1 },
       },
       orderBy: { enrolledAt: "desc" },
     }),
@@ -28,12 +28,25 @@ export default async function AdminMatriculasPage({
     }),
   ]);
 
+  // Payment.couponId não tem relação navegável direta com Coupon no schema —
+  // resolve os códigos à parte e monta um mapa id -> code.
+  const couponIds = [...new Set(enrollments.map((e) => e.payments[0]?.couponId).filter((id): id is string => !!id))];
+  const coupons = couponIds.length
+    ? await prisma.coupon.findMany({ where: { id: { in: couponIds } }, select: { id: true, code: true } })
+    : [];
+  const couponCodeById = new Map(coupons.map((c) => [c.id, c.code]));
+
   const serialized = enrollments.map((e) => ({
     ...e,
     courseId: e.course.id,
     enrolledAt: e.enrolledAt.toISOString(),
     payment: e.payments[0]
-      ? { status: e.payments[0].status, method: e.payments[0].method, amount: Number(e.payments[0].amount) }
+      ? {
+          status: e.payments[0].status,
+          method: e.payments[0].method,
+          amount: Number(e.payments[0].amount),
+          couponCode: e.payments[0].couponId ? (couponCodeById.get(e.payments[0].couponId) ?? null) : null,
+        }
       : null,
   }));
 
