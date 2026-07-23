@@ -55,7 +55,10 @@ export function getHeroSlides(t: Translator): HeroSlide[] {
       title: t("heroCarousel.slide4.title"),
       titleHighlight: t("heroCarousel.slide4.titleHighlight"),
       description: t("heroCarousel.slide4.description"),
-      primaryCta: { label: t("heroCarousel.slide4.cta"), link: { type: "plain", href: "/live" } },
+      primaryCta: {
+        label: t("heroCarousel.slide4.cta"),
+        link: { type: "plain", href: "https://www.youtube.com/live/pXM8QzU5buI?si=wgwTDUn1vAqT5seB" },
+      },
       secondaryCta: {
         label: t("heroCarousel.slide4.ctaSecondary"),
         link: { type: "route", pathname: "/cursos/[slug]", slug: "dici-neurogastroenterologia-2026" },

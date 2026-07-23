@@ -16,8 +16,13 @@ const secondaryCtaClass =
 
 function HeroCtaLink({ label, link, className }: { label: string; link: HeroSlideLink; className: string }) {
   if (link.type === "plain") {
+    const isExternal = /^https?:\/\//.test(link.href);
     return (
-      <NextLink href={link.href} className={className}>
+      <NextLink
+        href={link.href}
+        className={className}
+        {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      >
         {label}
       </NextLink>
     );
