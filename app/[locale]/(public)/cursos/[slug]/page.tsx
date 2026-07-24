@@ -17,7 +17,14 @@ import {
 import { prisma } from "@/lib/prisma";
 import { localizedCourse } from "@/lib/i18n-content";
 import { auth } from "@/auth";
-import { isLiveDiciPromoActive, liveDiciPromoDeadlineLabel, LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
+import {
+  isLiveDiciPromoActive,
+  liveDiciPromoDeadlineLabel,
+  liveDiciPromoPrice,
+  LIVE_DICI_SLUG,
+  LIVE_DICI_COUPON_CODE,
+  LIVE_DICI_DISCOUNT_PCT,
+} from "@/lib/live-dici-promo";
 import ShareButton from "./ShareButton";
 
 
@@ -199,6 +206,12 @@ export default async function CoursePage({ params }: Props) {
       : "Híbrido";
   const primaryTag = course.tags[0]?.tag.name;
 
+  const promoActive = isLiveDiciPromoActive(course.slug);
+  const fullPrice = Number(course.price);
+  const promoPrice = liveDiciPromoPrice(fullPrice);
+  const fmtPrice = (v: number) =>
+    new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
+
   return (
     <div>
       <script
@@ -284,25 +297,45 @@ export default async function CoursePage({ params }: Props) {
                 className="rounded-2xl border border-white/10 p-6"
                 style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(8px)" }}
               >
-                {isLiveDiciPromoActive(course.slug) && (
-                  <div className="inline-flex items-center gap-1.5 bg-red-500/15 border border-red-400/30 rounded-full px-3 py-1 mb-3">
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
-                    <p className="font-sans text-[11px] font-semibold text-red-300 uppercase tracking-wide">
-                      Preço promocional da Live — válido por 72h, até {liveDiciPromoDeadlineLabel()}
-                    </p>
+                {promoActive && (
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="inline-flex items-center bg-[#C9A84C] text-[#0C1E24] font-sans text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
+                      1º Lote
+                    </span>
+                    <span className="inline-flex items-center bg-red-500/15 border border-red-400/30 text-red-300 font-sans text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
+                      {LIVE_DICI_DISCOUNT_PCT}% OFF
+                    </span>
                   </div>
                 )}
                 <p className="font-serif text-4xl font-semibold text-accent mb-1">
-                  {new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(Number(course.price))}
+                  {promoActive ? (
+                    <>
+                      <span className="font-sans text-lg font-normal text-white/35 line-through align-middle mr-2">
+                        {fmtPrice(fullPrice)}
+                      </span>
+                      {fmtPrice(promoPrice)}
+                    </>
+                  ) : (
+                    fmtPrice(fullPrice)
+                  )}
                 </p>
-                <p className="font-sans text-xs text-white/40 mb-6">
-                  {course.category === "ONLINE"
-                    ? "Acesso completo ao curso"
-                    : "Por pessoa, inclui todos os módulos"}
-                </p>
+                {promoActive && (
+                  <p className="font-sans text-xs text-[#C9A84C] mb-1">
+                    Use o cupom <span className="font-mono font-semibold">{LIVE_DICI_COUPON_CODE}</span> no checkout
+                  </p>
+                )}
+                <div className="mb-6">
+                  <p className="font-sans text-xs text-white/40">
+                    {course.category === "ONLINE"
+                      ? "Acesso completo ao curso"
+                      : "Por pessoa, inclui todos os módulos"}
+                  </p>
+                  {promoActive && (
+                    <p className="font-sans text-[11px] text-red-300 mt-1">
+                      Oferta válida até {liveDiciPromoDeadlineLabel()} — 72h após a Live
+                    </p>
+                  )}
+                </div>
 
                 {course.totalSeats && reservedPct > 0 && (
                   <div className="mb-5">
@@ -600,23 +633,43 @@ export default async function CoursePage({ params }: Props) {
 
           {/* CTA mobile */}
           <div className="lg:hidden bg-surface border border-border rounded-2xl p-6">
-            {isLiveDiciPromoActive(course.slug) && (
-              <div className="inline-flex items-center gap-1.5 bg-red-500/10 border border-red-400/30 rounded-full px-3 py-1 mb-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                <p className="font-sans text-[11px] font-semibold text-red-600 uppercase tracking-wide">
-                  Preço promocional da Live — válido por 72h, até {liveDiciPromoDeadlineLabel()}
-                </p>
+            {promoActive && (
+              <div className="flex items-center gap-2 mb-3">
+                <span className="inline-flex items-center bg-[#C9A84C] text-[#0C1E24] font-sans text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
+                  1º Lote
+                </span>
+                <span className="inline-flex items-center bg-red-500/10 border border-red-400/30 text-red-600 font-sans text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
+                  {LIVE_DICI_DISCOUNT_PCT}% OFF
+                </span>
               </div>
             )}
             <p className="font-serif text-3xl font-semibold text-primary mb-1">
-              {new Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              }).format(Number(course.price))}
+              {promoActive ? (
+                <>
+                  <span className="font-sans text-base font-normal text-muted line-through align-middle mr-2">
+                    {fmtPrice(fullPrice)}
+                  </span>
+                  {fmtPrice(promoPrice)}
+                </>
+              ) : (
+                fmtPrice(fullPrice)
+              )}
             </p>
-            <p className="font-sans text-xs text-muted mb-5">
-              {course.hours}{t("hours")}
-            </p>
+            {promoActive && (
+              <p className="font-sans text-xs text-[#946f16] mb-1">
+                Use o cupom <span className="font-mono font-semibold">{LIVE_DICI_COUPON_CODE}</span> no checkout
+              </p>
+            )}
+            <div className="mb-5">
+              <p className="font-sans text-xs text-muted">
+                {course.hours}{t("hours")}
+              </p>
+              {promoActive && (
+                <p className="font-sans text-[11px] text-red-600 mt-1">
+                  Válido até {liveDiciPromoDeadlineLabel()} — 72h após a Live
+                </p>
+              )}
+            </div>
             {course.externalCheckoutUrl ? (
               <a
                 href={course.externalCheckoutUrl}
