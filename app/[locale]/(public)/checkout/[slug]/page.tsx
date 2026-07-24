@@ -76,7 +76,7 @@ export default async function CheckoutPage({ params }: Props) {
       isGuest={!session}
       promoNotice={
         isLiveDiciPromoActive(slug)
-          ? `1º Lote: use o cupom ${LIVE_DICI_COUPON_CODE} para ${LIVE_DICI_DISCOUNT_PCT}% OFF — válido até ${liveDiciPromoDeadlineLabel()} (72h após a Live)`
+          ? `Oferta Roma V: use o cupom ${LIVE_DICI_COUPON_CODE} para ${LIVE_DICI_DISCOUNT_PCT}% OFF — válido até ${liveDiciPromoDeadlineLabel()} (72h após a Live)`
           : undefined
       }
     />

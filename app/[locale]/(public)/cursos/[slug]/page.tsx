@@ -300,7 +300,7 @@ export default async function CoursePage({ params }: Props) {
                 {promoActive && (
                   <div className="flex items-center gap-2 mb-3">
                     <span className="inline-flex items-center bg-[#C9A84C] text-[#0C1E24] font-sans text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
-                      1º Lote
+                      Oferta Roma V
                     </span>
                     <span className="inline-flex items-center bg-red-500/15 border border-red-400/30 text-red-300 font-sans text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full">
                       {LIVE_DICI_DISCOUNT_PCT}% OFF
