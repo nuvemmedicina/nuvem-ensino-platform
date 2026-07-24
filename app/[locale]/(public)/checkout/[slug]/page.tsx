@@ -3,13 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { localizedCourse } from "@/lib/i18n-content";
-import {
-  isLiveDiciPromoActive,
-  liveDiciPromoDeadlineLabel,
-  LIVE_DICI_SLUG,
-  LIVE_DICI_COUPON_CODE,
-  LIVE_DICI_DISCOUNT_PCT,
-} from "@/lib/live-dici-promo";
+import { LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
 import CheckoutClient from "./CheckoutClient";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
@@ -74,11 +68,6 @@ export default async function CheckoutPage({ params }: Props) {
       userPhone={dbUser?.phone ?? ""}
       hasPayment={hasPayment}
       isGuest={!session}
-      promoNotice={
-        isLiveDiciPromoActive(slug)
-          ? `Oferta Roma V: use o cupom ${LIVE_DICI_COUPON_CODE} para ${LIVE_DICI_DISCOUNT_PCT}% OFF — válido até ${liveDiciPromoDeadlineLabel()} (72h após a Live)`
-          : undefined
-      }
     />
   );
 }
