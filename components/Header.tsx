@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+import CopyCouponCode from "@/components/CopyCouponCode";
 import {
   isLivePromoWindowOpen,
   liveDiciPromoDeadlineLabel,
@@ -38,15 +39,21 @@ export default function Header() {
   return (
     <header className="w-full sticky top-0 z-50" style={{ backdropFilter: "blur(16px)" }}>
       {showPromoBar && (
-        <Link
-          href={{ pathname: "/cursos/[slug]", params: { slug: LIVE_DICI_SLUG } }}
-          className="block bg-[#B8272C] text-white text-center py-2 px-4 hover:bg-[#9c2024] transition-colors"
-        >
-          <span className="font-sans text-xs sm:text-sm">
-            <strong className="font-bold">Condição Especial: {LIVE_DICI_COUPON_CODE}</strong>
-            <span className="hidden sm:inline"> — Oferta válida até {liveDiciPromoDeadlineLabel()} (72h após a Live)</span>
-          </span>
-        </Link>
+        <div className="bg-[#B8272C] text-white py-2 px-4 flex items-center justify-center gap-1.5 flex-wrap">
+          <Link
+            href={{ pathname: "/cursos/[slug]", params: { slug: LIVE_DICI_SLUG } }}
+            className="font-sans text-xs sm:text-sm font-bold hover:underline"
+          >
+            Condição Especial:
+          </Link>
+          <CopyCouponCode code={LIVE_DICI_COUPON_CODE} className="text-white" />
+          <Link
+            href={{ pathname: "/cursos/[slug]", params: { slug: LIVE_DICI_SLUG } }}
+            className="hidden sm:inline font-sans text-xs sm:text-sm hover:underline"
+          >
+            — Oferta válida até {liveDiciPromoDeadlineLabel()} (72h após a Live)
+          </Link>
+        </div>
       )}
       <div className="border-b border-border" style={{ background: "rgba(255,255,255,0.85)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

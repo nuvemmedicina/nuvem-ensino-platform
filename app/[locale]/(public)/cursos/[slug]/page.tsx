@@ -26,6 +26,7 @@ import {
   LIVE_DICI_DISCOUNT_PCT,
 } from "@/lib/live-dici-promo";
 import ShareButton from "./ShareButton";
+import CopyCouponCode from "@/components/CopyCouponCode";
 
 
 type Props = {
@@ -320,8 +321,8 @@ export default async function CoursePage({ params }: Props) {
                   )}
                 </p>
                 {promoActive && (
-                  <p className="font-sans text-xs text-[#C9A84C] mb-1">
-                    Use o cupom <span className="font-mono font-semibold">{LIVE_DICI_COUPON_CODE}</span> no checkout
+                  <p className="font-sans text-xs text-[#C9A84C] mb-1 flex items-center gap-1.5 flex-wrap">
+                    Use o cupom <CopyCouponCode code={LIVE_DICI_COUPON_CODE} className="text-[#C9A84C]" /> no checkout
                   </p>
                 )}
                 <div className="mb-6">
@@ -656,8 +657,8 @@ export default async function CoursePage({ params }: Props) {
               )}
             </p>
             {promoActive && (
-              <p className="font-sans text-xs text-[#946f16] mb-1">
-                Use o cupom <span className="font-mono font-semibold">{LIVE_DICI_COUPON_CODE}</span> no checkout
+              <p className="font-sans text-xs text-[#946f16] mb-1 flex items-center gap-1.5 flex-wrap">
+                Use o cupom <CopyCouponCode code={LIVE_DICI_COUPON_CODE} className="text-[#946f16]" /> no checkout
               </p>
             )}
             <div className="mb-5">
