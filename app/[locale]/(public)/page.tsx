@@ -386,12 +386,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                       <span className="absolute bottom-3 left-4 font-sans text-[10px] font-bold uppercase tracking-widest text-accent bg-accent/15 backdrop-blur-sm px-2.5 py-1 rounded-full border border-accent/20">
                         Online
                       </span>
-                      {/* Badge promoção DICI */}
-                      {course.slug === "dici-neurogastroenterologia-2026" && (
-                        <span className="absolute top-3 right-3 w-11 h-11 rounded-full bg-amber-400 text-amber-950 font-sans font-black text-[13px] flex items-center justify-center shadow-lg border-2 border-amber-300 leading-none">
-                          10%
-                        </span>
-                      )}
                     </div>
 
                     <div className="flex flex-col flex-1 p-5 gap-3">
