@@ -1,17 +1,10 @@
 ﻿"use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
-import CopyCouponCode from "@/components/CopyCouponCode";
-import {
-  isLivePromoWindowOpen,
-  liveDiciPromoDeadlineLabel,
-  LIVE_DICI_COUPON_CODE,
-  LIVE_DICI_SLUG,
-} from "@/lib/live-dici-promo";
 
 type InternalHref = "/cursos" | "/sobre" | "/instrutores" | "/entrar" | "/cadastro" | "/faq" | "/";
 
@@ -28,33 +21,9 @@ const externalLinks: { labelKey: "blog" | "nuchemMedicina"; href: string }[] = [
 export default function Header() {
   const t = useTranslations("nav");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [showPromoBar, setShowPromoBar] = useState(false);
-
-  // Calculado só no cliente, após montar, pra evitar mismatch de hidratação
-  // (servidor e primeiro paint do cliente ficam idênticos: nenhum sabe "agora").
-  useEffect(() => {
-    setShowPromoBar(isLivePromoWindowOpen());
-  }, []);
 
   return (
     <header className="w-full sticky top-0 z-50" style={{ backdropFilter: "blur(16px)" }}>
-      {showPromoBar && (
-        <div className="bg-[#B8272C] text-white py-2 px-4 flex items-center justify-center gap-1.5 flex-wrap">
-          <Link
-            href={{ pathname: "/cursos/[slug]", params: { slug: LIVE_DICI_SLUG } }}
-            className="font-sans text-xs sm:text-sm font-bold hover:underline"
-          >
-            Condição Especial:
-          </Link>
-          <CopyCouponCode code={LIVE_DICI_COUPON_CODE} className="text-white" />
-          <Link
-            href={{ pathname: "/cursos/[slug]", params: { slug: LIVE_DICI_SLUG } }}
-            className="hidden sm:inline font-sans text-xs sm:text-sm hover:underline"
-          >
-            — Oferta válida até {liveDiciPromoDeadlineLabel()} (72h após a Live)
-          </Link>
-        </div>
-      )}
       <div className="border-b border-border" style={{ background: "rgba(255,255,255,0.85)" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
