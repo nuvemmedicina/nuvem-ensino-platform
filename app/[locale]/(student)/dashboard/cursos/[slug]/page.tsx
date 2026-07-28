@@ -14,7 +14,10 @@ import {
   Star,
   BarChart2,
   FileText,
+  MessageCircle,
 } from "lucide-react";
+
+const DICI_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/Bu30QwD28QP2FJbYW8wMdp";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import CurriculumAccordion from "./CurriculumAccordion";
@@ -458,6 +461,30 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
                 </p>
               )}
             </div>
+
+            {/* Grupo de dúvidas no WhatsApp */}
+            {course.slug === "dici-neurogastroenterologia-2026" && (
+              <div className="bg-surface border border-border rounded-2xl p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <MessageCircle className="w-4 h-4 text-green-600" />
+                  <p className="font-sans text-[10px] font-bold uppercase tracking-widest text-muted">
+                    Grupo de dúvidas
+                  </p>
+                </div>
+                <p className="font-sans text-xs text-muted leading-relaxed mb-4">
+                  Entre no grupo do WhatsApp da turma para tirar dúvidas direto com a Dra. Vera Ângelo.
+                </p>
+                <a
+                  href={DICI_WHATSAPP_GROUP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 font-sans text-sm font-semibold px-4 py-2.5 rounded-full bg-green-500 text-white hover:bg-green-600 transition-colors"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Entrar no grupo
+                </a>
+              </div>
+            )}
 
             {/* Certificate criteria */}
             <div className="bg-surface border border-border rounded-2xl p-5">
