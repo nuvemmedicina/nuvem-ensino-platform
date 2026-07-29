@@ -13,10 +13,10 @@ type State = { error: string | null };
 
 async function submitAction(_prev: State, formData: FormData): Promise<State> {
   try {
-    await createInstructor(formData);
-    return { error: null };
-  } catch (e) {
-    return { error: e instanceof Error ? e.message : "Erro ao cadastrar instrutor." };
+    const result = await createInstructor(formData);
+    return { error: result?.error ?? null };
+  } catch {
+    return { error: "Erro inesperado ao cadastrar instrutor. Tente novamente." };
   }
 }
 

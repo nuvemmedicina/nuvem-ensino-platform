@@ -36,10 +36,14 @@ export function InstructorCard({ instructor: inst }: { instructor: Instructor })
     setError(null);
     startTransition(async () => {
       try {
-        await updateInstructor(inst.id, formData);
+        const result = await updateInstructor(inst.id, formData);
+        if (result?.error) {
+          setError(result.error);
+          return;
+        }
         setEditing(false);
-      } catch (e) {
-        setError(e instanceof Error ? e.message : "Erro ao salvar.");
+      } catch {
+        setError("Erro inesperado ao salvar. Tente novamente.");
       }
     });
   }
@@ -50,7 +54,14 @@ export function InstructorCard({ instructor: inst }: { instructor: Instructor })
       return;
     }
     if (!confirm(`Remover o instrutor "${inst.user.name}"? O papel voltará para Aluno.`)) return;
-    startTransition(() => deleteInstructor(inst.id));
+    startTransition(async () => {
+      try {
+        const result = await deleteInstructor(inst.id);
+        if (result?.error) alert(result.error);
+      } catch {
+        alert("Erro inesperado ao remover. Tente novamente.");
+      }
+    });
   }
 
   const raw = inst.user.name ?? inst.user.email ?? "?";
