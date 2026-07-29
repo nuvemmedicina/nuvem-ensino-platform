@@ -635,7 +635,7 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
                 return (
                   <a
                     key={ref.id}
-                    href={ref.fileUrl}
+                    href={`/api/references/${ref.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="shrink-0 relative w-36 h-52 rounded-xl overflow-hidden group"

@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const accountId = process.env.CLOUDFLARE_ACCOUNT_ID!;
@@ -28,4 +28,16 @@ export async function getR2UploadUrl(key: string, contentType: string, fileSizeB
 
 export async function deleteR2Object(key: string) {
   await r2.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
+}
+
+export async function getR2DownloadUrl(key: string, expiresIn = 3600) {
+  const cmd = new GetObjectCommand({ Bucket: bucket, Key: key });
+  return getSignedUrl(r2, cmd, { expiresIn });
+}
+
+// O fileUrl salvo no banco aponta pro endpoint S3 do R2 (bucket privado, sem
+// acesso público), então pra baixar é preciso extrair a key e assinar de novo.
+export function r2KeyFromPublicUrl(fileUrl: string): string {
+  const path = decodeURIComponent(new URL(fileUrl).pathname).replace(/^\//, "");
+  return path.startsWith(`${bucket}/`) ? path.slice(bucket.length + 1) : path;
 }

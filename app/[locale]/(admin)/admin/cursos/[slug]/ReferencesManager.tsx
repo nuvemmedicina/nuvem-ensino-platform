@@ -84,7 +84,7 @@ export function ReferencesManager({ courseSlug, initial }: { courseSlug: string;
             <p className="font-sans text-sm font-medium text-foreground truncate">{ref.title}</p>
             {ref.fileSize && <p className="font-sans text-xs text-muted">{formatBytes(ref.fileSize)}</p>}
           </div>
-          <a href={ref.fileUrl} target="_blank" rel="noopener noreferrer"
+          <a href={`/api/references/${ref.id}`} target="_blank" rel="noopener noreferrer"
             className="p-1.5 text-muted hover:text-primary transition-colors" title="Abrir arquivo">
             <ExternalLink className="w-3.5 h-3.5" />
           </a>

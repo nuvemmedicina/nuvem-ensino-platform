@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { deleteR2Object } from "@/lib/r2";
+import { deleteR2Object, r2KeyFromPublicUrl } from "@/lib/r2";
 
 async function requireAdmin() {
   const session = await auth();
@@ -20,8 +20,7 @@ export async function DELETE(
 
   // Tenta deletar do R2 (ignora erros — URL pode ser externa)
   try {
-    const url = new URL(ref.fileUrl);
-    const key = url.pathname.replace(/^\//, "");
+    const key = r2KeyFromPublicUrl(ref.fileUrl);
     if (key.startsWith("references/")) await deleteR2Object(key);
   } catch {}
 
