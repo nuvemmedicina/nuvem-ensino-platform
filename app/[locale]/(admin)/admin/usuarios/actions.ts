@@ -34,7 +34,7 @@ export async function updateUser(
 
 export async function changeUserRole(
   userId: string,
-  newRole: "STUDENT" | "INSTRUCTOR" | "ADMIN"
+  newRole: "STUDENT" | "INSTRUCTOR" | "EDITOR" | "ADMIN"
 ) {
   const session = await auth();
   const role = (session?.user as { role?: string } | undefined)?.role;

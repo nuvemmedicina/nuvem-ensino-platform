@@ -12,7 +12,7 @@ export default async function RelatorioProvasPage({ params }: Props) {
   const { slug } = await params;
   const session = await auth();
   const role = (session?.user as { role?: string } | undefined)?.role;
-  if (!session?.user?.id || role !== "ADMIN") redirect("/entrar");
+  if (!session?.user?.id || (role !== "ADMIN" && role !== "EDITOR")) redirect("/entrar");
 
   const course = await prisma.course.findFirst({
     where: { slug },

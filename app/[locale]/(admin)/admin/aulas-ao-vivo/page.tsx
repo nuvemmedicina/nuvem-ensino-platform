@@ -14,7 +14,7 @@ export default async function AulasAoVivoPage({
   const t = await getTranslations({ locale, namespace: "admin.liveSessions" });
 
   const session = await auth();
-  if (session?.user?.role !== "ADMIN") redirect("/dashboard");
+  if (session?.user?.role !== "ADMIN" && session?.user?.role !== "EDITOR") redirect("/dashboard");
 
   const [courses, liveSessions] = await Promise.all([
     prisma.course.findMany({

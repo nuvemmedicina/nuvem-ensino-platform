@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 async function requireAdmin() {
   const session = await auth();
   const role = (session?.user as { role?: string } | undefined)?.role;
-  if (!session?.user?.id || role !== "ADMIN") redirect("/entrar");
+  if (!session?.user?.id || (role !== "ADMIN" && role !== "EDITOR")) redirect("/entrar");
 }
 
 export async function createModuleQuiz(moduleId: string, courseSlug: string) {

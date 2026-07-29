@@ -449,6 +449,7 @@
       "colRegistered": "Cadastro",
       "roleStudent": "Aluno",
       "roleInstructor": "Instrutor",
+      "roleEditor": "Editor",
       "roleAdmin": "Admin",
       "searchPlaceholder": "Buscar por nome ou e-mail…",
       "filterAll": "Todos os tipos"

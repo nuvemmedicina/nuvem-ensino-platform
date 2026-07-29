@@ -6,7 +6,7 @@ import { updateUser } from "./actions";
 import { RoleSelector } from "./RoleSelector";
 import { CheckCircle, XCircle } from "lucide-react";
 
-type Role = "STUDENT" | "INSTRUCTOR" | "ADMIN";
+type Role = "STUDENT" | "INSTRUCTOR" | "EDITOR" | "ADMIN";
 
 type User = {
   id: string;

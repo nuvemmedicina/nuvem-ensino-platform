@@ -5,7 +5,7 @@ import { UserFilters } from "./UserFilters";
 import { UserEditRow } from "./UserEditRow";
 import { getTranslations } from "next-intl/server";
 
-type Role = "STUDENT" | "INSTRUCTOR" | "ADMIN";
+type Role = "STUDENT" | "INSTRUCTOR" | "EDITOR" | "ADMIN";
 
 type Props = {
   params: Promise<{ locale: string }>;

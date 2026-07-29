@@ -6,7 +6,7 @@ import { auth } from "@/auth";
 export async function uploadFileToBlob(formData: FormData): Promise<string> {
   const session = await auth();
   const role = (session?.user as { role?: string } | undefined)?.role;
-  if (!session?.user?.id || (role !== "ADMIN" && role !== "INSTRUCTOR")) {
+  if (!session?.user?.id || (role !== "ADMIN" && role !== "INSTRUCTOR" && role !== "EDITOR")) {
     throw new Error("Não autorizado");
   }
   const file = formData.get("file") as File | null;

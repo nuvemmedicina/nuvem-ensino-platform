@@ -6,7 +6,7 @@ import { z } from "zod";
 async function requireAdmin() {
   const session = await auth();
   const role = (session?.user as { role?: string } | undefined)?.role;
-  if (!session?.user?.id || (role !== "ADMIN" && role !== "INSTRUCTOR")) return null;
+  if (!session?.user?.id || (role !== "ADMIN" && role !== "INSTRUCTOR" && role !== "EDITOR")) return null;
   return session;
 }
 

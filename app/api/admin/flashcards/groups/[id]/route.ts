@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 async function requireAdmin(req: NextRequest) {
   const session = await auth();
   const role = (session?.user as { role?: string } | undefined)?.role;
-  if (!session?.user?.id || role !== "ADMIN") {
+  if (!session?.user?.id || (role !== "ADMIN" && role !== "EDITOR")) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
   return null;

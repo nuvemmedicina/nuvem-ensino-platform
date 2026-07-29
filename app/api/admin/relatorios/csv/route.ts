@@ -19,7 +19,7 @@ export async function GET(req: Request) {
   // Verifica autenticação e role ADMIN
   const session = await auth();
   const role = (session?.user as { role?: string })?.role;
-  if (!session?.user?.id || role !== "ADMIN") {
+  if (!session?.user?.id || (role !== "ADMIN" && role !== "EDITOR")) {
     return Response.json({ error: "Não autorizado" }, { status: 403 });
   }
 

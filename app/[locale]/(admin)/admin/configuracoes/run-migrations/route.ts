@@ -435,6 +435,12 @@ export async function GET() {
     results.push("✓ eventSlug setado para Roma V");
   } catch (e) { results.push(`✗ UPDATE Roma V eventSlug: ${e}`); }
 
+  // ── Migração 18: valor EDITOR no enum Role ───────────────────────────────
+  try {
+    await prisma.$executeRawUnsafe(`ALTER TYPE "Role" ADD VALUE IF NOT EXISTS 'EDITOR' BEFORE 'ADMIN'`);
+    results.push("✓ Role.EDITOR adicionado");
+  } catch (e) { results.push(`✗ Role.EDITOR: ${e}`); }
+
   // ── Migração 17: matricular instrutores nos próprios cursos ───────────────
   try {
     // Instrutor principal do curso

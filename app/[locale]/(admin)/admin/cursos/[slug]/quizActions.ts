@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 async function requireAdmin() {
   const session = await auth();
   const role = (session?.user as { role?: string } | undefined)?.role;
-  if (!session?.user?.id || role !== "ADMIN") throw new Error("Não autorizado.");
+  if (!session?.user?.id || (role !== "ADMIN" && role !== "EDITOR")) throw new Error("Não autorizado.");
 }
 
 export async function createQuiz(lessonId: string, courseSlug: string, formData: FormData) {

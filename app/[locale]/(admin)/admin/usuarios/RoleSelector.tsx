@@ -4,17 +4,19 @@ import { useState, useTransition, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { changeUserRole } from "./actions";
 
-type Role = "STUDENT" | "INSTRUCTOR" | "ADMIN";
+type Role = "STUDENT" | "INSTRUCTOR" | "EDITOR" | "ADMIN";
 
 const roleColors: Record<Role, string> = {
   STUDENT:    "text-blue-600 bg-blue-500/10 border-blue-500/20",
   INSTRUCTOR: "text-teal-600 bg-teal-500/10 border-teal-500/20",
+  EDITOR:     "text-purple-600 bg-purple-500/10 border-purple-500/20",
   ADMIN:      "text-amber-600 bg-amber-500/10 border-amber-500/20",
 };
 
 const roleLabels: Record<Role, string> = {
   STUDENT:    "Aluno",
   INSTRUCTOR: "Instrutor",
+  EDITOR:     "Editor",
   ADMIN:      "Admin",
 };
 
@@ -72,7 +74,7 @@ export function RoleSelector({
 
       {open && (
         <div className="absolute left-0 top-full mt-1 z-[9999] bg-surface border border-border rounded-xl shadow-lg overflow-hidden min-w-[110px]">
-          {(["STUDENT", "INSTRUCTOR", "ADMIN"] as Role[]).map((r) => (
+          {(["STUDENT", "INSTRUCTOR", "EDITOR", "ADMIN"] as Role[]).map((r) => (
             <button
               key={r}
               onClick={() => select(r)}

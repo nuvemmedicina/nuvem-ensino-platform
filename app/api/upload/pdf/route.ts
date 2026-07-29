@@ -5,7 +5,7 @@ import { auth } from "@/auth";
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const session = await auth();
   const role = (session?.user as { role?: string } | undefined)?.role;
-  if (!session?.user?.id || (role !== "ADMIN" && role !== "INSTRUCTOR")) {
+  if (!session?.user?.id || (role !== "ADMIN" && role !== "INSTRUCTOR" && role !== "EDITOR")) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
 

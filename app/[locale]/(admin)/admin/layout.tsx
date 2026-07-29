@@ -20,7 +20,8 @@ export default async function AdminLayout({
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/admin");
 
   const role = (session.user as { role?: string }).role;
-  if (role !== "ADMIN") redirect("/dashboard");
+  if (role !== "ADMIN" && role !== "EDITOR") redirect("/dashboard");
+  const roleBadge = role === "EDITOR" ? "Editor" : "Administrador";
 
   const initials = (session.user.name ?? session.user.email ?? "A")
     .split(" ")
@@ -64,7 +65,7 @@ export default async function AdminLayout({
             />
           </Link>
           <span className="mt-2 inline-flex items-center font-sans text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/8 border border-primary/20 px-2 py-0.5 rounded-md">
-            Administrador
+            {roleBadge}
           </span>
         </div>
 
@@ -106,7 +107,7 @@ export default async function AdminLayout({
             </Link>
             <div className="flex items-center gap-2">
               <span className="font-sans text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/8 border border-primary/20 px-2 py-0.5 rounded-md">
-                Admin
+                {role === "EDITOR" ? "Editor" : "Admin"}
               </span>
               <SignOutButton />
             </div>

@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 // Returns: { uploadId, uploadUrl }
 export async function POST(req: NextRequest) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "ADMIN") {
+  if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "EDITOR")) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
 
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
 // Consulta o status de um upload e retorna o assetId quando pronto
 export async function GET(req: NextRequest) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "ADMIN") {
+  if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "EDITOR")) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
 
@@ -72,7 +72,7 @@ export async function GET(req: NextRequest) {
 // Salva o muxAssetId na aula (o playbackId chegará via webhook)
 export async function PATCH(req: NextRequest) {
   const session = await auth();
-  if (!session?.user || session.user.role !== "ADMIN") {
+  if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "EDITOR")) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
 

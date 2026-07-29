@@ -16,6 +16,7 @@ export function UserFilters() {
     { value: "ALL",        label: t("filterAll") },
     { value: "STUDENT",    label: t("roleStudent") },
     { value: "INSTRUCTOR", label: t("roleInstructor") },
+    { value: "EDITOR",     label: t("roleEditor") },
     { value: "ADMIN",      label: t("roleAdmin") },
   ];
 

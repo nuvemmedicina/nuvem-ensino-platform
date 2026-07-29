@@ -15,7 +15,7 @@ export async function GET(
   if (!ref) return NextResponse.json({ error: "Material não encontrado." }, { status: 404 });
 
   const role = (session.user as { role?: string }).role;
-  if (role !== "ADMIN" && role !== "INSTRUCTOR") {
+  if (role !== "ADMIN" && role !== "INSTRUCTOR" && role !== "EDITOR") {
     const enrollment = await prisma.enrollment.findUnique({
       where: { userId_courseId: { userId: session.user.id, courseId: ref.courseId } },
     });

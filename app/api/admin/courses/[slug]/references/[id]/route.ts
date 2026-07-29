@@ -6,7 +6,7 @@ import { deleteR2Object, r2KeyFromPublicUrl } from "@/lib/r2";
 async function requireAdmin() {
   const session = await auth();
   const role = (session?.user as { role?: string } | undefined)?.role;
-  return session?.user?.id && (role === "ADMIN" || role === "INSTRUCTOR");
+  return session?.user?.id && (role === "ADMIN" || role === "INSTRUCTOR" || role === "EDITOR");
 }
 
 export async function DELETE(
