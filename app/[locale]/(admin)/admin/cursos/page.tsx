@@ -139,9 +139,16 @@ export default async function AdminCursosPage({
 
                 {/* Action buttons */}
                 <div className="flex items-center gap-1 border-t border-border/50 pt-2 -mx-3 px-3">
+                  <Link
+                    href={`/admin/cursos/${course.slug}`}
+                    className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold px-1.5 py-1 rounded-md text-muted hover:text-primary hover:bg-primary/10 transition-colors"
+                  >
+                    <Pencil className="w-3 h-3" />
+                    Editar
+                  </Link>
                   <DuplicateButton
                     action={duplicateAction}
-                    className="p-1.5 rounded-md text-muted/50 hover:text-accent hover:bg-accent/10 transition-colors"
+                    className="ml-auto p-1.5 rounded-md text-muted/50 hover:text-accent hover:bg-accent/10 transition-colors"
                   />
                   <DeleteButton
                     action={deleteAction}
