@@ -64,7 +64,8 @@ export async function POST(req: Request) {
 
   // Validate coupon
   let discountPct = 0;
-  let appliedCoupon: { id: string; discountPct: number | null; maxUses: number | null; usesCount: number } | null = null;
+  let discountFlat = 0;
+  let appliedCoupon: { id: string; discountPct: number | null; discountFlat: unknown; maxUses: number | null; usesCount: number } | null = null;
   if (couponCode) {
     const coupon = await prisma.coupon.findFirst({
       where: { code: couponCode, active: true },
@@ -74,6 +75,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Cupom atingiu o limite de usos." }, { status: 400 });
       }
       if (coupon.discountPct) discountPct = coupon.discountPct;
+      if (coupon.discountFlat) discountFlat = Number(coupon.discountFlat);
       appliedCoupon = coupon;
     }
   }
@@ -121,7 +123,8 @@ export async function POST(req: Request) {
 
     dbCourse   = { ...result.course, price: Number(result.course.price) };
     enrollment = result.enrollment;
-    finalPrice = Math.round(dbCourse.price * (1 - discountPct / 100) * 100) / 100;
+    finalPrice = Math.round((dbCourse.price * (1 - discountPct / 100) - discountFlat) * 100) / 100;
+    if (finalPrice < 0) finalPrice = 0;
   } catch (err: unknown) {
     const e = err as Error & { status?: number };
     return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
