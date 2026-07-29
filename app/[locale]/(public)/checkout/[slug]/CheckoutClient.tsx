@@ -38,6 +38,7 @@ export default function CheckoutClient({
   const [cpf, setCpf] = useState("");
   const [couponApplied, setCouponApplied] = useState(false);
   const [couponDiscountPct, setCouponDiscountPct] = useState(0);
+  const [couponDiscountFlat, setCouponDiscountFlat] = useState(0);
   const [couponError, setCouponError] = useState("");
   const [isPending, startTransition] = useTransition();
   const [isCouponLoading, setIsCouponLoading] = useState(false);
@@ -95,8 +96,10 @@ export default function CheckoutClient({
     },
   };
 
-  const discount = couponApplied ? Math.round(price * (couponDiscountPct / 100) * 100) / 100 : 0;
-  const finalPrice = price - discount;
+  const discount = couponApplied
+    ? Math.round((price * (couponDiscountPct / 100) + couponDiscountFlat) * 100) / 100
+    : 0;
+  const finalPrice = Math.max(0, Math.round((price - discount) * 100) / 100);
 
   const formatted = (v: number) =>
     new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
@@ -130,6 +133,7 @@ export default function CheckoutClient({
       if (data.valid) {
         setCouponApplied(true);
         setCouponDiscountPct(data.discountPct ?? 0);
+        setCouponDiscountFlat(data.discountFlat ?? 0);
       } else {
         setCouponError(t("couponInvalid"));
       }
@@ -596,7 +600,9 @@ export default function CheckoutClient({
             {couponApplied ? (
               <div className="flex items-center gap-2 text-green-600 font-sans text-sm">
                 <CheckCircle className="w-4 h-4" />
-                Cupom aplicado, {couponDiscountPct}% de desconto
+                Cupom aplicado, {couponDiscountPct > 0
+                  ? `${couponDiscountPct}% de desconto`
+                  : `${formatted(couponDiscountFlat)} de desconto`}
               </div>
             ) : (
               <div className="flex gap-2">
