@@ -20,7 +20,7 @@ import { auth } from "@/auth";
 import { LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
 import ShareButton from "./ShareButton";
 
-
+import { APP_URL } from "@/lib/appUrl";
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
 };
@@ -152,7 +152,6 @@ export default async function CoursePage({ params }: Props) {
     instructorBio:  course.instructor.bio             ?? null,
   };
 
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br";
   const courseJsonLd = {
     "@context": "https://schema.org",
     "@type": "Course",
@@ -233,7 +232,7 @@ export default async function CoursePage({ params }: Props) {
             </nav>
             <ShareButton
               title={lc.title}
-              url={`${process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br"}/cursos/${course.slug}`}
+              url={`${APP_URL}/cursos/${course.slug}`}
             />
           </div>
 

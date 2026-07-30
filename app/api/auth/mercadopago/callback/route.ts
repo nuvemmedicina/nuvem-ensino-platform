@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { APP_URL } from "@/lib/appUrl";
 
 // GET /api/auth/mercadopago/callback?code=...&state=...
 // Mercado Pago redirects here after the seller authorizes the app.
@@ -9,12 +10,10 @@ export async function GET(req: NextRequest) {
   const code = searchParams.get("code");
   const error = searchParams.get("error");
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br";
-
   if (error || !code) {
     const msg = error ?? "Código de autorização ausente.";
     return NextResponse.redirect(
-      `${appUrl}/admin/configuracoes/pagamentos?mp_error=${encodeURIComponent(msg)}`,
+      `${APP_URL}/admin/configuracoes/pagamentos?mp_error=${encodeURIComponent(msg)}`,
     );
   }
 
@@ -23,7 +22,7 @@ export async function GET(req: NextRequest) {
 
   if (!clientId || !clientSecret) {
     return NextResponse.redirect(
-      `${appUrl}/admin/configuracoes/pagamentos?mp_error=${encodeURIComponent("MP_CLIENT_ID ou MP_CLIENT_SECRET não configurado.")}`,
+      `${APP_URL}/admin/configuracoes/pagamentos?mp_error=${encodeURIComponent("MP_CLIENT_ID ou MP_CLIENT_SECRET não configurado.")}`,
     );
   }
 
@@ -36,7 +35,7 @@ export async function GET(req: NextRequest) {
         client_id: clientId,
         client_secret: clientSecret,
         code,
-        redirect_uri: `${appUrl}/api/auth/mercadopago/callback`,
+        redirect_uri: `${APP_URL}/api/auth/mercadopago/callback`,
         grant_type: "authorization_code",
       }),
     });
@@ -65,12 +64,12 @@ export async function GET(req: NextRequest) {
     ]);
 
     return NextResponse.redirect(
-      `${appUrl}/admin/configuracoes/pagamentos?mp_ok=1`,
+      `${APP_URL}/admin/configuracoes/pagamentos?mp_ok=1`,
     );
   } catch (err) {
     const msg = (err as Error).message;
     return NextResponse.redirect(
-      `${appUrl}/admin/configuracoes/pagamentos?mp_error=${encodeURIComponent(msg)}`,
+      `${APP_URL}/admin/configuracoes/pagamentos?mp_error=${encodeURIComponent(msg)}`,
     );
   }
 }

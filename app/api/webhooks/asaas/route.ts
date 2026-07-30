@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendEnrollmentConfirmation, sendPaymentPendingEmail } from "@/lib/email";
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.nuvemensino.com.br";
+import { APP_URL } from "@/lib/appUrl";
 
 export async function POST(req: NextRequest) {
   const secret = process.env.ASAAS_WEBHOOK_TOKEN;

@@ -11,11 +11,11 @@ import {
 import { LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
 import { createPasswordResetToken } from "@/lib/tokens";
 import { sendSetPasswordEmail } from "@/lib/email";
+import { APP_URL } from "@/lib/appUrl";
 
 export async function POST(req: Request) {
   const session = await auth();
   const { courseSlug, method, couponCode, installments, whatsapp, cpf, name, email } = await req.json();
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br";
 
   // ── Resolve o comprador: sessão logada, ou checkout como convidado (só habilitado
   // para o curso da live, pra não afetar o checkout dos demais cursos) ────────────
@@ -145,8 +145,8 @@ export async function POST(req: Request) {
   // Destino pós-pagamento: aluno logado vai direto pro curso; convidado precisa
   // antes criar a senha de acesso (e-mail disparado logo abaixo).
   const successUrl = session
-    ? `${appUrl}/dashboard/cursos/${courseSlug}?sucesso=1`
-    : `${appUrl}/entrar?callbackUrl=/dashboard/cursos/${courseSlug}&sucesso=1`;
+    ? `${APP_URL}/dashboard/cursos/${courseSlug}?sucesso=1`
+    : `${APP_URL}/entrar?callbackUrl=/dashboard/cursos/${courseSlug}&sucesso=1`;
 
   // Convidado novo: dispara e-mail para criar senha de acesso (não bloqueia a resposta)
   if (isNewGuestUser) {
@@ -201,7 +201,7 @@ export async function POST(req: Request) {
       ],
       metadata: { enrollmentId: enrollment.id, userId },
       success_url: successUrl,
-      cancel_url:  `${appUrl}/checkout/${courseSlug}?cancelado=1`,
+      cancel_url:  `${APP_URL}/checkout/${courseSlug}?cancelado=1`,
     });
 
     await prisma.payment.create({

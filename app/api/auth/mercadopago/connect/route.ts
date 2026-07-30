@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { APP_URL } from "@/lib/appUrl";
 
 // GET /api/auth/mercadopago/connect
 // Admin-only: generates the MP OAuth authorization URL and returns it.
@@ -18,8 +19,7 @@ export async function GET() {
     );
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br";
-  const redirectUri = `${appUrl}/api/auth/mercadopago/callback`;
+  const redirectUri = `${APP_URL}/api/auth/mercadopago/callback`;
 
   // state = opaque value to prevent CSRF; we use a timestamp here (simple & stateless)
   const state = Buffer.from(String(Date.now())).toString("base64url");

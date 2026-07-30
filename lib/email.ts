@@ -1,10 +1,10 @@
 ﻿import { Resend } from "resend";
+import { APP_URL } from "@/lib/appUrl";
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY ?? "re_placeholder");
 }
 const FROM = process.env.EMAIL_FROM ?? "NU.V.E.M ENSINO <cursos@nuvemensino.com.br>";
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://cursos.nuvemmedicina.com.br";
 
 export type DeliveryResult =
   | { ok: true; id: string | undefined }

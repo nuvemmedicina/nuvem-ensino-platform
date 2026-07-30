@@ -9,6 +9,7 @@ import ServiceWorkerRegistrar from "@/components/ServiceWorkerRegistrar";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
+import { APP_URL } from "@/lib/appUrl";
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 const cormorant = Cormorant_Garamond({
@@ -21,8 +22,6 @@ const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://nuvemensino.com.br";
 
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
