@@ -229,7 +229,10 @@ export function ModuleQuizPanel({ moduleTitle, quiz, previousAttempts }: Props) 
             </span>
           </div>
 
-          <p className="font-serif text-base font-medium text-foreground leading-relaxed mb-5">
+          {/* O enunciado precisa dominar a tela: são casos clínicos longos, e a
+              serifada tem altura de x baixa — no tamanho antigo lia-se pior que
+              as alternativas, invertendo a hierarquia. */}
+          <p className="font-serif text-xl sm:text-2xl font-medium text-foreground leading-snug mb-6">
             {currentQuestion.text}
           </p>
 

@@ -125,7 +125,7 @@ export function TreinoPanel({ quizId, moduleTitle }: { quizId: string; moduleTit
             </span>
           )}
 
-          <p className="font-serif text-base font-medium text-foreground leading-relaxed mb-5">
+          <p className="font-serif text-xl sm:text-2xl font-medium text-foreground leading-snug mb-6">
             {questao.text}
           </p>
 
