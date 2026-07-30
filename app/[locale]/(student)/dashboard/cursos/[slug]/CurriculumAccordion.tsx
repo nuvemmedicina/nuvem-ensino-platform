@@ -12,6 +12,7 @@ import {
   Mic,
   BookOpen,
 } from "lucide-react";
+import { moduleColor } from "@/lib/moduleColors";
 
 type Lesson = {
   id: string;
@@ -100,26 +101,40 @@ export default function CurriculumAccordion({ courseSlug, modules, progressMap, 
           const modLessons = mod.topics.flatMap((t) => t.lessons);
           const modDone = modLessons.filter((l) => progressMap[l.id]).length;
           const isOpen = !!openModules[mod.id];
+          // Cada módulo tem sua cor, a mesma em toda a plataforma. Módulo
+          // bloqueado fica em cinza: cor aqui indicaria disponibilidade.
+          const cor = moduleColor(modIdx);
 
           return (
             <div key={mod.id} className={modIdx > 0 ? "border-t border-border" : ""}>
               {/* Module header */}
               <button
                 onClick={() => !locked && setOpenModules((p) => ({ ...p, [mod.id]: !p[mod.id] }))}
-                className={`w-full flex items-center justify-between px-5 py-4 text-left transition-colors ${
-                  locked ? "cursor-default" : "hover:bg-background"
+                className={`w-full flex items-center justify-between px-5 py-4 text-left transition-colors border-l-4 ${
+                  locked ? "cursor-default" : "hover:brightness-[0.98]"
                 }`}
+                style={
+                  locked
+                    ? { borderLeftColor: "transparent" }
+                    : { backgroundColor: cor.tint, borderLeftColor: cor.accent }
+                }
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   {locked ? (
                     <Lock className="w-4 h-4 text-muted shrink-0" />
                   ) : (
-                    <div className="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center shrink-0">
-                      <span className="font-sans text-[10px] font-bold text-muted">{modIdx + 1}</span>
+                    <div
+                      className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
+                      style={{ backgroundColor: cor.accent }}
+                    >
+                      <span className="font-sans text-[10px] font-bold text-white">{modIdx + 1}</span>
                     </div>
                   )}
                   <div className="min-w-0">
-                    <p className="font-sans text-sm font-semibold text-foreground leading-snug truncate">
+                    <p
+                      className="font-sans text-sm font-semibold leading-snug truncate"
+                      style={{ color: locked ? undefined : cor.accent }}
+                    >
                       {mod.title}
                     </p>
                     {locked ? (
@@ -148,13 +163,19 @@ export default function CurriculumAccordion({ courseSlug, modules, progressMap, 
 
               {/* Module lessons */}
               {!locked && isOpen && (
-                <div className="border-t border-border/60">
+                <div className="border-t" style={{ borderTopColor: cor.border }}>
                   {mod.topics.map((topic, topicIdx) => (
                     <div key={topic.id}>
                       {/* Topic label */}
-                      <div className={`flex items-center gap-2 px-5 py-2.5 bg-background/60 ${topicIdx > 0 ? "border-t border-border/40" : ""}`}>
-                        <BookOpen className="w-3 h-3 text-primary/50 shrink-0" />
-                        <p className="font-sans text-[11px] font-semibold text-primary/70 uppercase tracking-wide">
+                      <div
+                        className={`flex items-center gap-2 px-5 py-2.5 ${topicIdx > 0 ? "border-t border-border/40" : ""}`}
+                        style={{ backgroundColor: cor.tint }}
+                      >
+                        <BookOpen className="w-3 h-3 shrink-0" style={{ color: cor.accent, opacity: 0.6 }} />
+                        <p
+                          className="font-sans text-[11px] font-semibold uppercase tracking-wide"
+                          style={{ color: cor.accent, opacity: 0.85 }}
+                        >
                           {topic.title}
                         </p>
                         {topic.apostilaUrl && (

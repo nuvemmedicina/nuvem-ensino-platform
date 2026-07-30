@@ -21,6 +21,7 @@ import { LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
 import ShareButton from "./ShareButton";
 
 import { APP_URL } from "@/lib/appUrl";
+import { moduleColor } from "@/lib/moduleColors";
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
 };
@@ -400,14 +401,22 @@ export default async function CoursePage({ params }: Props) {
                 {course.modules.map((mod, i) => (
                   <details
                     key={mod.id}
-                    className="group rounded-xl border border-border bg-surface overflow-hidden"
+                    className="group rounded-xl border bg-surface overflow-hidden"
+                    style={{ borderColor: moduleColor(i).border }}
                     open={i === 0}
                   >
-                    <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none font-sans text-sm font-semibold text-foreground select-none gap-3">
+                    <summary
+                      className="flex items-center justify-between px-5 py-4 cursor-pointer list-none font-sans text-sm font-semibold select-none gap-3 border-l-4"
+                      style={{
+                        backgroundColor: moduleColor(i).tint,
+                        borderLeftColor: moduleColor(i).accent,
+                        color: moduleColor(i).accent,
+                      }}
+                    >
                       <div className="flex-1 min-w-0">
                         <span>{mod.title}</span>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-muted shrink-0 transition-transform group-open:rotate-90" />
+                      <ChevronRight className="w-4 h-4 shrink-0 transition-transform group-open:rotate-90" style={{ color: moduleColor(i).accent, opacity: 0.6 }} />
                     </summary>
                     <div className="border-t border-border">
                       {mod.topics.map((topic) => (

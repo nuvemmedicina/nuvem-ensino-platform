@@ -422,6 +422,7 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
             {currentQuizModule && (
               <div className="space-y-2">
                 <ModuleQuizPanel
+                  moduleIndex={course.modules.findIndex((m) => m.id === currentQuizModule.id)}
                   moduleTitle={currentQuizModule.title}
                   quiz={{
                     id: currentQuizModule.quiz!.id,

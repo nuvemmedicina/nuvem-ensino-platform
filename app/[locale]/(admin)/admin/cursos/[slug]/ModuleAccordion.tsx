@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { moduleColor } from "@/lib/moduleColors";
 
 export function ModuleAccordion({
   title,
@@ -24,32 +25,34 @@ export function ModuleAccordion({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   const bodyRef = useRef<HTMLDivElement>(null);
+  // Mesma cor que o aluno vê para este módulo, para o painel falar a mesma língua.
+  const cor = moduleColor(index);
 
   return (
     <div
-      className={`border rounded-xl overflow-hidden transition-colors duration-200 ${
-        open ? "border-primary/40 shadow-sm shadow-primary/10" : "border-border"
-      }`}
+      className="border rounded-xl overflow-hidden transition-colors duration-200"
+      style={{ borderColor: open ? cor.accent : cor.border }}
     >
       {/* Trigger — clique abre/fecha */}
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
-          open ? "bg-primary/5" : "bg-background hover:bg-muted/5"
-        }`}
+        className="w-full flex items-center gap-3 px-4 py-3 text-left transition-all border-l-4 hover:brightness-[0.98]"
+        style={{ backgroundColor: cor.tint, borderLeftColor: cor.accent }}
       >
         {/* Número */}
         <span
-          className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center font-sans text-[11px] font-bold transition-colors ${
-            open ? "bg-primary text-white" : "bg-muted/20 text-muted"
-          }`}
+          className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center font-sans text-[11px] font-bold text-white"
+          style={{ backgroundColor: cor.accent }}
         >
           {index + 1}
         </span>
 
         {/* Título */}
-        <span className="flex-1 font-sans text-sm font-semibold text-foreground truncate">
+        <span
+          className="flex-1 font-sans text-sm font-semibold truncate"
+          style={{ color: cor.accent }}
+        >
           {title}
         </span>
 

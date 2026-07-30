@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { submitModuleQuiz, type ReviewItem } from "./submitModuleQuiz";
 import { startModuleQuiz } from "./startModuleQuiz";
+import { moduleColor } from "@/lib/moduleColors";
 
 type Question = { id: string; text: string; options: { id: string; text: string }[] };
 type Quiz = {
@@ -25,7 +26,7 @@ type Result = {
   score: number; total: number; passed: boolean; attemptsLeft: number; review: ReviewItem[];
 };
 
-type Props = { moduleTitle: string; quiz: Quiz; previousAttempts: Attempt[] };
+type Props = { moduleTitle: string; moduleIndex: number; quiz: Quiz; previousAttempts: Attempt[] };
 
 function fmt(d: Date | string) {
   return new Intl.DateTimeFormat("pt-BR", {
@@ -35,7 +36,8 @@ function fmt(d: Date | string) {
 
 const LETTERS = ["A", "B", "C", "D", "E"];
 
-export function ModuleQuizPanel({ moduleTitle, quiz, previousAttempts }: Props) {
+export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttempts }: Props) {
+  const cor = moduleColor(moduleIndex);
   const now = new Date();
   const availableFrom = quiz.availableFrom ? new Date(quiz.availableFrom) : null;
   const availableUntil = quiz.availableUntil ? new Date(quiz.availableUntil) : null;
@@ -113,14 +115,20 @@ export function ModuleQuizPanel({ moduleTitle, quiz, previousAttempts }: Props) 
   // ── RESUMO ───────────────────────────────────────────────────────────────
   if (phase === "summary") {
     return (
-      <div className="rounded-2xl border border-border bg-surface overflow-hidden">
+      <div className="rounded-2xl border bg-surface overflow-hidden border-l-4" style={{ borderColor: cor.border, borderLeftColor: cor.accent }}>
         <div className="flex items-center gap-4 px-5 py-4">
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-            alreadyPassed ? "bg-green-500/15" : notYet || expired || exhausted ? "bg-border/40" : "bg-primary/10"
-          }`}>
-            <BookOpen className={`w-5 h-5 ${
-              alreadyPassed ? "text-green-600" : notYet || expired || exhausted ? "text-muted" : "text-primary"
-            }`} />
+          <div
+            className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+              alreadyPassed ? "bg-green-500/15" : notYet || expired || exhausted ? "bg-border/40" : ""
+            }`}
+            style={!alreadyPassed && !notYet && !expired && !exhausted ? { backgroundColor: cor.tint } : undefined}
+          >
+            <BookOpen
+              className={`w-5 h-5 ${
+                alreadyPassed ? "text-green-600" : notYet || expired || exhausted ? "text-muted" : ""
+              }`}
+              style={!alreadyPassed && !notYet && !expired && !exhausted ? { color: cor.accent } : undefined}
+            />
           </div>
 
           <div className="flex-1 min-w-0">

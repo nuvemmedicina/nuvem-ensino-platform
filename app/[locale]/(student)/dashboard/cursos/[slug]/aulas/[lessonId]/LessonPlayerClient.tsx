@@ -25,6 +25,7 @@ import { useTranslations } from "next-intl";
 import { saveNote } from "../../noteActions";
 import QuizPanel from "../../QuizPanel";
 import CommentSection from "../../CommentSection";
+import { moduleColor } from "@/lib/moduleColors";
 
 type Lesson = {
   id: string;
@@ -810,8 +811,9 @@ export default function LessonPlayerClient({
 
           {/* Module/lesson list */}
           <div className="flex flex-col flex-1">
-            {modules.map((mod) => {
+            {modules.map((mod, modIdx) => {
               const locked = isLocked(mod);
+              const cor = moduleColor(modIdx);
               return (
                 <div key={mod.id} className="border-b border-border">
                   <button
@@ -819,13 +821,21 @@ export default function LessonPlayerClient({
                       !locked &&
                       setOpenModules((p) => ({ ...p, [mod.id]: !p[mod.id] }))
                     }
-                    className={`w-full flex items-center justify-between px-4 py-3 text-left transition-colors ${
-                      locked ? "cursor-default opacity-60" : "hover:bg-background"
+                    className={`w-full flex items-center justify-between px-4 py-3 text-left transition-all border-l-4 ${
+                      locked ? "cursor-default opacity-60" : "hover:brightness-[0.98]"
                     }`}
+                    style={
+                      locked
+                        ? { borderLeftColor: "transparent" }
+                        : { backgroundColor: cor.tint, borderLeftColor: cor.accent }
+                    }
                   >
                     <div className="flex items-center gap-2 flex-1 min-w-0 pr-2">
                       {locked && <Lock className="w-3.5 h-3.5 text-muted shrink-0" />}
-                      <span className="font-sans text-xs font-semibold text-foreground leading-snug truncate">
+                      <span
+                        className="font-sans text-xs font-semibold leading-snug truncate"
+                        style={{ color: locked ? undefined : cor.accent }}
+                      >
                         {mod.title}
                       </span>
                     </div>
