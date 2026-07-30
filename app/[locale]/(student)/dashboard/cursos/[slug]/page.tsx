@@ -15,6 +15,7 @@ import {
   BarChart2,
   FileText,
   MessageCircle,
+  Lock,
 } from "lucide-react";
 
 const DICI_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/Bu30QwD28QP2FJbYW8wMdp";
@@ -140,6 +141,39 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
           orderBy: { createdAt: "desc" },
         })
       : [];
+
+  // Provas: aparecem conforme os módulos vão sendo liberados, uma de cada vez.
+  // Mostramos a prova que o aluno precisa fazer agora — a primeira, na ordem do
+  // curso, que ainda está em aberto para ele. Quando não há nenhuma pendente,
+  // fica visível a prova do módulo liberado mais recente, para ele continuar
+  // vendo o resultado.
+  const releasedQuizModules = course.modules.filter(
+    (m) => m.quiz && (!m.releaseDate || new Date(m.releaseDate) <= now),
+  );
+
+  const isQuizOpen = (m: (typeof releasedQuizModules)[number]) => {
+    const q = m.quiz!;
+    const attempts = moduleQuizAttempts.filter((a) => a.quizId === q.id);
+    const windowOpen =
+      (!q.availableFrom || new Date(q.availableFrom) <= now) &&
+      (!q.availableUntil || new Date(q.availableUntil) >= now);
+    return (
+      windowOpen &&
+      q._count.questions > 0 &&
+      !attempts.some((a) => a.passed) &&
+      attempts.length < q.maxAttempts
+    );
+  };
+
+  const currentQuizModule =
+    releasedQuizModules.find(isQuizOpen) ??
+    releasedQuizModules[releasedQuizModules.length - 1] ??
+    null;
+
+  // Próxima prova ainda fechada, para o aluno saber quando ela abre
+  const nextLockedQuizModule = course.modules.find(
+    (m) => m.quiz && m.releaseDate && new Date(m.releaseDate) > now,
+  );
 
   // Next live session
   const nextLiveSession = await prisma.liveSession.findFirst({
@@ -367,47 +401,74 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* ── Left: Curriculum ── */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Module quiz panels */}
-            {course.modules.some((m) => m.quiz) && (
-              <div className="space-y-3">
-                {course.modules
-                  .filter((m) => m.quiz)
-                  .map((m) => {
-                    const attempts = moduleQuizAttempts.filter(
-                      (a) => a.quizId === m.quiz!.id
-                    );
-                    return (
-                      <ModuleQuizPanel
-                        key={m.id}
-                        moduleTitle={m.title}
-                        quiz={{
-                          id: m.quiz!.id,
-                          title: m.quiz!.title,
-                          availableFrom: m.quiz!.availableFrom,
-                          availableUntil: m.quiz!.availableUntil,
-                          passingPct: m.quiz!.passingPct,
-                          maxAttempts: m.quiz!.maxAttempts,
-                          questionsPerAttempt: m.quiz!.questionsPerAttempt,
-                          totalQuestions: m.quiz!._count.questions,
-                        }}
-                        previousAttempts={attempts.map((a) => ({
-                          score: a.score,
-                          total: a.total,
-                          passed: a.passed,
-                          createdAt: a.createdAt,
-                        }))}
-                      />
-                    );
-                  })}
-              </div>
-            )}
-
             <CurriculumAccordion
               courseSlug={slug}
               modules={course.modules as Parameters<typeof CurriculumAccordion>[0]["modules"]}
               progressMap={progressMap}
               currentLessonId={null}
             />
+
+            {/* Prova do módulo atual — as demais aparecem conforme os módulos abrem */}
+            {currentQuizModule && (
+              <div className="space-y-2">
+                <ModuleQuizPanel
+                  moduleTitle={currentQuizModule.title}
+                  quiz={{
+                    id: currentQuizModule.quiz!.id,
+                    title: currentQuizModule.quiz!.title,
+                    availableFrom: currentQuizModule.quiz!.availableFrom,
+                    availableUntil: currentQuizModule.quiz!.availableUntil,
+                    passingPct: currentQuizModule.quiz!.passingPct,
+                    maxAttempts: currentQuizModule.quiz!.maxAttempts,
+                    questionsPerAttempt: currentQuizModule.quiz!.questionsPerAttempt,
+                    totalQuestions: currentQuizModule.quiz!._count.questions,
+                  }}
+                  previousAttempts={moduleQuizAttempts
+                    .filter((a) => a.quizId === currentQuizModule.quiz!.id)
+                    .map((a) => ({
+                      score: a.score,
+                      total: a.total,
+                      passed: a.passed,
+                      createdAt: a.createdAt,
+                    }))}
+                />
+
+                {nextLockedQuizModule && (
+                  <p className="font-sans text-[11px] text-muted px-1">
+                    A próxima prova abre junto com o {nextLockedQuizModule.title.split("—")[0].trim()},
+                    em{" "}
+                    {new Intl.DateTimeFormat(dateLocale, { day: "2-digit", month: "long" }).format(
+                      new Date(nextLockedQuizModule.releaseDate!),
+                    )}
+                    .
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Nenhum módulo liberado ainda: explica quando a primeira prova abre */}
+            {!currentQuizModule && nextLockedQuizModule && (
+              <div className="rounded-2xl border border-border bg-surface px-5 py-4 flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-border/40 flex items-center justify-center shrink-0">
+                  <Lock className="w-5 h-5 text-muted" />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted mb-0.5">
+                    Avaliações
+                  </p>
+                  <p className="font-sans text-sm text-foreground">
+                    Cada módulo tem sua prova, liberada junto com as aulas dele.
+                  </p>
+                  <p className="font-sans text-xs text-muted mt-0.5">
+                    A primeira é a do {nextLockedQuizModule.title.split("—")[0].trim()}, em{" "}
+                    {new Intl.DateTimeFormat(dateLocale, { day: "2-digit", month: "long" }).format(
+                      new Date(nextLockedQuizModule.releaseDate!),
+                    )}
+                    .
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ── Right: Info sidebar ── */}

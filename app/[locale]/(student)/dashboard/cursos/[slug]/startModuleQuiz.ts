@@ -25,6 +25,7 @@ export async function startModuleQuiz(quizId: string): Promise<StartResult> {
   const quiz = await prisma.moduleQuiz.findUnique({
     where: { id: quizId },
     include: {
+      module: { select: { releaseDate: true, title: true } },
       questions: {
         orderBy: { order: "asc" },
         include: { options: { orderBy: { order: "asc" } } },
@@ -34,6 +35,11 @@ export async function startModuleQuiz(quizId: string): Promise<StartResult> {
   if (!quiz) return { ok: false, error: "Prova não encontrada." };
 
   const now = new Date();
+
+  // A prova abre junto com o módulo a que pertence.
+  if (quiz.module.releaseDate && now < quiz.module.releaseDate) {
+    return { ok: false, error: "Esta prova abre junto com as aulas do módulo." };
+  }
   if (quiz.availableFrom && now < quiz.availableFrom) {
     return { ok: false, error: "A prova ainda não está disponível." };
   }
