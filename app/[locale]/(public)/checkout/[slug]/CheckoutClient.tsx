@@ -135,7 +135,12 @@ export default function CheckoutClient({
         setCouponDiscountPct(data.discountPct ?? 0);
         setCouponDiscountFlat(data.discountFlat ?? 0);
       } else {
-        setCouponError(t("couponInvalid"));
+        const porMotivo: Record<string, string> = {
+          expired: t("couponExpired"),
+          limit: t("couponLimitReached"),
+          notfound: t("couponNotFound"),
+        };
+        setCouponError(porMotivo[data.reason as string] ?? t("couponInvalid"));
       }
     } catch {
       setCouponError(t("couponError"));

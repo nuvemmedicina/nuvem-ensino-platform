@@ -67,17 +67,29 @@ export async function POST(req: Request) {
   let discountFlat = 0;
   let appliedCoupon: { id: string; discountPct: number | null; discountFlat: unknown; maxUses: number | null; usesCount: number } | null = null;
   if (couponCode) {
+    // Normaliza igual à caixa do cupom (/api/coupons/validate). Sem isso, um
+    // código digitado em minúscula ou com espaço era aceito na tela, mostrava o
+    // desconto e não casava aqui — e o aluno acabava pagando o valor cheio.
+    const normalized = String(couponCode).trim().toUpperCase();
     const coupon = await prisma.coupon.findFirst({
-      where: { code: couponCode, active: true },
+      where: { code: normalized, active: true },
     });
-    if (coupon) {
-      if (coupon.maxUses !== null && coupon.usesCount >= coupon.maxUses) {
-        return NextResponse.json({ error: "Cupom atingiu o limite de usos." }, { status: 400 });
-      }
-      if (coupon.discountPct) discountPct = coupon.discountPct;
-      if (coupon.discountFlat) discountFlat = Number(coupon.discountFlat);
-      appliedCoupon = coupon;
+
+    // Nunca cobrar mais do que foi mostrado: se o cupom não valer no momento da
+    // cobrança, avisamos em vez de seguir silenciosamente sem desconto.
+    if (!coupon) {
+      return NextResponse.json({ error: "Cupom inválido ou não está mais ativo." }, { status: 400 });
     }
+    if (coupon.expiresAt && coupon.expiresAt <= new Date()) {
+      return NextResponse.json({ error: "Este cupom expirou." }, { status: 400 });
+    }
+    if (coupon.maxUses !== null && coupon.usesCount >= coupon.maxUses) {
+      return NextResponse.json({ error: "Cupom atingiu o limite de usos." }, { status: 400 });
+    }
+
+    if (coupon.discountPct) discountPct = coupon.discountPct;
+    if (coupon.discountFlat) discountFlat = Number(coupon.discountFlat);
+    appliedCoupon = coupon;
   }
 
   // Find course + reserve seat atomically

@@ -9,21 +9,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ valid: false, error: "Código inválido." }, { status: 400 });
     }
 
-    const coupon = await prisma.coupon.findFirst({
-      where: {
-        code: code.trim().toUpperCase(),
-        active: true,
-        OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
-      },
+    // Busca só pelo código: as demais condições viram motivos distintos, para
+    // o aluno saber por que o cupom não pegou em vez de receber sempre a mesma
+    // mensagem de "inválido ou expirado".
+    const coupon = await prisma.coupon.findUnique({
+      where: { code: code.trim().toUpperCase() },
     });
 
-    if (!coupon) {
-      return NextResponse.json({ valid: false });
+    if (!coupon || !coupon.active) {
+      return NextResponse.json({ valid: false, reason: "notfound" });
     }
 
-    // Verifica limite de usos
+    if (coupon.expiresAt && coupon.expiresAt <= new Date()) {
+      return NextResponse.json({ valid: false, reason: "expired" });
+    }
+
     if (coupon.maxUses !== null && coupon.usesCount >= coupon.maxUses) {
-      return NextResponse.json({ valid: false });
+      return NextResponse.json({ valid: false, reason: "limit" });
     }
 
     return NextResponse.json({
