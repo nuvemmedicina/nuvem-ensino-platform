@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Play, ChevronRight, Award, Info, ShoppingCart, BookOpen } from "lucide-react";
 import { CertificateCard } from "./CertificateCard";
+import { ProgressoPanel } from "./ProgressoPanel";
+import { calcularEstatisticas } from "@/lib/gamification";
 import { getTranslations } from "next-intl/server";
 
 async function getDashboardData(userId: string) {
@@ -59,6 +61,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard");
   const { enrollments, certificates, allCourses } = await getDashboardData(session.user.id);
+  const stats = await calcularEstatisticas(session.user.id);
 
   const activeEnrollments = enrollments.filter((e) => e.status === "ACTIVE");
   const completedEnrollments = enrollments.filter((e) => e.status === "COMPLETED");
@@ -153,9 +156,13 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
         ))}
       </div>
 
+      {/* ── Progresso: pontos, ofensiva e conquistas ──
+          Só aparece com alguma atividade — antes disso seriam só zeros. */}
+      {stats.xp > 0 && <ProgressoPanel stats={stats} />}
+
       {/* ── Continuar assistindo — fundo cinza ── */}
       {activeEnrollments.length > 0 && (
-        <section className="px-4 lg:px-10 py-10 bg-background">
+        <section className={`px-4 lg:px-10 py-10 ${stats.xp > 0 ? "bg-white" : "bg-background"}`}>
           <SectionHeader title="Continuar assistindo" href="/dashboard/cursos" />
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {activeEnrollments.map((e) => {

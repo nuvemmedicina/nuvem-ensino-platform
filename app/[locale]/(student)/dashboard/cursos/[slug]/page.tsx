@@ -24,6 +24,8 @@ import { prisma } from "@/lib/prisma";
 import CurriculumAccordion from "./CurriculumAccordion";
 import { CompleteCourseButton } from "./CompleteCourseButton";
 import { ModuleQuizPanel } from "./ModuleQuizPanel";
+import { DominioTemas } from "./DominioTemas";
+import { calcularDominioPorTema } from "@/lib/gamification";
 
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
@@ -174,6 +176,9 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
   const nextLockedQuizModule = course.modules.find(
     (m) => m.quiz && m.releaseDate && new Date(m.releaseDate) > now,
   );
+
+  // Desempenho por tema — só existe depois que o aluno faz a primeira prova
+  const dominioTemas = await calcularDominioPorTema(course.id, session.user.id);
 
   // Next live session
   const nextLiveSession = await prisma.liveSession.findFirst({
@@ -407,6 +412,9 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
               progressMap={progressMap}
               currentLessonId={null}
             />
+
+            {/* Domínio por tema — aparece após a primeira prova respondida */}
+            {dominioTemas.length > 0 && <DominioTemas temas={dominioTemas} />}
 
             {/* Prova do módulo atual — as demais aparecem conforme os módulos abrem */}
             {currentQuizModule && (

@@ -11,6 +11,41 @@ export async function GET() {
 
   const results: string[] = [];
 
+  /**
+   * Cria uma chave estrangeira só se ela ainda não existir.
+   *
+   * O Postgres NÃO aceita `ADD CONSTRAINT IF NOT EXISTS` — só `ADD COLUMN IF
+   * NOT EXISTS`. Várias migrações abaixo usavam essa sintaxe e falhavam em
+   * silêncio, deixando tabelas sem integridade referencial (foi o que gerou
+   * tentativas de prova órfãs, apontando para provas já apagadas).
+   */
+  async function addForeignKey(
+    table: string,
+    name: string,
+    column: string,
+    target: string,
+    targetColumn = "id",
+  ) {
+    try {
+      const found = await prisma.$queryRawUnsafe<{ n: bigint }[]>(
+        `SELECT COUNT(*)::bigint AS n FROM pg_constraint WHERE conname = $1`,
+        name,
+      );
+      if (Number(found[0].n) > 0) {
+        results.push(`• ${name} já existia`);
+        return;
+      }
+      await prisma.$executeRawUnsafe(`
+        ALTER TABLE "${table}" ADD CONSTRAINT "${name}"
+          FOREIGN KEY ("${column}") REFERENCES "${target}"("${targetColumn}")
+          ON DELETE CASCADE ON UPDATE CASCADE
+      `);
+      results.push(`✓ ${name} criada`);
+    } catch (e) {
+      results.push(`✗ ${name}: ${e}`);
+    }
+  }
+
   // ── Migração 1: releaseDate no Module + tabela ModuleInstructor ──────────
   try {
     await prisma.$executeRawUnsafe(`ALTER TABLE "Module" ADD COLUMN IF NOT EXISTS "releaseDate" TIMESTAMP(3)`);
@@ -434,6 +469,31 @@ export async function GET() {
     `);
     results.push("✓ eventSlug setado para Roma V");
   } catch (e) { results.push(`✗ UPDATE Roma V eventSlug: ${e}`); }
+
+  // ── Migração 20: chaves estrangeiras das provas ──────────────────────────
+  // As migrações 12 usaram "ADD CONSTRAINT IF NOT EXISTS", sintaxe que o
+  // Postgres rejeita — as chaves nunca foram criadas. Sem elas, apagar uma
+  // prova deixava tentativas e questões órfãs no banco.
+  try {
+    for (const [tbl, col, tgt] of [
+      ["ModuleQuizAttempt", "quizId", "ModuleQuiz"],
+      ["ModuleQuizQuestion", "quizId", "ModuleQuiz"],
+      ["ModuleQuizOption", "questionId", "ModuleQuizQuestion"],
+    ] as const) {
+      await prisma.$executeRawUnsafe(`
+        DELETE FROM "${tbl}" x
+        WHERE NOT EXISTS (SELECT 1 FROM "${tgt}" p WHERE p.id = x."${col}")
+      `);
+    }
+    results.push("✓ registros órfãos das provas removidos");
+  } catch (e) {
+    results.push(`✗ limpeza de órfãos: ${e}`);
+  }
+
+  await addForeignKey("ModuleQuizQuestion", "ModuleQuizQuestion_quizId_fkey", "quizId", "ModuleQuiz");
+  await addForeignKey("ModuleQuizOption", "ModuleQuizOption_questionId_fkey", "questionId", "ModuleQuizQuestion");
+  await addForeignKey("ModuleQuizAttempt", "ModuleQuizAttempt_quizId_fkey", "quizId", "ModuleQuiz");
+  await addForeignKey("ModuleQuizAttempt", "ModuleQuizAttempt_userId_fkey", "userId", "User");
 
   // ── Migração 19: sorteio de provas + justificativa das questões ──────────
   const quizCols: [string, string, string][] = [

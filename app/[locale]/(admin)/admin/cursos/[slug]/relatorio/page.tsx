@@ -2,7 +2,8 @@ export const dynamic = "force-dynamic";
 
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
+import { ChevronLeft, CheckCircle, XCircle, Clock, AlertTriangle, Target } from "lucide-react";
+import { calcularDominioPorTema } from "@/lib/gamification";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -42,6 +43,9 @@ export default async function RelatorioProvasPage({ params }: Props) {
   const modulesWithQuiz = course.modules.filter((m) => m.quiz);
   const students = course.enrollments.map((e) => e.user);
 
+  // Desempenho da turma por tema — mostra o que não foi absorvido
+  const temasTurma = await calcularDominioPorTema(course.id);
+
   // Para cada aluno × módulo, pega a melhor tentativa
   function getBestAttempt(userId: string, quizId: string) {
     const attempts = modulesWithQuiz
@@ -70,6 +74,53 @@ export default async function RelatorioProvasPage({ params }: Props) {
         <span className="text-border">/</span>
         <h1 className="font-sans text-sm font-semibold text-foreground">Relatório de Provas — {course.title}</h1>
       </div>
+
+      {/* Desempenho da turma por tema */}
+      {temasTurma.length > 0 && (
+        <div className="mb-6 rounded-2xl border border-border bg-surface overflow-hidden">
+          <div className="px-5 py-4 border-b border-border flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+              <Target className="w-4 h-4 text-primary" />
+            </div>
+            <div>
+              <p className="font-sans text-sm font-semibold text-foreground">Desempenho da turma por tema</p>
+              <p className="font-sans text-xs text-muted">
+                Do tema com mais erros para o com menos — indica o que revisar com a turma.
+              </p>
+            </div>
+          </div>
+
+          <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+            {temasTurma.map((t) => {
+              const cor = t.pct >= 80 ? "bg-green-500" : t.pct >= 60 ? "bg-amber-500" : "bg-red-400";
+              const corTexto = t.pct >= 80 ? "text-green-700" : t.pct >= 60 ? "text-amber-700" : "text-red-600";
+              return (
+                <div key={t.tema}>
+                  <div className="flex items-baseline justify-between gap-3 mb-1">
+                    <span className="font-sans text-xs text-foreground truncate">{t.tema}</span>
+                    <span className="font-sans text-xs text-muted tabular-nums shrink-0">
+                      {t.acertos}/{t.total}
+                      <span className={`ml-1.5 font-semibold ${corTexto}`}>{t.pct}%</span>
+                    </span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-border/60 overflow-hidden">
+                    <div className={`h-full rounded-full ${cor}`} style={{ width: `${t.pct}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {temasTurma[0] && temasTurma[0].pct < 70 && (
+            <div className="px-5 py-3 bg-background/60 border-t border-border">
+              <p className="font-sans text-xs text-muted">
+                A turma está mais fraca em <strong className="text-foreground">{temasTurma[0].tema}</strong>{" "}
+                ({temasTurma[0].pct}% de acerto em {temasTurma[0].total} respostas) — vale reforçar esse tema.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {modulesWithQuiz.length === 0 ? (
         <div className="text-center py-16 bg-surface border border-border rounded-2xl">
