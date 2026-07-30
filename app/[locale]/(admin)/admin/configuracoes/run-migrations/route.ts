@@ -435,6 +435,27 @@ export async function GET() {
     results.push("✓ eventSlug setado para Roma V");
   } catch (e) { results.push(`✗ UPDATE Roma V eventSlug: ${e}`); }
 
+  // ── Migração 19: sorteio de provas + justificativa das questões ──────────
+  const quizCols: [string, string, string][] = [
+    ["ModuleQuiz",         "questionsPerAttempt", "INTEGER"],
+    ["ModuleQuiz",         "shuffleQuestions",    "BOOLEAN NOT NULL DEFAULT true"],
+    ["ModuleQuiz",         "shuffleOptions",      "BOOLEAN NOT NULL DEFAULT true"],
+    ["ModuleQuiz",         "avoidRepeats",        "BOOLEAN NOT NULL DEFAULT true"],
+    ["ModuleQuiz",         "showExplanations",    "BOOLEAN NOT NULL DEFAULT true"],
+    ["ModuleQuizQuestion", "explanation",         "TEXT"],
+    ["ModuleQuizQuestion", "topic",               "TEXT"],
+    ["ModuleQuizQuestion", "sourceRef",           "TEXT"],
+    ["ModuleQuizAttempt",  "servedQuestionIds",   "TEXT[] NOT NULL DEFAULT '{}'"],
+  ];
+  for (const [table, col, type] of quizCols) {
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE "${table}" ADD COLUMN IF NOT EXISTS "${col}" ${type}`);
+      results.push(`✓ ${table}.${col} adicionado`);
+    } catch (e) {
+      results.push(`✗ ${table}.${col}: ${e}`);
+    }
+  }
+
   // ── Migração 18: valor EDITOR no enum Role ───────────────────────────────
   try {
     await prisma.$executeRawUnsafe(`ALTER TYPE "Role" ADD VALUE IF NOT EXISTS 'EDITOR' BEFORE 'ADMIN'`);

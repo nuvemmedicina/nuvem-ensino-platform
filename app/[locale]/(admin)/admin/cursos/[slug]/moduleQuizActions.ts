@@ -23,15 +23,36 @@ export async function createModuleQuiz(moduleId: string, courseSlug: string) {
 
 export async function updateModuleQuiz(quizId: string, courseSlug: string, formData: FormData) {
   await requireAdmin();
+
+  const num = (key: string) => {
+    const raw = (formData.get(key) as string | null)?.trim();
+    if (!raw) return null;
+    const n = Number.parseInt(raw, 10);
+    return Number.isFinite(n) ? n : null;
+  };
+
   const title = formData.get("title") as string;
   const availableFrom = formData.get("availableFrom") as string;
   const availableUntil = formData.get("availableUntil") as string;
+
+  const passingPct = num("passingPct");
+  const maxAttempts = num("maxAttempts");
+  const perAttempt = num("questionsPerAttempt");
+
   await prisma.moduleQuiz.update({
     where: { id: quizId },
     data: {
       title,
       availableFrom: availableFrom ? new Date(availableFrom) : null,
       availableUntil: availableUntil ? new Date(availableUntil) : null,
+      ...(passingPct !== null && { passingPct: Math.min(100, Math.max(1, passingPct)) }),
+      ...(maxAttempts !== null && { maxAttempts: Math.max(1, maxAttempts) }),
+      // Vazio = entrega todas as questões cadastradas.
+      questionsPerAttempt: perAttempt !== null ? Math.max(1, perAttempt) : null,
+      shuffleQuestions: formData.get("shuffleQuestions") === "on",
+      shuffleOptions: formData.get("shuffleOptions") === "on",
+      avoidRepeats: formData.get("avoidRepeats") === "on",
+      showExplanations: formData.get("showExplanations") === "on",
     },
   });
   revalidatePath(`/admin/cursos/${courseSlug}`);
@@ -52,8 +73,21 @@ export async function addModuleQuizQuestion(quizId: string, courseSlug: string, 
     orderBy: { order: "desc" },
     select: { order: true },
   });
+  const explanation = (formData.get("explanation") as string | null)?.trim() || null;
+  const topic = (formData.get("topic") as string | null)?.trim() || null;
   await prisma.moduleQuizQuestion.create({
-    data: { quizId, text: text.trim(), order: (last?.order ?? -1) + 1 },
+    data: { quizId, text: text.trim(), explanation, topic, order: (last?.order ?? -1) + 1 },
+  });
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
+/** Edita a justificativa do gabarito, mostrada ao aluno que errou a questão. */
+export async function updateModuleQuizQuestion(questionId: string, courseSlug: string, formData: FormData) {
+  await requireAdmin();
+  const explanation = (formData.get("explanation") as string | null)?.trim() || null;
+  await prisma.moduleQuizQuestion.update({
+    where: { id: questionId },
+    data: { explanation },
   });
   revalidatePath(`/admin/cursos/${courseSlug}`);
 }

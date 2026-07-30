@@ -59,17 +59,19 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
       modules: {
         orderBy: { order: "asc" },
         include: {
+          // As questões não são carregadas aqui: elas são sorteadas por aluno
+          // quando a prova começa (startModuleQuiz), então nem o enunciado nem
+          // as alternativas chegam ao navegador antes disso.
           quiz: {
-            include: {
-              questions: {
-                include: {
-                  options: {
-                    select: { id: true, text: true, isCorrect: false, order: true },
-                    orderBy: { order: "asc" },
-                  },
-                },
-                orderBy: { order: "asc" },
-              },
+            select: {
+              id: true,
+              title: true,
+              availableFrom: true,
+              availableUntil: true,
+              passingPct: true,
+              maxAttempts: true,
+              questionsPerAttempt: true,
+              _count: { select: { questions: true } },
             },
           },
           topics: {
@@ -379,15 +381,14 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
                         key={m.id}
                         moduleTitle={m.title}
                         quiz={{
-                          ...m.quiz!,
-                          questions: m.quiz!.questions.map((q) => ({
-                            ...q,
-                            options: q.options.map(({ id, text, order }) => ({
-                              id,
-                              text,
-                              order,
-                            })),
-                          })),
+                          id: m.quiz!.id,
+                          title: m.quiz!.title,
+                          availableFrom: m.quiz!.availableFrom,
+                          availableUntil: m.quiz!.availableUntil,
+                          passingPct: m.quiz!.passingPct,
+                          maxAttempts: m.quiz!.maxAttempts,
+                          questionsPerAttempt: m.quiz!.questionsPerAttempt,
+                          totalQuestions: m.quiz!._count.questions,
                         }}
                         previousAttempts={attempts.map((a) => ({
                           score: a.score,

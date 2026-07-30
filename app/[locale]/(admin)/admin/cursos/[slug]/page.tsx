@@ -39,6 +39,7 @@ import {
   updateModuleQuiz,
   deleteModuleQuiz,
   addModuleQuizQuestion,
+  updateModuleQuizQuestion,
   deleteModuleQuizQuestion,
   addModuleQuizOption,
   setCorrectOption,
@@ -917,13 +918,68 @@ export default async function AdminCursoEditPage({ params }: Props) {
                             className={`${inputClass} text-xs`}
                           />
                         </div>
-                        <div className="flex items-end">
+                        <div>
+                          <label className={labelClass}>Questões por tentativa</label>
+                          <input
+                            name="questionsPerAttempt"
+                            type="number"
+                            min="1"
+                            placeholder={`vazio = todas (${mod.quiz.questions.length})`}
+                            defaultValue={mod.quiz.questionsPerAttempt ?? ""}
+                            className={`${inputClass} text-xs`}
+                          />
+                        </div>
+                        <div>
+                          <label className={labelClass}>Nota mínima (%)</label>
+                          <input
+                            name="passingPct"
+                            type="number"
+                            min="1"
+                            max="100"
+                            defaultValue={mod.quiz.passingPct}
+                            className={`${inputClass} text-xs`}
+                          />
+                        </div>
+                        <div>
+                          <label className={labelClass}>Tentativas permitidas</label>
+                          <input
+                            name="maxAttempts"
+                            type="number"
+                            min="1"
+                            defaultValue={mod.quiz.maxAttempts}
+                            className={`${inputClass} text-xs`}
+                          />
+                        </div>
+                        <div className="sm:col-span-3 flex flex-wrap items-center gap-x-5 gap-y-2 pt-1">
+                          <label className="flex items-center gap-1.5 font-sans text-[11px] text-muted">
+                            <input type="checkbox" name="shuffleQuestions" defaultChecked={mod.quiz.shuffleQuestions} className="w-3.5 h-3.5" />
+                            Embaralhar questões
+                          </label>
+                          <label className="flex items-center gap-1.5 font-sans text-[11px] text-muted">
+                            <input type="checkbox" name="shuffleOptions" defaultChecked={mod.quiz.shuffleOptions} className="w-3.5 h-3.5" />
+                            Embaralhar alternativas
+                          </label>
+                          <label className="flex items-center gap-1.5 font-sans text-[11px] text-muted">
+                            <input type="checkbox" name="avoidRepeats" defaultChecked={mod.quiz.avoidRepeats} className="w-3.5 h-3.5" />
+                            Não repetir questões nas novas tentativas
+                          </label>
+                          <label className="flex items-center gap-1.5 font-sans text-[11px] text-muted">
+                            <input type="checkbox" name="showExplanations" defaultChecked={mod.quiz.showExplanations} className="w-3.5 h-3.5" />
+                            Mostrar justificativa das erradas
+                          </label>
+                        </div>
+                        <div className="sm:col-span-3 flex items-end">
                           <button type="submit" className={btnGhost}>Salvar configuração</button>
                         </div>
                       </form>
 
                       <p className="font-sans text-[10px] text-muted">
-                        {mod.quiz.questions.length} questão(ões) · mín. {mod.quiz.passingPct}% · até {mod.quiz.maxAttempts} tentativas
+                        {mod.quiz.questions.length} questão(ões) cadastrada(s)
+                        {" · "}
+                        {mod.quiz.questionsPerAttempt && mod.quiz.questionsPerAttempt < mod.quiz.questions.length
+                          ? `${mod.quiz.questionsPerAttempt} sorteadas por aluno`
+                          : "todas entregues a cada aluno"}
+                        {" · "}mín. {mod.quiz.passingPct}% · até {mod.quiz.maxAttempts} tentativas
                       </p>
 
                       {/* Questões existentes */}
@@ -931,11 +987,30 @@ export default async function AdminCursoEditPage({ params }: Props) {
                         <div key={q.id} className="border border-border rounded-xl p-3 bg-background space-y-2">
                           <div className="flex items-start gap-2">
                             <span className="font-sans text-xs font-bold text-muted shrink-0 mt-0.5">{qi + 1}.</span>
-                            <p className="font-sans text-xs text-foreground flex-1">{q.text}</p>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-sans text-xs text-foreground">{q.text}</p>
+                              {q.topic && (
+                                <span className="inline-block mt-1 font-sans text-[10px] text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded">
+                                  {q.topic}
+                                </span>
+                              )}
+                            </div>
                             <form action={deleteModuleQuizQuestion.bind(null, q.id, slug)}>
                               <button type="submit" className={btnDanger}>✕</button>
                             </form>
                           </div>
+
+                          {/* Justificativa do gabarito */}
+                          <form action={updateModuleQuizQuestion.bind(null, q.id, slug)} className="pl-4 flex items-start gap-2">
+                            <textarea
+                              name="explanation"
+                              rows={2}
+                              defaultValue={q.explanation ?? ""}
+                              placeholder="Justificativa do gabarito — mostrada ao aluno que errar"
+                              className={`${inputClass} flex-1 text-[11px] resize-y`}
+                            />
+                            <button type="submit" className={btnGhost} title="Salvar justificativa">Salvar</button>
+                          </form>
 
                           {/* Opções */}
                           <div className="pl-4 space-y-1">
@@ -971,11 +1046,11 @@ export default async function AdminCursoEditPage({ params }: Props) {
                       ))}
 
                       {/* Add question */}
-                      {mod.quiz.questions.length < 10 && (
-                        <form action={addModuleQuizQuestion.bind(null, mod.quiz.id, slug)} className="flex gap-2">
+                      <form action={addModuleQuizQuestion.bind(null, mod.quiz.id, slug)} className="space-y-2">
+                        <div className="flex gap-2">
                           <input
                             name="text"
-                            placeholder={`Questão ${mod.quiz.questions.length + 1} de 10…`}
+                            placeholder={`Enunciado da questão ${mod.quiz.questions.length + 1}…`}
                             required
                             className={`${inputClass} flex-1 text-xs`}
                           />
@@ -983,11 +1058,13 @@ export default async function AdminCursoEditPage({ params }: Props) {
                             <Plus className="w-3.5 h-3.5 inline mr-1" />
                             Questão
                           </button>
-                        </form>
-                      )}
-                      {mod.quiz.questions.length >= 10 && (
-                        <p className="font-sans text-xs text-green-700 font-semibold">✓ 10 questões cadastradas</p>
-                      )}
+                        </div>
+                        <input
+                          name="explanation"
+                          placeholder="Justificativa do gabarito (opcional) — mostrada a quem errar"
+                          className={`${inputClass} w-full text-xs`}
+                        />
+                      </form>
                     </div>
                   )}
                 </div>

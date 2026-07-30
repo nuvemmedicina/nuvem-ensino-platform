@@ -2,12 +2,12 @@
 
 import { useState, useTransition } from "react";
 import {
-  CheckCircle, XCircle, Clock, Lock, Trophy, RotateCcw, ChevronRight, BookOpen,
+  CheckCircle, XCircle, Clock, Lock, Trophy, RotateCcw, ChevronRight, BookOpen, Shuffle, Lightbulb,
 } from "lucide-react";
-import { submitModuleQuiz } from "./submitModuleQuiz";
+import { submitModuleQuiz, type ReviewItem } from "./submitModuleQuiz";
+import { startModuleQuiz } from "./startModuleQuiz";
 
-type Option = { id: string; text: string; order: number };
-type Question = { id: string; text: string; order: number; options: Option[] };
+type Question = { id: string; text: string; options: { id: string; text: string }[] };
 type Quiz = {
   id: string;
   title: string;
@@ -15,10 +15,15 @@ type Quiz = {
   availableUntil: Date | string | null;
   passingPct: number;
   maxAttempts: number;
-  questions: Question[];
+  /** Total de questões cadastradas na prova (o banco do módulo). */
+  totalQuestions: number;
+  /** Quantas o aluno recebe por tentativa; null = todas. */
+  questionsPerAttempt: number | null;
 };
 type Attempt = { score: number; total: number; passed: boolean; createdAt: Date | string };
-type Result = { score: number; total: number; passed: boolean; attemptsLeft: number; correct: Record<string, string> };
+type Result = {
+  score: number; total: number; passed: boolean; attemptsLeft: number; review: ReviewItem[];
+};
 
 type Props = { moduleTitle: string; quiz: Quiz; previousAttempts: Attempt[] };
 
@@ -43,22 +48,46 @@ export function ModuleQuizPanel({ moduleTitle, quiz, previousAttempts }: Props) 
   );
   const alreadyPassed = previousAttempts.some((a) => a.passed);
   const exhausted = attemptsLeft <= 0;
-  const canTake = !notYet && !expired && !alreadyPassed && !exhausted;
+  const hasQuestions = quiz.totalQuestions > 0;
+  const canTake = !notYet && !expired && !alreadyPassed && !exhausted && hasQuestions;
+
+  const perAttempt =
+    quiz.questionsPerAttempt && quiz.questionsPerAttempt < quiz.totalQuestions
+      ? quiz.questionsPerAttempt
+      : quiz.totalQuestions;
+  const isDrawn = perAttempt < quiz.totalQuestions;
 
   type Phase = "summary" | "quiz" | "result";
   const [phase, setPhase] = useState<Phase>("summary");
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<Result | null>(null);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
 
-  const currentQuestion = quiz.questions[currentIndex];
-  const isLastQuestion = currentIndex === quiz.questions.length - 1;
+  const currentQuestion = questions[currentIndex];
+  const isLastQuestion = currentIndex === questions.length - 1;
   const currentAnswered = !!(currentQuestion && answers[currentQuestion.id]);
-  const progressPct = quiz.questions.length > 0
-    ? Math.round((currentIndex / quiz.questions.length) * 100)
+  const progressPct = questions.length > 0
+    ? Math.round((currentIndex / questions.length) * 100)
     : 0;
+
+  function handleStart() {
+    setError("");
+    startTransition(async () => {
+      const res = await startModuleQuiz(quiz.id);
+      if (!res.ok) {
+        setError(res.error);
+        return;
+      }
+      setQuestions(res.quiz.questions);
+      setAnswers({});
+      setCurrentIndex(0);
+      setResult(null);
+      setPhase("quiz");
+    });
+  }
 
   function handleSelect(questionId: string, optionId: string) {
     setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
@@ -68,28 +97,20 @@ export function ModuleQuizPanel({ moduleTitle, quiz, previousAttempts }: Props) 
     if (isLastQuestion) {
       setError("");
       startTransition(async () => {
-        try {
-          const res = await submitModuleQuiz(quiz.id, answers);
-          setResult(res);
-          setPhase("result");
-        } catch (e) {
-          setError((e as Error).message);
+        const res = await submitModuleQuiz(quiz.id, answers);
+        if (!res.ok) {
+          setError(res.error);
+          return;
         }
+        setResult(res);
+        setPhase("result");
       });
     } else {
       setCurrentIndex((i) => i + 1);
     }
   }
 
-  function handleRetry() {
-    setAnswers({});
-    setResult(null);
-    setError("");
-    setCurrentIndex(0);
-    setPhase("quiz");
-  }
-
-  // ── SUMMARY ──────────────────────────────────────────────────────────────
+  // ── RESUMO ───────────────────────────────────────────────────────────────
   if (phase === "summary") {
     return (
       <div className="rounded-2xl border border-border bg-surface overflow-hidden">
@@ -128,11 +149,21 @@ export function ModuleQuizPanel({ moduleTitle, quiz, previousAttempts }: Props) 
                   <XCircle className="w-3 h-3" /> Tentativas esgotadas
                 </span>
               )}
-              {!alreadyPassed && !notYet && !expired && !exhausted && (
+              {!alreadyPassed && !notYet && !expired && !exhausted && hasQuestions && (
                 <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
                   Pendente
                 </span>
               )}
+
+              {hasQuestions && (
+                <span className="font-sans text-[11px] text-muted">
+                  {perAttempt} questõe{perAttempt !== 1 ? "s" : ""}
+                  {isDrawn && ` sorteadas de ${quiz.totalQuestions}`}
+                  <span className="mx-1.5 text-border">·</span>
+                  mínimo {quiz.passingPct}%
+                </span>
+              )}
+
               {attemptsUsed > 0 && bestAttempt && (
                 <span className="font-sans text-[11px] text-muted">
                   Melhor: {bestAttempt.score}/{bestAttempt.total} ({Math.round((bestAttempt.score / bestAttempt.total) * 100)}%)
@@ -140,15 +171,24 @@ export function ModuleQuizPanel({ moduleTitle, quiz, previousAttempts }: Props) 
                 </span>
               )}
             </div>
+
+            {isDrawn && canTake && (
+              <p className="flex items-center gap-1.5 font-sans text-[11px] text-muted mt-2">
+                <Shuffle className="w-3 h-3 shrink-0" />
+                Cada aluno recebe uma seleção diferente. Se precisar tentar de novo, as questões serão outras.
+              </p>
+            )}
+            {error && <p className="font-sans text-xs text-red-500 mt-2">{error}</p>}
           </div>
 
           {canTake && (
             <button
-              onClick={() => setPhase("quiz")}
-              className="shrink-0 flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors"
+              onClick={handleStart}
+              disabled={isPending}
+              className="shrink-0 flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark disabled:opacity-50 transition-colors"
             >
-              {attemptsUsed > 0 ? "Tentar novamente" : "Fazer prova"}
-              <ChevronRight className="w-4 h-4" />
+              {isPending ? "Preparando…" : attemptsUsed > 0 ? "Tentar novamente" : "Fazer prova"}
+              {!isPending && <ChevronRight className="w-4 h-4" />}
             </button>
           )}
         </div>
@@ -156,11 +196,10 @@ export function ModuleQuizPanel({ moduleTitle, quiz, previousAttempts }: Props) 
     );
   }
 
-  // ── QUIZ (Flashcard) ──────────────────────────────────────────────────────
-  if (phase === "quiz") {
+  // ── PROVA ────────────────────────────────────────────────────────────────
+  if (phase === "quiz" && currentQuestion) {
     return (
       <div className="rounded-2xl border border-border bg-surface overflow-hidden">
-        {/* Progress bar */}
         <div className="h-1 bg-border">
           <div
             className="h-full bg-primary transition-all duration-500 ease-out"
@@ -169,14 +208,13 @@ export function ModuleQuizPanel({ moduleTitle, quiz, previousAttempts }: Props) 
         </div>
 
         <div className="px-5 py-5">
-          {/* Counter */}
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
               <span className="font-sans text-xs font-bold text-muted uppercase tracking-wider">
-                {currentIndex + 1} / {quiz.questions.length}
+                {currentIndex + 1} / {questions.length}
               </span>
               <div className="flex gap-1">
-                {quiz.questions.map((_, i) => (
+                {questions.map((_, i) => (
                   <span
                     key={i}
                     className={`block w-1.5 h-1.5 rounded-full transition-colors ${
@@ -191,12 +229,10 @@ export function ModuleQuizPanel({ moduleTitle, quiz, previousAttempts }: Props) 
             </span>
           </div>
 
-          {/* Question */}
           <p className="font-serif text-base font-medium text-foreground leading-relaxed mb-5">
             {currentQuestion.text}
           </p>
 
-          {/* Options */}
           <div className="space-y-2.5 mb-5">
             {currentQuestion.options.map((opt, oi) => {
               const selected = answers[currentQuestion.id] === opt.id;
@@ -224,11 +260,10 @@ export function ModuleQuizPanel({ moduleTitle, quiz, previousAttempts }: Props) 
 
           {error && <p className="mb-3 font-sans text-xs text-red-500">{error}</p>}
 
-          {/* Navigation */}
           <div className="flex items-center justify-between">
             <button
               type="button"
-              onClick={() => { setPhase("summary"); setAnswers({}); setCurrentIndex(0); }}
+              onClick={() => { setPhase("summary"); setAnswers({}); setCurrentIndex(0); setQuestions([]); }}
               className="font-sans text-xs text-muted hover:text-foreground transition-colors"
             >
               Cancelar
@@ -248,9 +283,11 @@ export function ModuleQuizPanel({ moduleTitle, quiz, previousAttempts }: Props) 
     );
   }
 
-  // ── RESULT ────────────────────────────────────────────────────────────────
+  // ── RESULTADO ────────────────────────────────────────────────────────────
   if (phase === "result" && result) {
     const pct = Math.round((result.score / result.total) * 100);
+    const wrong = result.review.filter((r) => !r.isRight);
+
     return (
       <div className="rounded-2xl border border-border bg-surface overflow-hidden">
         <div className="px-5 py-8 flex flex-col items-center text-center gap-4">
@@ -288,11 +325,12 @@ export function ModuleQuizPanel({ moduleTitle, quiz, previousAttempts }: Props) 
             ) : result.attemptsLeft > 0 ? (
               <>
                 <button
-                  onClick={handleRetry}
-                  className="flex items-center gap-2 font-sans text-sm font-semibold px-6 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors"
+                  onClick={handleStart}
+                  disabled={isPending}
+                  className="flex items-center gap-2 font-sans text-sm font-semibold px-6 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark disabled:opacity-50 transition-colors"
                 >
                   <RotateCcw className="w-4 h-4" />
-                  Tentar novamente
+                  {isPending ? "Preparando…" : "Tentar novamente"}
                   <span className="font-sans text-[11px] opacity-70">
                     ({result.attemptsLeft} restante{result.attemptsLeft !== 1 ? "s" : ""})
                   </span>
@@ -313,7 +351,70 @@ export function ModuleQuizPanel({ moduleTitle, quiz, previousAttempts }: Props) 
               </button>
             )}
           </div>
+
+          {error && <p className="font-sans text-xs text-red-500">{error}</p>}
         </div>
+
+        {/* Revisão: só as erradas, com a justificativa do gabarito */}
+        {wrong.length > 0 && (
+          <div className="border-t border-border bg-background/60 px-5 py-5">
+            <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted mb-1">
+              Revisão · {wrong.length} questõe{wrong.length !== 1 ? "s" : ""} para rever
+            </p>
+            <p className="font-sans text-xs text-muted mb-4">
+              Abaixo apenas o que você errou, com a explicação do gabarito.
+            </p>
+
+            <div className="space-y-3">
+              {wrong.map((item) => (
+                <details key={item.questionId} className="group rounded-xl border border-border bg-surface overflow-hidden">
+                  <summary className="flex items-start gap-3 px-4 py-3 cursor-pointer list-none hover:bg-primary/5 transition-colors">
+                    <span className="w-5 h-5 rounded-full bg-red-500/10 text-red-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <XCircle className="w-3.5 h-3.5" />
+                    </span>
+                    <span className="flex-1 font-sans text-sm text-foreground leading-snug">
+                      {item.text}
+                    </span>
+                    <ChevronRight className="w-4 h-4 text-muted shrink-0 mt-0.5 transition-transform group-open:rotate-90" />
+                  </summary>
+
+                  <div className="px-4 pb-4 pt-3 space-y-2.5 border-t border-border/60">
+                    <div className="flex items-start gap-2">
+                      <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-red-500 shrink-0 w-24 pt-0.5">
+                        Sua resposta
+                      </span>
+                      <span className="font-sans text-xs text-muted leading-snug">
+                        {item.chosenText ?? "— em branco —"}
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-green-600 shrink-0 w-24 pt-0.5">
+                        Correta
+                      </span>
+                      <span className="font-sans text-xs text-foreground font-medium leading-snug">
+                        {item.correctText}
+                      </span>
+                    </div>
+                    {item.explanation && (
+                      <div className="flex items-start gap-2 pt-2.5 border-t border-border/60">
+                        <Lightbulb className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                        <p className="font-sans text-xs text-muted leading-relaxed">
+                          {item.explanation}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </details>
+              ))}
+            </div>
+
+            <p className="font-sans text-[11px] text-muted mt-4">
+              {result.attemptsLeft > 0
+                ? "Na próxima tentativa você receberá questões diferentes destas."
+                : "Guarde estas explicações — elas resumem os pontos-chave do módulo."}
+            </p>
+          </div>
+        )}
       </div>
     );
   }

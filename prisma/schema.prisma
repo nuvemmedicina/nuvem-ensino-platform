@@ -635,6 +635,17 @@ model ModuleQuiz {
   availableUntil DateTime?
   passingPct     Int       @default(80)
   maxAttempts    Int       @default(3)
+
+  // Sorteio: quantas questões o aluno recebe do total cadastrado.
+  // null = entrega todas (comportamento anterior ao sorteio).
+  questionsPerAttempt Int?
+  shuffleQuestions    Boolean @default(true)
+  shuffleOptions      Boolean @default(true)
+  // Tentativas seguintes priorizam questões que o aluno ainda não viu.
+  avoidRepeats        Boolean @default(true)
+  // Mostra a justificativa das questões erradas ao final da tentativa.
+  showExplanations    Boolean @default(true)
+
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
@@ -648,6 +659,10 @@ model ModuleQuizQuestion {
   quizId String
   text   String @db.Text
   order  Int    @default(0)
+
+  explanation String? @db.Text // justificativa do gabarito, mostrada ao aluno que errou
+  topic       String?          // tema, para leitura de desempenho por assunto
+  sourceRef   String?          // origem (ex.: "Banco Dra. Vera · bloco 1 · questão 7")
 
   quiz    ModuleQuiz        @relation(fields: [quizId], references: [id], onDelete: Cascade)
   options ModuleQuizOption[]
@@ -671,6 +686,8 @@ model ModuleQuizAttempt {
   total     Int
   passed    Boolean
   answers   Json
+  // Versão exata sorteada nesta tentativa, na ordem em que foi apresentada.
+  servedQuestionIds String[] @default([])
   createdAt DateTime @default(now())
 
   quiz ModuleQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
