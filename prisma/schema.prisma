@@ -100,6 +100,7 @@ model User {
   forumReplies       ForumReply[]
   forumLikes         ForumLike[]
   moduleQuizAttempts ModuleQuizAttempt[]
+  moduleQuizPractices ModuleQuizPractice[]
   courseEvaluations  CourseEvaluation[]
   flashcardSessions  FlashcardStudySession[]
 }
@@ -645,6 +646,9 @@ model ModuleQuiz {
   avoidRepeats        Boolean @default(true)
   // Mostra a justificativa das questões erradas ao final da tentativa.
   showExplanations    Boolean @default(true)
+  // Modo treino: praticar as questões sem valer nota, vendo a justificativa na
+  // hora. Desligado por padrão porque expõe os gabaritos do banco.
+  practiceEnabled     Boolean @default(false)
 
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -652,6 +656,24 @@ model ModuleQuiz {
   module    Module               @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   questions ModuleQuizQuestion[]
   attempts  ModuleQuizAttempt[]
+  practices ModuleQuizPractice[]
+}
+
+/// Resposta dada no modo treino. Não vale nota: serve para o aluno praticar
+/// com feedback imediato, e para a ofensiva reconhecer que houve estudo.
+model ModuleQuizPractice {
+  id         String   @id @default(cuid())
+  quizId     String
+  userId     String
+  questionId String
+  correct    Boolean
+  createdAt  DateTime @default(now())
+
+  quiz ModuleQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, quizId])
+  @@index([quizId])
 }
 
 model ModuleQuizQuestion {

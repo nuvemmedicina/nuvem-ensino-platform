@@ -53,6 +53,7 @@ export async function updateModuleQuiz(quizId: string, courseSlug: string, formD
       shuffleOptions: formData.get("shuffleOptions") === "on",
       avoidRepeats: formData.get("avoidRepeats") === "on",
       showExplanations: formData.get("showExplanations") === "on",
+      practiceEnabled: formData.get("practiceEnabled") === "on",
     },
   });
   revalidatePath(`/admin/cursos/${courseSlug}`);

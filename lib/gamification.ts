@@ -19,6 +19,9 @@ export const XP = {
   firstTryBonus: 50,   // aprovado já na primeira tentativa
   perfectBonus: 50,    // prova sem nenhum erro
   certificate: 200,    // por certificado emitido
+  // Treino: só a PRIMEIRA vez que o aluno acerta cada questão pontua. Sem isso,
+  // bastaria repetir o mesmo treino para acumular pontos sem aprender nada.
+  practiceQuestion: 2,
 } as const;
 
 const TZ = "America/Sao_Paulo";
@@ -100,7 +103,7 @@ export type EstatisticasAluno = {
 
 /** Estatísticas do aluno, calculadas do histórico. */
 export async function calcularEstatisticas(userId: string): Promise<EstatisticasAluno> {
-  const [progressos, sessoes, tentativas, certificados] = await Promise.all([
+  const [progressos, sessoes, tentativas, certificados, treinosCertos, treinosTodos] = await Promise.all([
     prisma.progress.findMany({
       where: { completed: true, enrollment: { userId } },
       select: { completedAt: true, updatedAt: true },
@@ -115,6 +118,14 @@ export async function calcularEstatisticas(userId: string): Promise<Estatisticas
       select: { quizId: true, score: true, total: true, passed: true, createdAt: true },
     }),
     prisma.certificate.findMany({ where: { userId }, select: { issueDate: true } }),
+    // Questões distintas já acertadas no treino — cada uma pontua uma só vez
+    prisma.moduleQuizPractice.findMany({
+      where: { userId, correct: true },
+      select: { questionId: true },
+      distinct: ["questionId"],
+    }),
+    // Todas as respostas de treino, só pelas datas (para a ofensiva)
+    prisma.moduleQuizPractice.findMany({ where: { userId }, select: { createdAt: true } }),
   ]);
 
   // ── Provas: aprovação conta uma vez por prova ──────────────────────────────
@@ -146,6 +157,7 @@ export async function calcularEstatisticas(userId: string): Promise<Estatisticas
     { rotulo: "Aprovado de primeira", quantidade: dePrimeira, pontos: dePrimeira * XP.firstTryBonus },
     { rotulo: "Prova sem erro", quantidade: semErro, pontos: semErro * XP.perfectBonus },
     { rotulo: "Certificados", quantidade: certificados.length, pontos: certificados.length * XP.certificate },
+    { rotulo: "Questões dominadas no treino", quantidade: treinosCertos.length, pontos: treinosCertos.length * XP.practiceQuestion },
   ].filter((d) => d.quantidade > 0);
 
   const xp = detalhe.reduce((s, d) => s + d.pontos, 0);
@@ -155,6 +167,7 @@ export async function calcularEstatisticas(userId: string): Promise<Estatisticas
     ...progressos.map((p) => p.completedAt ?? p.updatedAt),
     ...sessoes.map((s) => s.finishedAt!),
     ...tentativas.map((t) => t.createdAt),
+    ...treinosTodos.map((t) => t.createdAt),
   ].filter(Boolean);
   const ofensiva = calcularOfensiva(datas);
 

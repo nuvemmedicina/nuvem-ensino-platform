@@ -470,6 +470,35 @@ export async function GET() {
     results.push("✓ eventSlug setado para Roma V");
   } catch (e) { results.push(`✗ UPDATE Roma V eventSlug: ${e}`); }
 
+  // ── Migração 21: modo treino ─────────────────────────────────────────────
+  try {
+    await prisma.$executeRawUnsafe(
+      `ALTER TABLE "ModuleQuiz" ADD COLUMN IF NOT EXISTS "practiceEnabled" BOOLEAN NOT NULL DEFAULT false`,
+    );
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "ModuleQuizPractice" (
+        "id"         TEXT NOT NULL,
+        "quizId"     TEXT NOT NULL,
+        "userId"     TEXT NOT NULL,
+        "questionId" TEXT NOT NULL,
+        "correct"    BOOLEAN NOT NULL,
+        "createdAt"  TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT "ModuleQuizPractice_pkey" PRIMARY KEY ("id")
+      )
+    `);
+    await prisma.$executeRawUnsafe(
+      `CREATE INDEX IF NOT EXISTS "ModuleQuizPractice_userId_quizId_idx" ON "ModuleQuizPractice"("userId","quizId")`,
+    );
+    await prisma.$executeRawUnsafe(
+      `CREATE INDEX IF NOT EXISTS "ModuleQuizPractice_quizId_idx" ON "ModuleQuizPractice"("quizId")`,
+    );
+    results.push("✓ modo treino: coluna, tabela e índices");
+  } catch (e) {
+    results.push(`✗ modo treino: ${e}`);
+  }
+  await addForeignKey("ModuleQuizPractice", "ModuleQuizPractice_quizId_fkey", "quizId", "ModuleQuiz");
+  await addForeignKey("ModuleQuizPractice", "ModuleQuizPractice_userId_fkey", "userId", "User");
+
   // ── Migração 20: chaves estrangeiras das provas ──────────────────────────
   // As migrações 12 usaram "ADD CONSTRAINT IF NOT EXISTS", sintaxe que o
   // Postgres rejeita — as chaves nunca foram criadas. Sem elas, apagar uma

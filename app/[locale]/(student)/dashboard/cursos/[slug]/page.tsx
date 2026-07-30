@@ -25,6 +25,7 @@ import CurriculumAccordion from "./CurriculumAccordion";
 import { CompleteCourseButton } from "./CompleteCourseButton";
 import { ModuleQuizPanel } from "./ModuleQuizPanel";
 import { DominioTemas } from "./DominioTemas";
+import { TreinoPanel } from "./TreinoPanel";
 import { calcularDominioPorTema } from "@/lib/gamification";
 
 type Props = {
@@ -74,6 +75,7 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
               passingPct: true,
               maxAttempts: true,
               questionsPerAttempt: true,
+              practiceEnabled: true,
               _count: { select: { questions: true } },
             },
           },
@@ -440,6 +442,13 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
                       createdAt: a.createdAt,
                     }))}
                 />
+
+                {currentQuizModule.quiz!.practiceEnabled && (
+                  <TreinoPanel
+                    quizId={currentQuizModule.quiz!.id}
+                    moduleTitle={currentQuizModule.title.split("—")[0].trim()}
+                  />
+                )}
 
                 {nextLockedQuizModule && (
                   <p className="font-sans text-[11px] text-muted px-1">

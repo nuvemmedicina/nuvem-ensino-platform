@@ -967,6 +967,10 @@ export default async function AdminCursoEditPage({ params }: Props) {
                             <input type="checkbox" name="showExplanations" defaultChecked={mod.quiz.showExplanations} className="w-3.5 h-3.5" />
                             Mostrar justificativa das erradas
                           </label>
+                          <label className="flex items-center gap-1.5 font-sans text-[11px] text-muted" title="O aluno pratica as questões sem valer nota e vê a justificativa na hora. Expõe os gabaritos do banco.">
+                            <input type="checkbox" name="practiceEnabled" defaultChecked={mod.quiz.practiceEnabled} className="w-3.5 h-3.5" />
+                            Liberar modo treino
+                          </label>
                         </div>
                         <div className="sm:col-span-3 flex items-end">
                           <button type="submit" className={btnGhost}>Salvar configuração</button>
