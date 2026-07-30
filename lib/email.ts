@@ -6,6 +6,43 @@ function getResend() {
 const FROM = process.env.EMAIL_FROM ?? "NU.V.E.M ENSINO <cursos@nuvemensino.com.br>";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://cursos.nuvemmedicina.com.br";
 
+export type DeliveryResult =
+  | { ok: true; id: string | undefined }
+  | { ok: false; error: string };
+
+/**
+ * Envia pela Resend registrando o resultado.
+ *
+ * O SDK da Resend NÃO lança erro quando a API recusa a mensagem: ele resolve
+ * com `{ error }`. Sem esta checagem, uma chave inválida, um domínio não
+ * verificado ou um destinatário bloqueado passavam despercebidos — o envio
+ * "dava certo" no código e o e-mail simplesmente nunca chegava.
+ */
+async function deliver(
+  kind: string,
+  to: string,
+  payload: { from: string; to: string; subject: string; html: string },
+): Promise<DeliveryResult> {
+  if (!process.env.RESEND_API_KEY) {
+    console.error(`[email] ${kind} → ${to}: NÃO ENVIADO — RESEND_API_KEY não configurada`);
+    return { ok: false, error: "RESEND_API_KEY não configurada" };
+  }
+
+  try {
+    const { data, error } = await getResend().emails.send(payload);
+    if (error) {
+      console.error(`[email] ${kind} → ${to}: RECUSADO pela Resend — ${error.name}: ${error.message}`);
+      return { ok: false, error: `${error.name}: ${error.message}` };
+    }
+    console.info(`[email] ${kind} → ${to}: aceito pela Resend (id ${data?.id ?? "?"})`);
+    return { ok: true, id: data?.id };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error(`[email] ${kind} → ${to}: FALHOU — ${msg}`);
+    return { ok: false, error: msg };
+  }
+}
+
 function baseLayout(title: string, body: string) {
   return `<!DOCTYPE html>
 <html lang="pt-BR">
@@ -66,7 +103,7 @@ export async function sendEnrollmentConfirmation({
     <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Dúvidas? Responda este e-mail ou fale pelo WhatsApp <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 7229-1029</a>.</p>
   `;
 
-  return getResend().emails.send({
+  return deliver("matrícula confirmada", to, {
     from: FROM,
     to,
     subject: `Matrícula confirmada: ${courseName}`,
@@ -112,7 +149,7 @@ export async function sendPaymentPendingEmail({
     <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Precisa de ajuda? Fale conosco pelo WhatsApp <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 7229-1029</a> — respondemos rapidamente.</p>
   `;
 
-  return getResend().emails.send({
+  return deliver("pagamento pendente", to, {
     from: FROM,
     to,
     subject: `Sua inscrição em ${courseName} está aguardando pagamento`,
@@ -145,7 +182,7 @@ export async function sendPasswordResetEmail({
     <p style="margin:0;color:#9ca3af;font-size:12px;">Ou copie e cole este endereço no navegador:<br/><span style="color:#00475e;word-break:break-all;">${link}</span></p>
   `;
 
-  return getResend().emails.send({
+  return deliver("redefinição de senha", to, {
     from: FROM,
     to,
     subject: "Redefina sua senha — NU.V.E.M ENSINO",
@@ -179,7 +216,7 @@ export async function sendSetPasswordEmail({
     <p style="margin:0;color:#9ca3af;font-size:12px;">Ou copie e cole este endereço no navegador:<br/><span style="color:#00475e;word-break:break-all;">${link}</span></p>
   `;
 
-  return getResend().emails.send({
+  return deliver("criar senha (pós-compra)", to, {
     from: FROM,
     to,
     subject: `Crie sua senha de acesso — ${courseName}`,
@@ -212,7 +249,7 @@ export async function sendEmailVerificationEmail({
     <p style="margin:0;color:#9ca3af;font-size:12px;">Ou copie e cole este endereço no navegador:<br/><span style="color:#00475e;word-break:break-all;">${link}</span></p>
   `;
 
-  return getResend().emails.send({
+  return deliver("confirmação de e-mail", to, {
     from: FROM,
     to,
     subject: "Confirme seu e-mail — NU.V.E.M ENSINO",
@@ -275,7 +312,7 @@ export async function sendLiveSessionReminder({
     <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Dúvidas? Entre em contato pelo WhatsApp <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 7229-1029</a>.</p>
   `;
 
-  return getResend().emails.send({
+  return deliver("lembrete de aula ao vivo", to, {
     from: FROM,
     to,
     subject,
