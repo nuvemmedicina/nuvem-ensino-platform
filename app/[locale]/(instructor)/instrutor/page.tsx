@@ -66,17 +66,17 @@ export default async function InstructorOverviewPage({
     <div className="-mx-6 -mt-6 lg:-mx-8 lg:-mt-8">
 
       {/* ── Header + KPIs — fundo branco ── */}
-      <div className="px-6 lg:px-8 pt-10 pb-10 bg-white space-y-8">
-      <div className="flex items-start justify-between gap-4">
+      <div className="px-6 lg:px-8 pt-8 lg:pt-10 pb-8 lg:pb-10 bg-white space-y-6 lg:space-y-8">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
-          <h1 className="font-serif text-3xl font-light text-foreground">
+          <h1 className="font-serif text-2xl sm:text-3xl font-light text-foreground">
             Bem-vindo, {session.user?.name?.split(" ")[0]}
           </h1>
           <p className="font-sans text-sm text-muted mt-1">Painel do instrutor</p>
         </div>
         <Link
           href="/instrutor/aulas-ao-vivo"
-          className="flex items-center gap-2 font-sans text-sm font-bold px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors shadow-md shadow-primary/20 shrink-0"
+          className="flex items-center justify-center gap-2 font-sans text-sm font-bold px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors shadow-md shadow-primary/20 shrink-0"
         >
           <Plus className="w-4 h-4" />
           Nova aula ao vivo
@@ -84,7 +84,7 @@ export default async function InstructorOverviewPage({
       </div>
 
       {/* ── KPIs ── */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         {[
           { icon: BookOpen, label: "Cursos",         value: courses.length,          color: "text-primary",    ring: "ring-primary/20",   bg: "bg-primary/5" },
           { icon: Users,    label: "Alunos",          value: totalEnrollments,         color: "text-teal-600",   ring: "ring-teal-500/20",  bg: "bg-teal-500/5" },
@@ -105,7 +105,7 @@ export default async function InstructorOverviewPage({
       </div>{/* fim header+kpis */}
 
       {/* ── Meus Cursos — fundo cinza ── */}
-      <section className="px-6 lg:px-8 py-10 bg-background">
+      <section className="px-6 lg:px-8 py-8 lg:py-10 bg-background">
         <div className="flex items-center justify-between mb-4">
           <p className="font-sans text-xs font-bold uppercase tracking-widest text-foreground/70">Meus Cursos</p>
           <Link href="/instrutor/cursos" className="flex items-center gap-1 font-sans text-xs text-primary hover:underline">
@@ -118,7 +118,7 @@ export default async function InstructorOverviewPage({
             <p className="font-sans text-sm text-muted">Nenhum curso atribuído ainda.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
             {courses.map((course) => (
               <div key={course.id} className="group relative flex flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/15 bg-surface">
                 {/* Poster */}
@@ -126,7 +126,7 @@ export default async function InstructorOverviewPage({
                   {course.thumbnailUrl && (
                     <Image src={course.thumbnailUrl} alt={course.title} fill
                       className="absolute inset-0 object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 33vw, 20vw" />
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw" />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
                   <span className={`absolute top-3 left-3 font-sans text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded-full ${
@@ -161,14 +161,14 @@ export default async function InstructorOverviewPage({
 
       {/* ── Próximas Aulas ao Vivo — fundo branco ── */}
       {upcomingSessions.length > 0 && (
-        <section className="px-6 lg:px-8 py-10 bg-white">
+        <section className="px-6 lg:px-8 py-8 lg:py-10 bg-white">
           <div className="flex items-center justify-between mb-4">
             <p className="font-sans text-xs font-bold uppercase tracking-widest text-foreground/70">Próximas Aulas ao Vivo</p>
             <Link href="/instrutor/aulas-ao-vivo" className="flex items-center gap-1 font-sans text-xs text-primary hover:underline">
               Gerenciar <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
             {upcomingSessions.map((s) => (
               <div key={s.id} className="group relative flex flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-violet-500/15 bg-surface">
                 {/* Poster */}
@@ -176,7 +176,7 @@ export default async function InstructorOverviewPage({
                   {s.courseThumbnail && (
                     <Image src={s.courseThumbnail} alt={s.title} fill
                       className="absolute inset-0 object-cover opacity-40 transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 33vw, 20vw" />
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw" />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 

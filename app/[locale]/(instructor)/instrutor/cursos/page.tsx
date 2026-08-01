@@ -48,7 +48,7 @@ export default async function InstructorCursosPage({
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-serif text-3xl font-light text-foreground">Meus Cursos</h1>
+          <h1 className="font-serif text-2xl sm:text-3xl font-light text-foreground">Meus Cursos</h1>
           <p className="font-sans text-sm text-muted mt-1">
             {courses.length} {courses.length === 1 ? "curso" : "cursos"}
           </p>
@@ -85,7 +85,7 @@ export default async function InstructorCursosPage({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
           {courses.map((course) => {
             const totalLessons = course.modules.reduce((s, m) => s + m.lessons.length, 0);
 
@@ -99,7 +99,7 @@ export default async function InstructorCursosPage({
                       alt={course.title}
                       fill
                       className="absolute inset-0 object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 33vw, 20vw"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                     />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />

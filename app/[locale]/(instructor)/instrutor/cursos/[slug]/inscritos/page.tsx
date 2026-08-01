@@ -36,8 +36,16 @@ export default async function InscritosPage({ params }: Props) {
   });
   if (!instructor) redirect("/dashboard");
 
+  // Aceita tanto o instrutor titular quanto os instrutores de módulo — os
+  // co-instrutores também precisam ver e acompanhar a turma.
   const course = await prisma.course.findFirst({
-    where: { slug, instructorId: instructor.id },
+    where: {
+      slug,
+      OR: [
+        { instructorId: instructor.id },
+        { modules: { some: { instructors: { some: { instructorId: instructor.id } } } } },
+      ],
+    },
     select: { id: true, title: true, slug: true },
   });
   if (!course) notFound();
@@ -68,7 +76,7 @@ export default async function InscritosPage({ params }: Props) {
 
       <div className="flex items-center gap-3 mb-2">
         <Users className="w-5 h-5 text-primary" />
-        <h1 className="font-serif text-3xl font-light text-foreground">Inscritos</h1>
+        <h1 className="font-serif text-2xl sm:text-3xl font-light text-foreground">Inscritos</h1>
       </div>
       <p className="font-sans text-sm text-muted mb-8">
         {course.title} · {enrollments.length} {enrollments.length === 1 ? "inscrito" : "inscritos"}
@@ -80,6 +88,7 @@ export default async function InscritosPage({ params }: Props) {
         </div>
       ) : (
         <div className="bg-surface border border-border rounded-2xl overflow-hidden">
+          <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
@@ -129,6 +138,7 @@ export default async function InscritosPage({ params }: Props) {
               })}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>
