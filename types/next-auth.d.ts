@@ -17,5 +17,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     id?: string;
     role?: string;
+    /** Momento (ms) da última releitura do papel no banco — ver auth.ts */
+    roleSyncedAt?: number;
   }
 }
