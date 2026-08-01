@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendEnrollmentConfirmation, sendPaymentPendingEmail } from "@/lib/email";
 import { APP_URL } from "@/lib/appUrl";
+import { sendAfterResponse } from "@/lib/emailBackground";
 
 export async function POST(req: NextRequest) {
   const secret = process.env.ASAAS_WEBHOOK_TOKEN;
@@ -49,12 +50,14 @@ export async function POST(req: NextRequest) {
         create: { userId: enrollment.userId, enrollmentId: dbPayment.enrollmentId },
         update: {},
       }).catch((err) => console.error("Asaas certificate error:", err));
-      sendEnrollmentConfirmation({
-        to: enrollment.user.email,
-        userName: enrollment.user.name ?? "Aluno",
-        courseName: enrollment.course.title,
-        courseSlug: enrollment.course.slug,
-      }).catch((err) => console.error("Asaas enrollment email error:", err));
+      sendAfterResponse("confirmação de matrícula (Asaas)", enrollment.user.email, () =>
+        sendEnrollmentConfirmation({
+          to: enrollment.user.email,
+          userName: enrollment.user.name ?? "Aluno",
+          courseName: enrollment.course.title,
+          courseSlug: enrollment.course.slug,
+        }),
+      );
     }
   }
 
@@ -82,13 +85,15 @@ export async function POST(req: NextRequest) {
           prisma.course.findUnique({ where: { id: enrollment.courseId }, select: { title: true, slug: true } }),
         ]);
         if (user && course) {
-          sendPaymentPendingEmail({
-            to: user.email,
-            userName: user.name ?? "Aluno",
-            courseName: course.title,
-            method: payment?.billingType ?? "pix",
-            checkoutUrl: `${APP_URL}/checkout/${course.slug}`,
-          }).catch((err) => console.error("Asaas pending email error:", err));
+          sendAfterResponse("pagamento pendente (Asaas)", user.email, () =>
+            sendPaymentPendingEmail({
+              to: user.email,
+              userName: user.name ?? "Aluno",
+              courseName: course.title,
+              method: payment?.billingType ?? "pix",
+              checkoutUrl: `${APP_URL}/checkout/${course.slug}`,
+            }),
+          );
         }
       } else if (enrollment?.status === "ACTIVE") {
         // Parcelamento atrasado: suspende acesso sem cancelar definitivamente

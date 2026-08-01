@@ -1,5 +1,6 @@
 ﻿import { Resend } from "resend";
 import { APP_URL } from "@/lib/appUrl";
+import { prisma } from "@/lib/prisma";
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY ?? "re_placeholder");
@@ -11,35 +12,69 @@ export type DeliveryResult =
   | { ok: false; error: string };
 
 /**
+ * Grava o resultado do envio na tabela EmailLog.
+ *
+ * Best-effort de propósito: se o registro falhar, o envio em si não pode ser
+ * afetado — o log existe para diagnóstico, não para bloquear o aluno.
+ */
+async function registrar(
+  kind: string,
+  to: string,
+  result: DeliveryResult,
+): Promise<void> {
+  try {
+    await prisma.emailLog.create({
+      data: {
+        kind,
+        recipient: to,
+        status: result.ok ? "SENT" : "FAILED",
+        providerId: result.ok ? (result.id ?? null) : null,
+        error: result.ok ? null : result.error,
+      },
+    });
+  } catch (e) {
+    console.error(`[email] falha ao gravar EmailLog de ${kind} → ${to}:`, e);
+  }
+}
+
+/**
  * Envia pela Resend registrando o resultado.
  *
  * O SDK da Resend NÃO lança erro quando a API recusa a mensagem: ele resolve
  * com `{ error }`. Sem esta checagem, uma chave inválida, um domínio não
  * verificado ou um destinatário bloqueado passavam despercebidos — o envio
  * "dava certo" no código e o e-mail simplesmente nunca chegava.
+ *
+ * Todo resultado — sucesso ou falha — vai para a tabela EmailLog, consultável
+ * em /admin/emails.
  */
 async function deliver(
   kind: string,
   to: string,
   payload: { from: string; to: string; subject: string; html: string },
 ): Promise<DeliveryResult> {
+  const finalizar = async (result: DeliveryResult): Promise<DeliveryResult> => {
+    await registrar(kind, to, result);
+    return result;
+  };
+
   if (!process.env.RESEND_API_KEY) {
     console.error(`[email] ${kind} → ${to}: NÃO ENVIADO — RESEND_API_KEY não configurada`);
-    return { ok: false, error: "RESEND_API_KEY não configurada" };
+    return finalizar({ ok: false, error: "RESEND_API_KEY não configurada" });
   }
 
   try {
     const { data, error } = await getResend().emails.send(payload);
     if (error) {
       console.error(`[email] ${kind} → ${to}: RECUSADO pela Resend — ${error.name}: ${error.message}`);
-      return { ok: false, error: `${error.name}: ${error.message}` };
+      return finalizar({ ok: false, error: `${error.name}: ${error.message}` });
     }
     console.info(`[email] ${kind} → ${to}: aceito pela Resend (id ${data?.id ?? "?"})`);
-    return { ok: true, id: data?.id };
+    return finalizar({ ok: true, id: data?.id });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error(`[email] ${kind} → ${to}: FALHOU — ${msg}`);
-    return { ok: false, error: msg };
+    return finalizar({ ok: false, error: msg });
   }
 }
 
@@ -161,10 +196,13 @@ export async function sendPasswordResetEmail({
   to,
   userName,
   token,
+  expiresLabel = "24 horas",
 }: {
   to: string;
   userName: string;
   token: string;
+  /** Precisa acompanhar a validade real do token. */
+  expiresLabel?: string;
 }) {
   const link = `${APP_URL}/resetar-senha?token=${token}`;
 
@@ -177,7 +215,7 @@ export async function sendPasswordResetEmail({
         Redefinir minha senha
       </a>
     </div>
-    <p style="margin:0 0 8px;color:#6b7280;font-size:13px;">⏱ Este link expira em <strong>1 hora</strong>.</p>
+    <p style="margin:0 0 8px;color:#6b7280;font-size:13px;">⏱ Este link expira em <strong>${expiresLabel}</strong>.</p>
     <p style="margin:0 0 24px;color:#6b7280;font-size:13px;">Se você não solicitou a redefinição de senha, ignore este e-mail — sua conta permanece segura.</p>
     <p style="margin:0;color:#9ca3af;font-size:12px;">Ou copie e cole este endereço no navegador:<br/><span style="color:#00475e;word-break:break-all;">${link}</span></p>
   `;
@@ -195,11 +233,14 @@ export async function sendSetPasswordEmail({
   userName,
   courseName,
   token,
+  expiresLabel = "1 hora",
 }: {
   to: string;
   userName: string;
   courseName: string;
   token: string;
+  /** Precisa acompanhar a validade real do token — o reenvio pelo admin usa 7 dias. */
+  expiresLabel?: string;
 }) {
   const link = `${APP_URL}/resetar-senha?token=${token}`;
 
@@ -212,7 +253,7 @@ export async function sendSetPasswordEmail({
         Criar minha senha
       </a>
     </div>
-    <p style="margin:0 0 8px;color:#6b7280;font-size:13px;">⏱ Este link expira em <strong>1 hora</strong>. Se expirar, use "Esqueci minha senha" na tela de login com o e-mail ${to}.</p>
+    <p style="margin:0 0 8px;color:#6b7280;font-size:13px;">⏱ Este link expira em <strong>${expiresLabel}</strong>. Se expirar, use "Esqueci minha senha" na tela de login com o e-mail ${to}.</p>
     <p style="margin:0;color:#9ca3af;font-size:12px;">Ou copie e cole este endereço no navegador:<br/><span style="color:#00475e;word-break:break-all;">${link}</span></p>
   `;
 

@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { createEmailVerificationToken } from "@/lib/tokens";
 import { sendEmailVerificationEmail } from "@/lib/email";
+import { sendAfterResponse } from "@/lib/emailBackground";
 
 const schema = z.object({
   name: z.string().min(2),
@@ -32,12 +33,12 @@ export async function POST(req: Request) {
     data: { name, email, passwordHash },
   });
 
-  // Envia e-mail de verificação de forma não-bloqueante
-  createEmailVerificationToken(email)
-    .then((token) =>
-      sendEmailVerificationEmail({ to: email, userName: name, token })
-    )
-    .catch(() => {}); // Não falha o cadastro se o e-mail falhar
+  // Envia o e-mail de verificação sem travar o cadastro, mas registrando a falha:
+  // engolir o erro aqui deixava o aluno sem e-mail e sem nenhum rastro do motivo.
+  sendAfterResponse("verificação de e-mail", email, async () => {
+    const token = await createEmailVerificationToken(email);
+    return sendEmailVerificationEmail({ to: email, userName: name, token });
+  });
 
   return NextResponse.json({ ok: true });
 }

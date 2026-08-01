@@ -43,6 +43,8 @@ export default async function AdminUsuariosPage({ params, searchParams }: Props)
         role:          true,
         emailVerified: true,
         createdAt:     true,
+        passwordHash:  true,
+        accounts:      { select: { provider: true } },
         _count: { select: { enrollments: true } },
       },
       orderBy: { createdAt: "desc" },
@@ -127,6 +129,8 @@ export default async function AdminUsuariosPage({ params, searchParams }: Props)
                     email:         u.email,
                     role:          u.role as Role,
                     emailVerified: !!u.emailVerified,
+                    // Sem senha e sem login social = conta criada mas inacessível
+                    hasAccess:     !!u.passwordHash || u.accounts.length > 0,
                     _count:        u._count,
                   }}
                   isSelf={u.id === selfId}

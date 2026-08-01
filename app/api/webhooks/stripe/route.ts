@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 import { sendEnrollmentConfirmation } from "@/lib/email";
+import { sendAfterResponse } from "@/lib/emailBackground";
 
 export async function POST(req: Request) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -46,13 +47,15 @@ export async function POST(req: Request) {
       },
     });
 
-    // Send confirmation email (fire-and-forget — don't fail webhook on email error)
-    sendEnrollmentConfirmation({
-      to: enrollment.user.email,
-      userName: enrollment.user.name ?? "Aluno",
-      courseName: enrollment.course.title,
-      courseSlug: enrollment.course.slug,
-    }).catch((err) => console.error("Email confirmation error:", err));
+    // Confirmação depois da resposta — não derruba o webhook, mas o envio roda até o fim
+    sendAfterResponse("confirmação de matrícula (Stripe)", enrollment.user.email, () =>
+      sendEnrollmentConfirmation({
+        to: enrollment.user.email,
+        userName: enrollment.user.name ?? "Aluno",
+        courseName: enrollment.course.title,
+        courseSlug: enrollment.course.slug,
+      }),
+    );
 
     // Incrementar cupom apenas agora que o pagamento foi confirmado
     if (updatedPayment?.couponId) {

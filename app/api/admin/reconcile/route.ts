@@ -85,12 +85,17 @@ export async function POST(req: NextRequest) {
           create: { userId: enrollment.userId, enrollmentId: enrollment.id },
           update: {},
         }).catch(() => {});
-        sendEnrollmentConfirmation({
+        // Aqui o envio é aguardado: a rota é manual, e o admin precisa ver no
+        // retorno se o aluno foi avisado ou não.
+        const mail = await sendEnrollmentConfirmation({
           to: enrollment.user.email,
           userName: enrollment.user.name ?? "Aluno",
           courseName: enrollment.course.title,
           courseSlug: enrollment.course.slug,
-        }).catch(() => {});
+        });
+        if (!mail.ok) {
+          errors.push(`E-mail de confirmação não enviado para ${enrollment.user.email}: ${mail.error}`);
+        }
       }
     } catch (err) {
       errors.push(String(err));
