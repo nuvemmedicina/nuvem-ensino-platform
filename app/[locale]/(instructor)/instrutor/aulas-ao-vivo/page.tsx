@@ -48,7 +48,7 @@ export default async function InstructorAulasAoVivoPage({
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-8">
         <div>
-          <h1 className="font-serif text-3xl font-light text-foreground">Aulas ao Vivo</h1>
+          <h1 className="font-serif text-2xl sm:text-3xl font-light text-foreground">Aulas ao Vivo</h1>
           <p className="font-sans text-sm text-muted mt-1">
             Gerencie as sessões ao vivo dos seus cursos
           </p>
