@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { RelatorioFilters } from "./RelatorioFilters";
 import { getTranslations } from "next-intl/server";
+import { formatPhone, toWhatsApp } from "@/lib/phone";
 
 const methodLabel: Record<string, string> = {
   STRIPE:       "Stripe",
@@ -73,7 +74,7 @@ export default async function RelatoriosPage({ params, searchParams }: Props) {
         id:         true,
         enrolledAt: true,
         status:     true,
-        user:   { select: { name: true, email: true } },
+        user:   { select: { name: true, email: true, phone: true } },
         course: { select: { title: true, price: true } },
         payments: {
           select: { id: true, method: true, status: true, amount: true, paidAt: true, couponId: true },
@@ -185,6 +186,17 @@ export default async function RelatoriosPage({ params, searchParams }: Props) {
                           {enr.user.name ?? "—"}
                         </p>
                         <p className="font-sans text-xs text-muted">{enr.user.email}</p>
+                        {/* Telefone abre direto a conversa no WhatsApp */}
+                        {enr.user.phone && (
+                          <a
+                            href={`https://wa.me/${toWhatsApp(enr.user.phone)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-sans text-xs text-muted hover:text-primary hover:underline transition-colors"
+                          >
+                            {formatPhone(enr.user.phone)}
+                          </a>
+                        )}
                       </td>
 
                       {/* Curso */}

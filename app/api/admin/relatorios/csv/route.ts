@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { formatPhone, toWhatsApp } from "@/lib/phone";
 
 function toNum(v: unknown): number {
   return v === null || v === undefined ? 0 : Number(v);
@@ -41,7 +42,7 @@ export async function GET(req: Request) {
     },
     select: {
       enrolledAt: true,
-      user:   { select: { name: true, email: true } },
+      user:   { select: { name: true, email: true, phone: true } },
       course: { select: { title: true, price: true } },
       payments: {
         select: { method: true, status: true, amount: true, paidAt: true },
@@ -72,7 +73,11 @@ export async function GET(req: Request) {
     new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" }).format(d);
 
   // Monta CSV
-  const header = ["Data inscrição", "Nome", "E-mail", "Curso", "Método", "Status pgto", "Valor (BRL)"].join(",");
+  const colunas = [
+    "Data inscrição", "Nome", "E-mail", "Telefone", "WhatsApp",
+    "Curso", "Método", "Status pgto", "Valor (BRL)",
+  ];
+  const header = colunas.join(",");
 
   const rows = enrollments.map((enr) => {
     const pay = enr.payments[0];
@@ -81,18 +86,28 @@ export async function GET(req: Request) {
       escapeCsv(fmtDate(new Date(enr.enrolledAt))),
       escapeCsv(enr.user.name),
       escapeCsv(enr.user.email),
+      escapeCsv(formatPhone(enr.user.phone)),
+      escapeCsv(toWhatsApp(enr.user.phone)),
       escapeCsv(enr.course.title),
       escapeCsv(pay ? (methodLabel[pay.method] ?? pay.method) : "—"),
       escapeCsv(pay ? (payStatusLabel[pay.status] ?? pay.status) : "Aguardando"),
-      amount.toFixed(2).replace(".", ","),
+      // Aspas obrigatórias: a vírgula decimal é o mesmo caractere que separa as
+      // colunas, e sem isso o valor virava duas células na planilha.
+      escapeCsv(amount.toFixed(2).replace(".", ",")),
     ].join(",");
   });
 
-  // Total apenas pagamentos confirmados
+  // Total apenas pagamentos confirmados. O rótulo vai na penúltima coluna e o
+  // valor na última, alinhado com o cabeçalho — antes sobrava uma coluna e a
+  // linha de total saía deslocada na planilha.
   const total = enrollments
     .filter((e) => e.payments[0]?.status === "PAID")
     .reduce((s, e) => s + toNum(e.payments[0]?.amount), 0);
-  rows.push(["", "", "", "", "", "", "TOTAL", total.toFixed(2).replace(".", ",")].join(","));
+  rows.push([
+    ...Array(colunas.length - 2).fill(""),
+    "TOTAL",
+    escapeCsv(total.toFixed(2).replace(".", ",")),
+  ].join(","));
 
   const csv = "﻿" + [header, ...rows].join("\r\n"); // BOM para Excel reconhecer UTF-8
 
