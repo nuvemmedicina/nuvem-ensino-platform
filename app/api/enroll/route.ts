@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { sendEnrollmentConfirmation } from "@/lib/email";
+import { sendAfterResponse } from "@/lib/emailBackground";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -63,14 +64,16 @@ export async function POST(req: Request) {
       return { enrollment: created, course: c, isNew: true };
     });
 
-    // Send confirmation email for new enrollments (fire-and-forget)
+    // Confirmação de matrícula depois da resposta, sem perder o envio nem a falha
     if (isNew) {
-      sendEnrollmentConfirmation({
-        to: session.user.email ?? "",
-        userName: session.user.name ?? "Aluno",
-        courseName: course.title,
-        courseSlug: course.slug,
-      }).catch((err) => console.error("Free enrollment email error:", err));
+      sendAfterResponse("confirmação de matrícula", session.user.email ?? "", () =>
+        sendEnrollmentConfirmation({
+          to: session.user.email ?? "",
+          userName: session.user.name ?? "Aluno",
+          courseName: course.title,
+          courseSlug: course.slug,
+        }),
+      );
     }
 
     return NextResponse.json({

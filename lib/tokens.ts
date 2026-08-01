@@ -8,16 +8,20 @@ export function generateToken(): string {
 
 /**
  * Cria (ou substitui) um token de redefinição de senha para o email informado.
- * Expira em 1 hora.
+ *
+ * Validade padrão de 24 horas — não 1 hora. Com 1 hora, o link do e-mail de
+ * primeiro acesso morria antes de o aluno abrir a caixa de entrada: os e-mails
+ * eram entregues normalmente pela Resend e mesmo assim os links não eram usados.
+ * O e-mail pós-compra usa 7 dias, e o reenvio manual do admin também.
  */
-export async function createPasswordResetToken(email: string): Promise<string> {
+export async function createPasswordResetToken(email: string, hours = 24): Promise<string> {
   const identifier = `reset:${email}`;
 
   // Remove tokens anteriores para o mesmo email
   await prisma.verificationToken.deleteMany({ where: { identifier } });
 
   const token = generateToken();
-  const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hora
+  const expires = new Date(Date.now() + hours * 60 * 60 * 1000);
 
   await prisma.verificationToken.create({
     data: { identifier, token, expires },

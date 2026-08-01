@@ -62,6 +62,11 @@ enum LessonType {
   QUIZ
 }
 
+enum EmailStatus {
+  SENT
+  FAILED
+}
+
 enum AttendanceStatus {
   PRESENT
   ABSENT
@@ -932,6 +937,25 @@ model AIProviderConfig {
 }
 
 // ─── RAG — CONTEÚDO INDEXADO ──────────────────────────────────────────────────
+
+// ─── E-MAILS ENVIADOS ─────────────────────────────────────────────────────────
+
+// Rastro permanente de cada tentativa de envio. O log de runtime da Vercel tem
+// retenção curta (minutos), então sem esta tabela não há como responder
+// "o e-mail do aluno saiu?" depois que o problema é relatado.
+model EmailLog {
+  id         String      @id @default(cuid())
+  kind       String      // "redefinição de senha", "confirmação de matrícula", …
+  recipient  String
+  status     EmailStatus
+  providerId String?     // id da Resend — permite achar a mensagem no painel deles
+  error      String?     @db.Text
+  createdAt  DateTime    @default(now())
+
+  @@index([recipient])
+  @@index([createdAt])
+  @@index([status])
+}
 
 model ContentChunk {
   id         String   @id @default(cuid())

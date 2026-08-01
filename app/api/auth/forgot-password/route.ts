@@ -2,6 +2,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { createPasswordResetToken } from "@/lib/tokens";
 import { sendPasswordResetEmail } from "@/lib/email";
+import { sendAfterResponse } from "@/lib/emailBackground";
 
 const schema = z.object({ email: z.string().email() });
 
@@ -23,13 +24,11 @@ export async function POST(req: Request) {
 
   if (user) {
     const token = await createPasswordResetToken(email);
-    // Fire-and-forget — não bloqueia a resposta, mas o resultado fica no log:
-    // sem isso, um envio recusado era indistinguível de um envio bem-sucedido.
-    sendPasswordResetEmail({ to: email, userName: user.name ?? "Aluno", token })
-      .then((r) => {
-        if (!r.ok) console.error(`[forgot-password] envio falhou para ${email}: ${r.error}`);
-      })
-      .catch((e) => console.error(`[forgot-password] envio falhou para ${email}:`, e));
+    // Não bloqueia a resposta, mas roda até o fim: sem `after()` a instância era
+    // congelada logo após o `return` e o envio morria no meio, sem erro e sem log.
+    sendAfterResponse("redefinição de senha", email, () =>
+      sendPasswordResetEmail({ to: email, userName: user.name ?? "Aluno", token }),
+    );
   }
 
   return Response.json({ ok: true });

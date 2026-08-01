@@ -41,6 +41,7 @@ export default async function AdminLayout({
     { key: "liveSessions", href: "/admin/aulas-ao-vivo",                label: t("liveSessions") },
     { key: "reports",      href: "/admin/relatorios",                   label: t("reports") },
     { key: "coupons",      href: "/admin/cupons",                        label: "Cupons" },
+    { key: "emails",       href: "/admin/emails",                        label: "E-mails" },
     { key: "liveLeads",   href: "/admin/live-leads",                    label: "Inscrições Live" },
     { key: "flashcards",  href: "/admin/flashcards",                    label: "Flashcards" },
     { key: "settings",     href: "/admin/configuracoes/pagamentos",     label: t("settings") },

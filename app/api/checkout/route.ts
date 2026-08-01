@@ -11,6 +11,7 @@ import {
 import { LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
 import { createPasswordResetToken } from "@/lib/tokens";
 import { sendSetPasswordEmail } from "@/lib/email";
+import { sendAfterResponse } from "@/lib/emailBackground";
 import { APP_URL } from "@/lib/appUrl";
 
 export async function POST(req: Request) {
@@ -148,13 +149,21 @@ export async function POST(req: Request) {
     ? `${APP_URL}/dashboard/cursos/${courseSlug}?sucesso=1`
     : `${APP_URL}/entrar?callbackUrl=/dashboard/cursos/${courseSlug}&sucesso=1`;
 
-  // Convidado novo: dispara e-mail para criar senha de acesso (não bloqueia a resposta)
+  // Convidado novo: dispara e-mail para criar senha de acesso (não bloqueia a resposta).
+  // É o único caminho de primeiro acesso desse aluno — se falhar, precisa aparecer no Sentry.
   if (isNewGuestUser) {
-    createPasswordResetToken(userEmail)
-      .then((token) =>
-        sendSetPasswordEmail({ to: userEmail, userName, courseName: dbCourse.title, token }),
-      )
-      .catch(() => {});
+    sendAfterResponse("criar senha de acesso", userEmail, async () => {
+      // 7 dias: é o primeiro acesso de quem acabou de comprar e pode só abrir o
+      // e-mail no dia seguinte. Com 1 hora, o link chegava morto na prática.
+      const token = await createPasswordResetToken(userEmail, 24 * 7);
+      return sendSetPasswordEmail({
+        to: userEmail,
+        userName,
+        courseName: dbCourse.title,
+        token,
+        expiresLabel: "7 dias",
+      });
+    });
   }
 
   // ── Cupom 100% — matrícula gratuita imediata ─────────────────────────────
