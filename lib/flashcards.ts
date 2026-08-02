@@ -3,6 +3,47 @@ import { prisma } from "@/lib/prisma";
 export type CardEntrada = { id?: string; front: string; back: string };
 
 /**
+ * Quem pode estudar um grupo de flashcards.
+ *
+ * Grupo vinculado a um curso é dos matriculados nele — mesma regra do fórum e
+ * da avaliação do curso, onde ACTIVE e COMPLETED liberam e o resto não.
+ * Grupo sem curso é material solto, aberto a qualquer aluno logado.
+ * Quem cuida do conteúdo enxerga tudo, para poder conferir antes de publicar.
+ */
+export async function podeEstudarGrupo(
+  userId: string,
+  role: string | undefined,
+  courseId: string | null,
+): Promise<boolean> {
+  if (role === "ADMIN" || role === "EDITOR" || role === "INSTRUCTOR") return true;
+  if (!courseId) return true;
+
+  const matricula = await prisma.enrollment.findUnique({
+    where: { userId_courseId: { userId, courseId } },
+    select: { status: true },
+  });
+  return matricula?.status === "ACTIVE" || matricula?.status === "COMPLETED";
+}
+
+/** Grupos que este usuário pode estudar, com a contagem de cards. */
+export async function gruposParaUsuario(userId: string, role: string | undefined) {
+  const grupos = await prisma.flashcardGroup.findMany({
+    where: { cards: { some: {} } }, // grupo vazio não tem o que estudar
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true, title: true, description: true, courseId: true,
+      course: { select: { title: true, thumbnailUrl: true } },
+      _count: { select: { cards: true } },
+    },
+  });
+
+  const liberados = await Promise.all(
+    grupos.map(async (g) => ((await podeEstudarGrupo(userId, role, g.courseId)) ? g : null)),
+  );
+  return liberados.filter((g): g is NonNullable<typeof g> => g !== null);
+}
+
+/**
  * Sincroniza os cards de um grupo com a lista vinda da tela de edição.
  *
  * Atualiza card a card em vez de recriar tudo, de propósito: apagar um
