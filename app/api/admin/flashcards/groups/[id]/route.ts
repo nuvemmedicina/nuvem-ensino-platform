@@ -17,6 +17,16 @@ const patchSchema = z.object({
   description: z.string().optional().nullable(),
   courseId: z.string().optional().nullable(),
   tags: z.array(z.string()).optional(),
+  // Card sem id é novo. Card existente que não vier na lista é removido.
+  cards: z
+    .array(
+      z.object({
+        id: z.string().optional(),
+        front: z.string().min(1),
+        back: z.string().min(1),
+      }),
+    )
+    .optional(),
 });
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -38,7 +48,17 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const parsed = patchSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
 
-  const group = await prisma.flashcardGroup.update({ where: { id }, data: parsed.data });
+  const { cards, ...dadosDoGrupo } = parsed.data;
+
+  if (!cards) {
+    const group = await prisma.flashcardGroup.update({ where: { id }, data: dadosDoGrupo });
+    return NextResponse.json(group);
+  }
+
+  const { sincronizarCards } = await import("@/lib/flashcards");
+  await sincronizarCards(id, cards);
+  const group = await prisma.flashcardGroup.update({ where: { id }, data: dadosDoGrupo });
+
   return NextResponse.json(group);
 }
 
