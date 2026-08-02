@@ -27,16 +27,43 @@ export async function POST(req: NextRequest) {
   if (action === "start") {
     const parsed = startSchema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+
+    const grupo = await prisma.flashcardGroup.findUnique({
+      where: { id: parsed.data.groupId },
+      select: { courseId: true },
+    });
+    if (!grupo) return NextResponse.json({ error: "Grupo não encontrado" }, { status: 404 });
+
+    const { podeEstudarGrupo } = await import("@/lib/flashcards");
+    const { auth: getAuth } = await import("@/auth");
+    const role = ((await getAuth())?.user as { role?: string } | undefined)?.role;
+    if (!(await podeEstudarGrupo(userId, role, grupo.courseId))) {
+      return NextResponse.json({ error: "Sem acesso a este grupo" }, { status: 403 });
+    }
+
     const session = await prisma.flashcardStudySession.create({
       data: { userId, groupId: parsed.data.groupId },
     });
     return NextResponse.json({ sessionId: session.id });
   }
 
+  // A sessão vem do cliente: sem esta conferência, alguém poderia gravar
+  // revisões na sessão de estudo de outra pessoa.
+  async function sessaoDoUsuario(sessionId: string) {
+    const s = await prisma.flashcardStudySession.findUnique({
+      where: { id: sessionId },
+      select: { userId: true },
+    });
+    return s?.userId === userId;
+  }
+
   if (action === "review") {
     const parsed = reviewSchema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
     const { sessionId, flashcardId, rating } = parsed.data;
+    if (!(await sessaoDoUsuario(sessionId))) {
+      return NextResponse.json({ error: "Sessão não encontrada" }, { status: 404 });
+    }
 
     await prisma.$transaction([
       prisma.flashcardReview.create({ data: { sessionId, flashcardId, rating } }),
@@ -52,6 +79,9 @@ export async function POST(req: NextRequest) {
   if (action === "finish") {
     const parsed = finishSchema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+    if (!(await sessaoDoUsuario(parsed.data.sessionId))) {
+      return NextResponse.json({ error: "Sessão não encontrada" }, { status: 404 });
+    }
     const session = await prisma.flashcardStudySession.update({
       where: { id: parsed.data.sessionId },
       data: { finishedAt: new Date() },
