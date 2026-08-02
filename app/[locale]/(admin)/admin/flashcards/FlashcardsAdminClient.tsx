@@ -15,6 +15,8 @@ type Group = {
 type Course = { id: string; title: string; slug: string };
 type DesignConfig = { backgroundValue: string; textColor: string; borderRadius: number; flipAnimation: string } | null;
 type GeneratedCard = { front: string; back: string };
+/** Card já salvo, em edição. Sem id = acabou de ser acrescentado na tela. */
+type EditableCard = { id?: string; front: string; back: string };
 
 const inputClass = "w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground focus:outline-none focus:border-primary/50";
 const btnPrimary = "inline-flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors disabled:opacity-50";
@@ -58,6 +60,8 @@ export function FlashcardsAdminClient({
   const [aiError, setAiError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [editCards, setEditCards] = useState<EditableCard[]>([]);
+  const [loadingCards, setLoadingCards] = useState(false);
 
   async function handleGenerate() {
     const file = fileRef.current?.files?.[0];
@@ -111,34 +115,58 @@ export function FlashcardsAdminClient({
 
   function openAI() { setModal("ai"); setGeneratedCards([]); setAiError(null); setFileName(null); }
 
-  function openEdit(g: Group) {
+  async function openEdit(g: Group) {
     setEditingId(g.id);
     setTitle(g.title);
     setDescription(g.description ?? "");
     setCourseId(g.course ? courses.find((c) => c.slug === g.course!.slug)?.id ?? "" : "");
+    setEditCards([]);
     setModal("edit");
+
+    // Os cards não vêm na listagem — busca sob demanda ao abrir a edição.
+    setLoadingCards(true);
+    try {
+      const res = await fetch(`/api/admin/flashcards/groups/${g.id}`);
+      if (res.ok) {
+        const data = await res.json() as { cards: EditableCard[] };
+        setEditCards(data.cards.map((c) => ({ id: c.id, front: c.front, back: c.back })));
+      }
+    } catch { /* deixa a lista vazia; o resto da edição continua funcionando */ }
+    setLoadingCards(false);
+  }
+
+  function alterarCard(i: number, campo: "front" | "back", valor: string) {
+    setEditCards((prev) => prev.map((c, j) => (j === i ? { ...c, [campo]: valor } : c)));
   }
 
   async function handleUpdate() {
     if (!editingId || !title.trim()) return;
+    // Card em branco seria salvo vazio e apareceria assim para o aluno.
+    const cards = editCards.filter((c) => c.front.trim() && c.back.trim());
     setSaving(true);
     const res = await fetch(`/api/admin/flashcards/groups/${editingId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description: description || null, courseId: courseId || null }),
+      body: JSON.stringify({ title, description: description || null, courseId: courseId || null, cards }),
     });
     const data = await res.json();
     setSaving(false);
     if (!res.ok) return;
     const linkedCourse = courses.find((c) => c.id === courseId);
     setGroups((prev) => prev.map((g) => g.id === editingId
-      ? { ...g, title: data.title, description: data.description, course: linkedCourse ? { ...linkedCourse, thumbnailUrl: g.course?.thumbnailUrl ?? null } : null }
+      ? {
+          ...g,
+          title: data.title,
+          description: data.description,
+          _count: { cards: cards.length },
+          course: linkedCourse ? { ...linkedCourse, thumbnailUrl: g.course?.thumbnailUrl ?? null } : null,
+        }
       : g
     ));
     closeModal();
   }
 
-  function closeModal() { setModal(null); setTitle(""); setDescription(""); setCourseId(""); setGeneratedCards([]); setAiError(null); setFileName(null); setEditingId(null); }
+  function closeModal() { setModal(null); setTitle(""); setDescription(""); setCourseId(""); setGeneratedCards([]); setAiError(null); setFileName(null); setEditingId(null); setEditCards([]); }
 
   return (
     <div>
@@ -183,23 +211,6 @@ export function FlashcardsAdminClient({
                   {/* Stacked cards illustration */}
                   <FlashcardIllustration count={g._count.cards} />
 
-                  {/* Hover actions overlay */}
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <a
-                      href={`/dashboard/flashcards/${g.id}`}
-                      target="_blank"
-                      className="flex items-center gap-1.5 font-sans text-[11px] font-bold px-3 py-1.5 rounded-lg bg-white text-zinc-900 hover:bg-white/90 transition-colors"
-                    >
-                      <BookOpen className="w-3 h-3" /> Estudar
-                    </a>
-                    <button
-                      onClick={() => openEdit(g)}
-                      className="flex items-center gap-1.5 font-sans text-[11px] font-bold px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors"
-                    >
-                      <Pencil className="w-3 h-3" /> Editar
-                    </button>
-                  </div>
-
                   {/* Course name at bottom of poster */}
                   {g.course && (
                     <div className="absolute bottom-0 left-0 right-0 px-3 pb-2.5">
@@ -222,12 +233,26 @@ export function FlashcardsAdminClient({
                     </div>
                   )}
 
-                  {/* Delete button */}
-                  <div className="flex items-center gap-1 border-t border-border/50 pt-2 -mx-3 px-3 mt-auto">
+                  {/* Ações — sempre visíveis: antes só apareciam ao passar o
+                      mouse sobre a capa, e ninguém as encontrava. */}
+                  <div className="flex items-center gap-1.5 border-t border-border/50 pt-2 -mx-3 px-3 mt-auto">
+                    <button
+                      onClick={() => openEdit(g)}
+                      className="flex items-center gap-1 font-sans text-[11px] font-semibold px-2 py-1 rounded-md text-primary hover:bg-primary/10 transition-colors"
+                    >
+                      <Pencil className="w-3 h-3" /> Editar
+                    </button>
+                    <a
+                      href={`/dashboard/flashcards/${g.id}`}
+                      target="_blank"
+                      className="flex items-center gap-1 font-sans text-[11px] font-semibold px-2 py-1 rounded-md text-muted hover:text-foreground hover:bg-surface transition-colors"
+                    >
+                      <BookOpen className="w-3 h-3" /> Ver
+                    </a>
                     <button
                       onClick={() => handleDelete(g.id)}
                       className="p-1.5 rounded-md text-muted/50 hover:text-red-500 hover:bg-red-500/10 transition-colors ml-auto"
-                      title="Excluir"
+                      title="Excluir grupo"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -340,6 +365,64 @@ export function FlashcardsAdminClient({
                       ))}
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Revisão dos cards já salvos. Antes da edição existir, a única
+                  forma de corrigir um card era apagar o grupo inteiro. */}
+              {modal === "edit" && (
+                <div className="space-y-2 border-t border-border pt-4">
+                  <div className="flex items-center justify-between">
+                    <p className="font-sans text-xs font-semibold text-muted uppercase tracking-wider">
+                      {loadingCards ? "Carregando cards..." : `${editCards.length} card${editCards.length !== 1 ? "s" : ""}`}
+                    </p>
+                    <button
+                      onClick={() => setEditCards((prev) => [...prev, { front: "", back: "" }])}
+                      className="flex items-center gap-1 font-sans text-[11px] font-semibold text-primary hover:underline"
+                    >
+                      <Plus className="w-3 h-3" /> Acrescentar card
+                    </button>
+                  </div>
+
+                  {loadingCards && <Loader2 className="w-4 h-4 animate-spin text-muted" />}
+
+                  {!loadingCards && editCards.length > 0 && (
+                    <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                      {editCards.map((card, i) => (
+                        <div key={card.id ?? `novo-${i}`} className="bg-background border border-border rounded-lg p-3 space-y-2">
+                          <div className="flex items-start gap-2">
+                            <span className="font-sans text-[10px] font-bold text-muted shrink-0 mt-1 w-11">{i + 1} FRENTE</span>
+                            <textarea
+                              value={card.front}
+                              onChange={(e) => alterarCard(i, "front", e.target.value)}
+                              rows={2}
+                              className="flex-1 text-xs border border-border rounded px-2 py-1 bg-surface resize-y focus:outline-none focus:border-primary/50"
+                            />
+                            <button
+                              onClick={() => setEditCards((prev) => prev.filter((_, j) => j !== i))}
+                              className="text-muted/40 hover:text-red-500 shrink-0"
+                              title="Remover card"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="font-sans text-[10px] font-bold text-muted shrink-0 mt-1 w-11">VERSO</span>
+                            <textarea
+                              value={card.back}
+                              onChange={(e) => alterarCard(i, "back", e.target.value)}
+                              rows={3}
+                              className="flex-1 text-xs border border-border rounded px-2 py-1 bg-surface resize-y focus:outline-none focus:border-primary/50"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <p className="font-sans text-[11px] text-muted">
+                    Card removido aqui some para os alunos junto com o histórico de estudo dele. Os demais mantêm o progresso.
+                  </p>
                 </div>
               )}
 
