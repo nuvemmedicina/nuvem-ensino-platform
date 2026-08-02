@@ -289,7 +289,7 @@ export function FlashcardsAdminClient({
                     </label>
                     <div className="flex items-center gap-2">
                       <label className="font-sans text-xs text-muted">Qtd:</label>
-                      <input type="number" min={5} max={50} value={cardCount} onChange={(e) => setCardCount(parseInt(e.target.value))} className="w-16 px-2 py-1 border border-border rounded-lg text-sm text-center bg-background" />
+                      <input type="number" min={5} max={100} value={cardCount} onChange={(e) => setCardCount(parseInt(e.target.value))} className="w-16 px-2 py-1 border border-border rounded-lg text-sm text-center bg-background" />
                     </div>
                     <button onClick={handleGenerate} disabled={generating} className="inline-flex items-center gap-2 font-sans text-sm font-semibold px-3 py-1.5 rounded-lg bg-violet-600 text-white hover:bg-violet-700 transition-colors disabled:opacity-50">
                       {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
