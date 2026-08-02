@@ -1,9 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { AIFlashcardProvider, FlashcardPair, GenerateOptions } from "../flashcard-generator";
-
-const SYSTEM_PROMPT = `Você é um especialista em medicina que cria flashcards educacionais.
-Gere flashcards de pergunta e resposta claros, em português, com foco em conteúdo médico correto e verificável.
-Responda APENAS com um array JSON estrito no formato [{ "front": "...", "back": "..." }], sem nenhum texto fora do JSON.`;
+import { SYSTEM_PROMPT, montarPrompt, tokensDeSaida } from "../flashcard-prompt";
 
 export class GoogleProvider implements AIFlashcardProvider {
   private genAI: GoogleGenerativeAI;
@@ -19,11 +16,10 @@ export class GoogleProvider implements AIFlashcardProvider {
     const genModel = this.genAI.getGenerativeModel({
       model: this.model,
       systemInstruction: SYSTEM_PROMPT,
+      generationConfig: { maxOutputTokens: tokensDeSaida(count) },
     });
 
-    const result = await genModel.generateContent(
-      `Com base no seguinte conteúdo médico, gere exatamente ${count} flashcards no formato JSON solicitado:\n\n${fileContent.slice(0, 60000)}`,
-    );
+    const result = await genModel.generateContent(montarPrompt(fileContent, count));
     const text = result.response.text();
     const match = text.match(/\[[\s\S]*\]/);
     if (!match) throw new Error("Google: resposta não contém JSON válido");

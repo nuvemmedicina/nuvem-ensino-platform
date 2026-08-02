@@ -14,7 +14,7 @@ const schema = z.object({
   blobUrl: z.string().url(),
   filename: z.string(),
   mimeType: z.string(),
-  count: z.number().int().min(1).max(50).default(10),
+  count: z.number().int().min(1).max(100).default(10),
 });
 
 export async function POST(req: NextRequest) {
@@ -47,9 +47,11 @@ export async function POST(req: NextRequest) {
       const client = new Anthropic({ apiKey });
       const base64 = buffer.toString("base64");
       const mediaType = mimeType as "image/jpeg" | "image/png" | "image/gif" | "image/webp";
+      const { SYSTEM_PROMPT, tokensDeSaida } = await import("@/lib/ai/flashcard-prompt");
       const msg = await client.messages.create({
         model: cfg.model,
-        max_tokens: 4096,
+        max_tokens: tokensDeSaida(count),
+        system: SYSTEM_PROMPT,
         messages: [{
           role: "user",
           content: [
