@@ -8,11 +8,15 @@ type Group = {
   id: string;
   title: string;
   description: string | null;
+  topicId: string | null;
+  imageUrl: string | null;
   tags: string[];
   course: { title: string; slug: string; thumbnailUrl: string | null } | null;
   _count: { cards: number };
 };
-type Course = { id: string; title: string; slug: string };
+type Topic = { id: string; title: string };
+type Module = { id: string; title: string; topics: Topic[] };
+type Course = { id: string; title: string; slug: string; modules: Module[] };
 type DesignConfig = { backgroundValue: string; textColor: string; borderRadius: number; flipAnimation: string } | null;
 type GeneratedCard = { front: string; back: string };
 /** Card já salvo, em edição. Sem id = acabou de ser acrescentado na tela. */
@@ -62,6 +66,22 @@ export function FlashcardsAdminClient({
   const [fileName, setFileName] = useState<string | null>(null);
   const [editCards, setEditCards] = useState<EditableCard[]>([]);
   const [loadingCards, setLoadingCards] = useState(false);
+  const [topicId, setTopicId] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [enviandoImagem, setEnviandoImagem] = useState(false);
+  const imagemRef = useRef<HTMLInputElement>(null);
+
+  async function enviarImagem(file: File) {
+    setEnviandoImagem(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      setImageUrl(await uploadFileToBlob(fd));
+    } catch {
+      /* mantém a imagem anterior */
+    }
+    setEnviandoImagem(false);
+  }
 
   async function handleGenerate() {
     const file = fileRef.current?.files?.[0];
@@ -96,7 +116,13 @@ export function FlashcardsAdminClient({
     const res = await fetch("/api/admin/flashcards/groups", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, courseId: courseId || null, cards }),
+      body: JSON.stringify({
+        title, description,
+        courseId: courseId || null,
+        topicId: topicId || null,
+        imageUrl: imageUrl || null,
+        cards,
+      }),
     });
     const data = await res.json();
     setSaving(false);
@@ -104,7 +130,7 @@ export function FlashcardsAdminClient({
     const linkedCourse = courses.find((c) => c.id === courseId);
     setGroups((prev) => [{ ...data, course: linkedCourse ? { ...linkedCourse, thumbnailUrl: null } : null }, ...prev]);
     setModal(null);
-    setTitle(""); setDescription(""); setCourseId(""); setGeneratedCards([]); setFileName(null);
+    setTitle(""); setDescription(""); setCourseId(""); setTopicId(""); setImageUrl(""); setGeneratedCards([]); setFileName(null);
   }
 
   async function handleDelete(id: string) {
@@ -120,6 +146,8 @@ export function FlashcardsAdminClient({
     setTitle(g.title);
     setDescription(g.description ?? "");
     setCourseId(g.course ? courses.find((c) => c.slug === g.course!.slug)?.id ?? "" : "");
+    setTopicId(g.topicId ?? "");
+    setImageUrl(g.imageUrl ?? "");
     setEditCards([]);
     setModal("edit");
 
@@ -147,17 +175,26 @@ export function FlashcardsAdminClient({
     const res = await fetch(`/api/admin/flashcards/groups/${editingId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description: description || null, courseId: courseId || null, cards }),
+      body: JSON.stringify({
+        title,
+        description: description || null,
+        courseId: courseId || null,
+        topicId: topicId || null,
+        imageUrl: imageUrl || null,
+        cards,
+      }),
     });
     const data = await res.json();
     setSaving(false);
     if (!res.ok) return;
-    const linkedCourse = courses.find((c) => c.id === courseId);
+    const linkedCourse = courses.find((c) => c.id === (data.courseId ?? courseId));
     setGroups((prev) => prev.map((g) => g.id === editingId
       ? {
           ...g,
           title: data.title,
           description: data.description,
+          topicId: data.topicId ?? null,
+          imageUrl: data.imageUrl ?? null,
           _count: { cards: cards.length },
           course: linkedCourse ? { ...linkedCourse, thumbnailUrl: g.course?.thumbnailUrl ?? null } : null,
         }
@@ -166,7 +203,7 @@ export function FlashcardsAdminClient({
     closeModal();
   }
 
-  function closeModal() { setModal(null); setTitle(""); setDescription(""); setCourseId(""); setGeneratedCards([]); setAiError(null); setFileName(null); setEditingId(null); setEditCards([]); }
+  function closeModal() { setModal(null); setTitle(""); setDescription(""); setCourseId(""); setTopicId(""); setImageUrl(""); setGeneratedCards([]); setAiError(null); setFileName(null); setEditingId(null); setEditCards([]); }
 
   return (
     <div>
@@ -189,7 +226,7 @@ export function FlashcardsAdminClient({
       ) : (
         <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4">
           {groups.map((g) => {
-            const thumb = g.course?.thumbnailUrl ?? null;
+            const thumb = g.imageUrl ?? g.course?.thumbnailUrl ?? null;
             return (
               <div key={g.id} className="group relative flex flex-col rounded-xl overflow-hidden border border-border bg-surface hover:border-primary/40 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
 
@@ -286,10 +323,66 @@ export function FlashcardsAdminClient({
               </div>
               <div>
                 <label className="block font-sans text-xs font-semibold text-muted uppercase tracking-wider mb-1.5">Vincular a um curso</label>
-                <select value={courseId} onChange={(e) => setCourseId(e.target.value)} className={inputClass}>
+                <select
+                  value={courseId}
+                  onChange={(e) => { setCourseId(e.target.value); setTopicId(""); }}
+                  className={inputClass}
+                >
                   <option value="">— Nenhum curso —</option>
                   {courses.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
                 </select>
+              </div>
+
+              {/* O tópico é o que põe o grupo no lugar certo da listagem do
+                  aluno, dentro do módulo e na cor dele. */}
+              {courseId && (
+                <div>
+                  <label className="block font-sans text-xs font-semibold text-muted uppercase tracking-wider mb-1.5">Tópico do curso</label>
+                  <select value={topicId} onChange={(e) => setTopicId(e.target.value)} className={inputClass}>
+                    <option value="">— Sem tópico —</option>
+                    {courses.find((c) => c.id === courseId)?.modules.map((m, i) => (
+                      <optgroup key={m.id} label={`Módulo ${i + 1} — ${m.title}`}>
+                        {m.topics.map((t) => <option key={t.id} value={t.id}>{t.title}</option>)}
+                      </optgroup>
+                    ))}
+                  </select>
+                  <p className="font-sans text-[11px] text-muted mt-1">
+                    Define onde o grupo aparece para o aluno. Sem tópico, ele fica solto no fim da página do curso.
+                  </p>
+                </div>
+              )}
+
+              <div>
+                <label className="block font-sans text-xs font-semibold text-muted uppercase tracking-wider mb-1.5">Imagem de capa</label>
+                <div className="flex items-center gap-3">
+                  <div className="w-24 h-14 rounded-lg overflow-hidden border border-border bg-background shrink-0 flex items-center justify-center">
+                    {imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={imageUrl} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <LayersIcon className="w-4 h-4 text-muted/40" />
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="flex items-center gap-2 cursor-pointer font-sans text-xs font-medium px-3 py-1.5 border border-dashed border-border rounded-lg hover:bg-background transition-colors w-fit">
+                      {enviandoImagem ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                      {imageUrl ? "Trocar imagem" : "Escolher imagem"}
+                      <input
+                        ref={imagemRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) enviarImagem(f); }}
+                      />
+                    </label>
+                    {imageUrl && (
+                      <button onClick={() => setImageUrl("")} className="font-sans text-[11px] text-muted hover:text-red-500 transition-colors w-fit">
+                        Remover imagem
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <p className="font-sans text-[11px] text-muted mt-1.5">Sem imagem, o card usa a cor do módulo.</p>
               </div>
 
               {modal === "ai" && (

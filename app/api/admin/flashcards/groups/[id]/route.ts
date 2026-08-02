@@ -16,6 +16,8 @@ const patchSchema = z.object({
   title: z.string().min(1).optional(),
   description: z.string().optional().nullable(),
   courseId: z.string().optional().nullable(),
+  topicId: z.string().optional().nullable(),
+  imageUrl: z.string().url().optional().nullable(),
   tags: z.array(z.string()).optional(),
   // Card sem id é novo. Card existente que não vier na lista é removido.
   cards: z
@@ -50,15 +52,21 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const { cards, ...dadosDoGrupo } = parsed.data;
 
-  if (!cards) {
-    const group = await prisma.flashcardGroup.update({ where: { id }, data: dadosDoGrupo });
-    return NextResponse.json(group);
+  // O curso segue o tópico, para os dois nunca discordarem.
+  if (dadosDoGrupo.topicId) {
+    const topico = await prisma.topic.findUnique({
+      where: { id: dadosDoGrupo.topicId },
+      select: { module: { select: { courseId: true } } },
+    });
+    if (topico) dadosDoGrupo.courseId = topico.module.courseId;
   }
 
-  const { sincronizarCards } = await import("@/lib/flashcards");
-  await sincronizarCards(id, cards);
-  const group = await prisma.flashcardGroup.update({ where: { id }, data: dadosDoGrupo });
+  if (cards) {
+    const { sincronizarCards } = await import("@/lib/flashcards");
+    await sincronizarCards(id, cards);
+  }
 
+  const group = await prisma.flashcardGroup.update({ where: { id }, data: dadosDoGrupo });
   return NextResponse.json(group);
 }
 
