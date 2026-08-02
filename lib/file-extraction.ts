@@ -1,4 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { createRequire } from "node:module";
+import { pathToFileURL } from "node:url";
+import path from "node:path";
+
+let workerApontado = false;
+
+/**
+ * Diz ao pdfjs onde está o worker dele.
+ *
+ * Por padrão o pdfjs monta o caminho a partir de onde acha que está rodando.
+ * Dentro da função da Vercel isso apontava para um arquivo inexistente e
+ * quebrava com "Setting up fake worker failed: Cannot find module
+ * '/var/task/.next/server/chunks/pdf.worker.mjs'". Resolvendo pelo
+ * node_modules chegamos ao arquivo de verdade — que o next.config.ts garante
+ * estar presente na função, via outputFileTracingIncludes.
+ */
+function apontarWorker(PDFParse: { setWorker(src: string): string }) {
+  if (workerApontado) return;
+  workerApontado = true;
+  try {
+    const req = createRequire(path.join(process.cwd(), "package.json"));
+    const arquivo = req.resolve("pdfjs-dist/legacy/build/pdf.worker.mjs");
+    PDFParse.setWorker(pathToFileURL(arquivo).href);
+  } catch {
+    // Não achou: deixa o pdfjs tentar o caminho padrão dele.
+  }
+}
+
 export async function extractTextFromFile(buffer: Buffer, mimeType: string, filename: string): Promise<string> {
   if (mimeType === "application/pdf" || filename.endsWith(".pdf")) {
     // DOMMatrix não existe no Node.js mas é exigido pelo pdfjs-dist; polyfill mínimo suficiente para extração de texto
@@ -10,6 +38,7 @@ export async function extractTextFromFile(buffer: Buffer, mimeType: string, file
     // produção, derrubando tanto a geração de flashcards quanto a indexação
     // de apostilas para a Nuvete.
     const { PDFParse } = await import("pdf-parse");
+    apontarWorker(PDFParse);
     const parser = new PDFParse({ data: new Uint8Array(buffer) });
     try {
       const { text } = await parser.getText();
