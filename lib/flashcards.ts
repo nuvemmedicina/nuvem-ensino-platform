@@ -25,22 +25,113 @@ export async function podeEstudarGrupo(
   return matricula?.status === "ACTIVE" || matricula?.status === "COMPLETED";
 }
 
-/** Grupos que este usuário pode estudar, com a contagem de cards. */
-export async function gruposParaUsuario(userId: string, role: string | undefined) {
-  const grupos = await prisma.flashcardGroup.findMany({
-    where: { cards: { some: {} } }, // grupo vazio não tem o que estudar
-    orderBy: { createdAt: "desc" },
+export type GrupoResumo = {
+  id: string;
+  title: string;
+  description: string | null;
+  imageUrl: string | null;
+  cards: number;
+};
+
+export type TopicoComFlashcards = {
+  id: string;
+  title: string;
+  grupo: GrupoResumo | null;
+};
+
+export type ModuloComFlashcards = {
+  id: string;
+  title: string;
+  /** Posição do módulo no curso — define a cor, via lib/moduleColors. */
+  indice: number;
+  topicos: TopicoComFlashcards[];
+};
+
+export type CursoComFlashcards = {
+  id: string;
+  title: string;
+  thumbnailUrl: string | null;
+  modulos: ModuloComFlashcards[];
+  /** Grupos do curso que ainda não foram ligados a nenhum tópico. */
+  soltos: GrupoResumo[];
+};
+
+const resumo = (g: {
+  id: string; title: string; description: string | null; imageUrl: string | null;
+  _count: { cards: number };
+}): GrupoResumo => ({
+  id: g.id, title: g.title, description: g.description, imageUrl: g.imageUrl, cards: g._count.cards,
+});
+
+/**
+ * A estrutura de flashcards que este usuário enxerga, já organizada por curso
+ * e módulo, na mesma ordem do currículo.
+ *
+ * Os tópicos aparecem mesmo sem grupo criado: a listagem mostra o desenho
+ * inteiro do curso e deixa claro o que ainda está por vir, em vez de exibir
+ * só o punhado de grupos que existe hoje.
+ */
+export async function estruturaParaUsuario(userId: string, role: string | undefined) {
+  const cuidaDoConteudo = role === "ADMIN" || role === "EDITOR" || role === "INSTRUCTOR";
+
+  const cursos = await prisma.course.findMany({
+    where: cuidaDoConteudo
+      ? { status: { not: "ARCHIVED" } }
+      : { enrollments: { some: { userId, status: { in: ["ACTIVE", "COMPLETED"] } } } },
+    orderBy: { title: "asc" },
     select: {
-      id: true, title: true, description: true, courseId: true,
-      course: { select: { title: true, thumbnailUrl: true } },
-      _count: { select: { cards: true } },
+      id: true, title: true, thumbnailUrl: true,
+      modules: {
+        orderBy: { order: "asc" },
+        select: {
+          id: true, title: true,
+          topics: {
+            orderBy: { order: "asc" },
+            select: {
+              id: true, title: true,
+              flashcardGroups: {
+                where: { cards: { some: {} } },
+                orderBy: { createdAt: "asc" },
+                take: 1,
+                select: { id: true, title: true, description: true, imageUrl: true, _count: { select: { cards: true } } },
+              },
+            },
+          },
+        },
+      },
+      flashcardGroups: {
+        where: { topicId: null, cards: { some: {} } },
+        orderBy: { createdAt: "desc" },
+        select: { id: true, title: true, description: true, imageUrl: true, _count: { select: { cards: true } } },
+      },
     },
   });
 
-  const liberados = await Promise.all(
-    grupos.map(async (g) => ((await podeEstudarGrupo(userId, role, g.courseId)) ? g : null)),
-  );
-  return liberados.filter((g): g is NonNullable<typeof g> => g !== null);
+  const estrutura: CursoComFlashcards[] = cursos.map((c) => ({
+    id: c.id,
+    title: c.title,
+    thumbnailUrl: c.thumbnailUrl,
+    soltos: c.flashcardGroups.map(resumo),
+    modulos: c.modules.map((m, i) => ({
+      id: m.id,
+      title: m.title,
+      indice: i,
+      topicos: m.topics.map((t) => ({
+        id: t.id,
+        title: t.title,
+        grupo: t.flashcardGroups[0] ? resumo(t.flashcardGroups[0]) : null,
+      })),
+    })),
+  }));
+
+  // Material solto, sem curso nenhum: aberto a qualquer aluno logado.
+  const gerais = await prisma.flashcardGroup.findMany({
+    where: { courseId: null, cards: { some: {} } },
+    orderBy: { createdAt: "desc" },
+    select: { id: true, title: true, description: true, imageUrl: true, _count: { select: { cards: true } } },
+  });
+
+  return { cursos: estrutura, gerais: gerais.map(resumo) };
 }
 
 /**

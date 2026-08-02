@@ -16,6 +16,8 @@ const groupSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   courseId: z.string().optional().nullable(),
+  topicId: z.string().optional().nullable(),
+  imageUrl: z.string().url().optional().nullable(),
   tags: z.array(z.string()).optional(),
   cards: z.array(z.object({ front: z.string().min(1), back: z.string().min(1) })).optional(),
 });
@@ -39,13 +41,24 @@ export async function POST(req: NextRequest) {
   const parsed = groupSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
 
-  const { title, description, courseId, tags, cards } = parsed.data;
+  const { title, description, courseId, topicId, imageUrl, tags, cards } = parsed.data;
+
+  // O curso vem do tópico, para os dois nunca discordarem. A listagem do aluno
+  // se organiza pelo tópico e o controle de acesso continua olhando o curso.
+  const cursoDoTopico = topicId
+    ? (await prisma.topic.findUnique({
+        where: { id: topicId },
+        select: { module: { select: { courseId: true } } },
+      }))?.module.courseId ?? null
+    : null;
 
   const group = await prisma.flashcardGroup.create({
     data: {
       title,
       description,
-      courseId: courseId ?? null,
+      courseId: cursoDoTopico ?? courseId ?? null,
+      topicId: topicId ?? null,
+      imageUrl: imageUrl ?? null,
       tags: tags ?? [],
       cards: cards
         ? { create: cards.map((c, i) => ({ front: c.front, back: c.back, order: i })) }

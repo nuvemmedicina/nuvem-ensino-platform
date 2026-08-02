@@ -12,7 +12,21 @@ export default async function AdminFlashcardsPage() {
       },
       orderBy: { createdAt: "desc" },
     }),
-    prisma.course.findMany({ select: { id: true, title: true, slug: true }, orderBy: { title: "asc" } }),
+    // Módulos e tópicos junto: o seletor do modal precisa da árvore inteira
+    // para oferecer "Módulo I › Fisiopatologia dos DICI" sem ir buscar depois.
+    prisma.course.findMany({
+      orderBy: { title: "asc" },
+      select: {
+        id: true, title: true, slug: true,
+        modules: {
+          orderBy: { order: "asc" },
+          select: {
+            id: true, title: true,
+            topics: { orderBy: { order: "asc" }, select: { id: true, title: true } },
+          },
+        },
+      },
+    }),
     prisma.flashcardDesignConfig.findFirst({ where: { isDefault: true } }),
   ]);
 

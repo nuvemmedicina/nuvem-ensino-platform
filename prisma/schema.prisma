@@ -296,8 +296,9 @@ model Topic {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  module  Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  lessons Lesson[]
+  module          Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  lessons         Lesson[]
+  flashcardGroups FlashcardGroup[]
 }
 
 model ModuleInstructor {
@@ -846,17 +847,24 @@ model FlashcardGroup {
   title            String
   description      String?
   courseId         String?
+  // Cada tópico do curso tem o seu grupo de flashcards. É por aqui que a
+  // listagem do aluno se organiza em módulos, na mesma ordem do currículo.
+  topicId          String?
+  // Capa própria do grupo. Sem ela, cai na imagem do curso.
+  imageUrl         String?
   tags             String[] @default([])
   designConfigId   String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
   course       Course?               @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  topic        Topic?                @relation(fields: [topicId], references: [id], onDelete: SetNull)
   designConfig FlashcardDesignConfig? @relation(fields: [designConfigId], references: [id], onDelete: SetNull)
   cards        Flashcard[]
   sessions     FlashcardStudySession[]
 
   @@index([courseId])
+  @@index([topicId])
 }
 
 model Flashcard {
