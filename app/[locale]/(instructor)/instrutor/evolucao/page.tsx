@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { calcularDominioPorTema } from "@/lib/gamification";
 import { TrendingUp, Users, GraduationCap, Target, AlertTriangle, CheckCircle2, CalendarClock } from "lucide-react";
+import { cursosDoInstrutor } from "@/lib/instructorAccess";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -39,14 +40,8 @@ export default async function EvolucaoAlunosPage({ params, searchParams }: Props
   });
   if (!instructor) redirect("/instrutor");
 
-  // Cursos em que o instrutor é titular ou dá algum módulo
   const myCourses = await prisma.course.findMany({
-    where: {
-      OR: [
-        { instructorId: instructor.id },
-        { modules: { some: { instructors: { some: { instructorId: instructor.id } } } } },
-      ],
-    },
+    where: cursosDoInstrutor(instructor.id),
     select: {
       id: true, title: true, slug: true, startDate: true, startDateLabel: true,
       _count: { select: { enrollments: true } },

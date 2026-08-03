@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Plus, PlayCircle, Settings } from "lucide-react";
 import { createCourse } from "./actions";
+import { cursosDoInstrutor } from "@/lib/instructorAccess";
 
 export default async function InstructorCursosPage({
   params,
@@ -30,12 +31,7 @@ export default async function InstructorCursosPage({
   };
 
   const courses = await prisma.course.findMany({
-    where: {
-      OR: [
-        { instructorId: instructor.id },
-        { modules: { some: { instructors: { some: { instructorId: instructor.id } } } } },
-      ],
-    },
+    where: cursosDoInstrutor(instructor.id),
     include: {
       modules: { include: { lessons: { select: { id: true } } } },
       _count: { select: { enrollments: true } },

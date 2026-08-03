@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { BookOpen, Users, Radio, PlayCircle, Settings, Calendar, Plus, ChevronRight, MapPin } from "lucide-react";
+import { cursosDoInstrutor } from "@/lib/instructorAccess";
 
 export default async function InstructorOverviewPage({
   params,
@@ -34,12 +35,7 @@ export default async function InstructorOverviewPage({
   }
 
   const courses = await prisma.course.findMany({
-    where: {
-      OR: [
-        { instructorId: instructor.id },
-        { modules: { some: { instructors: { some: { instructorId: instructor.id } } } } },
-      ],
-    },
+    where: cursosDoInstrutor(instructor.id),
     include: {
       _count: { select: { enrollments: true } },
       liveSessions: {
