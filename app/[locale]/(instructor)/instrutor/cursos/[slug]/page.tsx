@@ -13,6 +13,7 @@ import {
 } from "./actions";
 import { DeleteButton } from "./DeleteButton";
 import { MuxUploader } from "./MuxUploader";
+import { cursosDoInstrutor } from "@/lib/instructorAccess";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
@@ -40,13 +41,7 @@ export default async function InstructorCursoEditPage({ params }: Props) {
   if (!instructor) redirect("/dashboard");
 
   const course = await prisma.course.findFirst({
-    where: {
-      slug,
-      OR: [
-        { instructorId: instructor.id },
-        { modules: { some: { instructors: { some: { instructorId: instructor.id } } } } },
-      ],
-    },
+    where: { slug, ...cursosDoInstrutor(instructor.id) },
     include: {
       modules: {
         orderBy: { order: "asc" },

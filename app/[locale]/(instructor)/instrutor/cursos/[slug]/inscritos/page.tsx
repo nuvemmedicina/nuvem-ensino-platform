@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft, Users } from "lucide-react";
+import { cursosDoInstrutor } from "@/lib/instructorAccess";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
@@ -36,16 +37,8 @@ export default async function InscritosPage({ params }: Props) {
   });
   if (!instructor) redirect("/dashboard");
 
-  // Aceita tanto o instrutor titular quanto os instrutores de módulo — os
-  // co-instrutores também precisam ver e acompanhar a turma.
   const course = await prisma.course.findFirst({
-    where: {
-      slug,
-      OR: [
-        { instructorId: instructor.id },
-        { modules: { some: { instructors: { some: { instructorId: instructor.id } } } } },
-      ],
-    },
+    where: { slug, ...cursosDoInstrutor(instructor.id) },
     select: { id: true, title: true, slug: true },
   });
   if (!course) notFound();

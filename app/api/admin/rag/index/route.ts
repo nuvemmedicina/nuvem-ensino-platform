@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@/app/generated/prisma/client";
 
 export const maxDuration = 300;
 
@@ -55,6 +56,12 @@ export async function POST(req: NextRequest) {
         select: {
           id: true,
           title: true,
+          // As apostilas ficam no tópico, não em Material — sem isto o conteúdo
+          // denso do curso, que é justamente o que a Nuvete precisa, fica fora.
+          topics: {
+            select: { id: true, title: true, apostilaUrl: true },
+            orderBy: { order: "asc" },
+          },
           lessons: {
             select: {
               id: true,
@@ -93,7 +100,38 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // Baixa um arquivo e extrai o texto. Devolve null em qualquer falha — uma
+  // apostila indisponível não pode derrubar a indexação do curso inteiro.
+  async function textoDoArquivo(url: string, titulo: string): Promise<string | null> {
+    try {
+      const r = await fetch(url);
+      if (!r.ok) return null;
+      const buf = Buffer.from(await r.arrayBuffer());
+      const mime = r.headers.get("content-type") ?? (url.endsWith(".pdf") ? "application/pdf" : "");
+      const { extractTextFromFile } = await import("@/lib/file-extraction");
+      const texto = await extractTextFromFile(buf, mime, titulo);
+      return texto.length > 80 ? texto : null;
+    } catch {
+      return null;
+    }
+  }
+
   for (const mod of course.modules) {
+    // Apostilas do módulo, uma por tópico
+    for (const topic of mod.topics) {
+      if (!topic.apostilaUrl) continue;
+      const texto = await textoDoArquivo(topic.apostilaUrl, `Apostila — ${topic.title}`);
+      if (!texto) continue;
+      textSources.push({
+        text: `Módulo: ${mod.title}\n\nApostila do tema: ${topic.title}\n\n${texto}`,
+        courseId,
+        moduleId: mod.id,
+        lessonId: null,
+        sourceType: "apostila",
+        sourceId: topic.id,
+      });
+    }
+
     for (const lesson of mod.lessons) {
       // Conteúdo textual da aula
       const parts = [
@@ -165,17 +203,22 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Insere com embedding como vetor pgvector
-  for (const chunk of toInsert) {
-    const vecStr = `[${chunk.embedding.join(",")}]`;
+  // Insere em lotes. Uma apostila rende dezenas de chunks, e uma ida ao banco
+  // por chunk fazia o tempo de inserção crescer junto com o acervo até estourar
+  // o maxDuration da rota.
+  const INSERT_BATCH = 100;
+  for (let i = 0; i < toInsert.length; i += INSERT_BATCH) {
+    const linhas = toInsert.slice(i, i + INSERT_BATCH).map(
+      (c) => Prisma.sql`(
+        gen_random_uuid()::text,
+        ${c.courseId}, ${c.moduleId}, ${c.lessonId},
+        ${c.sourceType}, ${c.sourceId}, ${c.chunkIndex},
+        ${c.text}, ${`[${c.embedding.join(",")}]`}::vector, NOW()
+      )`,
+    );
     await prisma.$executeRaw`
       INSERT INTO "ContentChunk" ("id","courseId","moduleId","lessonId","sourceType","sourceId","chunkIndex","text","embedding","createdAt")
-      VALUES (
-        gen_random_uuid()::text,
-        ${chunk.courseId}, ${chunk.moduleId}, ${chunk.lessonId},
-        ${chunk.sourceType}, ${chunk.sourceId}, ${chunk.chunkIndex},
-        ${chunk.text}, ${vecStr}::vector, NOW()
-      )
+      VALUES ${Prisma.join(linhas)}
     `;
   }
 

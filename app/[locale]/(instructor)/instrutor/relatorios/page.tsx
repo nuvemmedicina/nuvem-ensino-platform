@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { cursosDoInstrutor } from "@/lib/instructorAccess";
 
 const methodColor: Record<string, string> = {
   STRIPE:              "text-blue-600 bg-blue-500/10 border-blue-500/20",
@@ -48,12 +49,7 @@ export default async function InstructorRelatoriosPage({ params, searchParams }:
   const fmtBRL  = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
   const fmtDate = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
 
-  const courseFilter = {
-    OR: [
-      { instructorId: instructor.id },
-      { modules: { some: { instructors: { some: { instructorId: instructor.id } } } } },
-    ],
-  };
+  const courseFilter = cursosDoInstrutor(instructor.id);
 
   // Cursos do instrutor (para o filtro)
   const myCourses = await prisma.course.findMany({

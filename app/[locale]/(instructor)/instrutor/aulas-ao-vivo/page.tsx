@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import LiveSessionForm from "./LiveSessionForm";
 import LiveSessionList from "./LiveSessionList";
+import { cursosDoInstrutor } from "@/lib/instructorAccess";
 
 export default async function InstructorAulasAoVivoPage({
   params,
@@ -23,12 +24,7 @@ export default async function InstructorAulasAoVivoPage({
   });
   if (!instructor) redirect("/dashboard");
 
-  const courseFilter = {
-    OR: [
-      { instructorId: instructor.id },
-      { modules: { some: { instructors: { some: { instructorId: instructor.id } } } } },
-    ],
-  };
+  const courseFilter = cursosDoInstrutor(instructor.id);
 
   const [courses, liveSessions] = await Promise.all([
     prisma.course.findMany({

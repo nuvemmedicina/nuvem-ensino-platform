@@ -970,8 +970,8 @@ model ContentChunk {
   courseId   String
   moduleId   String?
   lessonId   String?
-  sourceType String   // "lesson_content" | "material" | "description"
-  sourceId   String   // id do material ou lesson
+  sourceType String   // "lesson_content" | "material" | "apostila" | "description"
+  sourceId   String   // id do material, da lesson, do tópico (apostila) ou do curso
   chunkIndex Int
   text       String   @db.Text
   embedding  Unsupported("vector(1536)")?
