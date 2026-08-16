@@ -301,11 +301,13 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
             <span className="text-[#00a3c4] shrink-0 text-lg">🎙</span>
             <div className="flex-1 min-w-0">
               <p className="font-sans text-[11px] font-bold uppercase tracking-widest text-[#00a3c4] mb-1">AudioCast</p>
+              {/* Sem altura forçada: abaixo dos 54px que o player nativo usa,
+                  o Chrome corta os controles e o botão de play some. */}
               <audio
                 controls
                 preload="metadata"
                 src={audiocastSrc(currentLesson.audioUrl)}
-                className="w-full h-8"
+                className="w-full"
                 style={{ accentColor: "#00a3c4" }}
               />
             </div>
