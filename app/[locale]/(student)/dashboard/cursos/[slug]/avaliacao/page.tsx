@@ -4,7 +4,8 @@ import { ChevronLeft } from "lucide-react";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { EvaluationForm } from "./EvaluationForm";
-import { submitEvaluation } from "./actions";
+import { InstructorsForm, type DocenteParaAvaliar } from "./InstructorsForm";
+import { submitEvaluation, submitInstructorEvaluations } from "./actions";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
@@ -39,6 +40,67 @@ export default async function AvaliacaoPage({ params }: Props) {
 
   const action = submitEvaluation.bind(null, course.id, slug);
 
+  // ── Docentes deste curso, com as aulas que o aluno já concluiu ────────────
+  const [docentesDoCurso, concluidas, notasDadas] = await Promise.all([
+    prisma.instructor.findMany({
+      where: {
+        OR: [
+          { lessonInstructors: { some: { lesson: { module: { courseId: course.id } } } } },
+          { modules: { some: { module: { courseId: course.id } } } },
+          { courses: { some: { id: course.id } } },
+        ],
+      },
+      select: {
+        id: true, title: true, photoUrl: true, displayOrder: true,
+        user: { select: { name: true } },
+        lessonInstructors: {
+          where: { lesson: { module: { courseId: course.id } } },
+          select: { lessonId: true },
+        },
+      },
+    }),
+    prisma.progress.findMany({
+      // Progress pendura na matrícula, não no usuário.
+      where: {
+        completed: true,
+        enrollment: { userId: session.user.id, courseId: course.id },
+      },
+      select: { lessonId: true },
+    }),
+    prisma.instructorEvaluation.findMany({
+      where: { userId: session.user.id, courseId: course.id },
+      select: { instructorId: true, rating: true, suggestion: true },
+    }),
+  ]);
+
+  const aulasConcluidas = new Set(concluidas.map((p) => p.lessonId));
+  const notaPorDocente = new Map(notasDadas.map((n) => [n.instructorId, n]));
+
+  const docentes: DocenteParaAvaliar[] = docentesDoCurso
+    .map((i) => {
+      const anterior = notaPorDocente.get(i.id);
+      return {
+        id: i.id,
+        nome: i.user.name ?? "Docente",
+        titulo: i.title,
+        fotoUrl: i.photoUrl,
+        aulas: i.lessonInstructors.length,
+        assistiu: i.lessonInstructors.some((li) => aulasConcluidas.has(li.lessonId)),
+        notaAnterior: anterior?.rating ?? null,
+        sugestaoAnterior: anterior?.suggestion ?? null,
+        _ordem: i.displayOrder,
+      };
+    })
+    // Quem o aluno assistiu vem primeiro; depois quem tem mais aulas no curso.
+    .sort((a, b) =>
+      Number(b.assistiu) - Number(a.assistiu) ||
+      b.aulas - a.aulas ||
+      a._ordem - b._ordem,
+    )
+    .map(({ _ordem, ...d }) => d);
+
+  const instructorsAction = submitInstructorEvaluations.bind(null, course.id, slug);
+
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
       {/* Topbar */}
@@ -63,6 +125,23 @@ export default async function AvaliacaoPage({ params }: Props) {
 
       {/* Formulário */}
       <EvaluationForm action={action} existing={existing} courseSlug={slug} />
+
+      {/* ── Avaliação dos docentes ── */}
+      {docentes.length > 0 && (
+        <div className="mt-12">
+          <div className="mb-5">
+            <h2 className="font-serif text-xl font-medium text-foreground mb-1">
+              Avaliação dos docentes
+            </h2>
+            <p className="font-sans text-sm text-muted">
+              Avalie quem você acompanhou. Deixe em branco os docentes cujas aulas você ainda
+              não assistiu — sua resposta chega ao professor sem identificação.
+            </p>
+          </div>
+
+          <InstructorsForm action={instructorsAction} docentes={docentes} />
+        </div>
+      )}
 
       {/* ── Seção Dra. Vera Ângelo ── */}
       <div className="mt-12 rounded-2xl border border-border bg-surface overflow-hidden">
