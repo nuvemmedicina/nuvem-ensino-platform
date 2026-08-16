@@ -6,7 +6,6 @@ import { Star, CheckCircle, Loader2 } from "lucide-react";
 type ExistingEvaluation = {
   overallRating: number;
   contentRating: number;
-  instructorRating: number;
   platformRating: number;
   wouldRecommend: boolean;
   highlight: string | null;
@@ -61,10 +60,9 @@ function StarRating({
 }
 
 const LABELS: Record<string, string[]> = {
-  overallRating:    ["Péssimo", "Ruim", "Regular", "Bom", "Excelente"],
-  contentRating:    ["Péssimo", "Ruim", "Regular", "Bom", "Excelente"],
-  instructorRating: ["Péssimo", "Ruim", "Regular", "Bom", "Excelente"],
-  platformRating:   ["Péssimo", "Ruim", "Regular", "Bom", "Excelente"],
+  overallRating:  ["Péssimo", "Ruim", "Regular", "Bom", "Excelente"],
+  contentRating:  ["Péssimo", "Ruim", "Regular", "Bom", "Excelente"],
+  platformRating: ["Péssimo", "Ruim", "Regular", "Bom", "Excelente"],
 };
 
 function StarRatingWithLabel({
@@ -149,7 +147,7 @@ export function EvaluationForm({ action, existing, courseSlug }: Props) {
     const formData = new FormData(form);
 
     // Validate all ratings filled
-    for (const field of ["overallRating", "contentRating", "instructorRating", "platformRating"]) {
+    for (const field of ["overallRating", "contentRating", "platformRating"]) {
       if (!formData.get(field) || Number(formData.get(field)) === 0) {
         setError("Por favor, preencha todas as notas antes de enviar.");
         return;
@@ -193,12 +191,6 @@ export function EvaluationForm({ action, existing, courseSlug }: Props) {
           name="contentRating"
           label="Qualidade do conteúdo"
           defaultValue={existing?.contentRating}
-        />
-        <div className="h-px bg-border" />
-        <StarRatingWithLabel
-          name="instructorRating"
-          label="Qualidade dos instrutores"
-          defaultValue={existing?.instructorRating}
         />
         <div className="h-px bg-border" />
         <StarRatingWithLabel

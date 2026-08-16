@@ -164,6 +164,18 @@ export default async function LessonPage({ params }: Props) {
     orderBy: [{ order: "asc" }, { createdAt: "asc" }],
   });
 
+  // Joinha desta aula e se o aluno já avaliou o curso (o convite some depois).
+  const [feedbackAtual, avaliacao] = await Promise.all([
+    prisma.lessonFeedback.findUnique({
+      where: { userId_lessonId: { userId: session.user.id, lessonId } },
+      select: { useful: true, suggestion: true },
+    }),
+    prisma.courseEvaluation.findUnique({
+      where: { userId_courseId: { userId: session.user.id, courseId: course.id } },
+      select: { id: true },
+    }),
+  ]);
+
   return (
     <LessonPlayerClient
       courseId={course.id}
@@ -180,6 +192,8 @@ export default async function LessonPage({ params }: Props) {
       currentUserRole={(session.user as { role?: string }).role ?? "STUDENT"}
       currentUserName={session.user.name ?? null}
       courseReferences={courseReferences}
+      feedbackAtual={feedbackAtual}
+      jaAvaliouCurso={!!avaliacao}
     />
   );
 }

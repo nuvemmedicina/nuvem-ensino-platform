@@ -1,5 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import { AvaliacoesView, type Avaliacao, type PorCurso, type PorDocente, type Resumo } from "./AvaliacoesView";
+import {
+  AvaliacoesView,
+  type Avaliacao, type PorAula, type PorCurso, type PorDocente, type Resumo,
+} from "./AvaliacoesView";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +20,7 @@ export default async function AvaliacoesPage({ params, searchParams }: Props) {
     day: "2-digit", month: "2-digit", year: "numeric",
   });
 
-  const [cursos, registros, matriculasPorCurso, notasDocentes] = await Promise.all([
+  const [cursos, registros, matriculasPorCurso, feedbacksAula, notasDocentes] = await Promise.all([
     prisma.course.findMany({ select: { id: true, title: true }, orderBy: { title: "asc" } }),
 
     prisma.courseEvaluation.findMany({
@@ -37,6 +40,16 @@ export default async function AvaliacoesPage({ params, searchParams }: Props) {
       _count: { _all: true },
     }),
 
+    prisma.lessonFeedback.findMany({
+      where: courseId ? { lesson: { module: { courseId } } } : {},
+      select: {
+        id: true, useful: true, suggestion: true, createdAt: true,
+        lesson: { select: { id: true, title: true, module: { select: { title: true } } } },
+        user: { select: { name: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    }),
+
     prisma.instructorEvaluation.findMany({
       where: courseId ? { courseId } : {},
       select: {
@@ -54,6 +67,10 @@ export default async function AvaliacoesPage({ params, searchParams }: Props) {
 
   const media = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
 
+  // A nota agregada de instrutores saiu do formulário; só as respostas antigas
+  // têm valor, então ela entra na média apenas quando existe.
+  const notasInstrutor = registros.map((r) => r.instructorRating).filter((n): n is number => n !== null);
+
   const resumo: Resumo = {
     total: registros.length,
     matriculas: totalMatriculas,
@@ -62,7 +79,7 @@ export default async function AvaliacoesPage({ params, searchParams }: Props) {
       ? {
           overall: media(registros.map((r) => r.overallRating)),
           content: media(registros.map((r) => r.contentRating)),
-          instructor: media(registros.map((r) => r.instructorRating)),
+          instructor: notasInstrutor.length ? media(notasInstrutor) : null,
           platform: media(registros.map((r) => r.platformRating)),
         }
       : null,
@@ -129,6 +146,35 @@ export default async function AvaliacoesPage({ params, searchParams }: Props) {
     .map((d) => ({ ...d, media: d.media / d.total }))
     .sort((a, b) => b.total - a.total || b.media - a.media);
 
+  // Aulas: só interessa quem tem voto negativo ou comentário — a lista completa
+  // de aulas aprovadas não diz o que revisar.
+  const porAulaMapa = new Map<string, PorAula>();
+  for (const f of feedbacksAula) {
+    const atual = porAulaMapa.get(f.lesson.id) ?? {
+      id: f.lesson.id,
+      titulo: f.lesson.title,
+      modulo: f.lesson.module.title,
+      uteis: 0,
+      naoUteis: 0,
+      comentarios: [],
+    };
+    if (f.useful) atual.uteis += 1;
+    else atual.naoUteis += 1;
+    if (f.suggestion) {
+      atual.comentarios.push({
+        id: f.id,
+        texto: f.suggestion,
+        util: f.useful,
+        aluno: f.user.name ?? "—",
+        data: fmtDate.format(f.createdAt),
+      });
+    }
+    porAulaMapa.set(f.lesson.id, atual);
+  }
+  const porAula: PorAula[] = [...porAulaMapa.values()].sort(
+    (a, b) => b.naoUteis - a.naoUteis || b.comentarios.length - a.comentarios.length,
+  );
+
   return (
     <AvaliacoesView
       cursos={cursos}
@@ -136,6 +182,7 @@ export default async function AvaliacoesPage({ params, searchParams }: Props) {
       resumo={resumo}
       porCurso={porCurso}
       porDocente={porDocente}
+      porAula={porAula}
       avaliacoes={avaliacoes}
     />
   );
