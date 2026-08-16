@@ -26,6 +26,7 @@ import { saveNote } from "../../noteActions";
 import QuizPanel from "../../QuizPanel";
 import CommentSection from "../../CommentSection";
 import { moduleColor } from "@/lib/moduleColors";
+import { audiocastSrc } from "@/lib/audiocast";
 
 type Lesson = {
   id: string;
@@ -403,7 +404,8 @@ export default function LessonPlayerClient({
                   </p>
                   <audio
                     controls
-                    src={currentLesson.audioUrl}
+                    preload="metadata"
+                    src={audiocastSrc(currentLesson.audioUrl)}
                     className="w-full h-9"
                     style={{ accentColor: "#00475E" }}
                   />
@@ -701,7 +703,10 @@ export default function LessonPlayerClient({
                     return (
                       <a
                         key={ref.id}
-                        href={ref.fileUrl}
+                        /* O bucket do R2 é privado: o fileUrl cru devolve
+                           "InvalidArgument / Authorization". A rota confere a
+                           matrícula e redireciona para uma URL assinada. */
+                        href={`/api/references/${ref.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="shrink-0 relative w-36 h-52 rounded-xl overflow-hidden group"

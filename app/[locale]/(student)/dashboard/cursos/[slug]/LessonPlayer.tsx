@@ -9,6 +9,7 @@ import { saveNote } from "./noteActions";
 import QuizPanel from "./QuizPanel";
 import CommentSection from "./CommentSection";
 import { moduleColor } from "@/lib/moduleColors";
+import { audiocastSrc } from "@/lib/audiocast";
 
 type Lesson = {
   id: string;
@@ -302,7 +303,8 @@ export default function LessonPlayer({ courseId, courseTitle, modules, initialPr
               <p className="font-sans text-[11px] font-bold uppercase tracking-widest text-[#00a3c4] mb-1">AudioCast</p>
               <audio
                 controls
-                src={currentLesson.audioUrl}
+                preload="metadata"
+                src={audiocastSrc(currentLesson.audioUrl)}
                 className="w-full h-8"
                 style={{ accentColor: "#00a3c4" }}
               />
