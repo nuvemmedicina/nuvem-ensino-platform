@@ -135,7 +135,7 @@ export default async function AvaliacaoPage({ params }: Props) {
             </h2>
             <p className="font-sans text-sm text-muted">
               Avalie quem você acompanhou. Deixe em branco os docentes cujas aulas você ainda
-              não assistiu — sua resposta chega ao professor sem identificação.
+              não assistiu. Sua resposta chega ao professor sem identificação.
             </p>
           </div>
 

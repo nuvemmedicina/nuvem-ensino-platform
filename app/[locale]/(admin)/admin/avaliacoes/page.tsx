@@ -54,6 +54,10 @@ export default async function AvaliacoesPage({ params, searchParams }: Props) {
 
   const media = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
 
+  // A nota agregada de instrutores saiu do formulário; só as respostas antigas
+  // têm valor, então ela entra na média apenas quando existe.
+  const notasInstrutor = registros.map((r) => r.instructorRating).filter((n): n is number => n !== null);
+
   const resumo: Resumo = {
     total: registros.length,
     matriculas: totalMatriculas,
@@ -62,7 +66,7 @@ export default async function AvaliacoesPage({ params, searchParams }: Props) {
       ? {
           overall: media(registros.map((r) => r.overallRating)),
           content: media(registros.map((r) => r.contentRating)),
-          instructor: media(registros.map((r) => r.instructorRating)),
+          instructor: notasInstrutor.length ? media(notasInstrutor) : null,
           platform: media(registros.map((r) => r.platformRating)),
         }
       : null,

@@ -3,7 +3,8 @@ import { Star, MessageSquareQuote, ThumbsUp, ThumbsDown, Users } from "lucide-re
 export type Resumo = {
   total: number;
   matriculas: number;
-  medias: { overall: number; content: number; instructor: number; platform: number } | null;
+  /** instructor é null desde que a nota agregada saiu do formulário. */
+  medias: { overall: number; content: number; instructor: number | null; platform: number } | null;
   recomendam: number;
 };
 
@@ -15,7 +16,7 @@ export type Avaliacao = {
   data: string;
   overall: number;
   content: number;
-  instructor: number;
+  instructor: number | null;
   platform: number;
   recomenda: boolean;
   highlight: string | null;
@@ -45,7 +46,8 @@ type Props = {
 const NOTAS: { chave: keyof NonNullable<Resumo["medias"]>; label: string }[] = [
   { chave: "overall", label: "Geral" },
   { chave: "content", label: "Conteúdo" },
-  { chave: "instructor", label: "Docentes" },
+  // Só aparece nas respostas anteriores à avaliação individual de docentes.
+  { chave: "instructor", label: "Docentes (nota antiga)" },
   { chave: "platform", label: "Plataforma" },
 ];
 
@@ -236,9 +238,10 @@ export function AvaliacoesView({ cursos, courseId, resumo, porCurso, porDocente,
 
             <div className="rounded-2xl border border-border bg-surface p-5 space-y-3">
               <p className="font-sans text-[10px] font-bold uppercase tracking-widest text-muted">Médias por eixo</p>
-              {NOTAS.map((n) => (
-                <Media key={n.chave} label={n.label} valor={resumo.medias![n.chave]} />
-              ))}
+              {NOTAS.map((n) => {
+                const valor = resumo.medias![n.chave];
+                return valor === null ? null : <Media key={n.chave} label={n.label} valor={valor} />;
+              })}
             </div>
           </div>
           )}
@@ -347,12 +350,15 @@ export function AvaliacoesView({ cursos, courseId, resumo, porCurso, porDocente,
                   </div>
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-5 gap-y-2 mt-3">
-                    {NOTAS.map((n) => (
-                      <div key={n.chave} className="flex items-center justify-between gap-2">
-                        <span className="font-sans text-xs text-muted">{n.label}</span>
-                        <Estrelas nota={a[n.chave]} tamanho={12} />
-                      </div>
-                    ))}
+                    {NOTAS.map((n) => {
+                      const nota = a[n.chave];
+                      return nota === null ? null : (
+                        <div key={n.chave} className="flex items-center justify-between gap-2">
+                          <span className="font-sans text-xs text-muted">{n.label}</span>
+                          <Estrelas nota={nota} tamanho={12} />
+                        </div>
+                      );
+                    })}
                   </div>
 
                   {(a.highlight || a.suggestion) && (

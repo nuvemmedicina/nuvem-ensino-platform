@@ -770,7 +770,10 @@ model CourseEvaluation {
   userId              String
   overallRating       Int      // 1–5
   contentRating       Int      // 1–5
-  instructorRating    Int      // 1–5
+  /// Nota única para "os instrutores", que a InstructorEvaluation substituiu em
+  /// 16/08/2026. Deixou de ser perguntada; fica opcional para as respostas
+  /// antigas continuarem valendo.
+  instructorRating    Int?     // 1–5
   platformRating      Int      // 1–5
   wouldRecommend      Boolean
   highlight           String?  @db.Text

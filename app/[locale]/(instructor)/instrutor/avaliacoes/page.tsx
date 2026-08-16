@@ -116,7 +116,7 @@ export default async function InstrutorAvaliacoesPage({ params }: Props) {
             </div>
             {comentarios.length === 0 ? (
               <p className="px-5 py-8 font-sans text-sm text-muted text-center">
-                Ninguém escreveu sugestão ainda — só notas.
+                Ninguém escreveu sugestão ainda, só notas.
               </p>
             ) : (
               <ul className="divide-y divide-border">
