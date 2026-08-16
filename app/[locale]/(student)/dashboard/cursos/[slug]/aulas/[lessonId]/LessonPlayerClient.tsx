@@ -26,7 +26,6 @@ import { saveNote } from "../../noteActions";
 import QuizPanel from "../../QuizPanel";
 import CommentSection from "../../CommentSection";
 import { moduleColor } from "@/lib/moduleColors";
-import { audiocastSrc } from "@/lib/audiocast";
 
 type Lesson = {
   id: string;
@@ -408,7 +407,7 @@ export default function LessonPlayerClient({
                   <audio
                     controls
                     preload="metadata"
-                    src={audiocastSrc(currentLesson.audioUrl)}
+                    src={`/api/audiocast/${currentLesson.id}`}
                     className="w-full"
                     style={{ accentColor: "#00475E" }}
                   />
