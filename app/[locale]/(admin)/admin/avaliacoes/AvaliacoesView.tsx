@@ -34,12 +34,22 @@ export type PorDocente = {
   sugestoes: { id: string; texto: string; aluno: string; curso: string; data: string }[];
 };
 
+export type PorAula = {
+  id: string;
+  titulo: string;
+  modulo: string;
+  uteis: number;
+  naoUteis: number;
+  comentarios: { id: string; texto: string; util: boolean; aluno: string; data: string }[];
+};
+
 type Props = {
   cursos: { id: string; title: string }[];
   courseId?: string;
   resumo: Resumo;
   porCurso: PorCurso[];
   porDocente: PorDocente[];
+  porAula: PorAula[];
   avaliacoes: Avaliacao[];
 };
 
@@ -151,7 +161,87 @@ function BlocoDocentes({ porDocente }: { porDocente: PorDocente[] }) {
   );
 }
 
-export function AvaliacoesView({ cursos, courseId, resumo, porCurso, porDocente, avaliacoes }: Props) {
+function BlocoAulas({ porAula }: { porAula: PorAula[] }) {
+  const votos = porAula.reduce((s, a) => s + a.uteis + a.naoUteis, 0);
+  const negativas = porAula.filter((a) => a.naoUteis > 0);
+
+  return (
+    <div className="rounded-2xl border border-border bg-surface overflow-hidden">
+      <div className="px-5 py-4 border-b border-border">
+        <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted">
+          Por aula · {votos} resposta{votos !== 1 ? "s" : ""}
+        </p>
+        <p className="font-sans text-xs text-muted mt-0.5">
+          O joinha do fim da aula. As aulas com mais votos negativos vêm primeiro.
+        </p>
+      </div>
+
+      {porAula.length === 0 ? (
+        <p className="px-5 py-8 font-sans text-sm text-muted text-center">
+          Nenhuma resposta ainda. A pergunta aparece no fim de cada aula.
+        </p>
+      ) : (
+        <>
+          {negativas.length === 0 && (
+            <p className="px-5 pt-4 font-sans text-sm text-green-700">
+              Nenhuma aula recebeu voto negativo até agora.
+            </p>
+          )}
+          <ul className="divide-y divide-border">
+            {porAula.map((a) => (
+              <li key={a.id} className="px-5 py-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="font-sans text-sm font-semibold text-foreground">{a.titulo}</p>
+                    <p className="font-sans text-xs text-muted truncate">{a.modulo}</p>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0 font-sans text-xs font-semibold">
+                    <span className="inline-flex items-center gap-1 text-green-700">
+                      <ThumbsUp className="w-3.5 h-3.5" /> {a.uteis}
+                    </span>
+                    <span
+                      className={`inline-flex items-center gap-1 ${
+                        a.naoUteis > 0 ? "text-red-600" : "text-muted"
+                      }`}
+                    >
+                      <ThumbsDown className="w-3.5 h-3.5" /> {a.naoUteis}
+                    </span>
+                  </div>
+                </div>
+
+                {a.comentarios.length > 0 && (
+                  <ul className="mt-3 space-y-2 border-t border-border/60 pt-3">
+                    {a.comentarios.map((c) => (
+                      <li key={c.id}>
+                        <p className="font-serif text-[15px] text-foreground leading-relaxed">
+                          <span
+                            className={`font-sans text-[10px] font-bold uppercase tracking-widest mr-2 ${
+                              c.util ? "text-green-600" : "text-red-600"
+                            }`}
+                          >
+                            {c.util ? "Gostou" : "Faltou"}
+                          </span>
+                          “{c.texto}”
+                        </p>
+                        <p className="font-sans text-xs text-muted mt-1">
+                          {c.aluno}
+                          <span className="mx-1.5 text-border">·</span>
+                          {c.data}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </div>
+  );
+}
+
+export function AvaliacoesView({ cursos, courseId, resumo, porCurso, porDocente, porAula, avaliacoes }: Props) {
   const taxa = resumo.matriculas > 0 ? (resumo.total / resumo.matriculas) * 100 : 0;
   const comentarios = avaliacoes.filter((a) => a.highlight || a.suggestion);
   const sugestoes = avaliacoes.filter((a) => a.suggestion);
@@ -189,7 +279,7 @@ export function AvaliacoesView({ cursos, courseId, resumo, porCurso, porDocente,
         </form>
       </div>
 
-      {resumo.total === 0 && porDocente.length === 0 ? (
+      {resumo.total === 0 && porDocente.length === 0 && porAula.length === 0 ? (
         <div className="rounded-2xl border border-border bg-surface px-6 py-12 text-center">
           <MessageSquareQuote className="w-8 h-8 text-muted/40 mx-auto mb-3" />
           <p className="font-sans text-sm font-medium text-foreground">Nenhuma avaliação recebida ainda</p>
@@ -248,6 +338,9 @@ export function AvaliacoesView({ cursos, courseId, resumo, porCurso, porDocente,
 
           {/* Docentes — a nota individual que a direção pediu */}
           <BlocoDocentes porDocente={porDocente} />
+
+          {/* Aulas — o joinha do fim de cada aula */}
+          <BlocoAulas porAula={porAula} />
 
           {/* Sugestões de melhoria — o que a direção pediu para ler */}
           {resumo.total > 0 && (

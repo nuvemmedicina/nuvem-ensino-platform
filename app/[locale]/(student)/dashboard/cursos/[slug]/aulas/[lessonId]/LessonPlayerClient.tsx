@@ -26,6 +26,8 @@ import { saveNote } from "../../noteActions";
 import QuizPanel from "../../QuizPanel";
 import CommentSection from "../../CommentSection";
 import { moduleColor } from "@/lib/moduleColors";
+import { LessonFeedbackBar } from "./LessonFeedbackBar";
+import { ConviteAvaliacao } from "./ConviteAvaliacao";
 
 type Lesson = {
   id: string;
@@ -73,6 +75,10 @@ type Props = {
   currentUserRole: string;
   currentUserName: string | null;
   courseReferences?: CourseRef[];
+  /** Joinha que o aluno já deu nesta aula, se deu. */
+  feedbackAtual?: { useful: boolean; suggestion: string | null } | null;
+  /** Se já avaliou o curso, o convite não aparece. */
+  jaAvaliouCurso?: boolean;
 };
 
 function extractYoutubeId(url: string): string | null {
@@ -119,6 +125,8 @@ export default function LessonPlayerClient({
   currentUserRole,
   currentUserName,
   courseReferences = [],
+  feedbackAtual = null,
+  jaAvaliouCurso = false,
 }: Props) {
   const t = useTranslations("dashboard.courses");
   const router = useRouter();
@@ -174,6 +182,12 @@ export default function LessonPlayerClient({
   const currentTopic = currentModule?.topics.find((t) =>
     t.lessons.some((l) => l.id === currentLessonId)
   );
+
+  // O convite só faz sentido quando o aluno fecha o módulo: todas as aulas dele
+  // concluídas, incluindo a que ele acabou de marcar (progress é estado local).
+  const aulasDoModulo = currentModule?.topics.flatMap((t) => t.lessons) ?? [];
+  const moduloConcluido =
+    aulasDoModulo.length > 0 && aulasDoModulo.every((l) => progress[l.id]);
 
   // Next lesson info for sidebar card
   const nextLessonModule = nextLesson
@@ -512,6 +526,16 @@ export default function LessonPlayerClient({
                   {currentLesson.description}
                 </p>
               </div>
+            )}
+
+            {/* Joinha da aula */}
+            <div className="mt-5">
+              <LessonFeedbackBar lessonId={currentLessonId} inicial={feedbackAtual} />
+            </div>
+
+            {/* Convite para avaliar, quando o módulo fecha */}
+            {moduloConcluido && !jaAvaliouCurso && currentModule && (
+              <ConviteAvaliacao courseSlug={courseSlug} moduloTitulo={currentModule.title} />
             )}
 
             {/* Prev / Next navigation */}

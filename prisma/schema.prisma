@@ -108,6 +108,7 @@ model User {
   moduleQuizPractices ModuleQuizPractice[]
   courseEvaluations  CourseEvaluation[]
   instructorEvaluations InstructorEvaluation[]
+  lessonFeedbacks    LessonFeedback[]
   flashcardSessions  FlashcardStudySession[]
 }
 
@@ -356,6 +357,7 @@ model Lesson {
   notes     Note[]
   comments  LessonComment[]
   instructors LessonInstructor[]
+  feedbacks LessonFeedback[]
 }
 
 model Material {
@@ -741,6 +743,24 @@ model LiveLead {
 }
 
 // ─── COURSE EVALUATION ───────────────────────────────────────────────────────
+
+/// Feedback de um toque no fim da aula. Pergunta uma coisa só, porque é o que
+/// se responde no meio do estudo — a avaliação longa fica no fim do módulo.
+model LessonFeedback {
+  id         String   @id @default(cuid())
+  userId     String
+  lessonId   String
+  useful     Boolean
+  suggestion String?  @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([lessonId])
+}
 
 /// Nota que o aluno dá a um docente dentro de um curso. Separada da
 /// CourseEvaluation porque o aluno avalia vários docentes por curso, e porque
