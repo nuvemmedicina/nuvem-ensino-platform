@@ -24,11 +24,21 @@ export type Avaliacao = {
 
 export type PorCurso = { id: string; titulo: string; total: number; matriculas: number; media: number };
 
+export type PorDocente = {
+  id: string;
+  nome: string;
+  fotoUrl: string | null;
+  total: number;
+  media: number;
+  sugestoes: { id: string; texto: string; aluno: string; curso: string; data: string }[];
+};
+
 type Props = {
   cursos: { id: string; title: string }[];
   courseId?: string;
   resumo: Resumo;
   porCurso: PorCurso[];
+  porDocente: PorDocente[];
   avaliacoes: Avaliacao[];
 };
 
@@ -72,7 +82,74 @@ function Media({ label, valor }: { label: string; valor: number }) {
   );
 }
 
-export function AvaliacoesView({ cursos, courseId, resumo, porCurso, avaliacoes }: Props) {
+function BlocoDocentes({ porDocente }: { porDocente: PorDocente[] }) {
+  const totalNotas = porDocente.reduce((s, d) => s + d.total, 0);
+
+  return (
+    <div className="rounded-2xl border border-border bg-surface overflow-hidden">
+      <div className="px-5 py-4 border-b border-border">
+        <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted">
+          Por docente · {totalNotas} nota{totalNotas !== 1 ? "s" : ""}
+        </p>
+        <p className="font-sans text-xs text-muted mt-0.5">
+          Cada professor vê a própria média e estes comentários sem identificação.
+        </p>
+      </div>
+
+      {porDocente.length === 0 ? (
+        <p className="px-5 py-8 font-sans text-sm text-muted text-center">
+          Nenhum docente avaliado ainda. O bloco aparece na página de avaliação do curso, abaixo das notas gerais.
+        </p>
+      ) : (
+        <ul className="divide-y divide-border">
+          {porDocente.map((d) => (
+            <li key={d.id} className="px-5 py-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl overflow-hidden bg-primary/10 border border-border shrink-0">
+                  {d.fotoUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={d.fotoUrl} alt={d.nome} className="w-full h-full object-cover object-top" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-sans text-sm font-semibold text-foreground truncate">{d.nome}</p>
+                  <p className="font-sans text-xs text-muted">
+                    {d.total} nota{d.total !== 1 ? "s" : ""}
+                    <span className="mx-1.5 text-border">·</span>
+                    {d.sugestoes.length} comentário{d.sugestoes.length !== 1 ? "s" : ""}
+                  </p>
+                </div>
+                <div className="text-right shrink-0">
+                  <span className="font-sans text-lg font-bold text-foreground tabular-nums mr-2">
+                    {d.media.toFixed(1).replace(".", ",")}
+                  </span>
+                  <Estrelas nota={d.media} tamanho={12} />
+                </div>
+              </div>
+
+              {d.sugestoes.length > 0 && (
+                <ul className="mt-3 space-y-2 border-t border-border/60 pt-3">
+                  {d.sugestoes.map((s) => (
+                    <li key={s.id}>
+                      <p className="font-serif text-[15px] text-foreground leading-relaxed">“{s.texto}”</p>
+                      <p className="font-sans text-xs text-muted mt-1">
+                        {s.aluno}
+                        <span className="mx-1.5 text-border">·</span>
+                        {s.data}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+export function AvaliacoesView({ cursos, courseId, resumo, porCurso, porDocente, avaliacoes }: Props) {
   const taxa = resumo.matriculas > 0 ? (resumo.total / resumo.matriculas) * 100 : 0;
   const comentarios = avaliacoes.filter((a) => a.highlight || a.suggestion);
   const sugestoes = avaliacoes.filter((a) => a.suggestion);
@@ -110,7 +187,7 @@ export function AvaliacoesView({ cursos, courseId, resumo, porCurso, avaliacoes 
         </form>
       </div>
 
-      {resumo.total === 0 ? (
+      {resumo.total === 0 && porDocente.length === 0 ? (
         <div className="rounded-2xl border border-border bg-surface px-6 py-12 text-center">
           <MessageSquareQuote className="w-8 h-8 text-muted/40 mx-auto mb-3" />
           <p className="font-sans text-sm font-medium text-foreground">Nenhuma avaliação recebida ainda</p>
@@ -123,6 +200,7 @@ export function AvaliacoesView({ cursos, courseId, resumo, porCurso, avaliacoes 
       ) : (
         <>
           {/* Resumo */}
+          {resumo.total > 0 && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-2xl border border-border bg-surface p-5">
               <p className="font-sans text-[10px] font-bold uppercase tracking-widest text-muted mb-2">Respostas</p>
@@ -163,8 +241,13 @@ export function AvaliacoesView({ cursos, courseId, resumo, porCurso, avaliacoes 
               ))}
             </div>
           </div>
+          )}
+
+          {/* Docentes — a nota individual que a direção pediu */}
+          <BlocoDocentes porDocente={porDocente} />
 
           {/* Sugestões de melhoria — o que a direção pediu para ler */}
+          {resumo.total > 0 && (
           <div className="rounded-2xl border border-border bg-surface overflow-hidden">
             <div className="px-5 py-4 border-b border-border">
               <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted">
@@ -192,6 +275,7 @@ export function AvaliacoesView({ cursos, courseId, resumo, porCurso, avaliacoes 
               </ul>
             )}
           </div>
+          )}
 
           {/* Por curso — só quando não há filtro */}
           {!courseId && porCurso.length > 1 && (
@@ -230,6 +314,7 @@ export function AvaliacoesView({ cursos, courseId, resumo, porCurso, avaliacoes 
           )}
 
           {/* Respostas, uma a uma */}
+          {resumo.total > 0 && (
           <div className="rounded-2xl border border-border bg-surface overflow-hidden">
             <div className="px-5 py-4 border-b border-border">
               <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted">
@@ -294,10 +379,13 @@ export function AvaliacoesView({ cursos, courseId, resumo, porCurso, avaliacoes 
               ))}
             </ul>
           </div>
+          )}
 
-          <p className="font-sans text-xs text-muted">
-            {comentarios.length} de {resumo.total} respostas trazem comentário escrito.
-          </p>
+          {resumo.total > 0 && (
+            <p className="font-sans text-xs text-muted">
+              {comentarios.length} de {resumo.total} respostas trazem comentário escrito.
+            </p>
+          )}
         </>
       )}
     </div>

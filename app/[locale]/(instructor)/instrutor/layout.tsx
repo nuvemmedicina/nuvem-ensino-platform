@@ -35,6 +35,7 @@ export default async function InstructorLayout({
     { key: "progress",     href: "/instrutor/evolucao",                   label: "Evolução dos Alunos" },
     { key: "liveSessions", href: "/instrutor/aulas-ao-vivo",              label: "Aulas ao Vivo" },
     { key: "reports",      href: "/instrutor/relatorios",                 label: "Relatórios" },
+    { key: "evaluations",  href: "/instrutor/avaliacoes",                 label: "Minhas Avaliações" },
   ];
 
   return (
