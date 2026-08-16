@@ -53,6 +53,10 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
   const hasQuestions = quiz.totalQuestions > 0;
   const canTake = !notYet && !expired && !alreadyPassed && !exhausted && hasQuestions;
 
+  /* Os módulos se chamam "Módulo I — <subtítulo longo>". No celular só o
+     rótulo cabe: o subtítulo empurrava o nome da prova para a sexta linha. */
+  const moduleLabel = moduleTitle.split(/\s+[—–-]\s+/)[0].trim() || moduleTitle;
+
   const perAttempt =
     quiz.questionsPerAttempt && quiz.questionsPerAttempt < quiz.totalQuestions
       ? quiz.questionsPerAttempt
@@ -116,84 +120,90 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
   if (phase === "summary") {
     return (
       <div className="rounded-2xl border bg-surface overflow-hidden border-l-4" style={{ borderColor: cor.border, borderLeftColor: cor.accent }}>
-        <div className="flex items-center gap-4 px-5 py-4">
-          <div
-            className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-              alreadyPassed ? "bg-green-500/15" : notYet || expired || exhausted ? "bg-border/40" : ""
-            }`}
-            style={!alreadyPassed && !notYet && !expired && !exhausted ? { backgroundColor: cor.tint } : undefined}
-          >
-            <BookOpen
-              className={`w-5 h-5 ${
-                alreadyPassed ? "text-green-600" : notYet || expired || exhausted ? "text-muted" : ""
+        {/* No celular tudo empilha: título, selo, números e botão em linhas
+            próprias. A partir de sm volta o cartão em três colunas. */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 px-5 py-4">
+          <div className="flex items-start sm:items-center gap-3 sm:gap-4 sm:flex-1 sm:min-w-0">
+            <div
+              className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                alreadyPassed ? "bg-green-500/15" : notYet || expired || exhausted ? "bg-border/40" : ""
               }`}
-              style={!alreadyPassed && !notYet && !expired && !exhausted ? { color: cor.accent } : undefined}
-            />
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted mb-0.5">
-              Prova — {moduleTitle}
-            </p>
-            <p className="font-sans text-sm font-semibold text-foreground">{quiz.title}</p>
-            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-              {alreadyPassed && (
-                <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-green-700 bg-green-500/10 border border-green-500/20 px-2.5 py-0.5 rounded-full">
-                  <CheckCircle className="w-3 h-3" /> Aprovado
-                </span>
-              )}
-              {notYet && (
-                <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-muted bg-border/40 px-2.5 py-0.5 rounded-full">
-                  <Clock className="w-3 h-3" /> Disponível em {fmt(availableFrom!)}
-                </span>
-              )}
-              {expired && !alreadyPassed && (
-                <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-red-600 bg-red-500/10 border border-red-500/20 px-2.5 py-0.5 rounded-full">
-                  <Lock className="w-3 h-3" /> Prazo encerrado
-                </span>
-              )}
-              {exhausted && !alreadyPassed && !expired && (
-                <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-red-600 bg-red-500/10 border border-red-500/20 px-2.5 py-0.5 rounded-full">
-                  <XCircle className="w-3 h-3" /> Tentativas esgotadas
-                </span>
-              )}
-              {!alreadyPassed && !notYet && !expired && !exhausted && hasQuestions && (
-                <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
-                  Pendente
-                </span>
-              )}
-
-              {hasQuestions && (
-                <span className="font-sans text-[11px] text-muted">
-                  {perAttempt} questõe{perAttempt !== 1 ? "s" : ""}
-                  {isDrawn && ` sorteadas de ${quiz.totalQuestions}`}
-                  <span className="mx-1.5 text-border">·</span>
-                  mínimo {quiz.passingPct}%
-                </span>
-              )}
-
-              {attemptsUsed > 0 && bestAttempt && (
-                <span className="font-sans text-[11px] text-muted">
-                  Melhor: {bestAttempt.score}/{bestAttempt.total} ({Math.round((bestAttempt.score / bestAttempt.total) * 100)}%)
-                  · {attemptsUsed}/{quiz.maxAttempts} tentativas usadas
-                </span>
-              )}
+              style={!alreadyPassed && !notYet && !expired && !exhausted ? { backgroundColor: cor.tint } : undefined}
+            >
+              <BookOpen
+                className={`w-5 h-5 ${
+                  alreadyPassed ? "text-green-600" : notYet || expired || exhausted ? "text-muted" : ""
+                }`}
+                style={!alreadyPassed && !notYet && !expired && !exhausted ? { color: cor.accent } : undefined}
+              />
             </div>
 
-            {isDrawn && canTake && (
-              <p className="flex items-center gap-1.5 font-sans text-[11px] text-muted mt-2">
-                <Shuffle className="w-3 h-3 shrink-0" />
-                Cada aluno recebe uma seleção diferente. Se precisar tentar de novo, as questões serão outras.
+            <div className="flex-1 min-w-0">
+              <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted mb-0.5">
+                Prova — <span className="sm:hidden">{moduleLabel}</span>
+                <span className="hidden sm:inline">{moduleTitle}</span>
               </p>
-            )}
-            {error && <p className="font-sans text-xs text-red-500 mt-2">{error}</p>}
+              <p className="font-sans text-sm font-semibold text-foreground">{quiz.title}</p>
+              <div className="flex flex-col items-start gap-1.5 mt-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2 sm:mt-1.5">
+                {alreadyPassed && (
+                  <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-green-700 bg-green-500/10 border border-green-500/20 px-2.5 py-0.5 rounded-full">
+                    <CheckCircle className="w-3 h-3" /> Aprovado
+                  </span>
+                )}
+                {notYet && (
+                  <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-muted bg-border/40 px-2.5 py-0.5 rounded-full">
+                    <Clock className="w-3 h-3 shrink-0" /> Disponível em {fmt(availableFrom!)}
+                  </span>
+                )}
+                {expired && !alreadyPassed && (
+                  <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-red-600 bg-red-500/10 border border-red-500/20 px-2.5 py-0.5 rounded-full">
+                    <Lock className="w-3 h-3" /> Prazo encerrado
+                  </span>
+                )}
+                {exhausted && !alreadyPassed && !expired && (
+                  <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-red-600 bg-red-500/10 border border-red-500/20 px-2.5 py-0.5 rounded-full">
+                    <XCircle className="w-3 h-3" /> Tentativas esgotadas
+                  </span>
+                )}
+                {!alreadyPassed && !notYet && !expired && !exhausted && hasQuestions && (
+                  <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
+                    Pendente
+                  </span>
+                )}
+
+                {hasQuestions && (
+                  <span className="font-sans text-[11px] text-muted">
+                    {perAttempt} questõe{perAttempt !== 1 ? "s" : ""}
+                    {isDrawn && ` sorteadas de ${quiz.totalQuestions}`}
+                    <span className="mx-1.5 text-border">·</span>
+                    mínimo {quiz.passingPct}%
+                  </span>
+                )}
+
+                {attemptsUsed > 0 && bestAttempt && (
+                  <span className="font-sans text-[11px] text-muted">
+                    Melhor: {bestAttempt.score}/{bestAttempt.total} ({Math.round((bestAttempt.score / bestAttempt.total) * 100)}%)
+                    <span className="mx-1.5 text-border">·</span>
+                    {attemptsUsed}/{quiz.maxAttempts} tentativas usadas
+                  </span>
+                )}
+              </div>
+
+              {isDrawn && canTake && (
+                <p className="flex items-start gap-1.5 font-sans text-[11px] text-muted leading-snug mt-2">
+                  <Shuffle className="w-3 h-3 shrink-0 mt-0.5" />
+                  Cada aluno recebe uma seleção diferente. Se precisar tentar de novo, as questões serão outras.
+                </p>
+              )}
+              {error && <p className="font-sans text-xs text-red-500 mt-2">{error}</p>}
+            </div>
           </div>
 
           {canTake && (
             <button
               onClick={handleStart}
               disabled={isPending}
-              className="shrink-0 flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark disabled:opacity-50 transition-colors"
+              className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 font-sans text-sm font-semibold px-4 py-3 sm:py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark disabled:opacity-50 transition-colors"
             >
               {isPending ? "Preparando…" : attemptsUsed > 0 ? "Tentar novamente" : "Fazer prova"}
               {!isPending && <ChevronRight className="w-4 h-4" />}
