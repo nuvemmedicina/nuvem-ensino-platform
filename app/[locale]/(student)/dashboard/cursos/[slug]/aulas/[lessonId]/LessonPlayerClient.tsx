@@ -402,11 +402,14 @@ export default function LessonPlayerClient({
                   <p className="font-sans text-[10px] font-bold uppercase tracking-widest text-accent/80 mb-1.5">
                     AudioCast desta aula
                   </p>
+                  {/* Sem altura forçada: o player nativo precisa de 54px e o
+                      Chrome corta os controles quando recebe menos — os botões
+                      somem e a barra vira uma faixa morta. */}
                   <audio
                     controls
                     preload="metadata"
                     src={audiocastSrc(currentLesson.audioUrl)}
-                    className="w-full h-9"
+                    className="w-full"
                     style={{ accentColor: "#00475E" }}
                   />
                 </div>
