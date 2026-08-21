@@ -360,3 +360,106 @@ export async function sendLiveSessionReminder({
     html: baseLayout(subject, body),
   });
 }
+
+/**
+ * Convite e lembrete de um encontro síncrono, enviados à mão pela coordenação.
+ *
+ * Existe separado de sendLiveSessionReminder porque aquele é disparado pelo cron
+ * com texto genérico; este carrega a pauta do encontro e é escrito para uma data
+ * específica. Texto aprovado pela coordenação — não altere sem nova aprovação.
+ *
+ * `tipo`:
+ *   "aviso"    → véspera, com data, horário e pauta
+ *   "lembrete" → manhã do dia, curto, só o link
+ */
+export async function sendEncontroSincrono({
+  to,
+  userName,
+  tipo,
+  courseName,
+  sessionTitle,
+  dateLabel,
+  timeLabel,
+  pauta,
+  meetUrl,
+}: {
+  to: string;
+  userName: string;
+  tipo: "aviso" | "lembrete";
+  courseName: string;
+  sessionTitle: string;
+  dateLabel: string;
+  timeLabel: string;
+  pauta: string;
+  meetUrl: string;
+}) {
+  const botao = `
+    <div style="text-align:center;margin:32px 0;">
+      <a href="${meetUrl}" style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Entrar no Google Meet
+      </a>
+    </div>`;
+
+  const rodapeWhats = (prefixo: string) => `
+    <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">
+      ${prefixo}
+      <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 7229-1029</a>.
+    </p>`;
+
+  const assinatura = (despedida: string) => `
+    <p style="margin:28px 0 0;color:#374151;font-size:15px;">${despedida}</p>
+    <p style="margin:16px 0 0;color:#00475e;font-size:14px;font-weight:700;letter-spacing:0.12em;">NU.V.E.M ENSINO</p>`;
+
+  const title = tipo === "aviso" ? sessionTitle : "É hoje!";
+  const subject =
+    tipo === "aviso"
+      ? `Amanhã, ${timeLabel}: nosso ${sessionTitle}`
+      : `Hoje às ${timeLabel}: link do ${sessionTitle}`;
+
+  const body =
+    tipo === "aviso"
+      ? `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">
+      Amanhã acontece o nosso <strong>${sessionTitle}</strong>, o primeiro momento em que vamos nos reunir ao vivo para discutir o conteúdo e tirar dúvidas.
+    </p>
+    <div style="background:#f0f9fa;border-left:4px solid #00475e;border-radius:8px;padding:16px 20px;margin:24px 0;">
+      <p style="margin:0;color:#9ca3af;font-size:12px;text-transform:uppercase;letter-spacing:0.1em;">${courseName}</p>
+      <p style="margin:4px 0 10px;color:#00475e;font-size:16px;font-weight:600;font-family:Georgia,serif;">${sessionTitle}</p>
+      <p style="margin:0 0 4px;color:#374151;font-size:14px;">📅 ${dateLabel}</p>
+      <p style="margin:0 0 4px;color:#374151;font-size:14px;">🕢 ${timeLabel} às 21h30 <span style="color:#9ca3af;">(horário de Brasília)</span></p>
+      <p style="margin:0;color:#374151;font-size:14px;">💻 Google Meet</p>
+    </div>
+    ${botao}
+    <p style="margin:0 0 12px;color:#00475e;font-size:14px;font-weight:700;">O que vamos discutir</p>
+    <p style="margin:0 0 20px;color:#374151;font-size:15px;"><strong>${pauta}</strong></p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">
+      Fechamos com <strong>discussão de casos clínicos</strong>, a parte que só existe ao vivo. Traga suas dúvidas: reservamos um bloco final para perguntas.
+    </p>
+    <p style="margin:0 0 16px;color:#6b7280;font-size:14px;">
+      O encontro será gravado e disponibilizado na plataforma, mas é ao vivo que a discussão de casos acontece de verdade.
+    </p>
+    ${assinatura("Até amanhã!")}
+    ${rodapeWhats("Dúvidas? Responda este e-mail ou fale pelo WhatsApp")}
+  `
+      : `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">
+      Passando só para lembrar: nosso <strong>${sessionTitle}</strong> é <strong>hoje às ${timeLabel}</strong> (horário de Brasília), pelo Google Meet.
+    </p>
+    <p style="margin:0 0 24px;color:#374151;font-size:15px;">
+      Vamos discutir o <strong>${pauta.replace(/\.$/, "")}</strong> e fechar com casos clínicos.
+    </p>
+    ${botao}
+    <p style="margin:0 0 16px;color:#6b7280;font-size:14px;">Sugestão: entre 5 minutinhos antes para testar áudio e câmera.</p>
+    ${assinatura("Esperamos você lá!")}
+    ${rodapeWhats("Dúvidas? Fale pelo WhatsApp")}
+  `;
+
+  return deliver(`encontro síncrono (${tipo})`, to, {
+    from: FROM,
+    to,
+    subject,
+    html: baseLayout(title, body),
+  });
+}
