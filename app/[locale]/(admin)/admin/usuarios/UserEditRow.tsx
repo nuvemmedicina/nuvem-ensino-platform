@@ -62,9 +62,12 @@ export function UserEditRow({
     setError(null);
     startTransition(async () => {
       try {
-        await updateUser(u.id, formData);
-        setEditing(false);
+        const r = await updateUser(u.id, formData);
+        if (r.ok) setEditing(false);
+        else setError(r.erro);
       } catch (err) {
+        // Só cai aqui em falha real (rede, exceção inesperada) — os erros de
+        // validação vêm no retorno, com a mensagem preservada.
         setError((err as Error).message);
       }
     });

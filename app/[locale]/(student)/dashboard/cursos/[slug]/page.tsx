@@ -26,6 +26,7 @@ import { CompleteCourseButton } from "./CompleteCourseButton";
 import { ModuleQuizPanel } from "./ModuleQuizPanel";
 import { DominioTemas } from "./DominioTemas";
 import { TreinoPanel } from "./TreinoPanel";
+import { FlashcardsPanel } from "./FlashcardsPanel";
 import { calcularDominioPorTema } from "@/lib/gamification";
 
 type Props = {
@@ -98,6 +99,12 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
                     orderBy: { order: "asc" },
                   },
                 },
+              },
+              flashcardGroups: {
+                where: { cards: { some: {} } },
+                orderBy: { createdAt: "asc" },
+                take: 1,
+                select: { id: true, _count: { select: { cards: true } } },
               },
             },
           },
@@ -421,6 +428,18 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
             {/* Prova do módulo atual — as demais aparecem conforme os módulos abrem */}
             {currentQuizModule && (
               <div className="space-y-2">
+                <FlashcardsPanel
+                  moduleTitle={currentQuizModule.title.split("—")[0].trim()}
+                  moduleIndex={course.modules.findIndex((m) => m.id === currentQuizModule.id)}
+                  topicos={currentQuizModule.topics.map((t) => ({
+                    id: t.id,
+                    title: t.title,
+                    grupo: t.flashcardGroups[0]
+                      ? { id: t.flashcardGroups[0].id, cards: t.flashcardGroups[0]._count.cards }
+                      : null,
+                  }))}
+                />
+
                 <ModuleQuizPanel
                   moduleIndex={course.modules.findIndex((m) => m.id === currentQuizModule.id)}
                   moduleTitle={currentQuizModule.title}
