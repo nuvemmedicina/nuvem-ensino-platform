@@ -1,5 +1,5 @@
 /**
- * Envia o convite (ou o lembrete) do 1º Encontro Síncrono aos alunos do DICI.
+ * Envia o convite (ou o lembrete) do 2º Encontro Síncrono aos alunos do DICI.
  *
  *   npx tsx prisma/enviar-encontro-sincrono.ts                    # simulação, nada sai
  *   npx tsx prisma/enviar-encontro-sincrono.ts --teste            # só para o e-mail de teste
@@ -39,8 +39,8 @@ const EMAIL_ENTREGAVEL = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
 const ENCONTRO = {
   cursoContains: "Aperfeiçoamento em DICI",
   courseName: "Curso de Aperfeiçoamento em DICI",
-  sessionTitle: "1º Encontro Síncrono",
-  dateLabel: "Quarta-feira, 5 de agosto de 2026",
+  sessionTitle: "2º Encontro Síncrono",
+  dateLabel: "Quarta-feira, 26 de agosto de 2026",
   timeLabel: "19h30",
   pauta: "Módulo I: Fundamentos dos Distúrbios da Interação Cérebro-Intestino.",
   // Sem o ?authuser=0 do link original: aquele parâmetro força a primeira conta
