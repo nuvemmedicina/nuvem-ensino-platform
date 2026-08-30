@@ -52,6 +52,10 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
   const exhausted = attemptsLeft <= 0;
   const hasQuestions = quiz.totalQuestions > 0;
   const canTake = !notYet && !expired && !alreadyPassed && !exhausted && hasQuestions;
+  /* Fundo colorido só quando há o que fazer (ou o que comemorar). Prova
+     bloqueada, vencida ou sem tentativas fica no cartão branco, para o
+     destaque continuar querendo dizer alguma coisa. */
+  const destacado = canTake || alreadyPassed;
 
   /* Os módulos se chamam "Módulo I — <subtítulo longo>". No celular só o
      rótulo cabe: o subtítulo empurrava o nome da prova para a sexta linha. */
@@ -119,7 +123,14 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
   // ── RESUMO ───────────────────────────────────────────────────────────────
   if (phase === "summary") {
     return (
-      <div className="rounded-2xl border bg-surface overflow-hidden border-l-4" style={{ borderColor: cor.border, borderLeftColor: cor.accent }}>
+      <div
+        className={`rounded-2xl border overflow-hidden border-l-4 ${destacado ? "" : "bg-surface"}`}
+        style={{
+          borderColor: alreadyPassed ? "#BFE3CC" : cor.border,
+          borderLeftColor: alreadyPassed ? "#2E7D4F" : cor.accent,
+          backgroundColor: alreadyPassed ? "#EAF6EE" : canTake ? cor.tint : undefined,
+        }}
+      >
         {/* No celular tudo empilha: título, selo, números e botão em linhas
             próprias. A partir de sm volta o cartão em três colunas. */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 px-5 py-4">
@@ -128,7 +139,7 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
               className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
                 alreadyPassed ? "bg-green-500/15" : notYet || expired || exhausted ? "bg-border/40" : ""
               }`}
-              style={!alreadyPassed && !notYet && !expired && !exhausted ? { backgroundColor: cor.tint } : undefined}
+              style={canTake ? { backgroundColor: "#fff", border: `1px solid ${cor.border}` } : undefined}
             >
               <BookOpen
                 className={`w-5 h-5 ${
@@ -139,7 +150,12 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
             </div>
 
             <div className="flex-1 min-w-0">
-              <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted mb-0.5">
+              <p
+                className={`font-sans text-[10px] font-bold uppercase tracking-wider mb-0.5 ${
+                  destacado ? "" : "text-muted"
+                }`}
+                style={destacado ? { color: cor.accent } : undefined}
+              >
                 Prova — <span className="sm:hidden">{moduleLabel}</span>
                 <span className="hidden sm:inline">{moduleTitle}</span>
               </p>

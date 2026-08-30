@@ -415,17 +415,10 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* ── Left: Curriculum ── */}
           <div className="lg:col-span-2 space-y-6">
-            <CurriculumAccordion
-              courseSlug={slug}
-              modules={course.modules as Parameters<typeof CurriculumAccordion>[0]["modules"]}
-              progressMap={progressMap}
-              currentLessonId={null}
-            />
-
-            {/* Domínio por tema — aparece após a primeira prova respondida */}
-            {dominioTemas.length > 0 && <DominioTemas temas={dominioTemas} />}
-
-            {/* Prova do módulo atual — as demais aparecem conforme os módulos abrem */}
+            {/* A avaliação vem antes do currículo: quando ficava depois, o aluno
+                do DICI passava por cinco módulos e mais de setenta aulas até
+                chegar nela, e vários não encontravam. As demais provas aparecem
+                conforme os módulos abrem. */}
             {currentQuizModule && (
               <div className="space-y-2">
                 <FlashcardsPanel
@@ -506,6 +499,16 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
                 </div>
               </div>
             )}
+
+            {/* Domínio por tema — aparece após a primeira prova respondida */}
+            {dominioTemas.length > 0 && <DominioTemas temas={dominioTemas} />}
+
+            <CurriculumAccordion
+              courseSlug={slug}
+              modules={course.modules as Parameters<typeof CurriculumAccordion>[0]["modules"]}
+              progressMap={progressMap}
+              currentLessonId={null}
+            />
           </div>
 
           {/* ── Right: Info sidebar ── */}
