@@ -463,3 +463,96 @@ export async function sendEncontroSincrono({
     html: baseLayout(title, body),
   });
 }
+
+/**
+ * Reengajamento de quem começou a inscrição e não concluiu o pagamento.
+ *
+ * O texto assume que a turma já começou: omitir isso geraria frustração na
+ * primeira aula. As aulas são gravadas, então entrar depois é viável — é esse
+ * o argumento, não a pressa.
+ */
+export async function sendCupomReengajamento({
+  to,
+  userName,
+  courseName,
+  courseSlug,
+  cupom,
+  precoDe,
+  precoPor,
+}: {
+  to: string;
+  userName: string;
+  courseName: string;
+  courseSlug: string;
+  cupom: string;
+  precoDe: string;
+  precoPor: string;
+}) {
+  const link = `${APP_URL}/cursos/${courseSlug}`;
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Vimos que você chegou a iniciar a inscrição no <strong>${courseName}</strong>, mas o pagamento não foi concluído. Sua vaga continua disponível.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">A turma já está em andamento, e isso não é um problema: <strong>todas as aulas ficam gravadas</strong> na plataforma. Você assiste no seu ritmo e acompanha os encontros síncronos a partir do próximo.</p>
+    <div style="background:#f0f7f8;border:1px solid #cbe4e6;border-radius:12px;padding:20px;margin:24px 0;text-align:center;">
+      <p style="margin:0 0 6px;color:#00475e;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;">Cupom de 20% para você</p>
+      <p style="margin:0 0 10px;color:#00475e;font-size:26px;font-weight:700;letter-spacing:0.06em;">${cupom}</p>
+      <p style="margin:0;color:#6b7280;font-size:14px;"><s>${precoDe}</s> &nbsp;→&nbsp; <strong style="color:#00475e;font-size:18px;">${precoPor}</strong></p>
+    </div>
+    <div style="text-align:center;margin:28px 0;">
+      <a href="${link}"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Garantir minha vaga
+      </a>
+    </div>
+    <p style="margin:0;color:#6b7280;font-size:13px;">É só aplicar o cupom <strong>${cupom}</strong> na hora do pagamento. Qualquer dúvida, responda este e-mail que a gente ajuda.</p>
+  `;
+
+  return deliver("reengajamento com cupom", to, {
+    from: FROM,
+    to,
+    subject: `Sua vaga no ${courseName.split(":")[0]} continua disponível — 20% de desconto`,
+    html: baseLayout("Sua vaga ainda está aberta", body),
+  });
+}
+
+/**
+ * Lembrete para o aluno matriculado que ainda não abriu nenhuma aula.
+ *
+ * Não cobra nem culpa: a maioria simplesmente não teve tempo ainda. O objetivo
+ * é lembrar que o material está lá e que dá para começar por onde quiser.
+ */
+export async function sendLembreteAulas({
+  to,
+  userName,
+  courseName,
+  courseSlug,
+}: {
+  to: string;
+  userName: string;
+  courseName: string;
+  courseSlug: string;
+}) {
+  const link = `${APP_URL}/dashboard/cursos/${courseSlug}`;
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Sua matrícula no <strong>${courseName}</strong> está ativa, e as aulas já estão liberadas na plataforma — mas notamos que você ainda não começou.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Não há pressa nem prazo apertado: <strong>as aulas são gravadas</strong> e ficam disponíveis para você assistir quando puder, na ordem que preferir. Dá para começar por 15 minutos hoje.</p>
+    <div style="text-align:center;margin:28px 0;">
+      <a href="${link}"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Começar a assistir
+      </a>
+    </div>
+    <p style="margin:0 0 8px;color:#6b7280;font-size:13px;">Se estiver com dificuldade para entrar na plataforma, responda este e-mail: a gente resolve rápido.</p>
+    <p style="margin:0;color:#9ca3af;font-size:12px;">Ou copie e cole este endereço no navegador:<br/><span style="color:#00475e;word-break:break-all;">${link}</span></p>
+  `;
+
+  return deliver("lembrete de aulas", to, {
+    from: FROM,
+    to,
+    subject: `Suas aulas do ${courseName.split(":")[0]} estão esperando`,
+    html: baseLayout("Suas aulas estão liberadas", body),
+  });
+}
