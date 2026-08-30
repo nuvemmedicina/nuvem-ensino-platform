@@ -418,21 +418,13 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
             {/* A avaliação vem antes do currículo: quando ficava depois, o aluno
                 do DICI passava por cinco módulos e mais de setenta aulas até
                 chegar nela, e vários não encontravam. As demais provas aparecem
-                conforme os módulos abrem. */}
+                conforme os módulos abrem.
+
+                A prova vem antes dos flashcards: eles já estiveram na frente,
+                como preparação, mas isso empurrava para baixo justamente o que
+                os alunos procuravam. Decisão da Ana em 16/08/2026. */}
             {currentQuizModule && (
               <div className="space-y-2">
-                <FlashcardsPanel
-                  moduleTitle={currentQuizModule.title.split("—")[0].trim()}
-                  moduleIndex={course.modules.findIndex((m) => m.id === currentQuizModule.id)}
-                  topicos={currentQuizModule.topics.map((t) => ({
-                    id: t.id,
-                    title: t.title,
-                    grupo: t.flashcardGroups[0]
-                      ? { id: t.flashcardGroups[0].id, cards: t.flashcardGroups[0]._count.cards }
-                      : null,
-                  }))}
-                />
-
                 <ModuleQuizPanel
                   moduleIndex={course.modules.findIndex((m) => m.id === currentQuizModule.id)}
                   moduleTitle={currentQuizModule.title}
@@ -454,6 +446,18 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
                       passed: a.passed,
                       createdAt: a.createdAt,
                     }))}
+                />
+
+                <FlashcardsPanel
+                  moduleTitle={currentQuizModule.title.split("—")[0].trim()}
+                  moduleIndex={course.modules.findIndex((m) => m.id === currentQuizModule.id)}
+                  topicos={currentQuizModule.topics.map((t) => ({
+                    id: t.id,
+                    title: t.title,
+                    grupo: t.flashcardGroups[0]
+                      ? { id: t.flashcardGroups[0].id, cards: t.flashcardGroups[0]._count.cards }
+                      : null,
+                  }))}
                 />
 
                 {currentQuizModule.quiz!.practiceEnabled && (
