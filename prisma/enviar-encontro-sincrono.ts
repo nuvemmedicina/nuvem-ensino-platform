@@ -42,7 +42,8 @@ const ENCONTRO = {
   sessionTitle: "2º Encontro Síncrono",
   dateLabel: "Quarta-feira, 26 de agosto de 2026",
   timeLabel: "19h30",
-  pauta: "Módulo I: Fundamentos dos Distúrbios da Interação Cérebro-Intestino.",
+  pauta:
+    'tema "IA na Escolha Terapêutica: Como Ela Pode Ajudar?", como a Inteligência Artificial gera recomendações personalizadas, baseadas em evidências, garantindo que o paciente certo receba o tratamento certo no momento certo',
   // Sem o ?authuser=0 do link original: aquele parâmetro força a primeira conta
   // Google de quem clica e derruba quem tem duas contas logadas.
   meetUrl: "https://meet.google.com/ekb-sawm-daf",
