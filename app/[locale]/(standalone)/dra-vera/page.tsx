@@ -72,18 +72,11 @@ const books = [
 
 const upcomingEvents = [
   {
-    date: "22 Jul 2026",
-    title: "Live Exclusiva — Curso DICI",
-    detail: "19h30 · Desconto especial para participantes",
-    location: "Online · Ao vivo",
-    href: "https://www.nuvemensino.com.br/live",
-  },
-  {
-    date: "Jul 2026",
+    date: "Out 2026",
     title: "Testes Respiratórios de H₂, CH₄ e H₂S",
     detail: "Hands-on teórico-prático com equipamentos Dynamed e Health Go",
     location: "Presencial · Nuvem Ensino",
-    href: "https://www.nuvemensino.com.br/cursos/testes-respiratorios-h2-ch4-h2s-julho",
+    href: "https://www.nuvemensino.com.br/cursos/testes-respiratorios-h2-ch4-h2s-outubro",
   },
   {
     date: "2026",
