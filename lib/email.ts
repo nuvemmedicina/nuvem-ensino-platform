@@ -6,6 +6,7 @@ function getResend() {
   return new Resend(process.env.RESEND_API_KEY ?? "re_placeholder");
 }
 const FROM = process.env.EMAIL_FROM ?? "NU.V.E.M ENSINO <cursos@nuvemensino.com.br>";
+const GRUPO_WHATSAPP_DICI = "https://chat.whatsapp.com/Bu30QwD28QP2FJbYW8wMdp";
 
 export type DeliveryResult =
   | { ok: true; id: string | undefined }
@@ -554,5 +555,101 @@ export async function sendLembreteAulas({
     to,
     subject: `Suas aulas do ${courseName.split(":")[0]} estão esperando`,
     html: baseLayout("Suas aulas estão liberadas", body),
+  });
+}
+
+/**
+ * Segundo lembrete para quem já recebeu sendLembreteAulas e continua sem
+ * assistir nada. Reconhece que não é a primeira mensagem e é mais direto:
+ * cita o que já está liberado esperando, em vez de repetir o texto genérico.
+ */
+export async function sendSegundoLembreteAulas({
+  to,
+  userName,
+  courseName,
+  courseSlug,
+}: {
+  to: string;
+  userName: string;
+  courseName: string;
+  courseSlug: string;
+}) {
+  const link = `${APP_URL}/dashboard/cursos/${courseSlug}`;
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Te escrevemos há alguns dias sobre o <strong>${courseName}</strong> e vimos que ainda não deu tempo de começar. Sem cobrança nenhuma — só não queríamos que sua vaga ficasse esquecida.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;"><strong>Dois módulos já estão liberados</strong> esperando por você, e um terceiro chega em outubro. Quanto mais cedo começar, mais fôlego você tem para acompanhar no seu ritmo.</p>
+    <div style="text-align:center;margin:28px 0;">
+      <a href="${link}"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Ver minhas aulas agora
+      </a>
+    </div>
+    <p style="margin:0 0 8px;color:#6b7280;font-size:13px;">Se o que está faltando é tempo de agenda, comece pela primeira aula: costuma levar menos de 15 minutos.</p>
+    <p style="margin:0 0 16px;color:#6b7280;font-size:13px;">Se for dificuldade para entrar na plataforma, responda este e-mail ou chame no WhatsApp: a gente resolve rápido.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:14px;">Entre também no <a href="${GRUPO_WHATSAPP_DICI}" style="color:#00475e;font-weight:600;">grupo do WhatsApp da turma</a> para lembretes e trocar com os colegas.</p>
+    <p style="margin:0;color:#9ca3af;font-size:12px;">Ou copie e cole este endereço no navegador:<br/><span style="color:#00475e;word-break:break-all;">${link}</span></p>
+  `;
+
+  return deliver("segundo lembrete de aulas", to, {
+    from: FROM,
+    to,
+    subject: `${userName.split(" ")[0]}, sua vaga no ${courseName.split(":")[0]} está parada`,
+    html: baseLayout("Ainda dá tempo de começar", body),
+  });
+}
+
+/**
+ * Aviso de liberação de um novo módulo — vai para toda a turma matriculada,
+ * o que inclui os professores (eles também são matriculados no curso).
+ */
+export async function sendModuloLiberado({
+  to,
+  userName,
+  courseName,
+  courseSlug,
+  moduloTitle,
+  destaques,
+}: {
+  to: string;
+  userName: string;
+  courseName: string;
+  courseSlug: string;
+  moduloTitle: string;
+  /** Alguns temas do módulo, para dar um gostinho do conteúdo. */
+  destaques: string[];
+}) {
+  const link = `${APP_URL}/dashboard/cursos/${courseSlug}`;
+
+  const listaDestaques = destaques
+    .map((d) => `<li style="margin:0 0 6px;">${d}</li>`)
+    .join("");
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Um novo módulo do <strong>${courseName}</strong> já está disponível na plataforma:</p>
+    <div style="background:#f0f9fa;border-left:4px solid #00475e;border-radius:8px;padding:16px 20px;margin:24px 0;">
+      <p style="margin:0;color:#00475e;font-size:16px;font-weight:600;font-family:Georgia,serif;">${moduloTitle}</p>
+    </div>
+    <p style="margin:0 0 8px;color:#374151;font-size:15px;">Alguns dos temas que você vai encontrar:</p>
+    <ul style="margin:0 0 24px;padding-left:20px;color:#6b7280;font-size:14px;line-height:1.7;">
+      ${listaDestaques}
+    </ul>
+    <p style="margin:0 0 24px;color:#374151;font-size:15px;">Aulas gravadas, prova e flashcards do módulo já estão liberados — é só acessar.</p>
+    <div style="text-align:center;margin:32px 0;">
+      <a href="${link}"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Acessar o módulo
+      </a>
+    </div>
+    <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Dúvidas? Responda este e-mail ou fale pelo WhatsApp <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 7229-1029</a>.</p>
+  `;
+
+  return deliver("módulo liberado", to, {
+    from: FROM,
+    to,
+    subject: `Novo módulo liberado: ${moduloTitle}`,
+    html: baseLayout("Novo módulo liberado", body),
   });
 }
