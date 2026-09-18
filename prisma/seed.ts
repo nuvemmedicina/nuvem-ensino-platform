@@ -96,7 +96,8 @@ async function main() {
     create: {
       userId: anna.id,
       slug: "dra-anna-karoline",
-      title: "Fisioterapeuta Respiratória",
+      title: "Fisioterapeuta Pélvica",
+      crm: "CREFITO 4/270579-F",
       photoUrl: "/instructors/anna-karoline.jpg",
     },
   });
