@@ -27,6 +27,7 @@ import { ModuleQuizPanel } from "./ModuleQuizPanel";
 import { DominioTemas } from "./DominioTemas";
 import { TreinoPanel } from "./TreinoPanel";
 import { FlashcardsPanel } from "./FlashcardsPanel";
+import { RespiratoryGameInvite } from "./RespiratoryGameInvite";
 import { calcularDominioPorTema } from "@/lib/gamification";
 
 type Props = {
@@ -423,6 +424,8 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
                 A prova vem antes dos flashcards: eles já estiveram na frente,
                 como preparação, mas isso empurrava para baixo justamente o que
                 os alunos procuravam. Decisão da Ana em 16/08/2026. */}
+            {course.slug === "testes-respiratorios" && <RespiratoryGameInvite slug={course.slug} />}
+
             {currentQuizModule && (
               <div className="space-y-2">
                 <ModuleQuizPanel
