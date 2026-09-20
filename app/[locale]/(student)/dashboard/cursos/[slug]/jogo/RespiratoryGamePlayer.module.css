@@ -194,57 +194,82 @@
 .actions {
   display: flex;
   justify-content: center;
-  gap: 14px;
+  gap: 12px;
   margin-top: 18px;
-  width: min(620px, 86%);
+  width: min(560px, 100%);
   margin-left: auto;
   margin-right: auto;
-  grid-template-columns: repeat(2, minmax(220px, 1fr));
-  align-items: center;
 }
 .btn {
-  width: 100%;
-  max-width: 300px;
-  min-height: 66px;
-  border-radius: 12px;
-  border: 1px solid;
+  flex: 1;
+  min-height: 68px;
+  border-radius: 14px;
+  border: 1.5px solid;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
+  justify-content: flex-start;
+  gap: 13px;
+  padding: 12px 18px;
   cursor: pointer;
   background: #fff;
-  justify-self: center;
-  text-align: center;
+  text-align: left;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px #183e530f;
+}
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
 }
 .btn span:last-child {
   display: flex;
   flex-direction: column;
-  align-items: center !important;
-  text-align: center !important;
-  width: 100%;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
 }
-.btn b,
-.btn small {
-  width: 100%;
-  text-align: center;
+.btn b {
+  font-size: 13.5px;
 }
 .btn small {
-  margin-top: 4px;
+  font-size: 10.5px;
+  opacity: 0.8;
+  white-space: nowrap;
 }
 .btnNo {
   color: var(--bad);
   border-color: #efb2b4;
   background: #fff8f8;
 }
+.btnNo:hover {
+  border-color: var(--bad);
+}
 .btnYes {
   color: var(--good);
   border-color: #9ed8c4;
   background: #f6fcf9;
 }
+.btnYes:hover {
+  border-color: var(--good);
+}
 .choiceIcon {
-  font-size: 24px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
   flex: 0 0 auto;
+}
+.btnNo .choiceIcon {
+  background: #fde0e1;
+}
+.btnYes .choiceIcon {
+  background: #ddf2e8;
 }
 .diagnosisActions {
   display: flex;
@@ -715,11 +740,8 @@
   }
   .actions {
     width: 100%;
-    grid-template-columns: 1fr;
+    flex-direction: column;
     gap: 8px;
-  }
-  .btn {
-    max-width: 100%;
   }
   .meta {
     grid-template-columns: 1fr;
