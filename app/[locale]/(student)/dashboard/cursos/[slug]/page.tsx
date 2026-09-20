@@ -19,6 +19,12 @@ import {
 } from "lucide-react";
 
 const DICI_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/Bu30QwD28QP2FJbYW8wMdp";
+// Cursos de teste respiratório (online e presencial) que ganham o jogo de
+// casos clínicos de interpretação de H₂/CH₄.
+const RESPIRATORY_GAME_COURSE_SLUGS = [
+  "teste-respiratorio-de-hidrogenio-e-metano",
+  "testes-respiratorios-h2-ch4-h2s-outubro",
+];
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import CurriculumAccordion from "./CurriculumAccordion";
@@ -424,7 +430,7 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
                 A prova vem antes dos flashcards: eles já estiveram na frente,
                 como preparação, mas isso empurrava para baixo justamente o que
                 os alunos procuravam. Decisão da Ana em 16/08/2026. */}
-            {course.slug === "teste-respiratorio-de-hidrogenio-e-metano" && (
+            {RESPIRATORY_GAME_COURSE_SLUGS.includes(course.slug) && (
               <RespiratoryGameInvite slug={course.slug} />
             )}
 
