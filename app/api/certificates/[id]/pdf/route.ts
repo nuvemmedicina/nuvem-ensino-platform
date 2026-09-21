@@ -12,10 +12,13 @@ export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ id: string }> };
 
-/** Lê um arquivo da pasta public/assinaturas e retorna data URI base64, ou undefined. */
+/**
+ * Lê um arquivo da pasta private/assinaturas (fora de public/, portanto não
+ * acessível por URL direta) e retorna data URI base64, ou undefined.
+ */
 function loadSignature(filename: string): string | undefined {
   try {
-    const filePath = path.join(process.cwd(), "public", "assinaturas", filename);
+    const filePath = path.join(process.cwd(), "private", "assinaturas", filename);
     if (!fs.existsSync(filePath)) return undefined;
     const buffer = fs.readFileSync(filePath);
     const ext = path.extname(filename).slice(1).toLowerCase();
