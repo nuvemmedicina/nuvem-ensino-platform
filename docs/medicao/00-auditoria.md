@@ -157,6 +157,8 @@ Segundo, uma complicação: no painel do Registro.br, os servidores de DNS do do
 
 Conclusão registrada: a conta da Hostinger tem duas funções separadas, hospedagem de site (o WordPress, confirmado descartável) e zona de DNS (ativa, crítica, sustentando o site na Vercel e o e-mail do domínio inteiro). Cancelar a conta sem migrar a zona de DNS primeiro derrubaria e-mail e possivelmente o site. Orientei a usuária a não cancelar agora, e a tratar a saída da Hostinger como um projeto à parte, com migração completa dos registros para outro provedor de DNS antes de qualquer cancelamento, fora do escopo desta tarefa de medição. Orientei também a adicionar, sem apagar o TXT de verificação existente, um novo registro TXT em `@` com o valor `google-site-verification=4uvseus2L5dSqz1irnL5_X0AE9souRF6j0d9gzFyWL8`, para finalmente verificar a propriedade de domínio no Search Console.
 
+**Atualização, ainda em 23 de setembro: propriedade de domínio verificada.** A usuária confirmou que a verificação passou. Isso responde, na prática, boa parte da pergunta 3 da seção 7: o Search Console agora enxerga o domínio inteiro, todas as variantes de www e protocolo juntas, em vez de só a fatia sem www que gerava o "1 indexada, 39 não indexadas". Próximo passo para fechar essa investigação: pedir à usuária um print do relatório de indexação e do desempenho dentro dessa propriedade de domínio recém-verificada, agora sim para ver o número real e, se possível, o motivo que o Google dá para cada página fora do índice.
+
 ## 4. Linha do tempo do histórico (git log)
 
 Busquei commits entre 25 de julho e 15 de agosto de 2026 que tocam roteamento, metadados, robots, sitemap, middleware/proxy, redirecionamentos, domínio ou layout raiz:
