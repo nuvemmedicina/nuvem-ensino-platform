@@ -139,6 +139,12 @@ No mesmo print, o gráfico de desempenho mostra a queda de cliques de forma visu
 
 Encaminhei à usuária o pedido de abrir o relatório completo de indexação (dentro dessa mesma propriedade sem www) para ver o motivo que o Google atribui a cada uma das 39 páginas não indexadas, o que deve confirmar ou afastar essa hipótese com mais segurança.
 
+**Atualização, ainda em 23 de setembro, com prints da Vercel e do Registro.br.** Dois achados novos:
+
+Primeiro, confirmação: a tela de Domínios do projeto na Vercel mostra a linha `nuvemensino.com.br` com "308 www.nuvemensino.com.br". Isso confirma, agora por evidência direta e não só pelo comentário em `lib/appUrl.ts`, que o redirecionamento do domínio sem www para o com www existe de fato, configurado na própria Vercel, não em código da aplicação. `www.nuvemensino.com.br` aparece como o domínio de Produção.
+
+Segundo, uma complicação: no painel do Registro.br, os servidores de DNS do domínio são `ns1.dns-parking.com` e `ns2.dns-parking.com`, um serviço de terceiro que não é nem o Registro.br nem a Vercel. Isso significa que o registro TXT de verificação da propriedade de domínio no Search Console não pode ser adicionado nem pelo painel do Registro.br nem pelo painel da Vercel, precisa ser feito na conta desse provedor de DNS específico, cujo acesso ainda não identificamos. Perguntei à usuária se ela reconhece esse serviço. Como alternativa mais rápida, sem depender de DNS, propus criar uma segunda propriedade de prefixo de URL no Search Console para `https://www.nuvemensino.com.br/`, verificada por tag HTML (o token já está em `verification.google` no código, deve verificar na hora), para pelo menos enxergar dados da variante de URL que o site realmente usa enquanto o acesso ao DNS não é resolvido.
+
 ## 4. Linha do tempo do histórico (git log)
 
 Busquei commits entre 25 de julho e 15 de agosto de 2026 que tocam roteamento, metadados, robots, sitemap, middleware/proxy, redirecionamentos, domínio ou layout raiz:
