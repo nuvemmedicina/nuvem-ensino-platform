@@ -102,7 +102,7 @@ function baseLayout(title: string, body: string) {
         </td></tr>
         <!-- Footer -->
         <tr><td style="background:#f4f7f6;padding:24px 40px;text-align:center;border-top:1px solid #e5e7eb;">
-          <p style="margin:0;color:#9ca3af;font-size:11px;">NU.V.E.M ENSINO · cursos@nuvemensino.com.br · (31) 7229-1029</p>
+          <p style="margin:0;color:#9ca3af;font-size:11px;">NU.V.E.M ENSINO · cursos@nuvemensino.com.br · (31) 97229-1029</p>
           <p style="margin:4px 0 0;color:#9ca3af;font-size:11px;">Belo Horizonte, MG</p>
         </td></tr>
       </table>
@@ -136,7 +136,7 @@ export async function sendEnrollmentConfirmation({
         Acessar o curso
       </a>
     </div>
-    <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Dúvidas? Responda este e-mail ou fale pelo WhatsApp <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 7229-1029</a>.</p>
+    <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Dúvidas? Responda este e-mail ou fale pelo WhatsApp <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 97229-1029</a>.</p>
   `;
 
   return deliver("matrícula confirmada", to, {
@@ -182,7 +182,7 @@ export async function sendPaymentPendingEmail({
         Tentar novamente →
       </a>
     </div>
-    <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Precisa de ajuda? Fale conosco pelo WhatsApp <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 7229-1029</a> — respondemos rapidamente.</p>
+    <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Precisa de ajuda? Fale conosco pelo WhatsApp <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 97229-1029</a> — respondemos rapidamente.</p>
   `;
 
   return deliver("pagamento pendente", to, {
@@ -351,7 +351,7 @@ export async function sendLiveSessionReminder({
       <p style="margin:0;color:#374151;font-size:14px;">📅 ${formattedDate}</p>
     </div>
     ${accessBlock}
-    <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Dúvidas? Entre em contato pelo WhatsApp <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 7229-1029</a>.</p>
+    <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Dúvidas? Entre em contato pelo WhatsApp <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 97229-1029</a>.</p>
   `;
 
   return deliver("lembrete de aula ao vivo", to, {
@@ -404,7 +404,7 @@ export async function sendEncontroSincrono({
   const rodapeWhats = (prefixo: string) => `
     <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">
       ${prefixo}
-      <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 7229-1029</a>.
+      <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 97229-1029</a>.
     </p>`;
 
   const assinatura = (despedida: string) => `
@@ -643,7 +643,7 @@ export async function sendModuloLiberado({
         Acessar o módulo
       </a>
     </div>
-    <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Dúvidas? Responda este e-mail ou fale pelo WhatsApp <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 7229-1029</a>.</p>
+    <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Dúvidas? Responda este e-mail ou fale pelo WhatsApp <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 97229-1029</a>.</p>
   `;
 
   return deliver("módulo liberado", to, {
