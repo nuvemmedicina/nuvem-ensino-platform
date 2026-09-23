@@ -244,3 +244,7 @@ Fora isso, meu entendimento é que a auditoria confirma que a ordem proposta no 
 ## Perguntas em aberto, juntando tudo
 
 As perguntas 1 a 8 da seção 7 acima. Aguardando resposta antes de iniciar a Etapa 1.
+
+## 9. Achado fora do escopo original: projeto duplicado na Vercel
+
+Ao abrir o PR #29 e buscar o link de pré-visualização, apareceram **dois projetos** na Vercel ligados ao mesmo repositório do GitHub: `nuvem-ensino-platform` (o principal, usado a sessão inteira) e `nuvem-ensino-platform-714m`, gerando deploy de pré-visualização próprio para o mesmo PR. A usuária não reconhece a origem desse segundo projeto e acha que parece uma versão antiga. Não investiguei mais a fundo nem mexi em nada, só registrado como pendência: verificar em **Configurações → Domínios** desse segundo projeto se algum domínio real está apontando para ele. Se não houver nenhum, é provável que seja um projeto de teste esquecido, possivelmente gerando custo de hospedagem duplicado sem necessidade. Se houver, precisa de mais investigação antes de qualquer remoção, pela mesma cautela já usada com a Hostinger.
