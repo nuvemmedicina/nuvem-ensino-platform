@@ -145,6 +145,18 @@ Primeiro, confirmação: a tela de Domínios do projeto na Vercel mostra a linha
 
 Segundo, uma complicação: no painel do Registro.br, os servidores de DNS do domínio são `ns1.dns-parking.com` e `ns2.dns-parking.com`, um serviço de terceiro que não é nem o Registro.br nem a Vercel. Isso significa que o registro TXT de verificação da propriedade de domínio no Search Console não pode ser adicionado nem pelo painel do Registro.br nem pelo painel da Vercel, precisa ser feito na conta desse provedor de DNS específico, cujo acesso ainda não identificamos. Perguntei à usuária se ela reconhece esse serviço. Como alternativa mais rápida, sem depender de DNS, propus criar uma segunda propriedade de prefixo de URL no Search Console para `https://www.nuvemensino.com.br/`, verificada por tag HTML (o token já está em `verification.google` no código, deve verificar na hora), para pelo menos enxergar dados da variante de URL que o site realmente usa enquanto o acesso ao DNS não é resolvido.
 
+**Atualização, ainda em 23 de setembro: o `dns-parking.com` é a Hostinger, e não é só hospedagem abandonada.** A usuária tem uma conta na Hostinger com um WordPress antigo, confirmado por ela como abandonado e descartável. Mas o painel de DNS dessa mesma conta (`hpanel.hostinger.com`, tela Domínios, DNS/Servidores de Nome) mostra que é ali que a zona de DNS de `nuvemensino.com.br` de fato vive hoje, com registros em uso real, não abandonados:
+
+- `CNAME www` apontando para a Vercel (`....vercel-dns-017.com`), o que faz `www.nuvemensino.com.br` funcionar
+- Um registro A na raiz (`@`) para `216.198.79.1`, provavelmente também apontando para a Vercel, dado que o domínio raiz responde com o redirecionamento 308 confirmado na Vercel
+- `MX @` para `SMTP.GOOGLE.COM` e SPF incluindo `_spf.google.com`, ou seja, o e-mail do domínio (`cursos@nuvemensino.com.br` e outros) roda hoje pelo Google Workspace usando esse DNS
+- Registros DKIM para três serviços de envio distintos: Hostinger, Resend (`resend._domainkey`, condizente com `RESEND_API_KEY` do `.env.example`) e Mailchimp
+- Registro DMARC, e um subdomínio `enviar` com SPF e MX apontando para Amazon SES
+- Um segundo registro `google-site-verification` já existente em `@`, com um código diferente do que está no código-fonte e do que o Search Console está pedindo agora para a propriedade de domínio, de origem não identificada
+- Duas entradas antigas, `cursos` e `ftp`, apontando para um IP da própria Hostinger (`145.223.25.40`), essas sim parecem resquício do site antigo
+
+Conclusão registrada: a conta da Hostinger tem duas funções separadas, hospedagem de site (o WordPress, confirmado descartável) e zona de DNS (ativa, crítica, sustentando o site na Vercel e o e-mail do domínio inteiro). Cancelar a conta sem migrar a zona de DNS primeiro derrubaria e-mail e possivelmente o site. Orientei a usuária a não cancelar agora, e a tratar a saída da Hostinger como um projeto à parte, com migração completa dos registros para outro provedor de DNS antes de qualquer cancelamento, fora do escopo desta tarefa de medição. Orientei também a adicionar, sem apagar o TXT de verificação existente, um novo registro TXT em `@` com o valor `google-site-verification=4uvseus2L5dSqz1irnL5_X0AE9souRF6j0d9gzFyWL8`, para finalmente verificar a propriedade de domínio no Search Console.
+
 ## 4. Linha do tempo do histórico (git log)
 
 Busquei commits entre 25 de julho e 15 de agosto de 2026 que tocam roteamento, metadados, robots, sitemap, middleware/proxy, redirecionamentos, domínio ou layout raiz:
