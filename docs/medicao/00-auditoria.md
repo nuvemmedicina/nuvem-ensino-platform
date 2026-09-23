@@ -256,3 +256,20 @@ Ao abrir o PR #29 e buscar o link de pré-visualização, apareceram **dois proj
 Causa raiz do "GTM-KX7V5WKL não encontrado" no Tag Assistant: a variável `NEXT_PUBLIC_GTM_ID` na Vercel estava marcada só para o ambiente Produção, não para Pré-visualização. Como variáveis com prefixo `NEXT_PUBLIC_` são gravadas no código durante o build, o deploy de pré-visualização do PR foi gerado sem o ID do contêiner, então o script do GTM nunca era inserido na página. Corrigido pela usuária (marcou também Pré-visualização e Desenvolvimento) e um novo deploy foi disparado na linha certa da lista de Deployments (havia risco de clicar em Redeploy numa linha de Produção de outro PR por engano, a lista mistura os dois).
 
 Confirmado por código-fonte (Ctrl+U na URL de pré-visualização, busca por "googletagmanager"): antes da correção, 0 ocorrências; depois do redeploy, 3 ocorrências, confirmando que o script do GTM agora está presente na página. Próximo passo: testar no modo Preview do próprio Tag Manager (Tag Assistant) se a tag "GA4 - page_view" dispara corretamente, e só depois publicar o contêiner.
+
+**Atualização: dois bugs reais encontrados e corrigidos durante o teste no Tag Assistant.**
+
+1. A tag "GA4 - page_view" tinha sido criada com o tipo errado no Tag Manager ("Tag do Google", o mesmo tipo da tag de configuração), sem campos de nome de evento nem parâmetros, disparando sozinha no carregamento da página com o pageview automático do Google, sem passar pela nossa sanitização de URL. Corrigido pela usuária no próprio painel do GTM: trocado para o tipo "Google Analytics: evento do GA4", com nome do evento `page_view`, os três parâmetros mapeados (`page_location`, `page_referrer`, `page_path`) e o ID de métrica `G-EFJPEPFDLC`. Confirmado no Tag Assistant que o gatilho certo (`page_view - Evento personalizado`) está em uso.
+
+2. Bug de código, corrigido no commit `f8e90e4`: a função `pushConsentUpdate` em `lib/consent.ts` mandava para o `dataLayer` um evento comum (`{event: "consent_update", analytics_storage: choice}`), formato que o Consent Mode do Google não reconhece. O comando correto é `gtag('consent', 'update', {...})`, que no dataLayer vira um array de comando, não um objeto de evento. Sem essa correção, aceitar o banner gravava a escolha no navegador da visitante mas o Google continuava enxergando `analytics_storage` como negado, e a tag do GA4 nunca disparava mesmo depois do aceite. Corrigido para empilhar o array no formato certo. Deploy da correção confirmado concluído pela Vercel às 20:04 UTC de 23 de setembro (commit `f8e90e4`, os dois projetos Vercel).
+
+**Pendência de teste, não de código:** depois da correção do item 2, ainda não foi possível confirmar visualmente no navegador que a tag passa a disparar após aceitar o banner. As tentativas esbarraram em cache do navegador, estado de consentimento salvo de testes anteriores e dificuldade de navegar entre abas do Tag Assistant, da aba do site e do DevTools. A usuária pausou por cansaço, decisão respeitada. Quando retomar, sugestão de teste mais direto e num só fôlego:
+
+1. Abrir uma janela anônima nova (sem nada salvo).
+2. Acessar a URL de pré-visualização do PR #29.
+3. Aceitar o banner de cookies.
+4. No Tag Manager (outra aba, logada), clicar em Preview, colar a mesma URL, conectar.
+5. Navegar para uma segunda página na janela anônima.
+6. Conferir no Tag Assistant, aba "Consentimento", se `analytics_storage` aparece como "Concedido", e na aba "Tags", se "GA4 - page_view" aparece em "Tags disparadas".
+
+Só depois dessa confirmação publicar (Submit) o contêiner no GTM.
