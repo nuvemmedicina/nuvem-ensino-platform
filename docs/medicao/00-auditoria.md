@@ -250,3 +250,9 @@ As perguntas 1 a 8 da seção 7 acima. Aguardando resposta antes de iniciar a Et
 Ao abrir o PR #29 e buscar o link de pré-visualização, apareceram **dois projetos** na Vercel ligados ao mesmo repositório do GitHub: `nuvem-ensino-platform` (o principal, usado a sessão inteira) e `nuvem-ensino-platform-714m`, gerando deploy de pré-visualização próprio para o mesmo PR. A usuária não reconhece a origem desse segundo projeto e acha que parece uma versão antiga.
 
 **Atualização:** a usuária conferiu Configurações → Domínios do projeto `nuvem-ensino-platform-714m`, e o único domínio listado é o padrão gerado pela própria Vercel (`nuvem-ensino-platform-714m.vercel.app`), sem nenhum domínio real (`nuvemensino.com.br` e variantes) apontando para lá. Seguro de remover quando a usuária quiser, sem risco para o site em produção. Não é urgente, fica como faxina futura.
+
+## 10. Script do GTM confirmado no ar na pré-visualização
+
+Causa raiz do "GTM-KX7V5WKL não encontrado" no Tag Assistant: a variável `NEXT_PUBLIC_GTM_ID` na Vercel estava marcada só para o ambiente Produção, não para Pré-visualização. Como variáveis com prefixo `NEXT_PUBLIC_` são gravadas no código durante o build, o deploy de pré-visualização do PR foi gerado sem o ID do contêiner, então o script do GTM nunca era inserido na página. Corrigido pela usuária (marcou também Pré-visualização e Desenvolvimento) e um novo deploy foi disparado na linha certa da lista de Deployments (havia risco de clicar em Redeploy numa linha de Produção de outro PR por engano, a lista mistura os dois).
+
+Confirmado por código-fonte (Ctrl+U na URL de pré-visualização, busca por "googletagmanager"): antes da correção, 0 ocorrências; depois do redeploy, 3 ocorrências, confirmando que o script do GTM agora está presente na página. Próximo passo: testar no modo Preview do próprio Tag Manager (Tag Assistant) se a tag "GA4 - page_view" dispara corretamente, e só depois publicar o contêiner.
