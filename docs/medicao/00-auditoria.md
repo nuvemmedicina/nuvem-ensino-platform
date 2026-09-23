@@ -133,6 +133,12 @@ Sobre por que só 1 de aproximadamente 40 páginas estaria indexada: com a maior
 
 Não encontrei evidência de código que confirme qualquer uma dessas três hipóteses como fato. São possibilidades plausíveis diante do que os dados do Google mostram, nada mais.
 
+**Atualização de 23 de setembro, com print do Search Console.** A usuária mostrou a tela de visão geral do Search Console com o seletor de propriedades aberto. Existem três propriedades: `nuvemmedicina.com.br` (propriedade de domínio, verificada, é a marca da clínica, outro site), `https://nuvemensino.com.br/` (propriedade de prefixo de URL, verificada, sem www, é a que está sendo usada e mostra o "1 indexada, 39 não indexadas") e `nuvemensino.com.br` (propriedade de domínio, não verificada). A propriedade em uso não tem www, enquanto o código usa `https://www.nuvemensino.com.br`, com www, como domínio canônico. Isso é evidência direta, não mais só hipótese, de que a propriedade sendo monitorada é uma variante de URL diferente da que o site realmente serve. Continua sendo hipótese, porque ainda não vi o relatório completo de indexação com o motivo dado pelo Google para cada uma das 39 páginas, o quanto isso explica o "1 de 40": se o domínio sem www realmente redireciona 308 para o com www, como afirma o comentário em `lib/appUrl.ts`, cada URL dessa propriedade bateria num redirecionamento ao ser rastreada, o que é consistente com ficar fora do índice nessa propriedade específica, mesmo que a versão com www esteja indexada em algum lugar que ninguém está olhando, já que a propriedade de domínio que cobriria as duas variantes de uma vez nunca foi verificada.
+
+No mesmo print, o gráfico de desempenho mostra a queda de cliques de forma visual: de um pico de quase 15 cliques por dia para uma linha reta em zero a partir de 08/08/2026, permanecendo assim até pelo menos 13/09/2026. Isso confirma visualmente o que o diagnóstico inicial já relatava sobre a queda entre 7 e 9 de agosto, sem que isso, por si só, aponte uma causa.
+
+Encaminhei à usuária o pedido de abrir o relatório completo de indexação (dentro dessa mesma propriedade sem www) para ver o motivo que o Google atribui a cada uma das 39 páginas não indexadas, o que deve confirmar ou afastar essa hipótese com mais segurança.
+
 ## 4. Linha do tempo do histórico (git log)
 
 Busquei commits entre 25 de julho e 15 de agosto de 2026 que tocam roteamento, metadados, robots, sitemap, middleware/proxy, redirecionamentos, domínio ou layout raiz:
