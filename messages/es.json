@@ -648,6 +648,12 @@
     "faqPrompt": "Antes de escribirnos, revisa si tu pregunta ya está respondida en nuestra",
     "faqLink": "página de preguntas frecuentes"
   },
+  "consent": {
+    "message": "Usamos cookies de análisis para entender cómo se usa el sitio y mejorar la experiencia. Puedes aceptar o rechazar en cualquier momento.",
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "privacyLink": "Política de Privacidad"
+  },
   "privacy": {
     "title": "Política de Privacidad",
     "lastUpdated": "Última actualización: mayo de 2026 · NUVEM ENSINO · CNPJ 42.679.051/0001-31",

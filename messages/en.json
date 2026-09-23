@@ -648,6 +648,12 @@
     "faqPrompt": "Before writing to us, check if your question is already answered on our",
     "faqLink": "frequently asked questions page"
   },
+  "consent": {
+    "message": "We use analytics cookies to understand how the site is used and improve the experience. You can accept or decline at any time.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "privacyLink": "Privacy Policy"
+  },
   "privacy": {
     "title": "Privacy Policy",
     "lastUpdated": "Last updated: May 2026 · NUVEM ENSINO · CNPJ 42.679.051/0001-31",

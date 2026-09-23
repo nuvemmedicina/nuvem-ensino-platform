@@ -7,6 +7,7 @@
     "build": "node scripts/migrate-deploy.mjs && prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "tsx --test lib/**/*.test.ts",
     "postinstall": "prisma generate"
   },
   "prisma": {
