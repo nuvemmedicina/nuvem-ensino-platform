@@ -187,6 +187,8 @@ A usuária abriu `www.nuvemensino.com.br/sitemap.xml` direto no navegador e carr
 
 Conclusão: a causa técnica do "1 de 40" não era o site ser inindexável, era a combinação de propriedade errada monitorada no Search Console (sem www), sitemap antigo sem www sendo o único lido pelo Google, e dois pontos do código ainda citando o domínio sem www. As três causas já foram corrigidas ou estão propagando. O que falta agora é o Google recrawlear e atualizar o índice, fora do nosso controle direto, exceto pelo botão "Solicitar indexação" na própria tela de inspeção, sugerido à usuária para a home e para páginas de curso prioritárias.
 
+**Atualização: página de curso individual, status diferente.** A inspeção de `https://www.nuvemensino.com.br/cursos/testes-respiratorios-h2-ch4-h2s-outubro` retornou "Detectada, mas não indexada no momento", com "Último rastreamento: N/D", ou seja, o Google já sabe que a URL existe (via o sitemap novo e via o link do site da nuvemmedicina.com.br/ensino) mas ainda não chegou a rastreá-la. É o estado normal de página nova ou de sitemap recém-reenviado aguardando a fila de rastreamento do Google, não indica problema técnico na página em si. Sugerido à usuária usar "Solicitar indexação" também aqui.
+
 ## 4. Linha do tempo do histórico (git log)
 
 Busquei commits entre 25 de julho e 15 de agosto de 2026 que tocam roteamento, metadados, robots, sitemap, middleware/proxy, redirecionamentos, domínio ou layout raiz:
