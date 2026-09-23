@@ -631,6 +631,23 @@
       }
     ]
   },
+  "contact": {
+    "meta": {
+      "title": "Contato",
+      "description": "Fale com a equipe da NU.V.E.M ENSINO por e-mail ou WhatsApp."
+    },
+    "badge": "Fale conosco",
+    "title": "Contato",
+    "description": "Tem dúvidas sobre um curso, uma matrícula ou quer saber mais sobre a NU.V.E.M ENSINO? Fale com a nossa equipe pelos canais abaixo.",
+    "emailLabel": "E-mail",
+    "whatsappLabel": "WhatsApp",
+    "whatsappButton": "Chamar no WhatsApp",
+    "locationLabel": "Localização",
+    "locationValue": "Belo Horizonte, MG",
+    "sendEmail": "Enviar e-mail",
+    "faqPrompt": "Antes de nos escrever, veja se sua dúvida já está respondida na nossa",
+    "faqLink": "página de perguntas frequentes"
+  },
   "privacy": {
     "title": "Política de Privacidade",
     "lastUpdated": "Última atualização: maio de 2026 · NUVEM ENSINO · CNPJ 42.679.051/0001-31",

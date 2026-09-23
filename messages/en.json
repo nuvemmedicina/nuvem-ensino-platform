@@ -631,6 +631,23 @@
       }
     ]
   },
+  "contact": {
+    "meta": {
+      "title": "Contact",
+      "description": "Get in touch with the NU.V.E.M ENSINO team by email or WhatsApp."
+    },
+    "badge": "Get in touch",
+    "title": "Contact",
+    "description": "Have questions about a course, an enrollment, or want to learn more about NU.V.E.M ENSINO? Reach our team through the channels below.",
+    "emailLabel": "Email",
+    "whatsappLabel": "WhatsApp",
+    "whatsappButton": "Chat on WhatsApp",
+    "locationLabel": "Location",
+    "locationValue": "Belo Horizonte, MG, Brazil",
+    "sendEmail": "Send email",
+    "faqPrompt": "Before writing to us, check if your question is already answered on our",
+    "faqLink": "frequently asked questions page"
+  },
   "privacy": {
     "title": "Privacy Policy",
     "lastUpdated": "Last updated: May 2026 · NUVEM ENSINO · CNPJ 42.679.051/0001-31",
