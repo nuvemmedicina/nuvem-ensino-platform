@@ -159,6 +159,16 @@ Conclusão registrada: a conta da Hostinger tem duas funções separadas, hosped
 
 **Atualização, ainda em 23 de setembro: propriedade de domínio verificada.** A usuária confirmou que a verificação passou. Isso responde, na prática, boa parte da pergunta 3 da seção 7: o Search Console agora enxerga o domínio inteiro, todas as variantes de www e protocolo juntas, em vez de só a fatia sem www que gerava o "1 indexada, 39 não indexadas". Próximo passo para fechar essa investigação: pedir à usuária um print do relatório de indexação e do desempenho dentro dessa propriedade de domínio recém-verificada, agora sim para ver o número real e, se possível, o motivo que o Google dá para cada página fora do índice.
 
+**Atualização, ainda em 23 de setembro, com a exportação do relatório de Desempenho da propriedade de domínio (arquivo `nuvemensino.com.br-Performance-on-Search-2026-09-23.zip`, período "Últimos 3 meses").** Este é o achado mais significativo da auditoria até agora, maior do que o descompasso de www sozinho. A lista de páginas com cliques e impressões nos últimos 3 meses mostra tráfego de busca chegando a **três hosts diferentes**, não dois:
+
+1. `www.nuvemensino.com.br`, o site atual, auditado nesta sessão inteira.
+2. `nuvemensino.com.br` sem www, mas com estrutura de URL que não existe no site atual (por exemplo `/faq` sem prefixo de curso, e posts de blog como `/aumento-global-de-doencas-inflamatorias-intestinais-no-seculo-xxi/`). Pode ser resíduo de indexação anterior ao redirecionamento 308 confirmado na Vercel, ainda não descartado pelo Google, não uma leitura confirmada de conteúdo servido hoje.
+3. **`cursos.nuvemensino.com.br`**, um subdomínio até então não mencionado nesta auditoria, com estrutura típica de loja WordPress (`/produto/`, `/loja/`, `/checkout/`, `/painel/`, `/cadastro-de-alunos/`, `/reembolso_devolucoes/`, PDFs em `/wp-content/uploads/2024/10/`). Recebeu cliques reais nos últimos 3 meses (9 cliques e 85 impressões só na página inicial desse subdomínio). Não é o mesmo domínio removido do código pelo commit `aef8100` (aquele era `cursos.nuvemmedicina.com.br`, da Medicina, este é `cursos.nuvemensino.com.br`, do Ensino).
+
+Tentei verificar diretamente se `cursos.nuvemensino.com.br` e `nuvemensino.com.br` estão de fato no ar hoje, usando a ferramenta de busca na web deste ambiente, mas o acesso a esses domínios está bloqueado pela política de rede da sessão (só alcança o GitHub). Pedi à usuária para abrir as duas URLs direto no navegador e relatar o que aparece. Isso ainda é hipótese, não fato confirmado: pode ser um site antigo genuinamente no ar e competindo por indexação com o site atual, ou pode ser só entradas antigas que o Google ainda não descartou de um domínio hoje fora do ar. As duas leituras mudam a ação corretiva.
+
+Dado complementar, sem relação direta com causa: a consulta de busca "nuvem ensino" (marca) responde por 219 dos aproximadamente 379 cliques totais do período, na posição 1.09. Termos sem marca aparecem nas impressões mas praticamente não geram clique ainda, compatível com uma indexação ainda desorganizada.
+
 ## 4. Linha do tempo do histórico (git log)
 
 Busquei commits entre 25 de julho e 15 de agosto de 2026 que tocam roteamento, metadados, robots, sitemap, middleware/proxy, redirecionamentos, domínio ou layout raiz:
