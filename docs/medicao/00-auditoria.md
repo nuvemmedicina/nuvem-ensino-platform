@@ -173,6 +173,14 @@ Dado complementar, sem relação direta com causa: a consulta de busca "nuvem en
 
 **Atualização: registros `A cursos` e `A ftp` excluídos na Hostinger**, ambos apontando para o IP antigo `145.223.25.40`. A usuária confirmou a exclusão dos dois. A própria Hostinger avisa que a propagação pode levar até 24 horas.
 
+**Atualização, ainda em 23 de setembro, com a Inspeção de URL do Search Console para `https://nuvemensino.com.br/`.** O motivo exato que o Google dá para essa URL não estar indexada é "Página com redirecionamento". Isso não é um problema, é o comportamento esperado de uma URL que existe só para redirecionar: o URL canônico declarado (`https://www.nuvemensino.com.br/`) e o selecionado pelo Google são iguais, ou seja, o Google entende corretamente que essa não é a página de verdade. Isso reabre a leitura do "1 de 40": é provável que boa parte das 39 páginas não indexadas sejam exatamente páginas antigas do domínio sem www, corretamente marcadas como redirecionamento, não uma falha de indexação real. A pergunta que resta é se a versão com www está de fato indexada, ainda não verificado.
+
+A mesma tela listou como "página de referência" (quem aponta para essa URL) os endereços `nuvemensino.com.br/sitemap.xml` e `nuvemensino.com.br/page-sitemap.xml`, este último com nome típico do WordPress com Yoast SEO, confirmando que existia um WordPress publicado direto no domínio sem www antes da migração para a Vercel.
+
+Investigando por que o Google ainda cita a URL sem www como referência, encontrei no próprio código dois lugares com o domínio fixo sem www, ainda em uso hoje, não resíduo antigo: os dados estruturados (JSON-LD) da página inicial, em `app/[locale]/(public)/page.tsx`, e o link de verificação gravado no QR code de cada certificado, em `app/api/certificates/[id]/pdf/route.ts`. Os dois foram corrigidos para usar `APP_URL` (commit `beda628`), a mesma fonte única do domínio já usada no resto do código desde 30 de julho. `tsc --noEmit` e `eslint` passaram limpos nos dois arquivos.
+
+**Atualização sobre o sitemap.** Na tela de Sitemaps do Search Console, o sitemap que o Google de fato processou com sucesso e usou para contar os 39 URLs é o antigo, enviado em maio de 2026 em `nuvemensino.com.br/sitemap.xml` (sem www). O sitemap novo, enviado agora pela usuária em `www.nuvemensino.com.br/sitemap.xml`, ainda não tinha sido lido pelo Google no momento da captura de tela ("Última leitura" em branco), e mostrava "Não foi possível buscar o sitemap", que pode ser só um status provisório antes da primeira tentativa real de leitura, não necessariamente uma falha. Pedido à usuária para confirmar se `https://www.nuvemensino.com.br/sitemap.xml` abre normalmente no navegador, antes de tratar isso como problema.
+
 ## 4. Linha do tempo do histórico (git log)
 
 Busquei commits entre 25 de julho e 15 de agosto de 2026 que tocam roteamento, metadados, robots, sitemap, middleware/proxy, redirecionamentos, domínio ou layout raiz:
