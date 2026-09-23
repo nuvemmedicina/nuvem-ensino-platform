@@ -37,10 +37,11 @@ declare global {
 
 function pushConsentUpdate(choice: ConsentChoice) {
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({
-    event: "consent_update",
-    analytics_storage: choice,
-  });
+  // Precisa ser o comando gtag('consent', 'update', {...}), não um evento
+  // comum: é o único formato que o Consent Mode do Google reconhece para
+  // atualizar analytics_storage. gtag() empilha os argumentos como array,
+  // então reproduzimos o mesmo formato aqui.
+  window.dataLayer.push(["consent", "update", { analytics_storage: choice }]);
 }
 
 /** Aplica a escolha do visitante: grava, avisa o GTM/GA4 e avisa o resto da
