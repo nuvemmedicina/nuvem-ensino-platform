@@ -3,25 +3,26 @@
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, Suspense } from "react";
+import { useEffect, useSyncExternalStore, Suspense } from "react";
+import { APP_URL } from "@/lib/appUrl";
+import { sanitizePathAndSearch } from "@/lib/analyticsSanitize";
+import { CONSENT_EVENT, getStoredConsent } from "@/lib/consent";
 
-// Rastreia mudanças de página no App Router
-function PageViewTracker() {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const ph = usePostHog();
+function subscribeToConsent(callback: () => void) {
+  window.addEventListener(CONSENT_EVENT, callback);
+  return () => window.removeEventListener(CONSENT_EVENT, callback);
+}
 
-  useEffect(() => {
-    if (!ph) return;
-    const url = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : "");
-    ph.capture("$pageview", { $current_url: url });
-  }, [pathname, searchParams, ph]);
+function getConsentSnapshot() {
+  return getStoredConsent();
+}
 
+function getServerConsentSnapshot() {
   return null;
 }
 
-// Inicializa PostHog uma única vez no browser
-if (typeof window !== "undefined") {
+function initPostHogIfNeeded() {
+  if (typeof window === "undefined") return;
   const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
   const host = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://eu.i.posthog.com";
 
@@ -46,12 +47,42 @@ if (typeof window !== "undefined") {
   }
 }
 
+// Rastreia mudanças de página no App Router, só depois de consentimento e
+// com a URL sanitizada (sem parâmetros que não sejam de origem, e sem
+// nenhum parâmetro em rotas sensíveis como dashboard, checkout e login).
+function PageViewTracker() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const ph = usePostHog();
+
+  useEffect(() => {
+    if (!ph) return;
+    const sanitizedPath = sanitizePathAndSearch(pathname, searchParams.toString());
+    ph.capture("$pageview", { $current_url: `${APP_URL}${sanitizedPath}` });
+  }, [pathname, searchParams, ph]);
+
+  return null;
+}
+
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
+  const consent = useSyncExternalStore(
+    subscribeToConsent,
+    getConsentSnapshot,
+    getServerConsentSnapshot
+  );
+  const consentGranted = consent === "granted";
+
+  useEffect(() => {
+    if (consentGranted) initPostHogIfNeeded();
+  }, [consentGranted]);
+
   return (
     <PHProvider client={posthog}>
-      <Suspense fallback={null}>
-        <PageViewTracker />
-      </Suspense>
+      {consentGranted && (
+        <Suspense fallback={null}>
+          <PageViewTracker />
+        </Suspense>
+      )}
       {children}
     </PHProvider>
   );

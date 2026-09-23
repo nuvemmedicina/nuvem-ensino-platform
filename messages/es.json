@@ -623,13 +623,43 @@
       },
       {
         "q": "¿Hay descuentos para grupos o instituciones?",
-        "a": "Sí, ofrecemos condiciones especiales para grupos de 3 o más personas o para instituciones de salud. Contáctanos en cursos@nuvemensino.com.br o por WhatsApp al +55 (31) 99726-1029."
+        "a": "Sí, ofrecemos condiciones especiales para grupos de 3 o más personas o para instituciones de salud. Contáctanos en cursos@nuvemensino.com.br o por WhatsApp al +55 (31) 97229-1029."
       },
       {
         "q": "¿Cómo me comunico con el equipo?",
-        "a": "Puedes contactarnos por correo en cursos@nuvemensino.com.br, por teléfono al +55 (31) 2537-3131 o por WhatsApp al +55 (31) 99726-1029."
+        "a": "Puedes contactarnos por correo en cursos@nuvemensino.com.br, por teléfono al +55 (31) 97229-1029 o por WhatsApp al +55 (31) 97229-1029."
       }
     ]
+  },
+  "contact": {
+    "meta": {
+      "title": "Contacto",
+      "description": "Habla con el equipo de NU.V.E.M ENSINO por correo o WhatsApp."
+    },
+    "badge": "Hablemos",
+    "title": "Contacto",
+    "description": "¿Tienes dudas sobre un curso, una inscripción o quieres saber más sobre NU.V.E.M ENSINO? Contacta a nuestro equipo por los canales de abajo.",
+    "emailLabel": "Correo electrónico",
+    "whatsappLabel": "WhatsApp",
+    "whatsappButton": "Hablar por WhatsApp",
+    "locationLabel": "Ubicación",
+    "locationValue": "Belo Horizonte, MG, Brasil",
+    "sendEmail": "Enviar correo",
+    "faqPrompt": "Antes de escribirnos, revisa si tu pregunta ya está respondida en nuestra",
+    "faqLink": "página de preguntas frecuentes"
+  },
+  "consent": {
+    "message": "Usamos cookies para analizar el uso del sitio y medir nuestras campañas, conforme a nuestra",
+    "privacyLink": "Política de Privacidad",
+    "noHealthData": "Ningún dato de salud es recopilado por estas cookies.",
+    "acceptAll": "Aceptar todo",
+    "decline": "Rechazar",
+    "customize": "Personalizar",
+    "essentialTitle": "Cookies esenciales",
+    "essentialDesc": "Necesarias para el funcionamiento del sitio, como inicio de sesión y preferencias. Siempre activas.",
+    "analyticsTitle": "Cookies de análisis",
+    "analyticsDesc": "Ayudan a entender cómo se usa el sitio, para mejorar la experiencia.",
+    "save": "Guardar preferencias"
   },
   "privacy": {
     "title": "Política de Privacidad",
@@ -665,7 +695,7 @@
       },
       {
         "title": "8. Contacto",
-        "text": "Para dudas sobre esta política o para ejercer tus derechos, contáctanos: cursos@nuvemensino.com.br | +55 (31) 2537-3131."
+        "text": "Para dudas sobre esta política o para ejercer tus derechos, contáctanos: cursos@nuvemensino.com.br | +55 (31) 97229-1029."
       }
     ]
   },
@@ -717,7 +747,7 @@
       },
       {
         "title": "11. Contacto",
-        "text": "Para dudas o solicitudes relacionadas con estos Términos, contáctanos: cursos@nuvemensino.com.br | +55 (31) 2537-3131 | Belo Horizonte, MG."
+        "text": "Para dudas o solicitudes relacionadas con estos Términos, contáctanos: cursos@nuvemensino.com.br | +55 (31) 97229-1029 | Belo Horizonte, MG."
       }
     ]
   },

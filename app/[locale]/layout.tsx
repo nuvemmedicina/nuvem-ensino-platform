@@ -5,12 +5,14 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import { PostHogProvider } from "@/components/PostHogProvider";
+import ConsentBanner from "@/components/ConsentBanner";
+import GtmPageView from "@/components/GtmPageView";
 import ServiceWorkerRegistrar from "@/components/ServiceWorkerRegistrar";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
 import { APP_URL } from "@/lib/appUrl";
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -131,25 +133,50 @@ export default async function LocaleLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        {/* Google Analytics */}
-        {GA_ID && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-              strategy="afterInteractive"
+        {/* Consent Mode v2: estado padrão negado, antes de qualquer tag
+            carregar. O GA4 mora dentro do contêiner do GTM (configuração
+            feita no próprio painel do Tag Manager, não neste código), e
+            tanto o GTM quanto o gtag entendem esses comandos de consent
+            porque os dois leem o mesmo dataLayer. */}
+        {GTM_ID && (
+          <Script id="consent-default" strategy="beforeInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){window.dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                ad_storage: 'denied',
+                analytics_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+                wait_for_update: 500
+              });
+            `}
+          </Script>
+        )}
+        {GTM_ID && (
+          <Script id="gtm-loader" strategy="afterInteractive">
+            {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','${GTM_ID}');`}
+          </Script>
+        )}
+        {GTM_ID && (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+              height="0"
+              width="0"
+              style={{ display: "none", visibility: "hidden" }}
+              title="Google Tag Manager"
             />
-            <Script id="ga-init" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${GA_ID}');
-              `}
-            </Script>
-          </>
+          </noscript>
         )}
         <NextIntlClientProvider messages={messages}>
+          {GTM_ID && <GtmPageView />}
           <PostHogProvider>{children}</PostHogProvider>
+          <ConsentBanner />
           <ServiceWorkerRegistrar />
         </NextIntlClientProvider>
       </body>

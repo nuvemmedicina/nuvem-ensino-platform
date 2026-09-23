@@ -81,6 +81,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ),
     ...makeEntries(
       {
+        pt: `${APP_URL}/contato`,
+        en: `${APP_URL}/en/contact`,
+        es: `${APP_URL}/es/contacto`,
+      },
+      { lastModified: now, changeFrequency: "yearly", priority: 0.5 }
+    ),
+    ...makeEntries(
+      {
         pt: `${APP_URL}/privacidade`,
         en: `${APP_URL}/en/privacy`,
         es: `${APP_URL}/es/privacidad`,

@@ -177,7 +177,7 @@ export default async function Footer() {
                 cursos@nuvemensino.com.br
               </a>
               <a href="tel:+5531972291029" className="hover:text-white transition-colors">
-                (31) 7229-1029
+                (31) 97229-1029
               </a>
               <span>Belo Horizonte, MG</span>
             </div>

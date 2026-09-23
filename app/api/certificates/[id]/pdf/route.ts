@@ -6,6 +6,7 @@ import { CertificatePDF } from "@/components/CertificatePDF";
 import QRCode from "qrcode";
 import fs from "fs";
 import path from "path";
+import { APP_URL } from "@/lib/appUrl";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -114,7 +115,7 @@ export async function GET(req: NextRequest, { params }: Props) {
 
   // ── QR Code — aponta para /verificar com o código do certificado ─────────
   const codeDisplay = cert.code.slice(0, 16).toUpperCase();
-  const verifyUrl = `https://nuvemensino.com.br/verificar?codigo=${codeDisplay}`;
+  const verifyUrl = `${APP_URL}/verificar?codigo=${codeDisplay}`;
   let qrCodeDataUri: string | undefined;
   try {
     qrCodeDataUri = await QRCode.toDataURL(verifyUrl, {

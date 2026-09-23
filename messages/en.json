@@ -623,13 +623,43 @@
       },
       {
         "q": "Are there discounts for groups or institutions?",
-        "a": "Yes, we offer special conditions for groups of 3 or more people or for healthcare institutions. Contact us at cursos@nuvemensino.com.br or via WhatsApp at +55 (31) 99726-1029."
+        "a": "Yes, we offer special conditions for groups of 3 or more people or for healthcare institutions. Contact us at cursos@nuvemensino.com.br or via WhatsApp at +55 (31) 97229-1029."
       },
       {
         "q": "How do I contact the team?",
-        "a": "You can reach us by email at cursos@nuvemensino.com.br, by phone at +55 (31) 2537-3131, or via WhatsApp at +55 (31) 99726-1029."
+        "a": "You can reach us by email at cursos@nuvemensino.com.br, by phone at +55 (31) 97229-1029, or via WhatsApp at +55 (31) 97229-1029."
       }
     ]
+  },
+  "contact": {
+    "meta": {
+      "title": "Contact",
+      "description": "Get in touch with the NU.V.E.M ENSINO team by email or WhatsApp."
+    },
+    "badge": "Get in touch",
+    "title": "Contact",
+    "description": "Have questions about a course, an enrollment, or want to learn more about NU.V.E.M ENSINO? Reach our team through the channels below.",
+    "emailLabel": "Email",
+    "whatsappLabel": "WhatsApp",
+    "whatsappButton": "Chat on WhatsApp",
+    "locationLabel": "Location",
+    "locationValue": "Belo Horizonte, MG, Brazil",
+    "sendEmail": "Send email",
+    "faqPrompt": "Before writing to us, check if your question is already answered on our",
+    "faqLink": "frequently asked questions page"
+  },
+  "consent": {
+    "message": "We use cookies to analyze site usage and measure our campaigns, as described in our",
+    "privacyLink": "Privacy Policy",
+    "noHealthData": "No health data is collected through these cookies.",
+    "acceptAll": "Accept all",
+    "decline": "Decline",
+    "customize": "Customize",
+    "essentialTitle": "Essential cookies",
+    "essentialDesc": "Needed for the site to work, such as login and preferences. Always active.",
+    "analyticsTitle": "Analytics cookies",
+    "analyticsDesc": "Help us understand how the site is used, to improve the experience.",
+    "save": "Save preferences"
   },
   "privacy": {
     "title": "Privacy Policy",
@@ -665,7 +695,7 @@
       },
       {
         "title": "8. Contact",
-        "text": "For questions about this policy or to exercise your rights, please contact us: cursos@nuvemensino.com.br | +55 (31) 2537-3131."
+        "text": "For questions about this policy or to exercise your rights, please contact us: cursos@nuvemensino.com.br | +55 (31) 97229-1029."
       }
     ]
   },
@@ -717,7 +747,7 @@
       },
       {
         "title": "11. Contact",
-        "text": "For questions or requests related to these Terms, please contact us: cursos@nuvemensino.com.br | +55 (31) 2537-3131 | Belo Horizonte, MG."
+        "text": "For questions or requests related to these Terms, please contact us: cursos@nuvemensino.com.br | +55 (31) 97229-1029 | Belo Horizonte, MG."
       }
     ]
   },
