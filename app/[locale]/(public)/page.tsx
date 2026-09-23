@@ -7,6 +7,7 @@ import { Monitor, Clock, ArrowRight } from "lucide-react";
 import HeroCarousel from "@/components/hero-carousel";
 import HeroStats from "@/components/hero-stats";
 import { getHeroSlides } from "@/lib/hero-slides";
+import { APP_URL } from "@/lib/appUrl";
 
 export async function generateMetadata({
   params,
@@ -52,17 +53,17 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "EducationalOrganization",
-      "@id": "https://nuvemensino.com.br/#organization",
+      "@id": `${APP_URL}/#organization`,
       name: "NU.V.E.M ENSINO",
-      url: "https://nuvemensino.com.br",
-      logo: "https://nuvemensino.com.br/logo.png",
+      url: APP_URL,
+      logo: `${APP_URL}/logo.png`,
       description: "Plataforma de formação médica especializada em Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Certificação ISO 9001.",
       address: { "@type": "PostalAddress", addressLocality: "Belo Horizonte", addressRegion: "MG", addressCountry: "BR" },
     },
     {
       "@type": "WebSite",
-      "@id": "https://nuvemensino.com.br/#website",
-      url: "https://nuvemensino.com.br",
+      "@id": `${APP_URL}/#website`,
+      url: APP_URL,
       name: "NU.V.E.M ENSINO",
     },
   ],
