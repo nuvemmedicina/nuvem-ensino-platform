@@ -649,10 +649,17 @@
     "faqLink": "página de preguntas frecuentes"
   },
   "consent": {
-    "message": "Usamos cookies de análisis para entender cómo se usa el sitio y mejorar la experiencia. Puedes aceptar o rechazar en cualquier momento.",
-    "accept": "Aceptar",
+    "message": "Usamos cookies para analizar el uso del sitio y medir nuestras campañas, conforme a nuestra",
+    "privacyLink": "Política de Privacidad",
+    "noHealthData": "Ningún dato de salud es recopilado por estas cookies.",
+    "acceptAll": "Aceptar todo",
     "decline": "Rechazar",
-    "privacyLink": "Política de Privacidad"
+    "customize": "Personalizar",
+    "essentialTitle": "Cookies esenciales",
+    "essentialDesc": "Necesarias para el funcionamiento del sitio, como inicio de sesión y preferencias. Siempre activas.",
+    "analyticsTitle": "Cookies de análisis",
+    "analyticsDesc": "Ayudan a entender cómo se usa el sitio, para mejorar la experiencia.",
+    "save": "Guardar preferencias"
   },
   "privacy": {
     "title": "Política de Privacidad",
