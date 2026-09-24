@@ -252,6 +252,24 @@ Correções feitas com base nos achados da seção 3 desta auditoria:
 
 Testes existentes (`npm test`) e checagens de tipo/lint seguem limpos, sem relação direta com essas mudanças (são de metadados, não de lógica testada). Não editei a página `/verificar` além do metadata, campo de código funcional intocado.
 
+## 12. Etapa 3: eventos de conversão
+
+Três eventos, cada um investigado no código antes de decidir como implementar (ver `docs/medicao/02-etapa3-passos-manuais.md` para a configuração pendente no Tag Manager e na Vercel):
+
+- **`begin_checkout`**: dispara no navegador, no clique do botão de pagar (`CheckoutClient.tsx`). Manda `value`, `currency` e `payment_method`, sem nenhum dos dados pessoais que o mesmo formulário coleta (CPF, WhatsApp, nome, e-mail continuam só na chamada para `/api/checkout`, nunca no `dataLayer`).
+- **`sign_up`**: dispara no navegador, ao concluir o cadastro por e-mail (`app/[locale]/(auth)/cadastro/page.tsx`). Sem dado pessoal, só confirma que um cadastro aconteceu.
+- **`purchase`**: esse foi o mais delicado. Fui conferir como a confirmação de pagamento realmente funciona antes de decidir onde disparar o evento: boleto e cartão parcelado redirecionam de volta pro site assim que a cobrança é *gerada*, não quando é *paga*, e o PIX nem redireciona (fica um QR code na tela, confirmação só chega depois). A única fonte confiável de "pagamento realmente recebido", para os três métodos, é o webhook da Asaas (`app/api/webhooks/asaas/route.ts`, eventos `PAYMENT_CONFIRMED`/`PAYMENT_RECEIVED`). Por isso o evento de compra é mandado direto do servidor pro GA4 (API de Medição / Measurement Protocol, `lib/ga4MeasurementProtocol.ts`), de dentro do próprio webhook, nunca da página `?sucesso=1`, que teria contado boleto/PIX pendente como venda fechada.
+
+  Para correlacionar a compra a um visitante do GA4 sem usar dado pessoal, o código lê o `client_id` do cookie `_ga` no navegador (`lib/gaClientId.ts`, um identificador técnico aleatório do próprio Google, não é nome nem e-mail) no momento do `begin_checkout`, e guarda ele junto do registro de pagamento (`Payment.gaClientId`, nova coluna, migração `20260924120000_add_payment_ga_client_id`). Esse cookie só existe se a pessoa aceitou o cookie de analytics, então, sem consentimento, o campo fica vazio e o evento de compra simplesmente não é enviado (a venda continua registrada normalmente no banco, só não entra na medição).
+
+  Dados enviados no evento: `value` (valor realmente pago), `currency`, `payment_method`, `coupon` (código, se teve), e os dados do curso (`item_id` = slug, `item_name`, `item_category`, `price`). Nada de CPF, e-mail, nome, telefone, nem os identificadores de transação da Asaas/Stripe.
+
+  Não populei os campos `Enrollment.utmSource/utmMedium/utmCampaign` (existem no schema, mas nunca foram preenchidos em lugar nenhum do código), porque isso é especificamente o que a Etapa 5 (parâmetros UTM) do prompt original propõe fazer, não quis adiantar fora de ordem.
+
+Pendências do lado da usuária, listadas com detalhe em `02-etapa3-passos-manuais.md`: criar os dois acionadores e as duas tags novas no GTM (`begin_checkout`, `sign_up`), e configurar `GA4_MEASUREMENT_ID` e `GA4_API_SECRET` na Vercel (o segundo precisa ser gerado no próprio GA4, eu não tenho como criar).
+
+`npx tsc --noEmit`, `npx eslint` nos arquivos alterados e `npm test` (9 testes) seguem limpos. `npx prisma generate` rodado para o TypeScript reconhecer a coluna nova (sem banco neste ambiente para testar a migração de fato, ela roda sozinha no próximo deploy, o `build` do projeto já chama `prisma migrate deploy` via `scripts/migrate-deploy.mjs`).
+
 ## Perguntas em aberto, juntando tudo
 
 As perguntas 1 a 8 da seção 7 acima. Aguardando resposta antes de iniciar a Etapa 1.
