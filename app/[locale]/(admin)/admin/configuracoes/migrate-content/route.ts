@@ -147,7 +147,7 @@ const staticContent: Record<
       "Acesso ao conteúdo por tempo indeterminado",
     ],
   },
-  "fisioterapia-respiratoria": {
+  "fisioterapia-pelvica": {
     startDate: "17–19 de junho de 2026",
     objectives: [
       "Dominar a anatomia detalhada e a biomecânica do assoalho pélvico",

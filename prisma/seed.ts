@@ -227,7 +227,7 @@ async function main() {
   });
 
   const courseFisioterapia = await prisma.course.upsert({
-    where: { slug: "fisioterapia-respiratoria" },
+    where: { slug: "fisioterapia-pelvica" },
     update: {
       title: "Treinamento Teórico-Prático de Fisioterapia nas Disfunções do Assoalho Pélvico",
       description:
@@ -239,7 +239,7 @@ async function main() {
         "Treinamento teórico-prático com Dra. Karol Rocha: avaliação, tratamento e prática supervisionada em disfunções do assoalho pélvico.",
     },
     create: {
-      slug: "fisioterapia-respiratoria",
+      slug: "fisioterapia-pelvica",
       title: "Treinamento Teórico-Prático de Fisioterapia nas Disfunções do Assoalho Pélvico",
       description:
         "Formação teórico-prática em fisioterapia pélvica: anatomia, avaliação clínica e instrumental, estratégias terapêuticas baseadas em evidências, discussão de casos reais e prática supervisionada. Turmas com no máximo 2 alunos.",
@@ -547,12 +547,12 @@ async function main() {
   }
 
   // Curso: Treinamento Teórico-Prático de Fisioterapia nas Disfunções do
-  // Assoalho Pélvico (slug legado "fisioterapia-respiratoria"). Os módulos
-  // abaixo ficam vazios de propósito: o currículo antigo era de fisioterapia
-  // respiratória (herdado de um curso anterior que ocupava este slug) e não
-  // corresponde ao curso atual. O módulo/aula real, com carga horária e
-  // vídeos da Dra. Karol Rocha, ainda precisa ser cadastrado via
-  // /admin/cursos/fisioterapia-respiratoria.
+  // Assoalho Pélvico (slug renomeado de "fisioterapia-respiratoria" para
+  // "fisioterapia-pelvica"). Os módulos abaixo ficam vazios de propósito: o
+  // currículo antigo era de fisioterapia respiratória (herdado de um curso
+  // anterior que ocupava este slug) e não corresponde ao curso atual. O
+  // módulo/aula real, com carga horária e vídeos, ainda precisa ser
+  // cadastrado via /admin/cursos/fisioterapia-pelvica.
   const modulesFisioterapia: { title: string; order: number; lessons: { title: string; order: number; duration: number }[] }[] = [];
 
   for (const mod of modulesFisioterapia) {
