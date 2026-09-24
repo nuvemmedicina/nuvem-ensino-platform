@@ -103,6 +103,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
       { lastModified: now, changeFrequency: "yearly", priority: 0.3 }
     ),
+    // Páginas avulsas, sem tradução real (conteúdo só em português,
+    // apesar de tecnicamente acessíveis com prefixo /en e /es), por isso
+    // uma entrada só, sem alternates de idioma.
+    {
+      url: `${APP_URL}/dra-vera`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.4,
+    },
+    {
+      url: `${APP_URL}/live`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.4,
+    },
   ];
 
   // ── Dynamic course pages ──────────────────────────────────────────────────

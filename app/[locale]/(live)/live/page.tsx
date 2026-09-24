@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Live Exclusiva — Curso DICI · NU.V.E.M ENSINO",
   description:
     "Participe da live com a Dra. Vera Ângelo sobre o Curso de Aperfeiçoamento em DICI e garanta um desconto exclusivo para os presentes.",
+  alternates: { canonical: "/live" },
 };
 
 export default function LivePage() {

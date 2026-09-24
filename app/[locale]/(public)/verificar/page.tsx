@@ -2,19 +2,27 @@
 import { prisma } from "@/lib/prisma";
 import { CheckCircle2, XCircle, Search, Shield } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Verificar Certificado — NU.V.E.M ENSINO",
-  description:
-    "Verifique a autenticidade de um certificado emitido pela NU.V.E.M ENSINO. Informe o código impresso no certificado para confirmar sua validade.",
-  alternates: { canonical: "/verificar" },
-  openGraph: {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const path = locale === "en" ? "/en/verificar" : locale === "es" ? "/es/verificar" : "/verificar";
+  return {
     title: "Verificar Certificado — NU.V.E.M ENSINO",
-    description: "Confirme a autenticidade de certificados emitidos pela NU.V.E.M ENSINO.",
-    url: "/verificar",
-  },
-};
+    description:
+      "Verifique a autenticidade de um certificado emitido pela NU.V.E.M ENSINO. Informe o código impresso no certificado para confirmar sua validade.",
+    alternates: { canonical: path },
+    openGraph: {
+      title: "Verificar Certificado — NU.V.E.M ENSINO",
+      description: "Confirme a autenticidade de certificados emitidos pela NU.V.E.M ENSINO.",
+      url: path,
+    },
+  };
+}
 
-type Props = { searchParams: Promise<{ codigo?: string }> };
+type Props = { searchParams: Promise<{ codigo?: string }>; params: Promise<{ locale: string }> };
 
 const fmtDate = new Intl.DateTimeFormat("pt-BR", {
   day: "2-digit",

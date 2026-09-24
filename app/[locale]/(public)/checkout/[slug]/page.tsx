@@ -19,9 +19,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: true, descriptionEn: true, descriptionEs: true,
     },
   });
-  if (!course) return {};
+  const robots = { index: false, follow: false };
+  if (!course) return { robots };
   const lc = localizedCourse(course, locale);
-  return { title: `Inscrição — ${lc.title} | Nuvem Ensino` };
+  return { title: `Inscrição — ${lc.title} | Nuvem Ensino`, robots };
 }
 
 export default async function CheckoutPage({ params }: Props) {
