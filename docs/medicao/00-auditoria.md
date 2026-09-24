@@ -270,6 +270,10 @@ Pendências do lado da usuária, listadas com detalhe em `02-etapa3-passos-manua
 
 `npx tsc --noEmit`, `npx eslint` nos arquivos alterados e `npm test` (9 testes) seguem limpos. `npx prisma generate` rodado para o TypeScript reconhecer a coluna nova (sem banco neste ambiente para testar a migração de fato, ela roda sozinha no próximo deploy, o `build` do projeto já chama `prisma migrate deploy` via `scripts/migrate-deploy.mjs`).
 
+**Atualização, 24 de setembro: configuração manual concluída e testada.** A usuária criou os dois acionadores e as duas tags novas no GTM (`begin_checkout`, `sign_up`), gerou o segredo do Measurement Protocol no GA4 e configurou `GA4_MEASUREMENT_ID`/`GA4_API_SECRET` na Vercel. Testado no Tag Assistant: as duas tags dispararam certinho, com os parâmetros corretos (`value`, `currency`, `payment_method` no `begin_checkout`; `method` no `sign_up`), sem precisar de nenhuma correção dessa vez. Contêiner publicado.
+
+O `purchase` não dá para testar pelo Tag Assistant (é mandado direto do servidor, não passa pelo navegador nem pelo GTM). Fica pendente de confirmação na próxima venda real, via relatório em tempo real ou DebugView do GA4. Etapa 3 concluída do lado da configuração, só falta essa confirmação final de uma compra de verdade.
+
 ## Perguntas em aberto, juntando tudo
 
 As perguntas 1 a 8 da seção 7 acima. Aguardando resposta antes de iniciar a Etapa 1.
