@@ -297,6 +297,27 @@ Pendências do lado da usuária, detalhadas em `03-etapa4-passos-manuais.md`: cr
 
 O `Purchase` do Meta, assim como o do GA4, não dá para testar pelo Tag Assistant, fica pendente de confirmação na próxima venda real (Gerenciador de Eventos do Meta → "Testar eventos", ou o relatório de eventos do próprio Pixel). Etapa 4 concluída do lado da configuração.
 
+## 14. Etapa 5: parâmetros UTM
+
+Duas decisões tomadas com a usuária antes de implementar:
+
+- **Atribuição de primeira visita** (não a mais recente): se a pessoa chega pelo anúncio hoje e só compra numa visita direta semanas depois, a campanha original fica registrada, não a última visita sem UTM. É o modelo mais comum para medir ROI de campanha numa decisão de compra mais longa, como um curso.
+- **Clique do Meta (`fbclid`) incluído**, além do UTM, para melhorar a qualidade de correspondência do evento `Purchase` já implementado na Etapa 4.
+
+Implementação:
+
+- `lib/utmCapture.ts`: captura `utm_source`/`utm_medium`/`utm_campaign` e `fbclid` da URL, guarda no navegador (localStorage, 90 dias, mesma ordem de grandeza das janelas de atribuição do Google Ads e do Meta) só se ainda não houver nada salvo. `components/AttributionCapture.tsx` chama essa captura em toda navegação, independente do GTM estar configurado (é atribuição pro nosso próprio banco, não uma tag de medição de terceiro).
+- No `begin_checkout`, a atribuição salva é lida e mandada para `/api/checkout` junto com o resto (mesmo padrão do `gaClientId`/`fbp` da Etapa 3/4).
+- `utmSource`/`utmMedium`/`utmCampaign` (campos que já existiam no schema, nunca preenchidos antes) são gravados na `Enrollment` **só na criação**, para uma tentativa de checkout posterior não sobrescrever a atribuição original da mesma matrícula.
+- O `fbclid` vira `fbc` (formato que a API de Conversões do Meta espera) e é guardado numa coluna nova em `Payment` (`fbc`, migração `20260925120000_add_payment_fbc`), ao lado do `fbp` já existente.
+- Os dois eventos de compra da Etapa 3/4 (`lib/ga4MeasurementProtocol.ts` e `lib/metaConversionsApi.ts`) foram enriquecidos: o do GA4 agora manda `utm_source`/`utm_medium`/`utm_campaign` como parâmetros do evento, o do Meta manda `fbc` junto do `fbp` em `user_data`. Isso fecha uma lacuna que eu mesmo tinha deixado registrada na Etapa 3 (o UTM da matrícula não estava sendo usado ainda).
+
+Sem nenhuma tag ou variável de ambiente nova: essa etapa só enriquece o que já existia, não precisa de nenhum passo manual no GTM ou na Vercel.
+
+Não é dado pessoal em nenhum ponto: UTM é identificador de campanha (texto livre definido por quem cria o link do anúncio, nunca nome/e-mail/telefone), `fbc` é um identificador técnico do clique, no mesmo formato do `fbp`/`gaClientId` já usados.
+
+`npx tsc --noEmit`, `npx eslint` nos arquivos alterados e `npm test` (9 testes) seguem limpos (os mesmos 3 avisos pré-existentes de sempre). `npx prisma generate` rodado.
+
 ## Perguntas em aberto, juntando tudo
 
 As perguntas 1 a 8 da seção 7 acima. Aguardando resposta antes de iniciar a Etapa 1.

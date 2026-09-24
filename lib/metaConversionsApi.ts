@@ -3,6 +3,7 @@ import * as Sentry from "@sentry/nextjs";
 
 type PurchaseEventInput = {
   fbp: string | null;
+  fbc?: string | null;
   value: number;
   currency: string;
   courseSlug: string;
@@ -44,7 +45,7 @@ export function sendMetaPurchaseEvent(input: PurchaseEventInput): void {
                 event_name: "Purchase",
                 event_time: Math.floor(Date.now() / 1000),
                 action_source: "website",
-                user_data: { fbp: input.fbp },
+                user_data: { fbp: input.fbp, fbc: input.fbc ?? undefined },
                 custom_data: {
                   currency: input.currency,
                   value: input.value,

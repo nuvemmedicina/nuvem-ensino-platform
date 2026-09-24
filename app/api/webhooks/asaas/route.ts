@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   if ((event === "PAYMENT_CONFIRMED" || event === "PAYMENT_RECEIVED") && payment?.id) {
     const dbPayment = await prisma.payment.findFirst({
       where: { asaasPaymentId: payment.id },
-      select: { id: true, enrollmentId: true, status: true, couponId: true, method: true, amount: true, gaClientId: true, fbp: true },
+      select: { id: true, enrollmentId: true, status: true, couponId: true, method: true, amount: true, gaClientId: true, fbp: true, fbc: true },
     });
 
     if (dbPayment && dbPayment.status !== "PAID") {
@@ -53,9 +53,13 @@ export async function POST(req: NextRequest) {
         courseCategory: enrollment.course.category,
         paymentMethod: dbPayment.method,
         couponCode,
+        utmSource: enrollment.utmSource,
+        utmMedium: enrollment.utmMedium,
+        utmCampaign: enrollment.utmCampaign,
       });
       sendMetaPurchaseEvent({
         fbp: dbPayment.fbp,
+        fbc: dbPayment.fbc,
         value: Number(dbPayment.amount),
         currency: "BRL",
         courseSlug: enrollment.course.slug,

@@ -6,6 +6,7 @@ import { CreditCard, QrCode, FileText, Loader2, Shield, CheckCircle, Zap, Copy, 
 import { useTranslations } from "next-intl";
 import { getGaClientId } from "@/lib/gaClientId";
 import { getFbClientId } from "@/lib/fbClientId";
+import { getStoredAttribution } from "@/lib/utmCapture";
 
 declare global {
   interface Window {
@@ -202,6 +203,7 @@ export default function CheckoutClient({
               couponCode: couponApplied ? couponCode : undefined,
               name: isGuest ? guestName.trim() : undefined,
               email: isGuest ? guestEmail.trim() : undefined,
+              ...getStoredAttribution(),
             }),
           });
           const data = await res.json();
@@ -232,6 +234,7 @@ export default function CheckoutClient({
             email: isGuest ? guestEmail.trim() : undefined,
             gaClientId: getGaClientId() ?? undefined,
             fbp: getFbClientId() ?? undefined,
+            ...getStoredAttribution(),
           }),
         });
         const data = await res.json();

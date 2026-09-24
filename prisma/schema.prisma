@@ -457,6 +457,11 @@ model Payment {
   // Mesma ideia do gaClientId, mas do Meta Pixel (cookie _fbp), só existe
   // com o cookie de publicidade aceito. Usado em lib/metaConversionsApi.ts.
   fbp            String?
+  // Clique de anúncio do Meta (parâmetro fbclid da URL, capturado por
+  // lib/utmCapture.ts), formatado como o Meta espera para o parâmetro fbc
+  // da API de Conversões. Melhora a qualidade de correspondência do evento
+  // de compra, também não é dado pessoal.
+  fbc            String?
   paidAt         DateTime?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt

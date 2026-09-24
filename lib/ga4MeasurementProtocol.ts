@@ -10,6 +10,9 @@ type PurchaseEventInput = {
   courseCategory?: string | null;
   paymentMethod: string;
   couponCode?: string | null;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
 };
 
 /**
@@ -49,6 +52,9 @@ export function sendGA4PurchaseEvent(input: PurchaseEventInput): void {
                   value: input.value,
                   payment_method: input.paymentMethod,
                   coupon: input.couponCode ?? undefined,
+                  utm_source: input.utmSource ?? undefined,
+                  utm_medium: input.utmMedium ?? undefined,
+                  utm_campaign: input.utmCampaign ?? undefined,
                   items: [
                     {
                       item_id: input.courseSlug,
