@@ -25,7 +25,7 @@ const fallback: Record<string, {
   "dra-vera-angelo": {
     foto: "/instructors/dra-vera.jpg",
     instagram: "https://www.instagram.com/veraangelo/",
-    bio: "Responsável Técnica da Clínica NU.V.E.M Medicina e Ensino. Professora Convidada da pós-graduação em Doenças Funcionais e Manometria pelo Hospital Israelita Albert Einstein. Tutora de treinamentos em doenças funcionais e testes respiratórios. Autora de publicações de referência na área de gastroenterologia e motilidade digestiva.",
+    bio: "Responsável Técnica da Clínica NU.V.E.M Medicina e Ensino. Professora Convidada da pós-graduação em DGBIs e Manometria pelo Hospital Israelita Albert Einstein. Tutora de treinamentos em DGBIs e testes respiratórios. Autora de publicações de referência na área de gastroenterologia e motilidade digestiva.",
     formacao: [
       "Mestre e Doutora em Patologia pela UFMG",
       "Gastroenterologista com Título de Especialista pela FBG",
@@ -53,7 +53,7 @@ const fallback: Record<string, {
       "Graduação em Medicina pela UFMG (1994)",
       "Residência em Cirurgia Geral e Pediátrica",
       "Mestre em Saúde da Criança e do Adolescente",
-      "Pós-graduação em Doenças Funcionais, Instituto Israelita Albert Einstein",
+      "Pós-graduação em DGBIs, Instituto Israelita Albert Einstein",
     ],
   },
   "dr-wanderley-bertoni": {
