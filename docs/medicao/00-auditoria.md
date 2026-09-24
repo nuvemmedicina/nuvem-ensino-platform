@@ -293,6 +293,10 @@ Achado à parte, ainda pendente: a política de privacidade (seção 7, pergunta
 
 Pendências do lado da usuária, detalhadas em `03-etapa4-passos-manuais.md`: criar as três tags de HTML personalizado no GTM (com a configuração de consentimento e sequenciamento), gerar o token da API de Conversões no Meta e configurar `META_PIXEL_ID`/`META_CONVERSIONS_API_TOKEN` na Vercel.
 
+**Atualização, 24 de setembro: configuração manual concluída e testada.** A usuária criou o Pixel, as três tags de HTML personalizado no GTM (com sequenciamento e consentimento configurados corretamente, incluindo a correção de um sequenciamento invertido detectado e corrigido durante a configuração), gerou o token da API de Conversões e configurou `META_PIXEL_ID`/`META_CONVERSIONS_API_TOKEN` na Vercel. Testado no Tag Assistant: `Meta Pixel - Base` disparou na carga da página junto com as tags do GA4, `Meta Pixel - InitiateCheckout` disparou junto com `GA4 - begin_checkout` no clique de pagar, `Meta Pixel - Lead` disparou junto com `GA4 - sign_up` no cadastro. Contêiner publicado.
+
+O `Purchase` do Meta, assim como o do GA4, não dá para testar pelo Tag Assistant, fica pendente de confirmação na próxima venda real (Gerenciador de Eventos do Meta → "Testar eventos", ou o relatório de eventos do próprio Pixel). Etapa 4 concluída do lado da configuração.
+
 ## Perguntas em aberto, juntando tudo
 
 As perguntas 1 a 8 da seção 7 acima. Aguardando resposta antes de iniciar a Etapa 1.
