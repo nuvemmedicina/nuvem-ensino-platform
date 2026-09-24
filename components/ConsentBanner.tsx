@@ -4,15 +4,19 @@ import { useState, useSyncExternalStore } from "react";
 import { useTranslations } from "next-intl";
 import { Cookie } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { CONSENT_EVENT, getStoredConsent, setConsent } from "@/lib/consent";
+import { CONSENT_EVENT, getStoredConsent, setConsent, setAllConsent } from "@/lib/consent";
 
 function subscribeToConsent(callback: () => void) {
   window.addEventListener(CONSENT_EVENT, callback);
   return () => window.removeEventListener(CONSENT_EVENT, callback);
 }
 
-function getConsentSnapshot() {
-  return getStoredConsent();
+function getAnalyticsSnapshot() {
+  return getStoredConsent("analytics");
+}
+
+function getMarketingSnapshot() {
+  return getStoredConsent("marketing");
 }
 
 function getServerConsentSnapshot() {
@@ -24,16 +28,31 @@ function getServerConsentSnapshot() {
 // da parte legal da LGPD para o site.
 export default function ConsentBanner() {
   const t = useTranslations("consent");
-  const consent = useSyncExternalStore(
+  const analyticsConsent = useSyncExternalStore(
     subscribeToConsent,
-    getConsentSnapshot,
+    getAnalyticsSnapshot,
     getServerConsentSnapshot
   );
-  const visible = consent === null;
+  const marketingConsent = useSyncExternalStore(
+    subscribeToConsent,
+    getMarketingSnapshot,
+    getServerConsentSnapshot
+  );
+  // Mostra o banner enquanto qualquer uma das duas categorias ainda não
+  // tiver uma escolha registrada, mesmo para quem já respondeu a outra
+  // antes (por exemplo, alguém que já tinha aceitado análise, mas nunca viu
+  // a categoria de publicidade, precisa decidir sobre ela também).
+  const visible = analyticsConsent === null || marketingConsent === null;
   const [expanded, setExpanded] = useState(false);
   const [analyticsEnabled, setAnalyticsEnabled] = useState(true);
+  const [marketingEnabled, setMarketingEnabled] = useState(true);
 
   if (!visible) return null;
+
+  function savePreferences() {
+    setConsent("analytics", analyticsEnabled ? "granted" : "denied");
+    setConsent("marketing", marketingEnabled ? "granted" : "denied");
+  }
 
   return (
     <div className="fixed bottom-4 left-4 right-4 sm:right-auto z-50 max-w-md">
@@ -81,9 +100,26 @@ export default function ConsentBanner() {
                 <span className="w-4 h-4 rounded-full bg-white block shadow" />
               </button>
             </div>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="font-sans text-xs font-semibold text-foreground">{t("marketingTitle")}</p>
+                <p className="font-sans text-[11px] text-muted mt-0.5">{t("marketingDesc")}</p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={marketingEnabled}
+                onClick={() => setMarketingEnabled((v) => !v)}
+                className={`shrink-0 w-9 h-5 rounded-full flex items-center px-0.5 transition-colors ${
+                  marketingEnabled ? "bg-primary justify-end" : "bg-border justify-start"
+                }`}
+              >
+                <span className="w-4 h-4 rounded-full bg-white block shadow" />
+              </button>
+            </div>
             <button
               type="button"
-              onClick={() => setConsent(analyticsEnabled ? "granted" : "denied")}
+              onClick={savePreferences}
               className="mt-1 font-sans text-xs font-semibold px-4 py-2 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors self-start"
             >
               {t("save")}
@@ -95,14 +131,14 @@ export default function ConsentBanner() {
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <button
               type="button"
-              onClick={() => setConsent("granted")}
+              onClick={() => setAllConsent("granted")}
               className="font-sans text-xs font-semibold px-4 py-2 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
             >
               {t("acceptAll")}
             </button>
             <button
               type="button"
-              onClick={() => setConsent("denied")}
+              onClick={() => setAllConsent("denied")}
               className="font-sans text-xs font-semibold px-4 py-2 rounded-full border border-border text-foreground hover:border-primary/40 transition-colors"
             >
               {t("decline")}

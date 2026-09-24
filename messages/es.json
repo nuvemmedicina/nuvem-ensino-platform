@@ -659,6 +659,8 @@
     "essentialDesc": "Necesarias para el funcionamiento del sitio, como inicio de sesión y preferencias. Siempre activas.",
     "analyticsTitle": "Cookies de análisis",
     "analyticsDesc": "Ayudan a entender cómo se usa el sitio, para mejorar la experiencia.",
+    "marketingTitle": "Cookies de publicidad",
+    "marketingDesc": "Se usan para mostrar anuncios más relevantes en otros sitios, sin identificar quién eres.",
     "save": "Guardar preferencias"
   },
   "privacy": {

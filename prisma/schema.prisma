@@ -454,6 +454,9 @@ model Payment {
   // lib/ga4MeasurementProtocol.ts). Nunca é dado pessoal, é um identificador
   // técnico aleatório gerado pelo próprio Google.
   gaClientId     String?
+  // Mesma ideia do gaClientId, mas do Meta Pixel (cookie _fbp), só existe
+  // com o cookie de publicidade aceito. Usado em lib/metaConversionsApi.ts.
+  fbp            String?
   paidAt         DateTime?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
