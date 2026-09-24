@@ -30,6 +30,10 @@ type Props = {
 // e não pode ser pré-gerada estaticamente
 export const dynamic = "force-dynamic";
 
+// Cursos cuja ementa cadastrada ainda não é a definitiva. Enquanto o programa
+// real não for cadastrado, a seção fica oculta para não exibir conteúdo errado.
+const EMENTA_OCULTA = new Set(["fisioterapia-pelvica"]);
+
 export async function generateStaticParams() {
   const courses = await prisma.course.findMany({
     where: { status: "PUBLISHED" },
@@ -392,7 +396,7 @@ export default async function CoursePage({ params }: Props) {
           )}
 
           {/* Ementa */}
-          {course.modules.length > 0 && (
+          {course.modules.length > 0 && !EMENTA_OCULTA.has(course.slug) && (
             <section>
               <h2 className="font-serif text-2xl font-medium text-foreground mb-6">
                 {t("curriculum")}

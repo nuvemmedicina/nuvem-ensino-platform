@@ -20,6 +20,22 @@ const nextConfig: NextConfig = {
     "/api/admin/rag/index": ["./node_modules/pdfjs-dist/legacy/build/pdf.worker.mjs"],
   },
 
+  // O curso de fisioterapia pélvica nasceu com o slug "fisioterapia-respiratoria".
+  // Os links antigos já divulgados continuam funcionando.
+  async redirects() {
+    const antigo = "fisioterapia-respiratoria";
+    const novo = "fisioterapia-pelvica";
+    return [
+      { source: `/cursos/${antigo}`, destination: `/cursos/${novo}`, permanent: true },
+      { source: `/en/courses/${antigo}`, destination: `/en/courses/${novo}`, permanent: true },
+      { source: `/es/cursos/${antigo}`, destination: `/es/cursos/${novo}`, permanent: true },
+      { source: `/checkout/${antigo}`, destination: `/checkout/${novo}`, permanent: true },
+      { source: `/:locale(en|es)/checkout/${antigo}`, destination: `/:locale/checkout/${novo}`, permanent: true },
+      { source: `/dashboard/cursos/${antigo}/:path*`, destination: `/dashboard/cursos/${novo}/:path*`, permanent: true },
+      { source: `/:locale(en|es)/dashboard/cursos/${antigo}/:path*`, destination: `/:locale/dashboard/cursos/${novo}/:path*`, permanent: true },
+    ];
+  },
+
   images: {
     remotePatterns: [
       {
