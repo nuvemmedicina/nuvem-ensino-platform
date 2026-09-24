@@ -14,7 +14,7 @@ function subscribeToConsent(callback: () => void) {
 }
 
 function getConsentSnapshot() {
-  return getStoredConsent();
+  return getStoredConsent("analytics");
 }
 
 function getServerConsentSnapshot() {

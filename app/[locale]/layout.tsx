@@ -134,30 +134,38 @@ export default async function LocaleLayout({
     >
       <body className="min-h-full flex flex-col">
         {/* Consent Mode v2: estado padrão negado, antes de qualquer tag
-            carregar. O GA4 mora dentro do contêiner do GTM (configuração
-            feita no próprio painel do Tag Manager, não neste código), e
-            tanto o GTM quanto o gtag entendem esses comandos de consent
-            porque os dois leem o mesmo dataLayer.
+            carregar. O GA4 e o Meta Pixel moram dentro do contêiner do GTM
+            (configuração feita no próprio painel do Tag Manager, não neste
+            código), e tanto o GTM quanto o gtag entendem esses comandos de
+            consent porque os dois leem o mesmo dataLayer.
             Cada carregamento de página começa com um dataLayer novo, então
             o padrão sozinho apagaria a escolha de quem já tinha aceitado
             antes (o clique só atualiza o carregamento em que aconteceu).
             Por isso lemos aqui o mesmo localStorage que lib/consent.ts usa,
             antes de declarar o padrão, para quem retorna já começar com o
-            valor certo, sem depender de um evento de update mais tarde. */}
+            valor certo, sem depender de um evento de update mais tarde.
+            Duas categorias, cada uma com sua própria chave: analytics_storage
+            segue a escolha de "análise" (GA4/PostHog), e os três sinais de
+            anúncio (ad_storage/ad_user_data/ad_personalization) seguem a
+            escolha de "publicidade" (Meta Pixel), porque são propósitos
+            diferentes e o banner trata como categorias separadas. */}
         {GTM_ID && (
           <Script id="consent-default" strategy="beforeInteractive">
             {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){window.dataLayer.push(arguments);}
-              var storedConsent = null;
+              var storedAnalytics = null;
+              var storedMarketing = null;
               try {
-                storedConsent = window.localStorage.getItem('nuvem_consent_analytics');
+                storedAnalytics = window.localStorage.getItem('nuvem_consent_analytics');
+                storedMarketing = window.localStorage.getItem('nuvem_consent_marketing');
               } catch (e) {}
+              var adConsent = storedMarketing === 'granted' ? 'granted' : 'denied';
               gtag('consent', 'default', {
-                ad_storage: 'denied',
-                analytics_storage: storedConsent === 'granted' ? 'granted' : 'denied',
-                ad_user_data: 'denied',
-                ad_personalization: 'denied',
+                ad_storage: adConsent,
+                analytics_storage: storedAnalytics === 'granted' ? 'granted' : 'denied',
+                ad_user_data: adConsent,
+                ad_personalization: adConsent,
                 wait_for_update: 500
               });
             `}

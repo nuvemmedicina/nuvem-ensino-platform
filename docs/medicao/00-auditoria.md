@@ -274,6 +274,23 @@ Pendências do lado da usuária, listadas com detalhe em `02-etapa3-passos-manua
 
 O `purchase` não dá para testar pelo Tag Assistant (é mandado direto do servidor, não passa pelo navegador nem pelo GTM). Fica pendente de confirmação na próxima venda real, via relatório em tempo real ou DebugView do GA4. Etapa 3 concluída do lado da configuração, só falta essa confirmação final de uma compra de verdade.
 
+## 13. Etapa 4: Meta Pixel
+
+ID do Pixel fornecido pela usuária: `488342380329033`. Duas decisões tomadas com a usuária antes de implementar (ver perguntas feitas e respostas):
+
+- **Categoria de consentimento separada.** O banner de cookies, até aqui, só tinha uma categoria ("análise", cobrindo `analytics_storage` para o GA4/PostHog). O Meta Pixel é uma ferramenta de publicidade/remarketing, categoria diferente nas práticas de LGPD. `lib/consent.ts` foi reestruturado para duas categorias independentes (`analytics` e `marketing`), cada uma com sua própria chave de armazenamento e seu próprio interruptor no banner (`ConsentBanner.tsx`, textos novos em `messages/{pt,en,es}.json`). O banner agora aparece para quem já tinha decidido sobre análise, mas nunca decidiu sobre publicidade, porque são escolhas separadas. O script de consentimento padrão (`app/[locale]/layout.tsx`) foi atualizado para ler as duas chaves salvas.
+- **Escopo completo**, espelhando os três eventos de conversão da Etapa 3: `InitiateCheckout` (equivalente ao `begin_checkout`), `Lead` (equivalente ao `sign_up`) e `Purchase` (do servidor, mesma razão de confiabilidade do `purchase` do GA4, o webhook da Asaas é a única fonte confiável de pagamento realmente recebido).
+
+Diferença importante do GA4: o GTM não tem um tipo de tag pronto do Google para o Meta Pixel, então as três tags do lado do navegador usam **HTML personalizado**, reaproveitando os mesmos acionadores `begin_checkout` e `sign_up` já criados na Etapa 3 (nenhuma variável ou acionador novo precisou ser criado para esses dois). Como tags de HTML personalizado não respeitam o Consent Mode sozinhas (diferente das tags nativas do Google), cada uma precisa da configuração manual de "Consentimento adicional exigido: `ad_storage`" no próprio GTM, documentado com destaque em `docs/medicao/03-etapa4-passos-manuais.md`, junto com o sequenciamento de tags necessário (a tag base do Pixel precisa carregar antes das outras duas).
+
+Do lado do servidor: `lib/fbClientId.ts` lê o `_fbp` (identificador técnico do Meta, não é dado pessoal) do mesmo jeito que `lib/gaClientId.ts` lê o `_ga`, capturado no `begin_checkout` e guardado numa coluna nova (`Payment.fbp`, migração `20260924180000_add_payment_fbp`). `lib/metaConversionsApi.ts` manda o evento `Purchase` pro Meta no webhook da Asaas (`app/api/webhooks/asaas/route.ts`), ao lado da chamada já existente pro GA4, com os mesmos dados seguros (valor, moeda, curso), sem nome, e-mail, telefone ou CPF, nem hasheados. Sem consentimento de publicidade, sem `_fbp`, sem evento de compra pro Meta, a venda continua normal no banco.
+
+Achado à parte, ainda pendente: a política de privacidade (seção 7, pergunta 5) já estava desatualizada antes desta etapa (cita Stripe/Mercado Pago em vez do Asaas, não nomeia GA4/GTM/PostHog). Com a chegada do Meta Pixel, o Meta também precisa entrar nessa lista de ferramentas de medição/publicidade citadas no texto, quando a revisão jurídica acontecer. Não editei a política agora, mesma razão de sempre.
+
+`npx tsc --noEmit`, `npx eslint` nos arquivos alterados e `npm test` (9 testes) seguem limpos (os mesmos 3 avisos pré-existentes de sempre, confirmados sem relação com esta mudança). `npx prisma generate` rodado.
+
+Pendências do lado da usuária, detalhadas em `03-etapa4-passos-manuais.md`: criar as três tags de HTML personalizado no GTM (com a configuração de consentimento e sequenciamento), gerar o token da API de Conversões no Meta e configurar `META_PIXEL_ID`/`META_CONVERSIONS_API_TOKEN` na Vercel.
+
 ## Perguntas em aberto, juntando tudo
 
 As perguntas 1 a 8 da seção 7 acima. Aguardando resposta antes de iniciar a Etapa 1.

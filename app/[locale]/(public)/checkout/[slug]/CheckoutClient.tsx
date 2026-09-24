@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { CreditCard, QrCode, FileText, Loader2, Shield, CheckCircle, Zap, Copy, Check, X, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { getGaClientId } from "@/lib/gaClientId";
+import { getFbClientId } from "@/lib/fbClientId";
 
 declare global {
   interface Window {
@@ -230,6 +231,7 @@ export default function CheckoutClient({
             name: isGuest ? guestName.trim() : undefined,
             email: isGuest ? guestEmail.trim() : undefined,
             gaClientId: getGaClientId() ?? undefined,
+            fbp: getFbClientId() ?? undefined,
           }),
         });
         const data = await res.json();

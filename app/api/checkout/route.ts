@@ -16,7 +16,7 @@ import { APP_URL } from "@/lib/appUrl";
 
 export async function POST(req: Request) {
   const session = await auth();
-  const { courseSlug, method, couponCode, installments, whatsapp, cpf, name, email, gaClientId } = await req.json();
+  const { courseSlug, method, couponCode, installments, whatsapp, cpf, name, email, gaClientId, fbp } = await req.json();
 
   // ── Resolve o comprador: sessão logada, ou checkout como convidado (só habilitado
   // para o curso da live, pra não afetar o checkout dos demais cursos) ────────────
@@ -286,6 +286,7 @@ export async function POST(req: Request) {
           asaasPaymentId: payment.id,
           couponId:      appliedCoupon?.id ?? null,
           gaClientId:    typeof gaClientId === "string" ? gaClientId : null,
+          fbp:           typeof fbp === "string" ? fbp : null,
         },
       });
 

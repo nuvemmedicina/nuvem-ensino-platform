@@ -4,6 +4,7 @@ import { sendEnrollmentConfirmation, sendPaymentPendingEmail } from "@/lib/email
 import { APP_URL } from "@/lib/appUrl";
 import { sendAfterResponse } from "@/lib/emailBackground";
 import { sendGA4PurchaseEvent } from "@/lib/ga4MeasurementProtocol";
+import { sendMetaPurchaseEvent } from "@/lib/metaConversionsApi";
 
 export async function POST(req: NextRequest) {
   const secret = process.env.ASAAS_WEBHOOK_TOKEN;
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
   if ((event === "PAYMENT_CONFIRMED" || event === "PAYMENT_RECEIVED") && payment?.id) {
     const dbPayment = await prisma.payment.findFirst({
       where: { asaasPaymentId: payment.id },
-      select: { id: true, enrollmentId: true, status: true, couponId: true, method: true, amount: true, gaClientId: true },
+      select: { id: true, enrollmentId: true, status: true, couponId: true, method: true, amount: true, gaClientId: true, fbp: true },
     });
 
     if (dbPayment && dbPayment.status !== "PAID") {
@@ -52,6 +53,12 @@ export async function POST(req: NextRequest) {
         courseCategory: enrollment.course.category,
         paymentMethod: dbPayment.method,
         couponCode,
+      });
+      sendMetaPurchaseEvent({
+        fbp: dbPayment.fbp,
+        value: Number(dbPayment.amount),
+        currency: "BRL",
+        courseSlug: enrollment.course.slug,
       });
       if (dbPayment.couponId) {
         prisma.$transaction([
