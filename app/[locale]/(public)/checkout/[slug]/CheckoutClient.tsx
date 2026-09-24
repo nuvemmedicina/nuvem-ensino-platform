@@ -4,6 +4,28 @@ import { useState, useTransition, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { CreditCard, QrCode, FileText, Loader2, Shield, CheckCircle, Zap, Copy, Check, X, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { getGaClientId } from "@/lib/gaClientId";
+
+declare global {
+  interface Window {
+    dataLayer?: unknown[];
+  }
+}
+
+/** Evento de conversão, sem nenhum dado pessoal (nome, e-mail, CPF e
+ * WhatsApp continuam só no corpo da chamada para /api/checkout, nunca
+ * aqui). Ver docs/medicao/00-auditoria.md, Etapa 3. */
+function pushBeginCheckout(courseSlug: string, courseName: string, value: number, paymentMethod: string) {
+  if (typeof window === "undefined") return;
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: "begin_checkout",
+    value,
+    currency: "BRL",
+    payment_method: paymentMethod,
+    items: [{ item_id: courseSlug, item_name: courseName, price: value, quantity: 1 }],
+  });
+}
 
 type PaymentMethod = "pix" | "boleto" | "parcelado";
 
@@ -167,6 +189,7 @@ export default function CheckoutClient({
 
     // Cupom 100% — não exige CPF nem método de pagamento
     if (finalPrice === 0) {
+      pushBeginCheckout(slug, courseName, 0, "free");
       startTransition(async () => {
         try {
           const res = await fetch("/api/checkout", {
@@ -191,6 +214,7 @@ export default function CheckoutClient({
     const cpfDigits = cpf.replace(/\D/g, "");
     if (!cpfDigits) { setCpfError("CPF é obrigatório."); return; }
     if (!validateCpf(cpfDigits)) { setCpfError("CPF inválido. Verifique os números e tente novamente."); return; }
+    pushBeginCheckout(slug, courseName, finalPrice, method);
     startTransition(async () => {
       try {
         const res = await fetch("/api/checkout", {
@@ -205,6 +229,7 @@ export default function CheckoutClient({
             cpf: cpf.replace(/\D/g, "") || undefined,
             name: isGuest ? guestName.trim() : undefined,
             email: isGuest ? guestEmail.trim() : undefined,
+            gaClientId: getGaClientId() ?? undefined,
           }),
         });
         const data = await res.json();

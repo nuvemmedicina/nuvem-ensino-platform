@@ -6,6 +6,20 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
+declare global {
+  interface Window {
+    dataLayer?: unknown[];
+  }
+}
+
+/** Sem dado pessoal: só confirma que um cadastro aconteceu. Ver
+ * docs/medicao/00-auditoria.md, Etapa 3. */
+function pushSignUp() {
+  if (typeof window === "undefined") return;
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event: "sign_up", method: "email" });
+}
+
 async function registerUser(data: {
   name: string;
   email: string;
@@ -44,6 +58,7 @@ export default function CadastroPage() {
         setError(result.error ?? t("errorDefault"));
         return;
       }
+      pushSignUp();
       await signIn("credentials", { email, password, callbackUrl: "/dashboard" });
     });
   }

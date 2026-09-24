@@ -448,6 +448,12 @@ model Payment {
   couponId       String?
   receiptUrl     String?
   nfseId         String?
+  // Client ID do GA4 (cookie _ga), só existe quando a pessoa aceitou o
+  // cookie de analytics no navegador. Usado para mandar o evento de compra
+  // pro GA4 pelo servidor quando o pagamento é confirmado (ver
+  // lib/ga4MeasurementProtocol.ts). Nunca é dado pessoal, é um identificador
+  // técnico aleatório gerado pelo próprio Google.
+  gaClientId     String?
   paidAt         DateTime?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
