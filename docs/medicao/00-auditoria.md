@@ -276,7 +276,9 @@ O `purchase` não dá para testar pelo Tag Assistant (é mandado direto do servi
 
 ## 13. Etapa 4: Meta Pixel
 
-ID do Pixel fornecido pela usuária: `488342380329033`. Duas decisões tomadas com a usuária antes de implementar (ver perguntas feitas e respostas):
+ID do Pixel fornecido pela usuária inicialmente: `488342380329033`. Duas decisões tomadas com a usuária antes de implementar (ver perguntas feitas e respostas):
+
+**Atualização, 24 de setembro: ID corrigido.** Esse primeiro número era, na verdade, o ID da conta de anúncios (aparecia como `act=488342380329033` nas URLs do Gerenciador de Eventos), não de um Pixel, porque nenhum Pixel tinha sido criado ainda. A usuária criou o Pixel pelo próprio Gerenciador de Eventos (Integrações → Meta Pixel), ID real: **`1355104133372437`**. Corrigido em `docs/medicao/03-etapa4-passos-manuais.md` e na tag "Meta Pixel - Base" do GTM, que já tinha sido criada com o número errado.
 
 - **Categoria de consentimento separada.** O banner de cookies, até aqui, só tinha uma categoria ("análise", cobrindo `analytics_storage` para o GA4/PostHog). O Meta Pixel é uma ferramenta de publicidade/remarketing, categoria diferente nas práticas de LGPD. `lib/consent.ts` foi reestruturado para duas categorias independentes (`analytics` e `marketing`), cada uma com sua própria chave de armazenamento e seu próprio interruptor no banner (`ConsentBanner.tsx`, textos novos em `messages/{pt,en,es}.json`). O banner agora aparece para quem já tinha decidido sobre análise, mas nunca decidiu sobre publicidade, porque são escolhas separadas. O script de consentimento padrão (`app/[locale]/layout.tsx`) foi atualizado para ler as duas chaves salvas.
 - **Escopo completo**, espelhando os três eventos de conversão da Etapa 3: `InitiateCheckout` (equivalente ao `begin_checkout`), `Lead` (equivalente ao `sign_up`) e `Purchase` (do servidor, mesma razão de confiabilidade do `purchase` do GA4, o webhook da Asaas é a única fonte confiável de pagamento realmente recebido).
@@ -290,6 +292,10 @@ Achado à parte, ainda pendente: a política de privacidade (seção 7, pergunta
 `npx tsc --noEmit`, `npx eslint` nos arquivos alterados e `npm test` (9 testes) seguem limpos (os mesmos 3 avisos pré-existentes de sempre, confirmados sem relação com esta mudança). `npx prisma generate` rodado.
 
 Pendências do lado da usuária, detalhadas em `03-etapa4-passos-manuais.md`: criar as três tags de HTML personalizado no GTM (com a configuração de consentimento e sequenciamento), gerar o token da API de Conversões no Meta e configurar `META_PIXEL_ID`/`META_CONVERSIONS_API_TOKEN` na Vercel.
+
+**Atualização, 24 de setembro: configuração manual concluída e testada.** A usuária criou o Pixel, as três tags de HTML personalizado no GTM (com sequenciamento e consentimento configurados corretamente, incluindo a correção de um sequenciamento invertido detectado e corrigido durante a configuração), gerou o token da API de Conversões e configurou `META_PIXEL_ID`/`META_CONVERSIONS_API_TOKEN` na Vercel. Testado no Tag Assistant: `Meta Pixel - Base` disparou na carga da página junto com as tags do GA4, `Meta Pixel - InitiateCheckout` disparou junto com `GA4 - begin_checkout` no clique de pagar, `Meta Pixel - Lead` disparou junto com `GA4 - sign_up` no cadastro. Contêiner publicado.
+
+O `Purchase` do Meta, assim como o do GA4, não dá para testar pelo Tag Assistant, fica pendente de confirmação na próxima venda real (Gerenciador de Eventos do Meta → "Testar eventos", ou o relatório de eventos do próprio Pixel). Etapa 4 concluída do lado da configuração.
 
 ## Perguntas em aberto, juntando tudo
 

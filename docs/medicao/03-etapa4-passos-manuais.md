@@ -2,7 +2,7 @@
 
 O GTM não tem um tipo de tag pronto do Google para o Meta Pixel (diferente do GA4). Por isso, as três tags do Meta usam o tipo **HTML personalizado**, com o código padrão que o próprio Meta fornece. São três tags reaproveitando os acionadores que já existem (`begin_checkout` e `sign_up` da Etapa 3), mais um novo para a página vista.
 
-ID do Pixel: `488342380329033`
+ID do Pixel: `1355104133372437`
 
 ## Atenção especial: consentimento
 
@@ -30,7 +30,7 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '488342380329033');
+fbq('init', '1355104133372437');
 fbq('track', 'PageView');
 </script>
 ```
@@ -81,18 +81,18 @@ fbq('track', 'Lead');
 
 Mesmo processo de sempre: conectar o Preview numa conexão nova, navegar pelo site, chegar até o checkout e o cadastro. O Tag Assistant mostra as tags de HTML personalizado igual às outras, então dá para conferir se disparam. Uma diferença: como é HTML personalizado, não tem a tela bonita de "parâmetros" que as tags do Google mostram, mas o status de disparado/não disparado aparece do mesmo jeito.
 
-Para conferir que o Pixel está mesmo recebendo os eventos (não só que a tag disparou no GTM), instale a extensão **Meta Pixel Helper** no Chrome (Chrome Web Store, gratuita, da própria Meta) e veja se ela detecta o Pixel `488342380329033` na página, com os eventos PageView/InitiateCheckout/Lead aparecendo.
+Para conferir que o Pixel está mesmo recebendo os eventos (não só que a tag disparou no GTM), instale a extensão **Meta Pixel Helper** no Chrome (Chrome Web Store, gratuita, da própria Meta) e veja se ela detecta o Pixel `1355104133372437` na página, com os eventos PageView/InitiateCheckout/Lead aparecendo.
 
 ## 5. Token da API de Conversões (evento de compra, do servidor)
 
 O evento `Purchase` não passa pelo GTM, é mandado direto do servidor no momento em que o webhook da Asaas confirma o pagamento (mesma lógica do `purchase` do GA4 na Etapa 3).
 
-1. No **Gerenciador de Eventos** do Meta Business, clique no Pixel (`488342380329033`).
+1. No **Gerenciador de Eventos** do Meta Business, clique no Pixel (`1355104133372437`).
 2. Vá em **Configurações**.
 3. Role até **"API de Conversões"** → **"Gerar token de acesso"**.
 4. Copie o token gerado.
 5. Na Vercel, projeto `nuvem-ensino-platform` → **Settings** → **Environment Variables**, adicione:
-   - `META_PIXEL_ID` = `488342380329033` (tipo Config, marcado para Production, Preview e Development)
+   - `META_PIXEL_ID` = `1355104133372437` (tipo Config, marcado para Production, Preview e Development)
    - `META_CONVERSIONS_API_TOKEN` = o token copiado (tipo **Sensitive**, marcado para Production, Preview e Development)
 6. Gere um novo deploy.
 
