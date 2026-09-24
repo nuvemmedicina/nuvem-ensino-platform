@@ -265,13 +265,10 @@ Confirmado por código-fonte (Ctrl+U na URL de pré-visualização, busca por "g
 
 2. Bug de código, corrigido no commit `f8e90e4`: a função `pushConsentUpdate` em `lib/consent.ts` mandava para o `dataLayer` um evento comum (`{event: "consent_update", analytics_storage: choice}`), formato que o Consent Mode do Google não reconhece. O comando correto é `gtag('consent', 'update', {...})`, que no dataLayer vira um array de comando, não um objeto de evento. Sem essa correção, aceitar o banner gravava a escolha no navegador da visitante mas o Google continuava enxergando `analytics_storage` como negado, e a tag do GA4 nunca disparava mesmo depois do aceite. Corrigido para empilhar o array no formato certo. Deploy da correção confirmado concluído pela Vercel às 20:04 UTC de 23 de setembro (commit `f8e90e4`, os dois projetos Vercel).
 
-**Pendência de teste, não de código:** depois da correção do item 2, ainda não foi possível confirmar visualmente no navegador que a tag passa a disparar após aceitar o banner. As tentativas esbarraram em cache do navegador, estado de consentimento salvo de testes anteriores e dificuldade de navegar entre abas do Tag Assistant, da aba do site e do DevTools. A usuária pausou por cansaço, decisão respeitada. Quando retomar, sugestão de teste mais direto e num só fôlego:
+**Atualização, 24 de setembro: disparo confirmado no navegador, dois problemas reais a mais encontrados e corrigidos.**
 
-1. Abrir uma janela anônima nova (sem nada salvo).
-2. Acessar a URL de pré-visualização do PR #29.
-3. Aceitar o banner de cookies.
-4. No Tag Manager (outra aba, logada), clicar em Preview, colar a mesma URL, conectar.
-5. Navegar para uma segunda página na janela anônima.
-6. Conferir no Tag Assistant, aba "Consentimento", se `analytics_storage` aparece como "Concedido", e na aba "Tags", se "GA4 - page_view" aparece em "Tags disparadas".
+1. **Bug de código, commit `d92fe7c`.** O script de consent default sempre mandava `analytics_storage: 'denied'`, mesmo para quem já tinha aceitado antes, porque cada carregamento completo de página cria um `dataLayer` novo, e o clique no banner só atualiza o carregamento em que aconteceu. Numa navegação interna (SPA) isso passava despercebido, mas em qualquer carregamento novo (recarregar, abrir de novo, conectar pelo Tag Assistant) o consentimento voltava a negado. Corrigido lendo o mesmo `localStorage` de `lib/consent.ts` antes de declarar o padrão. Subido direto para a `main` pelo PR #30.
 
-Só depois dessa confirmação publicar (Submit) o contêiner no GTM.
+2. **Erro de configuração no acionador do GTM, sem relação com o código.** O acionador "page_view" (usado pela tag "GA4 - page_view") não disparava mesmo com tudo aparentemente certo. A causa real só apareceu depois de reconectar o Tag Assistant do zero (a sessão de teste anterior, com mais de uma hora e dezenas de eventos, estava presa numa versão desatualizada do acionador): numa conexão nova, o filtro passou a aparecer como `page_view é igual a page_view`, os dois em verde, tag disparando "Concluída". Lição para próximos testes: se um acionador parecer certo na tela de edição mas continuar falhando no Preview, desconfiar da sessão do Tag Assistant estar velha antes de desconfiar do código, reconectar do zero resolve.
+
+Com os dois problemas corrigidos, a tag "GA4 - page_view" dispara corretamente após o consentimento, com os três parâmetros sanitizados preenchidos com dados reais da página. Etapa 1 tecnicamente funcionando. Falta só a usuária publicar (Enviar/Submit) o contêiner no GTM para os dados começarem a valer para os visitantes reais.
