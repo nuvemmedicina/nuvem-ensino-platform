@@ -7,6 +7,7 @@ import Script from "next/script";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import ConsentBanner from "@/components/ConsentBanner";
 import GtmPageView from "@/components/GtmPageView";
+import AttributionCapture from "@/components/AttributionCapture";
 import ServiceWorkerRegistrar from "@/components/ServiceWorkerRegistrar";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
@@ -193,6 +194,7 @@ export default async function LocaleLayout({
         )}
         <NextIntlClientProvider messages={messages}>
           {GTM_ID && <GtmPageView />}
+          <AttributionCapture />
           <PostHogProvider>{children}</PostHogProvider>
           <ConsentBanner />
           <ServiceWorkerRegistrar />

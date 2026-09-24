@@ -16,7 +16,10 @@ import { APP_URL } from "@/lib/appUrl";
 
 export async function POST(req: Request) {
   const session = await auth();
-  const { courseSlug, method, couponCode, installments, whatsapp, cpf, name, email, gaClientId, fbp } = await req.json();
+  const {
+    courseSlug, method, couponCode, installments, whatsapp, cpf, name, email,
+    gaClientId, fbp, fbc, utmSource, utmMedium, utmCampaign,
+  } = await req.json();
 
   // ── Resolve o comprador: sessão logada, ou checkout como convidado (só habilitado
   // para o curso da live, pra não afetar o checkout dos demais cursos) ────────────
@@ -128,7 +131,15 @@ export async function POST(req: Request) {
       const enr = existing
         ? await tx.enrollment.update({ where: { id: existing.id }, data: { status: "PENDING" } })
         : await tx.enrollment.create({
-            data: { userId, courseId: c.id, status: "PENDING" },
+            // UTM só é gravada na criação: se a pessoa tentar o checkout de
+            // novo depois, a matrícula já existente mantém a campanha da
+            // primeira vez, não a de uma tentativa posterior.
+            data: {
+              userId, courseId: c.id, status: "PENDING",
+              utmSource: typeof utmSource === "string" ? utmSource : null,
+              utmMedium: typeof utmMedium === "string" ? utmMedium : null,
+              utmCampaign: typeof utmCampaign === "string" ? utmCampaign : null,
+            },
           });
 
       return { course: c, enrollment: enr };
@@ -287,6 +298,7 @@ export async function POST(req: Request) {
           couponId:      appliedCoupon?.id ?? null,
           gaClientId:    typeof gaClientId === "string" ? gaClientId : null,
           fbp:           typeof fbp === "string" ? fbp : null,
+          fbc:           typeof fbc === "string" ? fbc : null,
         },
       });
 
