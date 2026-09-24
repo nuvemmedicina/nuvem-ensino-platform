@@ -546,36 +546,14 @@ async function main() {
     }
   }
 
-  // Curso: Fisioterapia Respiratória
-  const modulesFisioterapia = [
-    {
-      title: "Módulo 1: Fundamentos",
-      order: 1,
-      lessons: [
-        { title: "Anatomia aplicada à fisioterapia respiratória", order: 1, duration: 20 },
-        { title: "Avaliação do paciente respiratório", order: 2, duration: 16 },
-        { title: "Técnicas de ausculta pulmonar", order: 3, duration: 18 },
-      ],
-    },
-    {
-      title: "Módulo 2: Técnicas Práticas",
-      order: 2,
-      lessons: [
-        { title: "Higiene brônquica: tapotagem e vibração", order: 1, duration: 22 },
-        { title: "Drenagem postural e flutter", order: 2, duration: 20 },
-        { title: "Espirometria de incentivo e IPPB", order: 3, duration: 18 },
-      ],
-    },
-    {
-      title: "Módulo 3: Reabilitação Pulmonar",
-      order: 3,
-      lessons: [
-        { title: "Protocolos em DPOC, asma e fibrose", order: 1, duration: 26 },
-        { title: "Treino muscular respiratório", order: 2, duration: 22 },
-        { title: "Alta hospitalar e plano domiciliar", order: 3, duration: 18 },
-      ],
-    },
-  ];
+  // Curso: Treinamento Teórico-Prático de Fisioterapia nas Disfunções do
+  // Assoalho Pélvico (slug legado "fisioterapia-respiratoria"). Os módulos
+  // abaixo ficam vazios de propósito: o currículo antigo era de fisioterapia
+  // respiratória (herdado de um curso anterior que ocupava este slug) e não
+  // corresponde ao curso atual. O módulo/aula real, com carga horária e
+  // vídeos da Dra. Karol Rocha, ainda precisa ser cadastrado via
+  // /admin/cursos/fisioterapia-respiratoria.
+  const modulesFisioterapia: { title: string; order: number; lessons: { title: string; order: number; duration: number }[] }[] = [];
 
   for (const mod of modulesFisioterapia) {
     const existingModule = await prisma.module.findFirst({
