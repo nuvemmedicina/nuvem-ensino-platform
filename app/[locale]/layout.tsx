@@ -137,15 +137,25 @@ export default async function LocaleLayout({
             carregar. O GA4 mora dentro do contêiner do GTM (configuração
             feita no próprio painel do Tag Manager, não neste código), e
             tanto o GTM quanto o gtag entendem esses comandos de consent
-            porque os dois leem o mesmo dataLayer. */}
+            porque os dois leem o mesmo dataLayer.
+            Cada carregamento de página começa com um dataLayer novo, então
+            o padrão sozinho apagaria a escolha de quem já tinha aceitado
+            antes (o clique só atualiza o carregamento em que aconteceu).
+            Por isso lemos aqui o mesmo localStorage que lib/consent.ts usa,
+            antes de declarar o padrão, para quem retorna já começar com o
+            valor certo, sem depender de um evento de update mais tarde. */}
         {GTM_ID && (
           <Script id="consent-default" strategy="beforeInteractive">
             {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){window.dataLayer.push(arguments);}
+              var storedConsent = null;
+              try {
+                storedConsent = window.localStorage.getItem('nuvem_consent_analytics');
+              } catch (e) {}
               gtag('consent', 'default', {
                 ad_storage: 'denied',
-                analytics_storage: 'denied',
+                analytics_storage: storedConsent === 'granted' ? 'granted' : 'denied',
                 ad_user_data: 'denied',
                 ad_personalization: 'denied',
                 wait_for_update: 500
