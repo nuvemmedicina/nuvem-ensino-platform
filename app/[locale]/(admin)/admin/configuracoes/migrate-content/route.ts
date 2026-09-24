@@ -147,28 +147,12 @@ const staticContent: Record<
       "Acesso ao conteúdo por tempo indeterminado",
     ],
   },
-  "fisioterapia-pelvica": {
-    startDate: "17–19 de junho de 2026",
-    objectives: [
-      "Dominar a anatomia detalhada e a biomecânica do assoalho pélvico",
-      "Realizar avaliação clínica e instrumental com assertividade",
-      "Aplicar estratégias terapêuticas baseadas em evidências atuais",
-      "Analisar casos clínicos reais e discutir atualizações de protocolo",
-      "Executar práticas clínicas supervisionadas com autonomia",
-    ],
-    targetAudience: [
-      "Fisioterapeutas que atuam ou desejam atuar com assoalho pélvico",
-      "Profissionais de saúde com interesse em reabilitação pélvica",
-      "Fisioterapeutas em busca de especialização prática e científica",
-    ],
-    includes: [
-      "30h de treinamento teórico-prático (17 a 19 de junho de 2026)",
-      "Turmas com no máximo 2 alunos por data, com atenção individualizada",
-      "Certificado de conclusão",
-      "Material de apoio digital",
-      "Suporte pós-curso",
-    ],
-  },
+  // "fisioterapia-pelvica" removido deste mapa: o conteúdo antigo trazia a
+  // data de uma turma de junho de 2026 já encerrada, embutida em startDate e
+  // em um item de "includes". Ana Paula apagou esse conteúdo desatualizado
+  // pelo admin; mantê-lo aqui o reintroduziria sozinho, porque esta rota só
+  // preenche campos vazios. Conteúdo novo (com data real) deve ser
+  // cadastrado direto em /admin/cursos/fisioterapia-pelvica.
 };
 
 export async function GET() {
