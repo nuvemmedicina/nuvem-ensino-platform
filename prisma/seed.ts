@@ -227,7 +227,7 @@ async function main() {
   });
 
   const courseFisioterapia = await prisma.course.upsert({
-    where: { slug: "fisioterapia-pelvica" },
+    where: { slug: "fisioterapia-respiratoria" },
     update: {
       title: "Treinamento Teórico-Prático de Fisioterapia nas Disfunções do Assoalho Pélvico",
       description:
@@ -239,7 +239,7 @@ async function main() {
         "Treinamento teórico-prático com Dra. Karol Rocha: avaliação, tratamento e prática supervisionada em disfunções do assoalho pélvico.",
     },
     create: {
-      slug: "fisioterapia-pelvica",
+      slug: "fisioterapia-respiratoria",
       title: "Treinamento Teórico-Prático de Fisioterapia nas Disfunções do Assoalho Pélvico",
       description:
         "Formação teórico-prática em fisioterapia pélvica: anatomia, avaliação clínica e instrumental, estratégias terapêuticas baseadas em evidências, discussão de casos reais e prática supervisionada. Turmas com no máximo 2 alunos.",
