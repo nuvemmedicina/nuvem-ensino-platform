@@ -4,6 +4,7 @@ export const metadata = {
   title: "Dra. Vera Ângelo · Avaliação da Apresentação",
   description:
     "Avalie a apresentação da Dra. Vera Lúcia Ângelo Andrade e conheça seu currículo.",
+  alternates: { canonical: "/dra-vera" },
 };
 
 function InstagramIcon() {

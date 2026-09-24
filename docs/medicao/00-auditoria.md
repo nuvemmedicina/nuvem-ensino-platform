@@ -241,6 +241,17 @@ Sem mudar a ordem geral já definida no prompt (Etapa 1 medição e consentiment
 
 Fora isso, meu entendimento é que a auditoria confirma que a ordem proposta no prompt já é a certa: sem a Etapa 1 funcionando, não há dado nenhum para julgar o efeito das etapas seguintes.
 
+## 11. Etapa 2: SEO técnico
+
+Correções feitas com base nos achados da seção 3 desta auditoria:
+
+- **`/dra-vera` e `/live`**: as duas páginas herdavam o canonical do layout raiz (apontando para a home). Adicionado `alternates.canonical` próprio em cada uma, apontando para a própria URL. Não adicionei `hreflang`/tradução para inglês e espanhol, porque as duas páginas têm conteúdo fixo só em português (não usam `next-intl`), apesar de tecnicamente acessíveis com prefixo `/en` e `/es`. Inventar um hreflang para uma tradução que não existe seria pior do que não ter hreflang nenhum.
+- **`/verificar`**: o canonical era um texto fixo (`"/verificar"`) igual para as três versões de idioma, então as variantes `/en/verificar` e `/es/verificar` apontavam incorretamente para a versão em português. Convertido de `metadata` estático para `generateMetadata`, calculando o canonical certo por locale.
+- **Sitemap**: `/dra-vera` e `/live` adicionados, como entrada única (mesma razão da falta de hreflang acima, não fazia sentido usar o helper de 3 idiomas para uma página sem tradução).
+- **Checkout**: adicionado `robots: { index: false, follow: false }` explícito na página de checkout, que antes contava só com o bloqueio do `robots.txt` (que impede rastreamento, mas não impede indexação de uma URL sem descrição caso alguém linke de fora).
+
+Testes existentes (`npm test`) e checagens de tipo/lint seguem limpos, sem relação direta com essas mudanças (são de metadados, não de lógica testada). Não editei a página `/verificar` além do metadata, campo de código funcional intocado.
+
 ## Perguntas em aberto, juntando tudo
 
 As perguntas 1 a 8 da seção 7 acima. Aguardando resposta antes de iniciar a Etapa 1.
