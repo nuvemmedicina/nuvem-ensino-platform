@@ -276,7 +276,9 @@ O `purchase` não dá para testar pelo Tag Assistant (é mandado direto do servi
 
 ## 13. Etapa 4: Meta Pixel
 
-ID do Pixel fornecido pela usuária: `488342380329033`. Duas decisões tomadas com a usuária antes de implementar (ver perguntas feitas e respostas):
+ID do Pixel fornecido pela usuária inicialmente: `488342380329033`. Duas decisões tomadas com a usuária antes de implementar (ver perguntas feitas e respostas):
+
+**Atualização, 24 de setembro: ID corrigido.** Esse primeiro número era, na verdade, o ID da conta de anúncios (aparecia como `act=488342380329033` nas URLs do Gerenciador de Eventos), não de um Pixel, porque nenhum Pixel tinha sido criado ainda. A usuária criou o Pixel pelo próprio Gerenciador de Eventos (Integrações → Meta Pixel), ID real: **`1355104133372437`**. Corrigido em `docs/medicao/03-etapa4-passos-manuais.md` e na tag "Meta Pixel - Base" do GTM, que já tinha sido criada com o número errado.
 
 - **Categoria de consentimento separada.** O banner de cookies, até aqui, só tinha uma categoria ("análise", cobrindo `analytics_storage` para o GA4/PostHog). O Meta Pixel é uma ferramenta de publicidade/remarketing, categoria diferente nas práticas de LGPD. `lib/consent.ts` foi reestruturado para duas categorias independentes (`analytics` e `marketing`), cada uma com sua própria chave de armazenamento e seu próprio interruptor no banner (`ConsentBanner.tsx`, textos novos em `messages/{pt,en,es}.json`). O banner agora aparece para quem já tinha decidido sobre análise, mas nunca decidiu sobre publicidade, porque são escolhas separadas. O script de consentimento padrão (`app/[locale]/layout.tsx`) foi atualizado para ler as duas chaves salvas.
 - **Escopo completo**, espelhando os três eventos de conversão da Etapa 3: `InitiateCheckout` (equivalente ao `begin_checkout`), `Lead` (equivalente ao `sign_up`) e `Purchase` (do servidor, mesma razão de confiabilidade do `purchase` do GA4, o webhook da Asaas é a única fonte confiável de pagamento realmente recebido).
