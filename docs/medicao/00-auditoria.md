@@ -371,6 +371,6 @@ Corrigido em `docs/medicao/02-etapa3-passos-manuais.md` (commits `e534f6c` e `bf
 
 De caminho, ao testar o `sign_up`, suspeitei de um problema à parte: o código de `app/[locale]/(auth)/cadastro/page.tsx` chama `signIn(...)` (que redireciona o navegador) logo após `pushSignUp()`, sem esperar a tag terminar de disparar, risco clássico de corrida entre o disparo do evento e o redirecionamento cortando o envio. O teste da usuária mostrou a tag disparando e concluindo normalmente nessa tentativa, então não é um bug confirmado, mas é uma condição de corrida real e vale a defesa: `pushSignUp()` agora espera o `eventCallback` do GTM (ou no máximo 1 segundo, se o GTM não carregar) antes do `signIn()` prosseguir (commit `45da9bf`). Sem impacto perceptível no cadastro, no pior caso adiciona até 1s antes do redirecionamento.
 
-Pendente: publicar a versão no GTM (a usuária já testou e confirmou os dois parâmetros no Preview).
+Publicado pela usuária em 26 de setembro. Correção em produção, nada mais pendente do lado do GTM para esta seção.
 
 **Atualização final: contêiner publicado, dado confirmado no GA4.** A usuária publicou o contêiner no GTM e conferiu o relatório em tempo real do GA4 (`nuvemensino.com.br`, propriedade GA4): 1 usuário ativo, país Brasil, chegando de verdade. Etapa 1 (medição com Consent Mode v2, GTM, sanitização de URL) concluída e validada de ponta a ponta.
