@@ -266,7 +266,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
           <p className="font-sans text-xs text-muted mt-0.5">Nossa equipe está disponível pelo WhatsApp</p>
         </div>
         <a
-          href="https://wa.me/5531722910291"
+          href="https://wa.me/5531972291029"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 font-sans text-sm font-bold text-white bg-green-500 hover:bg-green-600 transition-colors px-4 py-2.5 rounded-xl shrink-0 ml-4 shadow-md shadow-green-500/20"
