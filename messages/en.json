@@ -5,7 +5,8 @@
     "blog": "Blog",
     "nuchemMedicina": "NU.V.E.M Medicine",
     "signIn": "Sign In",
-    "openMenu": "Open menu"
+    "openMenu": "Open menu",
+    "books": "Books"
   },
   "footer": {
     "description": "Medical education platform with excellence in clinical training for healthcare professionals.",
@@ -188,9 +189,9 @@
     "couponApplied": "Coupon applied, 10% discount",
     "couponPlaceholder": "CODE",
     "couponApply": "Apply",
-      "couponExpired": "This coupon has expired.",
-      "couponLimitReached": "This coupon has reached its usage limit.",
-      "couponNotFound": "Coupon not found. Please check the code.",
+    "couponExpired": "This coupon has expired.",
+    "couponLimitReached": "This coupon has reached its usage limit.",
+    "couponNotFound": "Coupon not found. Please check the code.",
     "couponInvalid": "Invalid or expired coupon.",
     "couponError": "Error validating coupon.",
     "orderSummary": "Order summary",
@@ -204,10 +205,22 @@
     "guarantee": "Satisfaction guarantee",
     "guaranteeDesc": "If not satisfied, request a refund within 7 days of enrollment.",
     "methods": {
-      "stripe": { "label": "International card", "desc": "Visa, Mastercard, Amex (USD/EUR)" },
-      "pix": { "label": "PIX", "desc": "Instant approval" },
-      "boleto": { "label": "Bank slip (Boleto)", "desc": "Expires in 3 business days" },
-      "parcelado": { "label": "Credit Card", "desc": "Up to 10x installments" }
+      "stripe": {
+        "label": "International card",
+        "desc": "Visa, Mastercard, Amex (USD/EUR)"
+      },
+      "pix": {
+        "label": "PIX",
+        "desc": "Instant approval"
+      },
+      "boleto": {
+        "label": "Bank slip (Boleto)",
+        "desc": "Expires in 3 business days"
+      },
+      "parcelado": {
+        "label": "Credit Card",
+        "desc": "Up to 10x installments"
+      }
     }
   },
   "auth": {
@@ -379,10 +392,8 @@
       "finance": "Finance",
       "settings": "Settings",
       "users": "Users",
-      "instructors": "Instructors",
       "liveSessions": "Live Sessions",
-      "reports": "Reports",
-      "settings": "Settings"
+      "reports": "Reports"
     },
     "overview": {
       "title": "Overview",
@@ -773,5 +784,25 @@
     "of": "of",
     "and": "and",
     "or": "or"
+  },
+  "books": {
+    "meta": {
+      "title": "Books by Dr. Vera Ângelo",
+      "description": "Books published by Dr. Vera Lúcia Ângelo Andrade through Editora Rubio, on gastroenterology, functional disorders and breath testing."
+    },
+    "hero": {
+      "badge": "Publications · Editora Rubio",
+      "title": "Books by Dr. Vera Ângelo",
+      "description": "Reference works on gastroenterology, functional disorders and breath testing, written and edited by Dr. Vera Lúcia Ângelo Andrade."
+    },
+    "soloLabel": "Sole authorship",
+    "coLabel": "Edited and co-authored works",
+    "buyButton": "Buy at Rubio",
+    "disclaimer": "Purchase, payment and delivery are handled directly by Editora Rubio (in Brazilian reais, shipped from Brazil). Prices, installments and availability are set by them and may change without notice, so we don't display them here.",
+    "cta": {
+      "title": "Want to go beyond reading?",
+      "description": "Check out NU.V.E.M ENSINO's courses with Dr. Vera Ângelo and other specialists.",
+      "button": "View courses"
+    }
   }
 }

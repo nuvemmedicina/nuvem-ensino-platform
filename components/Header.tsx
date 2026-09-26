@@ -6,11 +6,12 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 
-type InternalHref = "/cursos" | "/sobre" | "/instrutores" | "/entrar" | "/cadastro" | "/faq" | "/";
+type InternalHref = "/cursos" | "/sobre" | "/instrutores" | "/livros" | "/entrar" | "/cadastro" | "/faq" | "/";
 
-const internalLinks: { labelKey: "courses" | "about"; href: InternalHref }[] = [
+const internalLinks: { labelKey: "courses" | "about" | "books"; href: InternalHref }[] = [
   { labelKey: "about", href: "/sobre" },
   { labelKey: "courses", href: "/cursos" },
+  { labelKey: "books", href: "/livros" },
 ];
 
 const externalLinks: { labelKey: "blog" | "nuchemMedicina"; href: string }[] = [

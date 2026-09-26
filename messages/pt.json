@@ -5,7 +5,8 @@
     "blog": "Blog",
     "nuchemMedicina": "NU.V.E.M Medicina",
     "signIn": "Entrar",
-    "openMenu": "Abrir menu"
+    "openMenu": "Abrir menu",
+    "books": "Livros"
   },
   "footer": {
     "description": "Plataforma de formação médica com excelência em ensino clínico para profissionais de saúde.",
@@ -188,9 +189,9 @@
     "couponApplied": "Cupom aplicado, 10% de desconto",
     "couponPlaceholder": "CÓDIGO",
     "couponApply": "Aplicar",
-      "couponExpired": "Este cupom expirou.",
-      "couponLimitReached": "Este cupom atingiu o limite de usos.",
-      "couponNotFound": "Cupom não encontrado. Confira o código digitado.",
+    "couponExpired": "Este cupom expirou.",
+    "couponLimitReached": "Este cupom atingiu o limite de usos.",
+    "couponNotFound": "Cupom não encontrado. Confira o código digitado.",
     "couponInvalid": "Cupom inválido ou expirado.",
     "couponError": "Erro ao validar cupom.",
     "orderSummary": "Resumo do pedido",
@@ -204,10 +205,22 @@
     "guarantee": "Garantia de satisfação",
     "guaranteeDesc": "Se não ficar satisfeito, solicite reembolso em até 7 dias após a inscrição.",
     "methods": {
-      "stripe": { "label": "Cartão internacional", "desc": "Visa, Mastercard, Amex (USD/EUR)" },
-      "pix": { "label": "PIX", "desc": "Aprovação imediata" },
-      "boleto": { "label": "Boleto bancário", "desc": "Vence em 3 dias úteis" },
-      "parcelado": { "label": "Cartão de Crédito", "desc": "Até 10x no cartão" }
+      "stripe": {
+        "label": "Cartão internacional",
+        "desc": "Visa, Mastercard, Amex (USD/EUR)"
+      },
+      "pix": {
+        "label": "PIX",
+        "desc": "Aprovação imediata"
+      },
+      "boleto": {
+        "label": "Boleto bancário",
+        "desc": "Vence em 3 dias úteis"
+      },
+      "parcelado": {
+        "label": "Cartão de Crédito",
+        "desc": "Até 10x no cartão"
+      }
     }
   },
   "auth": {
@@ -379,10 +392,8 @@
       "finance": "Financeiro",
       "settings": "Configurações",
       "users": "Usuários",
-      "instructors": "Instrutores",
       "liveSessions": "Aulas ao Vivo",
-      "reports": "Relatórios",
-      "settings": "Configurações"
+      "reports": "Relatórios"
     },
     "overview": {
       "title": "Visão Geral",
@@ -773,5 +784,25 @@
     "of": "de",
     "and": "e",
     "or": "ou"
+  },
+  "books": {
+    "meta": {
+      "title": "Livros da Dra. Vera Ângelo",
+      "description": "Livros publicados pela Dra. Vera Lúcia Ângelo Andrade pela Editora Rubio, sobre gastroenterologia, doenças funcionais e testes respiratórios."
+    },
+    "hero": {
+      "badge": "Publicações · Editora Rubio",
+      "title": "Livros da Dra. Vera Ângelo",
+      "description": "Obras de referência em gastroenterologia, doenças funcionais e testes respiratórios, escritas e organizadas pela Dra. Vera Lúcia Ângelo Andrade."
+    },
+    "soloLabel": "Autoria individual",
+    "coLabel": "Organizados e em coautoria",
+    "buyButton": "Comprar na Rubio",
+    "disclaimer": "A compra, o pagamento e a entrega são feitos diretamente pela Editora Rubio. Preços, parcelamento e disponibilidade são definidos por ela e podem mudar sem aviso, por isso não são exibidos aqui.",
+    "cta": {
+      "title": "Quer ir além da leitura?",
+      "description": "Conheça os cursos da NU.V.E.M ENSINO com a Dra. Vera Ângelo e outros especialistas.",
+      "button": "Ver cursos"
+    }
   }
 }
