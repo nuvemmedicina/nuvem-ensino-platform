@@ -75,7 +75,7 @@ export default async function LinksPage() {
     <div
       className="min-h-screen"
       style={{
-        backgroundColor: "#FBFAF6",
+        backgroundColor: "#F1F5F5",
         backgroundImage:
           "linear-gradient(rgba(14,43,51,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(14,43,51,0.05) 1px, transparent 1px)",
         backgroundSize: "32px 32px",
