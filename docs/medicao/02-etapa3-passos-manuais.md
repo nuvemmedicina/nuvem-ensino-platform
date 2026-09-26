@@ -35,7 +35,7 @@ No Tag Manager:
     - `value` → `{{DLV - value}}`
     - `currency` → `{{DLV - currency}}`
     - `payment_method` → `{{DLV - payment_method}}`
-11. **Campos a definir** (seção separada de "Parâmetros de evento", mais acima na mesma tela): adicione o campo `page_location` → `{{DLV - page_location}}` (a mesma variável de camada de dados criada na Etapa 1). **Isso é obrigatório aqui**: sem esse campo, o GA4 preenche `page_location` sozinho com a URL crua do navegador no momento do disparo, ignorando a sanitização, porque essa tag não herda automaticamente o valor definido na tag "GA4 - page_view", cada tag de evento faz sua própria coleta automática desses campos. Isso é particularmente sensível aqui porque `begin_checkout` dispara em `/checkout/[slug]`, justamente uma das rotas que `lib/analyticsSanitize.ts` trata como sensível.
+11. **Ainda em "Parâmetros de evento"** (a mesma lista de `value`/`currency`/`payment_method`, não é uma seção separada): adicione mais uma linha, `page_location` → `{{DLV - page_location}}` (a mesma variável de camada de dados criada na Etapa 1). Interfaces mais antigas do GTM tinham uma seção separada chamada "Campos a definir" para isso; na interface atual (testado em 26/09/2026) não existe mais essa seção, o GA4 aceita `page_location` como um parâmetro de evento normal e usa o valor enviado no lugar do automático. **Isso é obrigatório aqui**: sem esse parâmetro, o GA4 preenche `page_location` sozinho com a URL crua do navegador no momento do disparo, ignorando a sanitização, porque essa tag não herda automaticamente o valor definido na tag "GA4 - page_view", cada tag de evento faz sua própria coleta automática desses campos. Isso é particularmente sensível aqui porque `begin_checkout` dispara em `/checkout/[slug]`, justamente uma das rotas que `lib/analyticsSanitize.ts` trata como sensível.
 12. Acionamento: `begin_checkout` (o que criou no passo 1).
 13. Salvar.
 
@@ -53,8 +53,7 @@ No Tag Manager, mesmo passo a passo do anterior, mais simples (só um parâmetro
 2. **Variáveis** → **Novo**: `DLV - method`, camada de dados `method`.
 3. **Tags** → **Nova** → **Google Analytics: evento do GA4**.
 4. Nome: `GA4 - sign_up`. ID da métrica: `G-EFJPEPFDLC`. Nome do evento: `sign_up`.
-5. Parâmetro: `method` → `{{DLV - method}}`.
-6. **Campos a definir**: `page_location` → `{{DLV - page_location}}`, mesmo motivo e mesma variável do passo 11 do `begin_checkout` acima.
+5. Parâmetros de evento: `method` → `{{DLV - method}}`, e mais uma linha `page_location` → `{{DLV - page_location}}`, mesmo motivo e mesma variável do passo 11 do `begin_checkout` acima.
 7. Acionamento: `sign_up`.
 8. Salvar.
 
