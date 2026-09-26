@@ -89,6 +89,7 @@ export const routing = defineRouting({
       es: "/libros",
     },
     "/dra-vera": "/dra-vera",
+    "/links": "/links",
   },
 });
 
