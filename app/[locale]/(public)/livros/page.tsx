@@ -3,6 +3,7 @@ import Image from "next/image";
 import { BookOpen, ExternalLink } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { BuyBookLink } from "@/components/BuyBookLink";
 
 export async function generateMetadata({
   params,
@@ -118,15 +119,14 @@ function BookCard({ book, buyLabel }: { book: (typeof books)[number]; buyLabel: 
             <p className="font-sans text-xs text-muted mt-1">{book.authors}</p>
           )}
         </div>
-        <a
+        <BuyBookLink
           href={book.href}
-          target="_blank"
-          rel="noopener noreferrer"
+          title={book.title}
           className="inline-flex items-center justify-center gap-2 font-sans text-sm font-semibold px-5 py-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary-dark transition-colors"
         >
           {buyLabel}
           <ExternalLink className="w-4 h-4" />
-        </a>
+        </BuyBookLink>
       </div>
     </div>
   );
