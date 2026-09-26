@@ -103,6 +103,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
       { lastModified: now, changeFrequency: "yearly", priority: 0.3 }
     ),
+    ...makeEntries(
+      {
+        pt: `${APP_URL}/livros`,
+        en: `${APP_URL}/en/books`,
+        es: `${APP_URL}/es/libros`,
+      },
+      { lastModified: now, changeFrequency: "monthly", priority: 0.5 }
+    ),
     // Páginas avulsas, sem tradução real (conteúdo só em português,
     // apesar de tecnicamente acessíveis com prefixo /en e /es), por isso
     // uma entrada só, sem alternates de idioma.

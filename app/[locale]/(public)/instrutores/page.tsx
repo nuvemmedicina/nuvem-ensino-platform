@@ -31,7 +31,7 @@ const fallback: Record<string, {
       "Gastroenterologista com Título de Especialista pela FBG",
       "Residência em Gastroenterologia, Hospital Felício Rocho",
       "Sócia Titular da GEDIIB e da Sociedade Brasileira de Motilidade Digestiva",
-      "Autora: Doenças Funcionais em Gastrenterologia 2025, Métodos Diagnósticos 2025, Manual Prático do Teste Respiratório 2019 (Editora Rubio)",
+      "Autora: Doenças Funcionais em Gastrenterologia 2025, Métodos Diagnósticos 2025, Testes Respiratórios em Gastrenterologia: Hidrogênio, Metano e Helicobacter Pylori (Editora Rubio)",
     ],
   },
   "dra-anna-karoline": {
