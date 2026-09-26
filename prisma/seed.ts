@@ -33,9 +33,14 @@ async function main() {
 
   const anna = await prisma.user.upsert({
     where: { email: "anna.karoline@nuvemensino.com.br" },
-    update: {},
+    update: { name: "Dra. Karol Rocha" },
     create: {
-      name: "Dra. Anna Karoline",
+      // Nome de exibição correto é "Dra. Karol Rocha" (nome profissional,
+      // confirmado por Ana Paula — ver @karolrocha.fisio no Instagram em
+      // app/[locale]/(public)/instrutores/page.tsx). E-mail, slug e nome de
+      // arquivo de foto continuam com "anna-karoline" de propósito, são só
+      // identificadores internos, não aparecem para o visitante.
+      name: "Dra. Karol Rocha",
       email: "anna.karoline@nuvemensino.com.br",
       role: "INSTRUCTOR",
       image: "/instructors/anna-karoline.jpg",
