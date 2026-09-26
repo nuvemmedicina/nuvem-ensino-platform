@@ -37,3 +37,28 @@ dataLayer.push({
 ## Para usar como meta no Google Ads
 
 Depois de publicado e confirmado que o evento chega no GA4 (Administrador → Eventos, ou tempo real), no próprio GA4: **Administrador → Eventos → marcar `select_content` como conversão**, ou criar uma conversão personalizada filtrando por `content_type = livro`. Como o GA4 e o Google Ads dessa conta ainda não foram vinculados, também é preciso: **Google Ads → Ferramentas → Conversões → Importar → Google Analytics (GA4)**, selecionar essa conversão, e só então ela aparece disponível pra escolher como meta de otimização da campanha de livros.
+
+## Mesmo clique, agora também pro Meta Pixel
+
+Reaproveita o acionador `select_content` que você já criou acima, não precisa de nenhum código novo nem acionador novo, só mais uma tag.
+
+1. **Tags** → **Nova** → **HTML personalizado**.
+2. Código:
+
+```html
+<script>
+fbq('trackCustom', 'ViewContent', {
+  content_type: {{DLV - content_type}},
+  content_name: {{DLV - item_name}},
+  content_ids: [{{DLV - item_id}}]
+});
+</script>
+```
+
+3. Nome: `Meta Pixel - ViewContent Livro`
+4. Acionamento: **select_content** (o mesmo acionador de cima, não precisa criar de novo).
+5. Configurações avançadas → Consentimento → exigir `ad_storage` (mesma regra de sempre pras tags de HTML personalizado do Meta).
+6. Configurações avançadas → Sequenciamento de tags → "Disparar uma tag antes desta" → `Meta Pixel - Base`.
+7. Salvar, testar no Preview e publicar.
+
+Isso alimenta o Pixel com um evento por livro clicado, disponível pra usar como meta de otimização na campanha de Meta Ads dos livros assim que houver volume suficiente (pelo menos ~50 eventos em 7 dias, recomendação do próprio Meta para uma conversão sair do modo de aprendizado).
