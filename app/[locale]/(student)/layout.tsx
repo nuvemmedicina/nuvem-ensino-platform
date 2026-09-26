@@ -54,7 +54,7 @@ export default async function StudentLayout({
         {/* Suporte */}
         <div className="px-3 pb-2">
           <a
-            href="https://wa.me/5531722910291"
+            href="https://wa.me/5531972291029"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg font-sans text-sm text-muted hover:text-foreground hover:bg-background transition-all"
