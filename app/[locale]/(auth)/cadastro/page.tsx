@@ -13,11 +13,33 @@ declare global {
 }
 
 /** Sem dado pessoal: só confirma que um cadastro aconteceu. Ver
- * docs/medicao/00-auditoria.md, Etapa 3. */
-function pushSignUp() {
-  if (typeof window === "undefined") return;
+ * docs/medicao/00-auditoria.md, Etapa 3.
+ *
+ * O signIn() logo depois disso redireciona o navegador para /dashboard.
+ * Sem esperar aqui, o dataLayer.push acontece mas a página pode trocar
+ * antes do GTM terminar de disparar as tags e mandar a rede embora,
+ * perdendo o evento. eventCallback avisa quando todas as tags que
+ * escutam "sign_up" terminaram; eventTimeout (e o setTimeout de reforço,
+ * para quando o GTM nem carrega) garante que isso nunca trava o cadastro
+ * de verdade por mais de 1 segundo. */
+function pushSignUp(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event: "sign_up", method: "email" });
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      resolve();
+    };
+    window.dataLayer!.push({
+      event: "sign_up",
+      method: "email",
+      eventCallback: finish,
+      eventTimeout: 1000,
+    });
+    setTimeout(finish, 1000);
+  });
 }
 
 async function registerUser(data: {
@@ -58,7 +80,7 @@ export default function CadastroPage() {
         setError(result.error ?? t("errorDefault"));
         return;
       }
-      pushSignUp();
+      await pushSignUp();
       await signIn("credentials", { email, password, callbackUrl: "/dashboard" });
     });
   }
