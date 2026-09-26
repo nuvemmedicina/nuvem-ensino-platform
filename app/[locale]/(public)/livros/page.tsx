@@ -49,7 +49,7 @@ const books: { title: string; authors?: string; href: string; solo: boolean }[] 
   },
   {
     title: "Gastrenterologia no Dia a Dia",
-    href: RUBIO_SEARCH_URL,
+    href: "https://www.rubio.com.br/livro/a60505/9786588340615/gastrenterologia-no-dia-a-dia.html",
     solo: true,
   },
   {
@@ -67,13 +67,13 @@ const books: { title: string; authors?: string; href: string; solo: boolean }[] 
   {
     title: "Manual de Terapêutica em Gastrenterologia e Hepatologia Pediátrica",
     authors: "Com Ana Daniela Izoton de Sadovsky",
-    href: RUBIO_SEARCH_URL,
+    href: "https://www.rubio.com.br/livro/s31420/9786588340318/manual-de-terapeutica-em-gastrenterologia-e-hepatologia-pediatrica.html",
     solo: false,
   },
   {
     title: "Manual de Terapêutica em Gastroenterologia e Hepatologia",
     authors: "Organizadora",
-    href: RUBIO_SEARCH_URL,
+    href: "https://www.rubio.com.br/livro/a57877/9786588340240/manual-de-terapeutica-em-gastroenterologia-e-hepatologia.html",
     solo: false,
   },
   {
@@ -167,6 +167,16 @@ export default async function LivrosPage({
       <section className="max-w-3xl mx-auto px-4 py-10">
         <p className="font-sans text-xs text-muted/70 text-center leading-relaxed">
           {t("disclaimer")}
+        </p>
+        <p className="text-center mt-4">
+          <a
+            href={RUBIO_SEARCH_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-sans text-xs text-primary font-semibold hover:underline"
+          >
+            {t("seeAllLink")}
+          </a>
         </p>
       </section>
 
