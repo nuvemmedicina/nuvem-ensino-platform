@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { BookOpen, ExternalLink } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -36,32 +37,37 @@ export async function generateMetadata({
 // produto confirmado, por isso apontam para a busca pela autora na Rubio.
 const RUBIO_SEARCH_URL = "https://www.rubio.com.br/busca?q=Andrade%2C+Vera+L%C3%BAcia+%C3%82ngelo";
 
-const books: { title: string; authors?: string; href: string; solo: boolean }[] = [
+const books: { title: string; authors?: string; href: string; solo: boolean; cover?: string }[] = [
   {
     title: "Testes Respiratórios em Gastrenterologia: Hidrogênio, Metano e Helicobacter Pylori",
     href: "https://rubio.com.br/livro/a62312/9786588340974/testes-respiratorios-em-gastrenterologia-hidrogenio-metano-e-helicobacter-pylori.html",
+    cover: "/books/testes-respiratorios-h2-ch4-hp.png",
     solo: true,
   },
   {
     title: "Perguntas e Respostas Comentadas de Gastrenterologia Clínica e Hepatologia",
     href: "https://rubio.com.br/livro/a62313/9786588340998/perguntas-e-respostas-comentadas-de-gastrenterologia-clinica-e-hepatologia.html",
+    cover: "/books/perguntas-e-respostas-comentadas.png",
     solo: true,
   },
   {
     title: "Gastrenterologia no Dia a Dia",
     href: "https://www.rubio.com.br/livro/a60505/9786588340615/gastrenterologia-no-dia-a-dia.html",
+    cover: "/books/gastrenterologia-no-dia-a-dia.jpg",
     solo: true,
   },
   {
     title: "Métodos Diagnósticos em Doenças Funcionais e Motilidade Digestiva do Núcleo de Fisiologia Gastrintes",
     authors: "Com Paulo José Pereira de Campos Carvalho e Nayara Salgado Carvalho",
     href: "https://rubio.com.br/livro/c58906/9786588340844/metodos-diagnosticos-em-doencas-funcionais-e-motilidade-digestiva-do-nucleo-de-fisiologia-gastrintes.html",
+    cover: "/books/metodos-diagnosticos-doencas-funcionais.png",
     solo: false,
   },
   {
     title: "Doenças Funcionais na Gastrenterologia",
     authors: "Organizadora",
     href: "https://rubio.com.br/livro/a61637/9786588340783/doencas-funcionais-na-gastrenterologia.html",
+    cover: "/books/doencas-funcionais-na-gastrenterologia.png",
     solo: false,
   },
   {
@@ -80,31 +86,46 @@ const books: { title: string; authors?: string; href: string; solo: boolean }[] 
     title: "Casos Comentados de Gastrenterologia e Hepatologia",
     authors: "Organizadora",
     href: "https://rubio.com.br/livro/a57235/9786588340028/casos-comentados-de-gastrenterologia-e-hepatologia.html",
+    cover: "/books/casos-comentados-gastroenterologia-hepatologia.png",
     solo: false,
   },
 ];
 
 function BookCard({ book, buyLabel }: { book: (typeof books)[number]; buyLabel: string }) {
   return (
-    <div className="bg-surface border border-border rounded-2xl p-6 flex flex-col gap-4">
-      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-        <BookOpen className="w-5 h-5 text-primary" />
-      </div>
-      <div className="flex-1">
-        <h3 className="font-serif text-lg font-medium text-foreground leading-snug">{book.title}</h3>
-        {book.authors && (
-          <p className="font-sans text-xs text-muted mt-1">{book.authors}</p>
+    <div className="bg-surface border border-border rounded-2xl overflow-hidden flex flex-col">
+      <div className="relative w-full bg-primary/5" style={{ aspectRatio: "3/4" }}>
+        {book.cover ? (
+          <Image
+            src={book.cover}
+            alt={book.title}
+            fill
+            className="object-cover"
+            sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <BookOpen className="w-10 h-10 text-primary/30" />
+          </div>
         )}
       </div>
-      <a
-        href={book.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center justify-center gap-2 font-sans text-sm font-semibold px-5 py-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary-dark transition-colors"
-      >
-        {buyLabel}
-        <ExternalLink className="w-4 h-4" />
-      </a>
+      <div className="p-6 flex flex-col gap-4 flex-1">
+        <div className="flex-1">
+          <h3 className="font-serif text-lg font-medium text-foreground leading-snug">{book.title}</h3>
+          {book.authors && (
+            <p className="font-sans text-xs text-muted mt-1">{book.authors}</p>
+          )}
+        </div>
+        <a
+          href={book.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-2 font-sans text-sm font-semibold px-5 py-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary-dark transition-colors"
+        >
+          {buyLabel}
+          <ExternalLink className="w-4 h-4" />
+        </a>
+      </div>
     </div>
   );
 }
