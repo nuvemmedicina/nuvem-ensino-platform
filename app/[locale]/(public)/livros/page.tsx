@@ -74,12 +74,14 @@ const books: { title: string; authors?: string; href: string; solo: boolean; cov
     title: "Manual de Terapêutica em Gastrenterologia e Hepatologia Pediátrica",
     authors: "Com Ana Daniela Izoton de Sadovsky",
     href: "https://www.rubio.com.br/livro/s31420/9786588340318/manual-de-terapeutica-em-gastrenterologia-e-hepatologia-pediatrica.html",
+    cover: "/books/manual-terapeutica-pediatrica.jpg",
     solo: false,
   },
   {
     title: "Manual de Terapêutica em Gastroenterologia e Hepatologia",
     authors: "Organizadora",
     href: "https://www.rubio.com.br/livro/a57877/9786588340240/manual-de-terapeutica-em-gastroenterologia-e-hepatologia.html",
+    cover: "/books/manual-terapeutica-gastroenterologia-hepatologia.jpg",
     solo: false,
   },
   {
