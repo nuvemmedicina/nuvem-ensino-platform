@@ -350,4 +350,27 @@ Confirmado por código-fonte (Ctrl+U na URL de pré-visualização, busca por "g
 
 Com os dois problemas corrigidos, a tag "GA4 - page_view" dispara corretamente após o consentimento, com os três parâmetros sanitizados preenchidos com dados reais da página. Etapa 1 tecnicamente funcionando.
 
+## 15. Curso "fisioterapia-respiratoria": currículo trocado, slug e conteúdo migrado corrigidos
+
+A usuária encontrou, na própria página do curso em produção, um erro grave: a URL do curso de "Fisioterapia nas Disfunções do Assoalho Pélvico" (Dra. Karol Rocha) ainda usava o slug `fisioterapia-respiratoria`, resquício de um curso anterior. Ao investigar `prisma/seed.ts`, confirmado por leitura direta do código: título, descrição, preço, carga horária e vagas já estavam certos para o curso pélvico, mas os módulos e aulas cadastrados ainda eram os de fisioterapia respiratória (anatomia respiratória, ausculta pulmonar, DPOC/asma/fibrose, treino muscular respiratório). Currículo errado removido do seed (commit `c9c635b`), módulos ficam vazios até o currículo real ser cadastrado (pelo admin, ou repassado para eu montar, sem inventar tópico nenhum).
+
+A usuária então renomeou o slug para `fisioterapia-pelvica` direto no admin. Ajustes de acompanhamento (commit `5812618`): redirect 301 permanente do slug antigo para o novo nas 3 línguas em `next.config.ts` (protege a indexação já existente da URL antiga), `prisma/seed.ts` atualizado para casar com o slug atual, e a chave do mapa estático de `migrate-content/route.ts` (que teria objectives/targetAudience/includes prontos, mas indexados pelo slug antigo) corrigida também, senão a rota nunca mais encontraria o curso.
+
+Essa mesma rota de migração guardava uma data de turma já vencida (17 a 19 de junho de 2026), embutida tanto no campo `startDate` quanto num item de `includes`. A usuária apagou esse conteúdo pelo admin; como a rota só preenche campo vazio (`course.objectives ?? content...`), a entrada estática do mapa reintroduziria a mesma data vencida numa próxima execução, então foi removida do código (commit `727241a`).
+
+Por fim, encontrada (e confirmada pela usuária) uma segunda divergência: o texto do curso menciona "Dra. Karol Rocha", mas o registro de instrutora vinculado estava com o nome "Dra. Anna Karoline" — mesma pessoa (o Instagram já cadastrado para ela em `instrutores/page.tsx` é `@karolrocha.fisio`), nome de exibição errado. Corrigido em `prisma/seed.ts` (commit `9912f6b`); e-mail, slug interno e nome de arquivo de foto mantidos como estavam, são só identificadores internos, não aparecem para quem visita o site. Como esse dado só é lido do banco em produção, e não há acesso de escrita a partir desta sessão, a usuária aplicou a correção viva pelo `/admin/usuarios`, editando o campo Nome do registro com esse e-mail.
+
+## 16. Etapa 3: `page_location` cru nas tags de evento do GA4, corrigido e testado
+
+Pergunta direta da usuária sobre se as tags do GTM usavam a mesma sanitização de URL da Etapa 1: não usavam. A tag "GA4 - page_view" (Etapa 1) manda `page_location` como parâmetro de evento explícito, lido de `lib/analyticsSanitize.ts` via a variável `DLV - page_location`. As tags "GA4 - begin_checkout" e "GA4 - sign_up" (Etapa 3) nunca tiveram esse parâmetro configurado, então cada uma coletava `page_location` sozinha, direto da URL crua do navegador no disparo (comportamento automático do GA4, tag de evento não herda o valor de outra tag). Investigação do fluxo de checkout (`app/api/checkout/route.ts`) não encontrou nenhum identificador de sessão ou dado pessoal vazando por essa via hoje, só um parâmetro inofensivo (`?cancelado=1`, do `cancel_url` do Stripe), mas o risco era estrutural: qualquer parâmetro sensível futuro nessas rotas vazaria sem ninguém perceber.
+
+Corrigido em `docs/medicao/02-etapa3-passos-manuais.md` (commits `e534f6c` e `bf2e60f`, o segundo ajustando o texto porque a interface atual do GTM não tem mais a seção separada "Campos a definir", `page_location` entra como mais um parâmetro de evento comum). A usuária aplicou nas duas tags e testou no Preview:
+
+- `GA4 - begin_checkout`: `page_location` resolvido = `https://www.nuvemensino.com.br/checkout/testes-respiratorios-h2-ch4-h2s-outubro`, limpo.
+- `GA4 - sign_up`: `page_location` resolvido = `https://www.nuvemensino.com.br/cadastro`, limpo, tag disparada e concluída.
+
+De caminho, ao testar o `sign_up`, suspeitei de um problema à parte: o código de `app/[locale]/(auth)/cadastro/page.tsx` chama `signIn(...)` (que redireciona o navegador) logo após `pushSignUp()`, sem esperar a tag terminar de disparar, risco clássico de corrida entre o disparo do evento e o redirecionamento cortando o envio. O teste da usuária mostrou a tag disparando e concluindo normalmente nessa tentativa, então não é um bug confirmado, mas é uma condição de corrida real e vale a defesa: `pushSignUp()` agora espera o `eventCallback` do GTM (ou no máximo 1 segundo, se o GTM não carregar) antes do `signIn()` prosseguir (commit `45da9bf`). Sem impacto perceptível no cadastro, no pior caso adiciona até 1s antes do redirecionamento.
+
+Publicado pela usuária em 26 de setembro. Correção em produção, nada mais pendente do lado do GTM para esta seção.
+
 **Atualização final: contêiner publicado, dado confirmado no GA4.** A usuária publicou o contêiner no GTM e conferiu o relatório em tempo real do GA4 (`nuvemensino.com.br`, propriedade GA4): 1 usuário ativo, país Brasil, chegando de verdade. Etapa 1 (medição com Consent Mode v2, GTM, sanitização de URL) concluída e validada de ponta a ponta.

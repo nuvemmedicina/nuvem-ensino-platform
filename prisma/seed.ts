@@ -33,9 +33,14 @@ async function main() {
 
   const anna = await prisma.user.upsert({
     where: { email: "anna.karoline@nuvemensino.com.br" },
-    update: {},
+    update: { name: "Dra. Karol Rocha" },
     create: {
-      name: "Dra. Anna Karoline",
+      // Nome de exibição correto é "Dra. Karol Rocha" (nome profissional,
+      // confirmado por Ana Paula — ver @karolrocha.fisio no Instagram em
+      // app/[locale]/(public)/instrutores/page.tsx). E-mail, slug e nome de
+      // arquivo de foto continuam com "anna-karoline" de propósito, são só
+      // identificadores internos, não aparecem para o visitante.
+      name: "Dra. Karol Rocha",
       email: "anna.karoline@nuvemensino.com.br",
       role: "INSTRUCTOR",
       image: "/instructors/anna-karoline.jpg",
@@ -227,7 +232,7 @@ async function main() {
   });
 
   const courseFisioterapia = await prisma.course.upsert({
-    where: { slug: "fisioterapia-respiratoria" },
+    where: { slug: "fisioterapia-pelvica" },
     update: {
       title: "Treinamento Teórico-Prático de Fisioterapia nas Disfunções do Assoalho Pélvico",
       description:
@@ -239,7 +244,7 @@ async function main() {
         "Treinamento teórico-prático com Dra. Karol Rocha: avaliação, tratamento e prática supervisionada em disfunções do assoalho pélvico.",
     },
     create: {
-      slug: "fisioterapia-respiratoria",
+      slug: "fisioterapia-pelvica",
       title: "Treinamento Teórico-Prático de Fisioterapia nas Disfunções do Assoalho Pélvico",
       description:
         "Formação teórico-prática em fisioterapia pélvica: anatomia, avaliação clínica e instrumental, estratégias terapêuticas baseadas em evidências, discussão de casos reais e prática supervisionada. Turmas com no máximo 2 alunos.",
@@ -546,36 +551,14 @@ async function main() {
     }
   }
 
-  // Curso: Fisioterapia Respiratória
-  const modulesFisioterapia = [
-    {
-      title: "Módulo 1: Fundamentos",
-      order: 1,
-      lessons: [
-        { title: "Anatomia aplicada à fisioterapia respiratória", order: 1, duration: 20 },
-        { title: "Avaliação do paciente respiratório", order: 2, duration: 16 },
-        { title: "Técnicas de ausculta pulmonar", order: 3, duration: 18 },
-      ],
-    },
-    {
-      title: "Módulo 2: Técnicas Práticas",
-      order: 2,
-      lessons: [
-        { title: "Higiene brônquica: tapotagem e vibração", order: 1, duration: 22 },
-        { title: "Drenagem postural e flutter", order: 2, duration: 20 },
-        { title: "Espirometria de incentivo e IPPB", order: 3, duration: 18 },
-      ],
-    },
-    {
-      title: "Módulo 3: Reabilitação Pulmonar",
-      order: 3,
-      lessons: [
-        { title: "Protocolos em DPOC, asma e fibrose", order: 1, duration: 26 },
-        { title: "Treino muscular respiratório", order: 2, duration: 22 },
-        { title: "Alta hospitalar e plano domiciliar", order: 3, duration: 18 },
-      ],
-    },
-  ];
+  // Curso: Treinamento Teórico-Prático de Fisioterapia nas Disfunções do
+  // Assoalho Pélvico (slug renomeado de "fisioterapia-respiratoria" para
+  // "fisioterapia-pelvica"). Os módulos abaixo ficam vazios de propósito: o
+  // currículo antigo era de fisioterapia respiratória (herdado de um curso
+  // anterior que ocupava este slug) e não corresponde ao curso atual. O
+  // módulo/aula real, com carga horária e vídeos, ainda precisa ser
+  // cadastrado via /admin/cursos/fisioterapia-pelvica.
+  const modulesFisioterapia: { title: string; order: number; lessons: { title: string; order: number; duration: number }[] }[] = [];
 
   for (const mod of modulesFisioterapia) {
     const existingModule = await prisma.module.findFirst({

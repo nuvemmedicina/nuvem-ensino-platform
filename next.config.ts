@@ -36,6 +36,31 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+
+  // Slug do curso corrigido de "fisioterapia-respiratoria" para
+  // "fisioterapia-pelvica" (o slug antigo era resquício de um curso
+  // anterior de fisioterapia respiratória, o conteúdo real sempre foi de
+  // disfunções do assoalho pélvico). Redirect permanente para não perder
+  // a indexação já conquistada pela URL antiga nas 3 línguas.
+  async redirects() {
+    return [
+      {
+        source: "/cursos/fisioterapia-respiratoria",
+        destination: "/cursos/fisioterapia-pelvica",
+        permanent: true,
+      },
+      {
+        source: "/en/courses/fisioterapia-respiratoria",
+        destination: "/en/courses/fisioterapia-pelvica",
+        permanent: true,
+      },
+      {
+        source: "/es/cursos/fisioterapia-respiratoria",
+        destination: "/es/cursos/fisioterapia-pelvica",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);
