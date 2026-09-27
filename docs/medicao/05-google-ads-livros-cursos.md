@@ -57,7 +57,8 @@ Sitelink: "Conheça os Cursos" → `nuvemensino.com.br/cursos`
 | Grupo | Palavras-chave (frase) | URL final sugerida (confirmar slug) |
 |---|---|---|
 | Testes Respiratórios | "curso teste respiratório hidrogênio metano", "curso SIBO teste respiratório", "curso teste respiratório H2 CH4" | `/cursos/testes-respiratorios-h2-ch4-h2s-outubro` (turma presencial confirmada em `nuvemensino.com.br/links`) |
-| Motilidade Digestiva / DGBIs | "curso manometria esofágica", "curso motilidade digestiva", "curso DGBIs" | `/cursos/dici-neurogastroenterologia-2026` |
+| DICI / DGBIs | "curso DGBIs", "curso síndrome do intestino irritável", "curso distúrbios interação cérebro intestino" | `/cursos/dici-neurogastroenterologia-2026` |
+| Manometria / pHmetria | "curso manometria esofágica", "curso pHmetria impedância", "curso motilidade digestiva" | Confirmar slug atual antes de usar (`manometria-phmetria-impedancia` era o valor num arquivo que já se mostrou desatualizado outras vezes) |
 | Fisioterapia Pélvica | "curso fisioterapia pélvica", "curso disfunções assoalho pélvico", "treinamento fisioterapia pélvica" | `/cursos/fisioterapia-pelvica` |
 | Doenças da Cavidade Oral | "curso halimetria sialometria", "curso doenças cavidade oral gastro" | `/cursos/doencas-da-cavidade-oral-halimetria-e-sialometria` |
 
