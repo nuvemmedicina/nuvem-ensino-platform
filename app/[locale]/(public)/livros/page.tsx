@@ -42,13 +42,13 @@ const books: { title: string; authors?: string; href: string; solo: boolean; cov
   {
     title: "Testes Respiratórios em Gastrenterologia: Hidrogênio, Metano e Helicobacter Pylori",
     href: "https://rubio.com.br/livro/a62312/9786588340974/testes-respiratorios-em-gastrenterologia-hidrogenio-metano-e-helicobacter-pylori.html",
-    cover: "/books/testes-respiratorios-h2-ch4-hp.png",
+    cover: "/books/testes-respiratorios-h2-ch4-hp.jpg",
     solo: true,
   },
   {
     title: "Perguntas e Respostas Comentadas de Gastrenterologia Clínica e Hepatologia",
     href: "https://rubio.com.br/livro/a62313/9786588340998/perguntas-e-respostas-comentadas-de-gastrenterologia-clinica-e-hepatologia.html",
-    cover: "/books/perguntas-e-respostas-comentadas.png",
+    cover: "/books/perguntas-e-respostas-comentadas.jpg",
     solo: true,
   },
   {
@@ -61,14 +61,14 @@ const books: { title: string; authors?: string; href: string; solo: boolean; cov
     title: "Métodos Diagnósticos em Doenças Funcionais e Motilidade Digestiva do Núcleo de Fisiologia Gastrintes",
     authors: "Com Paulo José Pereira de Campos Carvalho e Nayara Salgado Carvalho",
     href: "https://rubio.com.br/livro/c58906/9786588340844/metodos-diagnosticos-em-doencas-funcionais-e-motilidade-digestiva-do-nucleo-de-fisiologia-gastrintes.html",
-    cover: "/books/metodos-diagnosticos-doencas-funcionais.png",
+    cover: "/books/metodos-diagnosticos-doencas-funcionais.jpg",
     solo: false,
   },
   {
     title: "Doenças Funcionais na Gastrenterologia",
     authors: "Organizadora",
     href: "https://rubio.com.br/livro/a61637/9786588340783/doencas-funcionais-na-gastrenterologia.html",
-    cover: "/books/doencas-funcionais-na-gastrenterologia.png",
+    cover: "/books/doencas-funcionais-na-gastrenterologia.jpg",
     solo: false,
   },
   {
@@ -89,7 +89,7 @@ const books: { title: string; authors?: string; href: string; solo: boolean; cov
     title: "Casos Comentados de Gastrenterologia e Hepatologia",
     authors: "Organizadora",
     href: "https://rubio.com.br/livro/a57235/9786588340028/casos-comentados-de-gastrenterologia-e-hepatologia.html",
-    cover: "/books/casos-comentados-gastroenterologia-hepatologia.png",
+    cover: "/books/casos-comentados-gastroenterologia-hepatologia.jpg",
     solo: false,
   },
 ];
@@ -103,7 +103,7 @@ function BookCard({ book, buyLabel }: { book: (typeof books)[number]; buyLabel: 
             src={book.cover}
             alt={book.title}
             fill
-            className="object-cover"
+            className="object-contain"
             sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw"
           />
         ) : (
