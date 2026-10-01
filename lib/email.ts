@@ -372,6 +372,9 @@ export async function sendLiveSessionReminder({
  * `tipo`:
  *   "aviso"    → véspera, com data, horário e pauta
  *   "lembrete" → manhã do dia, curto, só o link
+ *
+ * `quandoLabel`/`despedida` trocam o "Amanhã"/"Até amanhã!" do aviso quando ele
+ * sai com mais de um dia de antecedência (ex.: "Nesta quarta-feira"/"Até quarta!").
  */
 export async function sendEncontroSincrono({
   to,
@@ -383,6 +386,8 @@ export async function sendEncontroSincrono({
   timeLabel,
   pauta,
   meetUrl,
+  quandoLabel = "Amanhã",
+  despedida = "Até amanhã!",
 }: {
   to: string;
   userName: string;
@@ -393,6 +398,8 @@ export async function sendEncontroSincrono({
   timeLabel: string;
   pauta: string;
   meetUrl: string;
+  quandoLabel?: string;
+  despedida?: string;
 }) {
   const botao = `
     <div style="text-align:center;margin:32px 0;">
@@ -414,7 +421,7 @@ export async function sendEncontroSincrono({
   const title = tipo === "aviso" ? sessionTitle : "É hoje!";
   const subject =
     tipo === "aviso"
-      ? `Amanhã, ${timeLabel}: nosso ${sessionTitle}`
+      ? `${quandoLabel}, ${timeLabel}: nosso ${sessionTitle}`
       : `Hoje às ${timeLabel}: link do ${sessionTitle}`;
 
   const body =
@@ -422,7 +429,7 @@ export async function sendEncontroSincrono({
       ? `
     <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
     <p style="margin:0 0 16px;color:#374151;font-size:15px;">
-      Amanhã acontece o nosso <strong>${sessionTitle}</strong>, o primeiro momento em que vamos nos reunir ao vivo para discutir o conteúdo e tirar dúvidas.
+      ${quandoLabel} acontece o nosso <strong>${sessionTitle}</strong>: mais um momento para nos reunirmos ao vivo, discutir o conteúdo e tirar dúvidas.
     </p>
     <div style="background:#f0f9fa;border-left:4px solid #00475e;border-radius:8px;padding:16px 20px;margin:24px 0;">
       <p style="margin:0;color:#9ca3af;font-size:12px;text-transform:uppercase;letter-spacing:0.1em;">${courseName}</p>
@@ -434,13 +441,10 @@ export async function sendEncontroSincrono({
     ${botao}
     <p style="margin:0 0 12px;color:#00475e;font-size:14px;font-weight:700;">O que vamos discutir</p>
     <p style="margin:0 0 20px;color:#374151;font-size:15px;"><strong>${pauta}</strong></p>
-    <p style="margin:0 0 16px;color:#374151;font-size:15px;">
-      Fechamos com <strong>discussão de casos clínicos</strong>, a parte que só existe ao vivo. Traga suas dúvidas: reservamos um bloco final para perguntas.
-    </p>
     <p style="margin:0 0 16px;color:#6b7280;font-size:14px;">
       O encontro será gravado e disponibilizado na plataforma, mas é ao vivo que a discussão de casos acontece de verdade.
     </p>
-    ${assinatura("Até amanhã!")}
+    ${assinatura(despedida)}
     ${rodapeWhats("Dúvidas? Responda este e-mail ou fale pelo WhatsApp")}
   `
       : `
@@ -449,7 +453,7 @@ export async function sendEncontroSincrono({
       Passando só para lembrar: nosso <strong>${sessionTitle}</strong> é <strong>hoje às ${timeLabel}</strong> (horário de Brasília), pelo Google Meet.
     </p>
     <p style="margin:0 0 24px;color:#374151;font-size:15px;">
-      Vamos discutir o <strong>${pauta.replace(/\.$/, "")}</strong> e fechar com casos clínicos.
+      Vamos discutir o <strong>${pauta.replace(/\.$/, "")}</strong>.
     </p>
     ${botao}
     <p style="margin:0 0 16px;color:#6b7280;font-size:14px;">Sugestão: entre 5 minutinhos antes para testar áudio e câmera.</p>
@@ -597,6 +601,97 @@ export async function sendSegundoLembreteAulas({
     to,
     subject: `${userName.split(" ")[0]}, sua vaga no ${courseName.split(":")[0]} está parada`,
     html: baseLayout("Ainda dá tempo de começar", body),
+  });
+}
+
+/**
+ * Terceiro contato (01/10/2026) com quem continua sem nenhuma aula concluída
+ * depois dos lembretes de 31/08 e 11/09. Tom de apoio, sem cobrança, e o
+ * caminho de ajuda bem visível — a essa altura o motivo costuma ser acesso.
+ */
+export async function sendTerceiroLembreteAulas({
+  to,
+  userName,
+  courseName,
+  courseSlug,
+}: {
+  to: string;
+  userName: string;
+  courseName: string;
+  courseSlug: string;
+}) {
+  const link = `${APP_URL}/dashboard/cursos/${courseSlug}`;
+  const entrar = `${APP_URL}/entrar`;
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Sua matrícula no <strong>${courseName}</strong> está ativa, e a turma já avançou bastante: <strong>três módulos estão liberados</strong>, com 51 aulas gravadas, e os encontros ao vivo também ficaram gravados na plataforma.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Nada está perdido. Você assiste no seu ritmo, na ordem que preferir, e o Módulo IV só chega em novembro: ainda dá tempo de alcançar a turma.</p>
+    <div style="text-align:center;margin:28px 0;">
+      <a href="${link}"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Começar minha primeira aula
+      </a>
+    </div>
+    <div style="background:#f0f9fa;border-left:4px solid #00475e;border-radius:8px;padding:16px 20px;margin:0 0 20px;">
+      <p style="margin:0 0 8px;color:#00475e;font-size:14px;font-weight:700;">Não está conseguindo entrar?</p>
+      <p style="margin:0;color:#374151;font-size:14px;">Na <a href="${entrar}" style="color:#00475e;font-weight:600;">tela de login</a>, use "Esqueci minha senha" com o e-mail <strong>${to}</strong> e crie uma senha nova em um minuto. Se mesmo assim não der certo, responda este e-mail ou chame no WhatsApp que resolvemos com você.</p>
+    </div>
+    <p style="margin:0 0 16px;color:#374151;font-size:14px;">Entre também no <a href="${GRUPO_WHATSAPP_DICI}" style="color:#00475e;font-weight:600;">grupo do WhatsApp da turma</a> para receber os avisos e trocar com os colegas.</p>
+    <p style="margin:0;color:#9ca3af;font-size:12px;">Ou copie e cole este endereço no navegador:<br/><span style="color:#00475e;word-break:break-all;">${link}</span></p>
+  `;
+
+  return deliver("terceiro lembrete de aulas", to, {
+    from: FROM,
+    to,
+    subject: `${userName.split(" ")[0]}, suas aulas do ${courseName.split(":")[0]} estão esperando por você`,
+    html: baseLayout("Sua turma está te esperando", body),
+  });
+}
+
+/**
+ * Convite para retomar (01/10/2026): quem concluiu ao menos uma aula do DICI,
+ * mas não registra atividade desde agosto. Diferente do lembrete de quem nunca
+ * começou, parte do que o aluno já fez — `aulasConcluidas` aparece no texto.
+ */
+export async function sendRetomarAulas({
+  to,
+  userName,
+  courseName,
+  courseSlug,
+  aulasConcluidas,
+  aulasLiberadas,
+}: {
+  to: string;
+  userName: string;
+  courseName: string;
+  courseSlug: string;
+  aulasConcluidas: number;
+  aulasLiberadas: number;
+}) {
+  const link = `${APP_URL}/dashboard/cursos/${courseSlug}`;
+  const feitas = aulasConcluidas === 1 ? "1 aula" : `${aulasConcluidas} aulas`;
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Você já concluiu <strong>${feitas}</strong> do <strong>${courseName}</strong>, e seu progresso está guardado: é só voltar e continuar de onde parou.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Desde agosto a turma avançou: <strong>três módulos estão liberados</strong>, com ${aulasLiberadas} aulas gravadas, e os encontros ao vivo também ficaram gravados na plataforma. O Módulo IV chega em novembro, então este é um bom momento para colocar as aulas em dia.</p>
+    <div style="text-align:center;margin:28px 0;">
+      <a href="${link}"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Continuar de onde parei
+      </a>
+    </div>
+    <p style="margin:0 0 16px;color:#6b7280;font-size:13px;">Se tiver alguma dificuldade para entrar ou assistir, responda este e-mail ou chame no WhatsApp: a gente resolve rápido.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:14px;">Entre também no <a href="${GRUPO_WHATSAPP_DICI}" style="color:#00475e;font-weight:600;">grupo do WhatsApp da turma</a> para receber os avisos e trocar com os colegas.</p>
+    <p style="margin:0;color:#9ca3af;font-size:12px;">Ou copie e cole este endereço no navegador:<br/><span style="color:#00475e;word-break:break-all;">${link}</span></p>
+  `;
+
+  return deliver("retomar aulas", to, {
+    from: FROM,
+    to,
+    subject: `${userName.split(" ")[0]}, continue de onde parou no ${courseName.split(":")[0]}`,
+    html: baseLayout("Seu progresso está guardado", body),
   });
 }
 
