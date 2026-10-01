@@ -372,6 +372,9 @@ export async function sendLiveSessionReminder({
  * `tipo`:
  *   "aviso"    → véspera, com data, horário e pauta
  *   "lembrete" → manhã do dia, curto, só o link
+ *
+ * `quandoLabel`/`despedida` trocam o "Amanhã"/"Até amanhã!" do aviso quando ele
+ * sai com mais de um dia de antecedência (ex.: "Nesta quarta-feira"/"Até quarta!").
  */
 export async function sendEncontroSincrono({
   to,
@@ -383,6 +386,8 @@ export async function sendEncontroSincrono({
   timeLabel,
   pauta,
   meetUrl,
+  quandoLabel = "Amanhã",
+  despedida = "Até amanhã!",
 }: {
   to: string;
   userName: string;
@@ -393,6 +398,8 @@ export async function sendEncontroSincrono({
   timeLabel: string;
   pauta: string;
   meetUrl: string;
+  quandoLabel?: string;
+  despedida?: string;
 }) {
   const botao = `
     <div style="text-align:center;margin:32px 0;">
@@ -414,7 +421,7 @@ export async function sendEncontroSincrono({
   const title = tipo === "aviso" ? sessionTitle : "É hoje!";
   const subject =
     tipo === "aviso"
-      ? `Amanhã, ${timeLabel}: nosso ${sessionTitle}`
+      ? `${quandoLabel}, ${timeLabel}: nosso ${sessionTitle}`
       : `Hoje às ${timeLabel}: link do ${sessionTitle}`;
 
   const body =
@@ -422,7 +429,7 @@ export async function sendEncontroSincrono({
       ? `
     <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
     <p style="margin:0 0 16px;color:#374151;font-size:15px;">
-      Amanhã acontece o nosso <strong>${sessionTitle}</strong>, o primeiro momento em que vamos nos reunir ao vivo para discutir o conteúdo e tirar dúvidas.
+      ${quandoLabel} acontece o nosso <strong>${sessionTitle}</strong>: mais um momento para nos reunirmos ao vivo, discutir o conteúdo e tirar dúvidas.
     </p>
     <div style="background:#f0f9fa;border-left:4px solid #00475e;border-radius:8px;padding:16px 20px;margin:24px 0;">
       <p style="margin:0;color:#9ca3af;font-size:12px;text-transform:uppercase;letter-spacing:0.1em;">${courseName}</p>
@@ -434,13 +441,10 @@ export async function sendEncontroSincrono({
     ${botao}
     <p style="margin:0 0 12px;color:#00475e;font-size:14px;font-weight:700;">O que vamos discutir</p>
     <p style="margin:0 0 20px;color:#374151;font-size:15px;"><strong>${pauta}</strong></p>
-    <p style="margin:0 0 16px;color:#374151;font-size:15px;">
-      Fechamos com <strong>discussão de casos clínicos</strong>, a parte que só existe ao vivo. Traga suas dúvidas: reservamos um bloco final para perguntas.
-    </p>
     <p style="margin:0 0 16px;color:#6b7280;font-size:14px;">
       O encontro será gravado e disponibilizado na plataforma, mas é ao vivo que a discussão de casos acontece de verdade.
     </p>
-    ${assinatura("Até amanhã!")}
+    ${assinatura(despedida)}
     ${rodapeWhats("Dúvidas? Responda este e-mail ou fale pelo WhatsApp")}
   `
       : `
@@ -449,7 +453,7 @@ export async function sendEncontroSincrono({
       Passando só para lembrar: nosso <strong>${sessionTitle}</strong> é <strong>hoje às ${timeLabel}</strong> (horário de Brasília), pelo Google Meet.
     </p>
     <p style="margin:0 0 24px;color:#374151;font-size:15px;">
-      Vamos discutir o <strong>${pauta.replace(/\.$/, "")}</strong> e fechar com casos clínicos.
+      Vamos discutir o <strong>${pauta.replace(/\.$/, "")}</strong>.
     </p>
     ${botao}
     <p style="margin:0 0 16px;color:#6b7280;font-size:14px;">Sugestão: entre 5 minutinhos antes para testar áudio e câmera.</p>
