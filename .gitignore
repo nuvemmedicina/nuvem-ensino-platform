@@ -45,3 +45,7 @@ next-env.d.ts
 
 # exportações de dados de alunos (nunca versionar)
 *.csv
+
+# resíduos de sessões de agente (worktrees temporárias)
+.claire/
+.claude/worktrees/
