@@ -47,6 +47,7 @@ export default async function AdminLayout({
     { key: "flashcards",  href: "/admin/flashcards",                    label: "Flashcards" },
     { key: "settings",     href: "/admin/configuracoes/pagamentos",     label: t("settings") },
     { key: "ai",           href: "/admin/configuracoes/ia",             label: "Config. IA" },
+    { key: "studentArea",  href: "/admin/configuracoes/area-do-aluno",  label: "Nova área do aluno" },
     { key: "rag",          href: "/admin/rag",                          label: "Base IA (RAG)" },
   ];
 
