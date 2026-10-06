@@ -19,6 +19,7 @@ import {
   BookOpen,
   Shield,
   ArrowRight,
+  Link2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -150,6 +151,20 @@ export default function LessonPlayerClient({
   const [noteContent, setNoteContent] = useState(initialNotes[currentLessonId] ?? "");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Link para compartilhar a aula
+  const [linkCopiado, setLinkCopiado] = useState(false);
+  async function handleCopiarLink() {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+    } catch {
+      // Navegador sem permissão de área de transferência: mostra o link para copiar à mão
+      window.prompt("Copie o link da aula:", window.location.href);
+      return;
+    }
+    setLinkCopiado(true);
+    setTimeout(() => setLinkCopiado(false), 2000);
+  }
 
   const allUnlockedLessons = modules
     .filter((m) => !isLocked(m))
@@ -487,6 +502,26 @@ export default function LessonPlayerClient({
                   ) : (
                     <>
                       <Circle className="w-4 h-4" /> Marcar como concluída
+                    </>
+                  )}
+                </button>
+
+                {/* Copiar link da aula */}
+                <button
+                  onClick={handleCopiarLink}
+                  className={`flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2.5 rounded-full border transition-all ${
+                    linkCopiado
+                      ? "bg-green-500/10 border-green-500/30 text-green-600"
+                      : "border-border text-muted hover:text-foreground hover:border-foreground/30"
+                  }`}
+                >
+                  {linkCopiado ? (
+                    <>
+                      <Check className="w-4 h-4" /> Link copiado
+                    </>
+                  ) : (
+                    <>
+                      <Link2 className="w-4 h-4" /> Copiar link
                     </>
                   )}
                 </button>
