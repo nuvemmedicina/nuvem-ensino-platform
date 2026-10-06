@@ -184,8 +184,23 @@ export default async function AulasAoVivoPage({
 
   const dateLocale = locale === "pt" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US";
 
+  // O link do Meet e a gravação são do curso: o aluno só vê os encontros dos
+  // cursos em que está matriculado. Antes, qualquer conta logada (o cadastro é
+  // livre) via os links de todos os cursos publicados. A equipe vê todos.
+  const role = (session.user as { role?: string }).role;
+  const cuidaDoConteudo = role === "ADMIN" || role === "EDITOR" || role === "INSTRUCTOR";
+
   const liveSessions = await prisma.liveSession.findMany({
-    where: { course: { status: "PUBLISHED" } },
+    where: {
+      course: cuidaDoConteudo
+        ? { status: "PUBLISHED" }
+        : {
+            status: "PUBLISHED",
+            enrollments: {
+              some: { userId: session.user.id, status: { in: ["ACTIVE", "COMPLETED"] } },
+            },
+          },
+    },
     include: { course: { select: { title: true, slug: true } } },
     orderBy: { startAt: "asc" },
   });
