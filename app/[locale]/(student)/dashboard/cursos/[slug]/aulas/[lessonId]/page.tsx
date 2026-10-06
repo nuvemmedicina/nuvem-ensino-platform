@@ -11,7 +11,9 @@ export default async function LessonPage({ params }: Props) {
   const { slug, lessonId } = await params;
 
   const session = await auth();
-  if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard");
+  if (!session?.user?.id) {
+    redirect(`/entrar?callbackUrl=${encodeURIComponent(`/dashboard/cursos/${slug}/aulas/${lessonId}`)}`);
+  }
 
   const course = await prisma.course.findFirst({
     where: { slug },
