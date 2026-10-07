@@ -907,6 +907,50 @@
         "avaliar": "Evaluar el curso",
         "paginaPublica": "Ver la página pública del curso"
       }
+    },
+    "aula": {
+      "voltar": "Volver al curso",
+      "progresso": "{feitas} de {total} clases",
+      "aulas": "Clases",
+      "fecharIndice": "Cerrar la lista de clases",
+      "formato": "Formato de la clase",
+      "assistir": "Ver",
+      "ouvir": "Escuchar",
+      "audioTitulo": "Versión en audio de esta clase",
+      "playerProtegido": "Video aún no disponible",
+      "playerProtegidoTexto": "Esta clase se publicará pronto.",
+      "direitos": "Se prohíbe la reproducción total o parcial de las clases por cualquier medio (art. 184 del Código Penal y Ley n.º 9.610/98 de Brasil).",
+      "concluirProxima": "Completar e ir a la siguiente",
+      "concluir": "Completar clase",
+      "proxima": "Ir a la siguiente clase",
+      "concluida": "Clase completada",
+      "desmarcar": "Desmarcar",
+      "aSeguir": "Siguiente: {titulo}",
+      "anterior": "Clase anterior",
+      "copiarLink": "Copiar enlace",
+      "linkCopiado": "Enlace copiado",
+      "copieOLink": "Copia el enlace de la clase:",
+      "secoes": "Secciones de la clase",
+      "abas": {
+        "resumo": "Resumen",
+        "materiais": "Materiales",
+        "anotacoes": "Notas",
+        "discussao": "Discusión"
+      },
+      "semResumo": "Esta clase todavía no tiene resumen.",
+      "apostila": "Apunte del tema",
+      "referencias": "Referencias científicas del curso",
+      "semMateriais": "Esta clase no tiene materiales propios.",
+      "suasAnotacoes": "Tus notas de esta clase",
+      "anotacoesAjuda": "Solo tú ves lo que escribas aquí. Se guarda solo.",
+      "salvando": "Guardando…",
+      "salvo": "Guardado",
+      "indice": "Clases del módulo",
+      "verTodos": "Ver todos los módulos",
+      "parabens": "¡Felicitaciones! Curso completado.",
+      "parabensTexto": "Completaste todas las clases de",
+      "baixarCertificado": "Descargar certificado",
+      "continuarNoCurso": "Seguir en el curso"
     }
   }
 }

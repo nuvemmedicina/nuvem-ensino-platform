@@ -907,6 +907,50 @@
         "avaliar": "Avaliar o curso",
         "paginaPublica": "Ver página pública do curso"
       }
+    },
+    "aula": {
+      "voltar": "Voltar ao curso",
+      "progresso": "{feitas} de {total} aulas",
+      "aulas": "Aulas",
+      "fecharIndice": "Fechar a lista de aulas",
+      "formato": "Formato da aula",
+      "assistir": "Assistir",
+      "ouvir": "Ouvir",
+      "audioTitulo": "Versão em áudio desta aula",
+      "playerProtegido": "Vídeo ainda não disponível",
+      "playerProtegidoTexto": "Esta aula será publicada em breve.",
+      "direitos": "É proibida a reprodução total ou parcial das aulas por qualquer meio (art. 184 do CP e Lei nº 9.610/98).",
+      "concluirProxima": "Concluir e ir para a próxima",
+      "concluir": "Concluir aula",
+      "proxima": "Ir para a próxima aula",
+      "concluida": "Aula concluída",
+      "desmarcar": "Desmarcar",
+      "aSeguir": "A seguir: {titulo}",
+      "anterior": "Aula anterior",
+      "copiarLink": "Copiar link",
+      "linkCopiado": "Link copiado",
+      "copieOLink": "Copie o link da aula:",
+      "secoes": "Seções da aula",
+      "abas": {
+        "resumo": "Resumo",
+        "materiais": "Materiais",
+        "anotacoes": "Anotações",
+        "discussao": "Discussão"
+      },
+      "semResumo": "Esta aula ainda não tem resumo.",
+      "apostila": "Apostila do tópico",
+      "referencias": "Referências científicas do curso",
+      "semMateriais": "Esta aula não tem materiais próprios.",
+      "suasAnotacoes": "Suas anotações desta aula",
+      "anotacoesAjuda": "Só você vê o que escrever aqui. Salva sozinho.",
+      "salvando": "Salvando…",
+      "salvo": "Salvo",
+      "indice": "Aulas do módulo",
+      "verTodos": "Ver todos os módulos",
+      "parabens": "Parabéns! Curso concluído.",
+      "parabensTexto": "Você concluiu todas as aulas de",
+      "baixarCertificado": "Baixar certificado",
+      "continuarNoCurso": "Continuar no curso"
     }
   }
 }
