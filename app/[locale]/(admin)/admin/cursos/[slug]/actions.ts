@@ -367,6 +367,49 @@ export async function updateCourseTranslations(courseId: string, slug: string, f
   revalidatePath(`/cursos/${slug}`);
 }
 
+const CAMPOS_TRADUCAO = ["titleEs", "titleEn", "descriptionEs", "descriptionEn"] as const;
+type Traducao = Partial<Record<(typeof CAMPOS_TRADUCAO)[number], string | null>>;
+
+/** Só os campos do formulário que mudaram (vazio = volta a usar o português). */
+function traducaoAlterada(formData: FormData, prefixo: string, atual: Traducao) {
+  const data: Traducao = {};
+  for (const campo of CAMPOS_TRADUCAO) {
+    const bruto = formData.get(`${prefixo}:${campo}`);
+    if (bruto === null) continue;
+    const valor = (bruto as string).trim() || null;
+    if (valor !== (atual[campo] ?? null)) data[campo] = valor;
+  }
+  return Object.keys(data).length ? data : null;
+}
+
+/**
+ * Salva as traduções (ES/EN) de um módulo, dos temas e das aulas dele num
+ * envio só. Grava uma linha por vez e só as que mudaram: uma transação com
+ * dezenas de updates estoura o tempo limite do Neon.
+ */
+export async function salvarTraducoesModulo(moduleId: string, slug: string, formData: FormData) {
+  await requireAdmin();
+  const sel = { id: true, titleEs: true, titleEn: true, descriptionEs: true, descriptionEn: true } as const;
+  const modulo = await prisma.module.findUnique({
+    where: { id: moduleId },
+    select: { ...sel, topics: { select: { ...sel, lessons: { select: sel } } } },
+  });
+  if (!modulo) return;
+
+  const m = traducaoAlterada(formData, `m:${modulo.id}`, modulo);
+  if (m) await prisma.module.update({ where: { id: modulo.id }, data: m });
+  for (const tp of modulo.topics) {
+    const t = traducaoAlterada(formData, `t:${tp.id}`, tp);
+    if (t) await prisma.topic.update({ where: { id: tp.id }, data: t });
+    for (const a of tp.lessons) {
+      const l = traducaoAlterada(formData, `a:${a.id}`, a);
+      if (l) await prisma.lesson.update({ where: { id: a.id }, data: l });
+    }
+  }
+  revalidatePath(`/admin/cursos/${slug}`);
+  revalidatePath(`/dashboard/cursos/${slug}`);
+}
+
 // Atualiza dados do co-instrutor (quarto formulário)
 export async function updateCourseCoInstructor(courseId: string, slug: string, formData: FormData) {
   await requireAdmin();

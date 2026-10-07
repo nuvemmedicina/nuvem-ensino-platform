@@ -282,6 +282,11 @@ model Module {
   description String?
   order       Int
   releaseDate DateTime? // null = disponível imediatamente; data futura = drip content
+  // Traduções (vazias = usa o português)
+  titleEs       String?
+  titleEn       String?
+  descriptionEs String?
+  descriptionEn String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -299,6 +304,11 @@ model Topic {
   description String?
   order       Int      @default(0)
   apostilaUrl String?
+  // Traduções (vazias = usa o português)
+  titleEs       String?
+  titleEn       String?
+  descriptionEs String?
+  descriptionEn String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -348,6 +358,11 @@ model Lesson {
   liveUrl       String?
   liveDate      DateTime?
   content       String?    @db.Text
+  // Traduções (vazias = usa o português)
+  titleEs       String?
+  titleEn       String?
+  descriptionEs String? @db.Text
+  descriptionEn String? @db.Text
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 

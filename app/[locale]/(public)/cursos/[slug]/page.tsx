@@ -15,7 +15,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { localizedCourse } from "@/lib/i18n-content";
+import { localizedCourse, traduzirModulos } from "@/lib/i18n-content";
 import { auth } from "@/auth";
 import { LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
 import ShareButton from "./ShareButton";
@@ -95,7 +95,7 @@ export default async function CoursePage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "coursePage" });
   const tNav = await getTranslations({ locale, namespace: "nav" });
 
-  const course = await prisma.course.findFirst({
+  const courseRaw = await prisma.course.findFirst({
     where: { slug, status: "PUBLISHED" },
     include: {
       instructor: { include: { user: true } },
@@ -126,7 +126,9 @@ export default async function CoursePage({ params }: Props) {
     },
   });
 
-  if (!course) notFound();
+  if (!courseRaw) notFound();
+  // Módulos, temas e aulas no idioma da página (vazio = português)
+  const course = { ...courseRaw, modules: traduzirModulos(courseRaw.modules, locale) };
 
   // Verificar se o usuário está matriculado (para liberar vídeo de aula)
   const session = await auth();
