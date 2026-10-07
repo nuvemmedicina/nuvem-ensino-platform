@@ -3,166 +3,231 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
-import { Play, Award, BookOpen } from "lucide-react";
+import { Award, BookOpen, ExternalLink, PlayCircle } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
-function calcProgress(progress: { completed: boolean }[], totalLessons: number) {
-  if (totalLessons === 0) return 0;
-  return Math.round((progress.filter((p) => p.completed).length / totalLessons) * 100);
+function fmtDuracao(min: number) {
+  if (min < 60) return `${min} min`;
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return m ? `${h} h ${m} min` : `${h} h`;
+}
+
+type Aula = { id: string; title: string; duration: number | null; type: string; videoUrl: string | null; audioUrl: string | null; muxPlaybackId: string | null };
+
+function tipoDaAula(a: Aula): "video" | "audio" | "aoVivo" | "gravacao" | "leitura" | "emBreve" {
+  const temVideo = !!(a.muxPlaybackId || a.videoUrl);
+  const aoVivo = a.type === "LIVE" || /encontro s[ií]ncrono/i.test(a.title);
+  if (aoVivo) return temVideo ? "gravacao" : "aoVivo";
+  if (temVideo) return "video";
+  if (a.audioUrl) return "audio";
+  if (a.type === "TEXT") return "leitura";
+  return "emBreve";
 }
 
 export default async function MeusCursosPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "dashboard.courses" });
-  const tl = await getTranslations({ locale, namespace: "novaArea.listaCursos" });
+  const t = await getTranslations({ locale, namespace: "novaArea.paginas.meusCursos" });
+  const tc = await getTranslations({ locale, namespace: "novaArea.curso" });
 
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard/cursos");
 
-  const enrollments = await prisma.enrollment.findMany({
+  const matriculas = await prisma.enrollment.findMany({
     where: { userId: session.user.id, status: { in: ["ACTIVE", "COMPLETED"] } },
-    include: {
+    orderBy: { enrolledAt: "desc" },
+    select: {
+      id: true,
+      status: true,
+      certificate: { select: { id: true } },
+      progress: { select: { lessonId: true, completed: true } },
       course: {
-        include: {
-          instructor: { include: { user: { select: { name: true, image: true } } } },
-          modules: { include: { lessons: { select: { id: true } } } },
+        select: {
+          slug: true,
+          title: true,
+          hours: true,
+          contentUrl: true,
+          thumbnailUrl: true,
+          instructor: { select: { user: { select: { name: true, image: true } } } },
+          modules: {
+            orderBy: { order: "asc" },
+            select: {
+              releaseDate: true,
+              topics: {
+                orderBy: { order: "asc" },
+                select: {
+                  lessons: {
+                    orderBy: { order: "asc" },
+                    select: { id: true, title: true, duration: true, type: true, videoUrl: true, audioUrl: true, muxPlaybackId: true },
+                  },
+                },
+              },
+            },
+          },
         },
       },
-      progress: { select: { lessonId: true, completed: true } },
     },
-    orderBy: { enrolledAt: "desc" },
   });
 
-  const active    = enrollments.filter((e) => e.status === "ACTIVE");
-  const completed = enrollments.filter((e) => e.status === "COMPLETED");
+  const agora = new Date();
+  const cursos = matriculas.map((m) => {
+    const feitas = new Set(m.progress.filter((p) => p.completed).map((p) => p.lessonId));
+    const todas = m.course.modules.flatMap((mod) => mod.topics.flatMap((tp) => tp.lessons));
+    const proxima =
+      m.course.modules
+        .filter((mod) => !mod.releaseDate || mod.releaseDate <= agora)
+        .flatMap((mod) => mod.topics.flatMap((tp) => tp.lessons))
+        .find((a) => !feitas.has(a.id)) ?? null;
+    const concluidas = todas.filter((a) => feitas.has(a.id)).length;
+    return {
+      m,
+      total: todas.length,
+      concluidas,
+      pct: todas.length ? Math.round((concluidas / todas.length) * 100) : 0,
+      proxima,
+      externo: !!m.course.contentUrl && todas.length === 0,
+    };
+  });
 
-  if (enrollments.length === 0) {
+  const emAndamento = cursos.filter((c) => c.m.status === "ACTIVE");
+  const concluidos = cursos.filter((c) => c.m.status === "COMPLETED");
+
+  // Função comum, não componente: um componente criado dentro do render seria
+  // recriado a cada renderização.
+  const linha = (c: (typeof cursos)[number]) => {
+    const capa = c.m.course.thumbnailUrl ?? c.m.course.instructor.user.image;
+    const concluido = c.m.status === "COMPLETED";
     return (
-      <div>
-        <h1 className="font-serif text-2xl font-medium text-foreground mb-8">{t("title")}</h1>
-        <div className="flex flex-col items-center justify-center py-20 text-center bg-surface border border-border rounded-2xl">
-          <BookOpen className="w-12 h-12 text-muted/30 mb-4" />
-          <p className="font-serif text-xl text-foreground/40 mb-2">{t("emptyTitle")}</p>
-          <p className="font-sans text-sm text-muted mb-6">{t("emptyDesc")}</p>
-          <Link href="/cursos" className="font-sans text-sm font-semibold px-6 py-3 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors">
-            {t("viewCourses")}
+      <li key={c.m.id} className="bg-surface border border-border rounded-2xl p-4 sm:p-5 flex flex-wrap gap-5 items-center">
+        <Link href={`/dashboard/cursos/${c.m.course.slug}`} className="relative w-20 h-28 sm:w-24 sm:h-32 shrink-0 rounded-xl overflow-hidden bg-canvas" tabIndex={-1} aria-hidden="true">
+          {capa ? (
+            <Image src={capa} alt="" fill sizes="96px" className="object-cover" />
+          ) : (
+            <BookOpen className="absolute inset-0 m-auto w-7 h-7 text-white/40" />
+          )}
+        </Link>
+
+        <div className="flex-1 min-w-[min(100%,18rem)] flex flex-col gap-2">
+          <Link href={`/dashboard/cursos/${c.m.course.slug}`} className="font-serif text-2xl font-medium text-foreground leading-snug hover:text-primary text-balance">
+            {c.m.course.title}
+          </Link>
+          <p className="font-sans text-sm text-muted">
+            {c.m.course.instructor.user.name} · {c.m.course.hours}h
+          </p>
+
+          {concluido ? (
+            <p className="inline-flex items-center gap-1.5 font-sans text-sm font-semibold text-green-800">
+              <Award className="w-4 h-4" aria-hidden="true" />
+              {t("concluido")}
+            </p>
+          ) : c.externo ? (
+            <p className="font-sans text-sm text-muted">{t("externo")}</p>
+          ) : (
+            <>
+              <div className="flex items-center gap-3 max-w-md">
+                <span className="flex-1 h-1.5 rounded-full bg-border/60">
+                  <span className="block h-full rounded-full bg-primary" style={{ width: `${c.pct}%` }} />
+                </span>
+                <span className="font-sans text-sm text-muted tabular-nums shrink-0">
+                  {t("aulas", { feitas: c.concluidas, total: c.total })} · {c.pct}%
+                </span>
+              </div>
+              {c.proxima ? (
+                <p className="font-sans text-sm text-foreground">
+                  <span className="text-muted">{t("proxima")}: </span>
+                  {c.proxima.title.trim()}
+                  <span className="text-muted">
+                    {" "}· {tc(`tipo.${tipoDaAula(c.proxima)}`)}
+                    {c.proxima.duration ? ` · ${fmtDuracao(c.proxima.duration)}` : ""}
+                  </span>
+                </p>
+              ) : (
+                <p className="font-sans text-sm text-muted">{t("tudoFeito")}</p>
+              )}
+            </>
+          )}
+        </div>
+
+        <div className="flex flex-wrap gap-2.5 w-full sm:w-auto">
+          {concluido && c.m.certificate ? (
+            <Link
+              href="/dashboard/certificados"
+              className="inline-flex items-center gap-2 min-h-[44px] px-5 rounded-full border border-amber-700/30 text-amber-900 font-sans text-sm font-semibold hover:bg-amber-50"
+            >
+              <Award className="w-4 h-4" aria-hidden="true" />
+              {t("verCertificado")}
+            </Link>
+          ) : c.externo ? (
+            <a
+              href={c.m.course.contentUrl!}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 min-h-[44px] px-5 rounded-full bg-primary text-white font-sans text-sm font-semibold hover:bg-primary/90"
+            >
+              {t("entrarAula")}
+              <ExternalLink className="w-3.5 h-3.5 opacity-70" aria-hidden="true" />
+            </a>
+          ) : (
+            !concluido &&
+            c.proxima && (
+              <Link
+                href={`/dashboard/cursos/${c.m.course.slug}/aulas/${c.proxima.id}`}
+                className="inline-flex items-center gap-2 min-h-[44px] px-5 rounded-full bg-primary text-white font-sans text-sm font-semibold hover:bg-primary/90"
+              >
+                <PlayCircle className="w-4 h-4" aria-hidden="true" />
+                {c.concluidas > 0 ? t("continuar") : t("comecar")}
+              </Link>
+            )
+          )}
+          <Link
+            href={`/dashboard/cursos/${c.m.course.slug}`}
+            className="inline-flex items-center min-h-[44px] px-5 rounded-full border border-border text-foreground font-sans text-sm hover:border-primary/40"
+          >
+            {t("abrirCurso")}
           </Link>
         </div>
-      </div>
+      </li>
     );
-  }
-
-  return (
-    <div className="-mx-6 -mt-6 lg:-mx-8 lg:-mt-8">
-      {/* ── Em andamento — fundo branco ── */}
-      {active.length > 0 && (
-        <section className="px-6 lg:px-8 py-10 bg-white">
-          <h2 className="font-serif text-xl font-medium text-foreground mb-6">{tl("emAndamento")}</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {active.map((e) => {
-              const total = e.course.modules.reduce((s, m) => s + m.lessons.length, 0);
-              const pct   = calcProgress(e.progress, total);
-              return <PosterCard key={e.id} enrollment={e} pct={pct} total={total} />;
-            })}
-          </div>
-        </section>
-      )}
-
-      {/* ── Concluídos — fundo cinza ── */}
-      {completed.length > 0 && (
-        <section className="px-6 lg:px-8 py-10 bg-background">
-          <h2 className="font-serif text-xl font-medium text-foreground mb-6">{tl("concluidos")}</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {completed.map((e) => {
-              const total = e.course.modules.reduce((s, m) => s + m.lessons.length, 0);
-              return <PosterCard key={e.id} enrollment={e} pct={100} total={total} done rotuloConcluido={tl("concluido")} />;
-            })}
-          </div>
-        </section>
-      )}
-    </div>
-  );
-}
-
-// ── Componente de pôster ───────────────────────────────────────────────────────
-function PosterCard({
-  enrollment: e,
-  pct,
-  total,
-  done,
-  rotuloConcluido,
-}: {
-  enrollment: {
-    course: {
-      slug: string;
-      title: string;
-      hours: number;
-      thumbnailUrl: string | null;
-      instructor: { user: { name: string | null; image: string | null } };
-    };
   };
-  pct: number;
-  total: number;
-  done?: boolean;
-  rotuloConcluido?: string;
-}) {
-  const thumb = e.course.thumbnailUrl ?? e.course.instructor.user.image;
 
   return (
-    <Link
-      href={`/dashboard/cursos/${e.course.slug}`}
-      className="group relative flex flex-col rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-[#1c1c1c] border border-white/10"
-    >
-      {/* Poster image — proporção 2:3 */}
-      <div className="relative w-full" style={{ paddingBottom: "140%" }}>
-        {thumb ? (
-          <Image
-            src={thumb}
-            alt={e.course.title}
-            fill
-            className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-          />
+    <div className="-mx-6 -mt-6 lg:-mx-8 lg:-mt-8 min-h-screen bg-background">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-12 flex flex-col gap-8">
+        <div>
+          <h1 className="font-serif text-4xl font-medium text-foreground leading-tight">{t("titulo")}</h1>
+          {cursos.length > 0 && <p className="font-sans text-[15px] text-muted mt-1">{t("subtitulo", { count: cursos.length })}</p>}
+        </div>
+
+        {cursos.length === 0 ? (
+          <section className="bg-surface border border-border rounded-2xl px-6 py-12 flex flex-col items-center text-center gap-3">
+            <BookOpen className="w-10 h-10 text-muted/50" aria-hidden="true" />
+            <p className="font-serif text-2xl text-foreground">{t("vazioTitulo")}</p>
+            <p className="font-sans text-sm text-muted">{t("vazioTexto")}</p>
+            <Link href="/cursos" className="mt-2 inline-flex items-center min-h-[48px] px-6 rounded-full bg-primary text-white font-sans text-sm font-semibold">
+              {t("verCatalogo")}
+            </Link>
+          </section>
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-canvas flex items-center justify-center">
-            <BookOpen className="w-10 h-10 text-primary/40" />
-          </div>
+          <>
+            {emAndamento.length > 0 && (
+              <section aria-labelledby="em-andamento" className="flex flex-col gap-3">
+                <h2 id="em-andamento" className="font-sans text-lg font-semibold text-foreground">{t("emAndamento")}</h2>
+                <ul className="flex flex-col gap-3">
+                  {emAndamento.map(linha)}
+                </ul>
+              </section>
+            )}
+            {concluidos.length > 0 && (
+              <section aria-labelledby="concluidos" className="flex flex-col gap-3">
+                <h2 id="concluidos" className="font-sans text-lg font-semibold text-foreground">{t("concluidos")}</h2>
+                <ul className="flex flex-col gap-3">
+                  {concluidos.map(linha)}
+                </ul>
+              </section>
+            )}
+          </>
         )}
-
-        {/* Gradiente inferior */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-        {/* Badge concluído */}
-        {done && (
-          <div className="absolute top-2.5 right-2.5 flex items-center gap-1 bg-green-500 text-white font-sans text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
-            <Award className="w-3 h-3" /> {rotuloConcluido}
-          </div>
-        )}
-
-        {/* Play overlay */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <div className="w-12 h-12 rounded-full bg-white/95 shadow-lg flex items-center justify-center">
-            <Play className="w-5 h-5 fill-primary text-primary ml-0.5" />
-          </div>
-        </div>
-
-        {/* Título + info sobre o gradiente */}
-        <div className="absolute bottom-0 left-0 right-0 px-3 pb-3 pt-8 bg-gradient-to-t from-black via-black/60 to-transparent">
-          <h3 className="font-sans text-xs font-semibold text-white leading-snug line-clamp-2 drop-shadow mb-1">
-            {e.course.title}
-          </h3>
-          <p className="font-sans text-[10px] text-white/50 truncate mb-2">
-            {e.course.instructor.user.name} · {e.course.hours}h
-          </p>
-          {/* Barra de progresso */}
-          <div className="h-0.5 bg-white/20 rounded-full overflow-hidden">
-            <div
-              className={`h-full rounded-full transition-all duration-500 ${done ? "bg-green-400" : "bg-primary"}`}
-              style={{ width: `${pct}%` }}
-            />
-          </div>
-        </div>
       </div>
-    </Link>
+    </div>
   );
 }

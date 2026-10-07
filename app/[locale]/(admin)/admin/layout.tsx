@@ -31,24 +31,26 @@ export default async function AdminLayout({
     .toUpperCase();
 
   // Only serializable values passed to client component
+  // Agrupado por assunto: com 17 itens soltos, achar a página certa dependia
+  // de ler a lista inteira.
   const navItems = [
-    { key: "overview",     href: "/admin",               exact: true,  label: t("overview") },
-    { key: "courses",      href: "/admin/cursos",                       label: t("courses") },
-    { key: "enrollments",  href: "/admin/matriculas",                   label: t("enrollments") },
-    { key: "payments",     href: "/admin/pagamentos",                    label: "Pagamentos" },
-    { key: "users",        href: "/admin/usuarios",                     label: t("users") },
-    { key: "instructors",  href: "/admin/instrutores",                  label: t("instructors") },
-    { key: "liveSessions", href: "/admin/aulas-ao-vivo",                label: t("liveSessions") },
-    { key: "reports",      href: "/admin/relatorios",                   label: t("reports") },
-    { key: "evaluations",  href: "/admin/avaliacoes",                   label: "Avaliações" },
-    { key: "coupons",      href: "/admin/cupons",                        label: "Cupons" },
-    { key: "emails",       href: "/admin/emails",                        label: "E-mails" },
-    { key: "liveLeads",   href: "/admin/live-leads",                    label: "Inscrições Live" },
-    { key: "flashcards",  href: "/admin/flashcards",                    label: "Flashcards" },
-    { key: "settings",     href: "/admin/configuracoes/pagamentos",     label: t("settings") },
-    { key: "ai",           href: "/admin/configuracoes/ia",             label: "Config. IA" },
-    { key: "studentArea",  href: "/admin/configuracoes/area-do-aluno",  label: "Nova área do aluno" },
-    { key: "rag",          href: "/admin/rag",                          label: "Base IA (RAG)" },
+    { key: "overview",     href: "/admin",                              exact: true, label: t("overview") },
+    { key: "courses",      href: "/admin/cursos",                       grupo: "Ensino", label: t("courses") },
+    { key: "instructors",  href: "/admin/instrutores",                  grupo: "Ensino", label: t("instructors") },
+    { key: "liveSessions", href: "/admin/aulas-ao-vivo",                grupo: "Ensino", label: t("liveSessions") },
+    { key: "evaluations",  href: "/admin/avaliacoes",                   grupo: "Ensino", label: "Avaliações" },
+    { key: "flashcards",   href: "/admin/flashcards",                   grupo: "Ensino", label: "Flashcards" },
+    { key: "rag",          href: "/admin/rag",                          grupo: "Ensino", label: "Base IA (RAG)" },
+    { key: "users",        href: "/admin/usuarios",                     grupo: "Alunos", label: t("users") },
+    { key: "enrollments",  href: "/admin/matriculas",                   grupo: "Alunos", label: t("enrollments") },
+    { key: "liveLeads",    href: "/admin/live-leads",                   grupo: "Alunos", label: "Inscrições Live" },
+    { key: "emails",       href: "/admin/emails",                       grupo: "Alunos", label: "E-mails" },
+    { key: "payments",     href: "/admin/pagamentos",                   grupo: "Vendas", label: "Pagamentos" },
+    { key: "coupons",      href: "/admin/cupons",                       grupo: "Vendas", label: "Cupons" },
+    { key: "reports",      href: "/admin/relatorios",                   grupo: "Vendas", label: t("reports") },
+    { key: "settings",     href: "/admin/configuracoes/pagamentos",     grupo: "Configurações", label: "Mercado Pago" },
+    { key: "ai",           href: "/admin/configuracoes/ia",             grupo: "Configurações", label: "Inteligência artificial" },
+    { key: "studentArea",  href: "/admin/configuracoes/area-do-aluno",  grupo: "Configurações", label: "Nova área do aluno" },
   ];
 
   return (

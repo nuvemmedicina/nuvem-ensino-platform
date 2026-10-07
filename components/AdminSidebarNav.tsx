@@ -14,6 +14,12 @@ import {
   Ticket,
   Layers,
   Radio,
+  CreditCard,
+  Star,
+  Mail,
+  Brain,
+  Database,
+  LayoutTemplate,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -29,10 +35,15 @@ const ICONS: Record<string, LucideIcon> = {
   liveLeads:    Radio,
   flashcards:   Layers,
   settings:     Settings,
-  ai:           Settings,
+  ai:           Brain,
+  payments:     CreditCard,
+  evaluations:  Star,
+  emails:       Mail,
+  rag:          Database,
+  studentArea:  LayoutTemplate,
 };
 
-type NavItem = { key: string; href: string; exact?: boolean; label: string };
+type NavItem = { key: string; href: string; exact?: boolean; label: string; grupo?: string };
 
 function NavLink({ item }: { item: NavItem }) {
   const pathname = usePathname();
@@ -64,10 +75,25 @@ function NavLink({ item }: { item: NavItem }) {
 }
 
 export function AdminSidebarNav({ items }: { items: NavItem[] }) {
+  // Itens em ordem; um título de grupo aparece sempre que o grupo muda
+  const blocos: { grupo?: string; itens: NavItem[] }[] = [];
+  for (const item of items) {
+    const ultimo = blocos[blocos.length - 1];
+    if (ultimo && ultimo.grupo === item.grupo) ultimo.itens.push(item);
+    else blocos.push({ grupo: item.grupo, itens: [item] });
+  }
+
   return (
-    <nav className="flex-1 px-3 py-4 flex flex-col gap-0.5">
-      {items.map((item) => (
-        <NavLink key={item.href} item={item} />
+    <nav aria-label="Menu do painel" className="flex-1 px-3 py-4 flex flex-col gap-4">
+      {blocos.map((bloco) => (
+        <div key={bloco.grupo ?? "inicio"} className="flex flex-col gap-0.5">
+          {bloco.grupo && (
+            <p className="px-3 pb-1 font-sans text-xs font-semibold uppercase tracking-wider text-muted/80">{bloco.grupo}</p>
+          )}
+          {bloco.itens.map((item) => (
+            <NavLink key={item.href} item={item} />
+          ))}
+        </div>
       ))}
     </nav>
   );
