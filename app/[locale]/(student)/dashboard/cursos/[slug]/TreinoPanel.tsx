@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { Dumbbell, CheckCircle, XCircle, Lightbulb, ChevronRight, RotateCcw } from "lucide-react";
 import { iniciarTreino, responderTreino, type QuestaoTreino } from "./practiceActions";
+import { useTranslations } from "next-intl";
 
 type Feedback = {
   acertou: boolean;
@@ -14,6 +15,7 @@ type Feedback = {
 const LETRAS = ["A", "B", "C", "D", "E"];
 
 export function TreinoPanel({ quizId, moduleTitle }: { quizId: string; moduleTitle: string }) {
+  const t = useTranslations("novaArea.componentes.treino");
   const [fase, setFase] = useState<"convite" | "treino" | "fim">("convite");
   const [questoes, setQuestoes] = useState<QuestaoTreino[]>([]);
   const [indice, setIndice] = useState(0);
@@ -78,11 +80,11 @@ export function TreinoPanel({ quizId, moduleTitle }: { quizId: string; moduleTit
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted mb-0.5">
-            Treino — {moduleTitle}
+            {t("rotulo", { modulo: moduleTitle })}
           </p>
-          <p className="font-sans text-sm text-foreground">Pratique sem valer nota</p>
+          <p className="font-sans text-sm text-foreground">{t("titulo")}</p>
           <p className="font-sans text-xs text-muted mt-0.5">
-            Questões do módulo com a explicação logo após cada resposta. Não conta tentativa nem nota.
+            {t("texto")}
           </p>
           {erro && <p className="font-sans text-xs text-red-500 mt-1.5">{erro}</p>}
         </div>
@@ -91,7 +93,7 @@ export function TreinoPanel({ quizId, moduleTitle }: { quizId: string; moduleTit
           disabled={pendente}
           className="shrink-0 flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2.5 rounded-xl border border-primary/30 text-primary hover:bg-primary/10 disabled:opacity-50 transition-colors"
         >
-          {pendente ? "Preparando…" : "Treinar"}
+          {pendente ? t("preparando") : t("treinar")}
           {!pendente && <ChevronRight className="w-4 h-4" />}
         </button>
       </div>
@@ -112,10 +114,10 @@ export function TreinoPanel({ quizId, moduleTitle }: { quizId: string; moduleTit
         <div className="px-5 py-5">
           <div className="flex items-center justify-between mb-4">
             <span className="font-sans text-xs font-bold text-muted uppercase tracking-wider">
-              Treino · {indice + 1} de {questoes.length}
+              {t("contador", { atual: indice + 1, total: questoes.length })}
             </span>
             <span className="font-sans text-[11px] text-muted">
-              {acertos} acerto{acertos !== 1 ? "s" : ""} até aqui
+              {t("acertos", { count: acertos })}
             </span>
           </div>
 
@@ -182,7 +184,7 @@ export function TreinoPanel({ quizId, moduleTitle }: { quizId: string; moduleTit
                   feedback.acertou ? "text-green-700" : "text-red-600"
                 }`}
               >
-                {feedback.acertou ? "Você acertou" : "Resposta correta: " + feedback.textoCorreto}
+                {feedback.acertou ? t("voceAcertou") : t("respostaCorreta", { texto: feedback.textoCorreto })}
               </p>
               {feedback.justificativa && (
                 <div className="flex items-start gap-2">
@@ -194,7 +196,7 @@ export function TreinoPanel({ quizId, moduleTitle }: { quizId: string; moduleTit
                 onClick={proxima}
                 className="mt-3 flex items-center gap-1.5 font-sans text-sm font-semibold px-4 py-2 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors"
               >
-                {ultima ? "Terminar treino" : "Próxima"}
+                {ultima ? t("terminar") : t("proxima")}
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -213,13 +215,13 @@ export function TreinoPanel({ quizId, moduleTitle }: { quizId: string; moduleTit
       </div>
       <div>
         <p className="font-sans text-sm font-bold uppercase tracking-widest text-primary mb-1">
-          Treino concluído
+          {t("concluido")}
         </p>
         <p className="font-sans text-3xl font-bold text-foreground">
-          {acertos} de {questoes.length}
+          {t("placar", { acertos, total: questoes.length })}
         </p>
         <p className="font-sans text-xs text-muted mt-1">
-          {pct}% de acerto · não conta como tentativa da prova
+          {t("taxa", { pct })}
         </p>
       </div>
       <div className="flex items-center gap-3 flex-wrap justify-center">
@@ -229,17 +231,17 @@ export function TreinoPanel({ quizId, moduleTitle }: { quizId: string; moduleTit
           className="flex items-center gap-2 font-sans text-sm font-semibold px-5 py-2.5 rounded-xl border border-primary/30 text-primary hover:bg-primary/10 disabled:opacity-50 transition-colors"
         >
           <RotateCcw className="w-4 h-4" />
-          {pendente ? "Preparando…" : "Treinar de novo"}
+          {pendente ? t("preparando") : t("deNovo")}
         </button>
         <button
           onClick={() => setFase("convite")}
           className="font-sans text-xs text-muted hover:text-foreground transition-colors"
         >
-          Fechar
+          {t("fechar")}
         </button>
       </div>
       <p className="font-sans text-[11px] text-muted max-w-sm">
-        No próximo treino, as questões que você ainda não acertou vêm primeiro.
+        {t("ordem")}
       </p>
     </div>
   );

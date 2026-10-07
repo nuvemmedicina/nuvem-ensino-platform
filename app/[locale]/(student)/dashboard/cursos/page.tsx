@@ -14,6 +14,7 @@ function calcProgress(progress: { completed: boolean }[], totalLessons: number) 
 export default async function MeusCursosPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "dashboard.courses" });
+  const tl = await getTranslations({ locale, namespace: "novaArea.listaCursos" });
 
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard/cursos");
@@ -56,7 +57,7 @@ export default async function MeusCursosPage({ params }: { params: Promise<{ loc
       {/* ── Em andamento — fundo branco ── */}
       {active.length > 0 && (
         <section className="px-6 lg:px-8 py-10 bg-white">
-          <h2 className="font-serif text-xl font-medium text-foreground mb-6">Em andamento</h2>
+          <h2 className="font-serif text-xl font-medium text-foreground mb-6">{tl("emAndamento")}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {active.map((e) => {
               const total = e.course.modules.reduce((s, m) => s + m.lessons.length, 0);
@@ -70,11 +71,11 @@ export default async function MeusCursosPage({ params }: { params: Promise<{ loc
       {/* ── Concluídos — fundo cinza ── */}
       {completed.length > 0 && (
         <section className="px-6 lg:px-8 py-10 bg-background">
-          <h2 className="font-serif text-xl font-medium text-foreground mb-6">Concluídos</h2>
+          <h2 className="font-serif text-xl font-medium text-foreground mb-6">{tl("concluidos")}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {completed.map((e) => {
               const total = e.course.modules.reduce((s, m) => s + m.lessons.length, 0);
-              return <PosterCard key={e.id} enrollment={e} pct={100} total={total} done />;
+              return <PosterCard key={e.id} enrollment={e} pct={100} total={total} done rotuloConcluido={tl("concluido")} />;
             })}
           </div>
         </section>
@@ -89,6 +90,7 @@ function PosterCard({
   pct,
   total,
   done,
+  rotuloConcluido,
 }: {
   enrollment: {
     course: {
@@ -102,6 +104,7 @@ function PosterCard({
   pct: number;
   total: number;
   done?: boolean;
+  rotuloConcluido?: string;
 }) {
   const thumb = e.course.thumbnailUrl ?? e.course.instructor.user.image;
 
@@ -132,7 +135,7 @@ function PosterCard({
         {/* Badge concluído */}
         {done && (
           <div className="absolute top-2.5 right-2.5 flex items-center gap-1 bg-green-500 text-white font-sans text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
-            <Award className="w-3 h-3" /> Concluído
+            <Award className="w-3 h-3" /> {rotuloConcluido}
           </div>
         )}
 

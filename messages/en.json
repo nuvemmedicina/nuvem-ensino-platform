@@ -906,7 +906,8 @@
         "coordenacao": "Course director",
         "avaliar": "Rate the course",
         "paginaPublica": "View the public course page"
-      }
+      },
+      "fuso": "Brasília time"
     },
     "aula": {
       "voltar": "Back to course",
@@ -992,6 +993,178 @@
       "tudoConcluido": "You have completed every available lesson.",
       "conquistasTitulo": "Achievements",
       "conquistasSubtitulo": "Your points, your study streak and your certificates."
+    },
+    "componentes": {
+      "prova": {
+        "rotulo": "Exam",
+        "aprovado": "Passed",
+        "disponivelEm": "Available on {data}",
+        "prazoEncerrado": "Deadline passed",
+        "esgotadas": "No attempts left",
+        "pendente": "Pending",
+        "questoes": "{count, plural, one {# question} other {# questions}}",
+        "sorteadas": "drawn from {total}",
+        "minimo": "{nota}% to pass",
+        "melhor": "Best: {acertos}/{total} ({pct}%)",
+        "tentativasUsadas": "{usadas}/{max} attempts used",
+        "sorteioAviso": "Each student gets a different selection. If you need to try again, the questions will be different.",
+        "preparando": "Preparing…",
+        "tentarNovamente": "Try again",
+        "fazerProva": "Take the exam",
+        "restantes": "{count, plural, one {# attempt left} other {# attempts left}}",
+        "restantesCurto": "({count, plural, one {# left} other {# left}})",
+        "cancelar": "Cancel",
+        "enviando": "Submitting…",
+        "enviar": "Submit answers",
+        "proxima": "Next",
+        "aprovadoExcl": "Passed!",
+        "naoAtingiu": "Below the passing score",
+        "corretas": "{acertos} of {total} questions correct",
+        "minimoResultado": "to pass: {nota}%",
+        "concluido": "Done",
+        "agoraNao": "Not now",
+        "fechar": "Close",
+        "revisao": "Review · {count, plural, one {# question to review} other {# questions to review}}",
+        "revisaoAjuda": "Only the questions you missed, with the explanation for each answer.",
+        "suaResposta": "Your answer",
+        "emBranco": "— blank —",
+        "correta": "Correct",
+        "proximaTentativa": "On your next attempt you will get different questions.",
+        "guarde": "Keep these explanations: they sum up the key points of the module."
+      },
+      "treino": {
+        "rotulo": "Practice — {modulo}",
+        "titulo": "Practice without a grade",
+        "texto": "Module questions with the explanation right after each answer. Does not count as an attempt or a grade.",
+        "preparando": "Preparing…",
+        "treinar": "Practice",
+        "contador": "Practice · {atual} of {total}",
+        "acertos": "{count, plural, one {# correct so far} other {# correct so far}}",
+        "voceAcertou": "Correct",
+        "respostaCorreta": "Correct answer: {texto}",
+        "terminar": "Finish practice",
+        "proxima": "Next",
+        "concluido": "Practice complete",
+        "placar": "{acertos} of {total}",
+        "taxa": "{pct}% correct · does not count as an exam attempt",
+        "deNovo": "Practice again",
+        "fechar": "Close",
+        "ordem": "Next time, the questions you have not answered correctly yet come first."
+      },
+      "feedback": {
+        "pergunta": "Was this lesson useful to you?",
+        "obrigada": "Thanks for your answer!",
+        "sim": "Yes",
+        "nao": "No",
+        "oQueFuncionou": "Want to tell us what worked well? (optional)",
+        "oQueFaltou": "What was missing from this lesson? (optional)",
+        "umaLinha": "Write it in one line",
+        "enviar": "Send"
+      },
+      "convite": {
+        "titulo": "You completed {modulo}. How did it go?",
+        "texto": "It takes a minute and helps improve the next lessons. You rate the course and each instructor separately.",
+        "avaliar": "Rate"
+      },
+      "quiz": {
+        "rotulo": "Quiz",
+        "resultado": "{acertos} of {total} correct — {pct}%",
+        "parabens": "Well done! You did well on the quiz.",
+        "continue": "Keep studying and try again.",
+        "tentarNovamente": "Try again",
+        "faltam": "Answer every question before submitting ({count, plural, one {# unanswered} other {# unanswered}}).",
+        "erro": "Could not submit the quiz. Please try again.",
+        "enviando": "Submitting…",
+        "enviar": "Submit answers"
+      },
+      "comentarios": {
+        "titulo": "Comments",
+        "carregando": "Loading…",
+        "vazio": "No comments yet. Be the first!",
+        "aluno": "Student",
+        "admin": "Admin",
+        "instrutor": "Instructor",
+        "responder": "Reply",
+        "responderA": "Reply to {nome}…",
+        "cancelar": "Cancel",
+        "placeholder": "Leave a question or comment… (Enter to send)",
+        "enviar": "Send",
+        "agora": "now"
+      },
+      "dominio": {
+        "rotulo": "Your mastery by topic",
+        "resumo": "{acertos} correct out of {total} questions answered",
+        "geral": "{pct}% overall",
+        "investir": "Where to focus now: <forte>{tema}</forte>, your topic with the most errors ({pct}% correct)."
+      },
+      "jogo": {
+        "rotulo": "Clinical case game",
+        "titulo": "Practice interpreting SIBO, IMO and intolerances",
+        "texto": "Drag the cards, read the H₂/CH₄ curve and get feedback case by case — 30 cases."
+      },
+      "concluirCurso": {
+        "confirmar": "Confirm your participation and generate the completion certificate?",
+        "emitido": "Certificate issued! Find it in Achievements.",
+        "processando": "Processing…",
+        "botao": "Mark as completed and generate certificate"
+      },
+      "progresso": {
+        "titulo": "Your progress",
+        "conquistasContagem": "{feitas} of {total} achievements",
+        "pontos": "Points",
+        "ofensiva": "Streak",
+        "dias": "{count, plural, one {day} other {days}}",
+        "diasValor": "{count, plural, one {# day} other {# days}}",
+        "manter": "Study today to keep your streak.",
+        "interrompida": "Your streak was broken — start again today.",
+        "comecar": "Complete a lesson to get started.",
+        "melhorSequencia": "Best streak",
+        "diasEstudados": "Days studied",
+        "conquistas": "Achievements",
+        "itens": {
+          "aulas": "Lessons completed",
+          "sessoesFlashcards": "Flashcard sessions",
+          "cardsRevisados": "Cards reviewed",
+          "provasAprovadas": "Exams passed",
+          "dePrimeira": "Passed on the first try",
+          "semErro": "Perfect exam",
+          "certificados": "Certificates",
+          "treino": "Questions mastered in practice"
+        },
+        "medalhas": {
+          "primeira-prova": {
+            "nome": "First achievement",
+            "descricao": "Passed a module exam"
+          },
+          "de-primeira": {
+            "nome": "First try",
+            "descricao": "Passed without needing a second attempt"
+          },
+          "sem-erro": {
+            "nome": "Clean sheet",
+            "descricao": "A whole exam without a single mistake"
+          },
+          "constante": {
+            "nome": "Consistency",
+            "descricao": "7 days in a row studying",
+            "detalhe": "best streak: {count, plural, one {# day} other {# days}}"
+          },
+          "curso-completo": {
+            "nome": "Course complete",
+            "descricao": "Passed all four course exams",
+            "detalhe": "{feitas} of 4"
+          },
+          "certificado": {
+            "nome": "Certificate in hand",
+            "descricao": "Completed a course and issued the certificate"
+          }
+        }
+      }
+    },
+    "listaCursos": {
+      "emAndamento": "In progress",
+      "concluidos": "Completed",
+      "concluido": "Completed"
     }
   }
 }

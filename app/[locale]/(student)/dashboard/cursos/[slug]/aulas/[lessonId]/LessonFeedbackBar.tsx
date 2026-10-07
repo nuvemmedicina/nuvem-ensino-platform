@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from "react";
 import { ThumbsUp, ThumbsDown, Check, Loader2 } from "lucide-react";
 import { salvarFeedbackAula } from "./feedbackActions";
+import { useTranslations } from "next-intl";
 
 type Props = {
   lessonId: string;
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export function LessonFeedbackBar({ lessonId, inicial }: Props) {
+  const t = useTranslations("novaArea.componentes.feedback");
   const [util, setUtil] = useState<boolean | null>(inicial?.useful ?? null);
   const [texto, setTexto] = useState(inicial?.suggestion ?? "");
   const [abrirTexto, setAbrirTexto] = useState(false);
@@ -69,12 +71,12 @@ export function LessonFeedbackBar({ lessonId, inicial }: Props) {
     <div className="rounded-2xl border border-border bg-surface px-5 py-4">
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <p className="font-sans text-sm font-medium text-foreground">
-          {util === null ? "Esta aula foi útil para você?" : "Obrigada pela resposta!"}
+          {util === null ? t("pergunta") : t("obrigada")}
         </p>
 
         <div className="flex items-center gap-2">
-          {botao(true, ThumbsUp, "Sim")}
-          {botao(false, ThumbsDown, "Não")}
+          {botao(true, ThumbsUp, t("sim"))}
+          {botao(false, ThumbsDown, t("nao"))}
           {isPending && <Loader2 className="w-3.5 h-3.5 animate-spin text-muted" />}
           {salvo && !isPending && <Check className="w-4 h-4 text-green-600" />}
         </div>
@@ -84,8 +86,8 @@ export function LessonFeedbackBar({ lessonId, inicial }: Props) {
         <div className="mt-3 pt-3 border-t border-border/60">
           <label className="font-sans text-xs text-muted block mb-2">
             {util
-              ? "Quer contar o que funcionou bem? (opcional)"
-              : "O que faltou nesta aula? (opcional)"}
+              ? t("oQueFuncionou")
+              : t("oQueFaltou")}
           </label>
           <div className="flex flex-col sm:flex-row gap-2">
             <input
@@ -93,7 +95,7 @@ export function LessonFeedbackBar({ lessonId, inicial }: Props) {
               value={texto}
               onChange={(e) => setTexto(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); enviarTexto(); } }}
-              placeholder="Escreva em uma linha"
+              placeholder={t("umaLinha")}
               className="flex-1 px-3.5 py-2 font-sans text-sm text-foreground bg-background border border-border rounded-xl placeholder:text-muted/40 focus:outline-none focus:border-primary/50 transition-colors"
             />
             <button
@@ -102,7 +104,7 @@ export function LessonFeedbackBar({ lessonId, inicial }: Props) {
               disabled={isPending || !texto.trim()}
               className="font-sans text-xs font-semibold px-4 py-2 rounded-xl bg-primary text-white hover:bg-primary-dark disabled:opacity-40 transition-colors shrink-0"
             >
-              Enviar
+              {t("enviar")}
             </button>
           </div>
         </div>

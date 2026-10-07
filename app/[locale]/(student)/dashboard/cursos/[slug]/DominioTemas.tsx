@@ -1,11 +1,13 @@
 import { Target, TrendingUp } from "lucide-react";
 import type { DominioTema } from "@/lib/gamification";
+import { useTranslations } from "next-intl";
 
 /**
  * Desempenho do aluno por tema, calculado das respostas das provas.
  * Os temas vêm do mais fraco para o mais forte: o que interessa é onde estudar.
  */
 export function DominioTemas({ temas }: { temas: DominioTema[] }) {
+  const tr = useTranslations("novaArea.componentes.dominio");
   if (temas.length === 0) return null;
 
   const totalRespondidas = temas.reduce((s, t) => s + t.total, 0);
@@ -26,12 +28,12 @@ export function DominioTemas({ temas }: { temas: DominioTema[] }) {
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted mb-0.5">
-            Seu domínio por tema
+            {tr("rotulo")}
           </p>
           <p className="font-sans text-sm text-foreground">
-            {totalAcertos} acertos em {totalRespondidas} questões respondidas
+            {tr("resumo", { acertos: totalAcertos, total: totalRespondidas })}
             <span className="mx-1.5 text-border">·</span>
-            <span className={`font-semibold ${corTexto(geral)}`}>{geral}% no geral</span>
+            <span className={`font-semibold ${corTexto(geral)}`}>{tr("geral", { pct: geral })}</span>
           </p>
         </div>
       </div>
@@ -60,8 +62,11 @@ export function DominioTemas({ temas }: { temas: DominioTema[] }) {
         <div className="px-5 py-3 bg-background/60 border-t border-border flex items-start gap-2">
           <TrendingUp className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
           <p className="font-sans text-xs text-muted">
-            Onde vale investir agora: <strong className="text-foreground">{maisFraco.tema}</strong>,
-            seu tema com mais erros ({maisFraco.pct}% de acerto).
+            {tr.rich("investir", {
+              tema: maisFraco.tema,
+              pct: maisFraco.pct,
+              forte: (partes) => <strong className="text-foreground">{partes}</strong>,
+            })}
           </p>
         </div>
       )}

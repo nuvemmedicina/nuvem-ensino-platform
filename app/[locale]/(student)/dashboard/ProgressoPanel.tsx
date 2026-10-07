@@ -1,5 +1,6 @@
 import { Flame, Trophy, Star, Lock } from "lucide-react";
 import type { EstatisticasAluno } from "@/lib/gamification";
+import { useLocale, useTranslations } from "next-intl";
 
 /**
  * Bloco de progresso do aluno: pontos, ofensiva de dias e medalhas.
@@ -8,14 +9,23 @@ import type { EstatisticasAluno } from "@/lib/gamification";
  */
 export function ProgressoPanel({ stats }: { stats: EstatisticasAluno }) {
   const { xp, detalhe, ofensiva, medalhas } = stats;
+  const t = useTranslations("novaArea.componentes.progresso");
+  const locale = useLocale();
+  const num = (n: number) => n.toLocaleString(locale === "pt" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US");
+  const detalheMedalha = (id: string) =>
+    id === "constante" && ofensiva.recorde > 0
+      ? t("medalhas.constante.detalhe", { count: ofensiva.recorde })
+      : id === "curso-completo" && stats.provasAprovadas > 0
+        ? t("medalhas.curso-completo.detalhe", { feitas: stats.provasAprovadas })
+        : null;
   const conquistadas = medalhas.filter((m) => m.conquistada);
 
   return (
     <section className="px-4 lg:px-10 py-10 bg-background">
       <div className="flex items-baseline justify-between gap-4 mb-5 flex-wrap">
-        <h2 className="font-serif text-2xl font-medium text-foreground">Seu progresso</h2>
+        <h2 className="font-serif text-2xl font-medium text-foreground">{t("titulo")}</h2>
         <span className="font-sans text-xs text-muted">
-          {conquistadas.length} de {medalhas.length} conquistas
+          {t("conquistasContagem", { feitas: conquistadas.length, total: medalhas.length })}
         </span>
       </div>
 
@@ -25,21 +35,21 @@ export function ProgressoPanel({ stats }: { stats: EstatisticasAluno }) {
           <div className="flex items-center gap-2 mb-3">
             <Star className="w-4 h-4 text-primary" />
             <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted">
-              Pontos
+              {t("pontos")}
             </span>
           </div>
           <p className="font-sans text-4xl font-bold text-foreground tabular-nums leading-none">
-            {xp.toLocaleString("pt-BR")}
+            {num(xp)}
           </p>
           <div className="mt-4 space-y-1.5">
             {detalhe.map((d) => (
-              <div key={d.rotulo} className="flex items-baseline justify-between gap-3">
+              <div key={d.chave} className="flex items-baseline justify-between gap-3">
                 <span className="font-sans text-xs text-muted truncate">
-                  {d.rotulo}
+                  {t(`itens.${d.chave}`)}
                   <span className="text-muted/60"> ×{d.quantidade}</span>
                 </span>
                 <span className="font-sans text-xs font-semibold text-foreground tabular-nums shrink-0">
-                  +{d.pontos.toLocaleString("pt-BR")}
+                  +{num(d.pontos)}
                 </span>
               </div>
             ))}
@@ -51,30 +61,30 @@ export function ProgressoPanel({ stats }: { stats: EstatisticasAluno }) {
           <div className="flex items-center gap-2 mb-3">
             <Flame className={`w-4 h-4 ${ofensiva.atual > 0 ? "text-orange-500" : "text-muted"}`} />
             <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted">
-              Ofensiva
+              {t("ofensiva")}
             </span>
           </div>
           <p className="font-sans text-4xl font-bold text-foreground tabular-nums leading-none">
             {ofensiva.atual}
             <span className="font-sans text-base font-medium text-muted ml-1.5">
-              dia{ofensiva.atual !== 1 ? "s" : ""}
+              {t("dias", { count: ofensiva.atual })}
             </span>
           </p>
           <p className="font-sans text-xs text-muted mt-3">
             {ofensiva.atual > 0
-              ? "Estude hoje para manter a sequência."
+              ? t("manter")
               : ofensiva.diasAtivos > 0
-                ? "Sua sequência foi interrompida — recomece hoje."
-                : "Conclua uma aula para começar."}
+                ? t("interrompida")
+                : t("comecar")}
           </p>
           <div className="mt-3 pt-3 border-t border-border/60 flex items-baseline justify-between">
-            <span className="font-sans text-xs text-muted">Melhor sequência</span>
+            <span className="font-sans text-xs text-muted">{t("melhorSequencia")}</span>
             <span className="font-sans text-xs font-semibold text-foreground tabular-nums">
-              {ofensiva.recorde} dia{ofensiva.recorde !== 1 ? "s" : ""}
+              {t("diasValor", { count: ofensiva.recorde })}
             </span>
           </div>
           <div className="mt-1.5 flex items-baseline justify-between">
-            <span className="font-sans text-xs text-muted">Dias estudados</span>
+            <span className="font-sans text-xs text-muted">{t("diasEstudados")}</span>
             <span className="font-sans text-xs font-semibold text-foreground tabular-nums">
               {ofensiva.diasAtivos}
             </span>
@@ -86,7 +96,7 @@ export function ProgressoPanel({ stats }: { stats: EstatisticasAluno }) {
           <div className="flex items-center gap-2 mb-3">
             <Trophy className="w-4 h-4 text-amber-500" />
             <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted">
-              Conquistas
+              {t("conquistas")}
             </span>
           </div>
           <div className="space-y-2">
@@ -109,12 +119,12 @@ export function ProgressoPanel({ stats }: { stats: EstatisticasAluno }) {
                       m.conquistada ? "text-foreground" : "text-muted"
                     }`}
                   >
-                    {m.nome}
+                    {t(`medalhas.${m.id}.nome`)}
                   </p>
                   <p className="font-sans text-[11px] text-muted leading-snug">
-                    {m.descricao}
-                    {m.detalhe && !m.conquistada && (
-                      <span className="text-muted/70"> · {m.detalhe}</span>
+                    {t(`medalhas.${m.id}.descricao`)}
+                    {detalheMedalha(m.id) && !m.conquistada && (
+                      <span className="text-muted/70"> · {detalheMedalha(m.id)}</span>
                     )}
                   </p>
                 </div>

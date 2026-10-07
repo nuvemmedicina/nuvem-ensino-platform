@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { MessageCircle, Send, Trash2, CornerDownRight } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 
 type CommentUser = {
   id: string;
@@ -60,16 +61,19 @@ function Avatar({ user }: { user: CommentUser }) {
   );
 }
 
-function formatRelative(date: string): string {
+function formatRelative(date: string, locale: string, agora: string): string {
   const diff = (Date.now() - new Date(date).getTime()) / 1000;
-  if (diff < 60) return "agora";
+  if (diff < 60) return agora;
   if (diff < 3600) return `${Math.floor(diff / 60)}min`;
   if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
   if (diff < 604800) return `${Math.floor(diff / 86400)}d`;
-  return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short" }).format(new Date(date));
+  return new Intl.DateTimeFormat(locale === "pt" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US", { day: "2-digit", month: "short" }).format(new Date(date));
 }
 
 export default function CommentSection({ lessonId, currentUserId, currentUserRole, currentUserName }: Props) {
+  const t = useTranslations("novaArea.componentes.comentarios");
+  const locale = useLocale();
+  const quando = (d: string) => formatRelative(d, locale, t("agora"));
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [text, setText] = useState("");
@@ -171,7 +175,7 @@ export default function CommentSection({ lessonId, currentUserId, currentUserRol
         <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-background">
           <MessageCircle className="w-3.5 h-3.5 text-muted" />
           <span className="font-sans text-xs font-semibold text-muted uppercase tracking-wider">
-            Comentários
+            {t("titulo")}
           </span>
           {totalCount > 0 && (
             <span className="font-sans text-[10px] text-muted bg-border/60 px-1.5 py-0.5 rounded-full">
@@ -184,11 +188,11 @@ export default function CommentSection({ lessonId, currentUserId, currentUserRol
           {/* Comment list */}
           {loading ? (
             <div className="px-4 py-6 text-center">
-              <span className="font-sans text-xs text-muted animate-pulse">Carregando…</span>
+              <span className="font-sans text-xs text-muted animate-pulse">{t("carregando")}</span>
             </div>
           ) : comments.length === 0 ? (
             <div className="px-4 py-6 text-center">
-              <p className="font-sans text-xs text-muted">Nenhum comentário ainda. Seja o primeiro!</p>
+              <p className="font-sans text-xs text-muted">{t("vazio")}</p>
             </div>
           ) : (
             <div className="divide-y divide-border/60">
@@ -200,15 +204,15 @@ export default function CommentSection({ lessonId, currentUserId, currentUserRol
                     <div className="flex-1 min-w-0">
                       <div className="flex items-baseline gap-2 flex-wrap">
                         <span className="font-sans text-xs font-semibold text-foreground">
-                          {comment.user.name ?? "Aluno"}
+                          {comment.user.name ?? t("aluno")}
                         </span>
                         {(comment.user.role === "ADMIN" || comment.user.role === "INSTRUCTOR") && (
                           <span className="font-sans text-[9px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-1.5 py-0.5 rounded">
-                            {comment.user.role === "ADMIN" ? "Admin" : "Instrutor"}
+                            {comment.user.role === "ADMIN" ? t("admin") : t("instrutor")}
                           </span>
                         )}
                         <span className="font-sans text-[10px] text-muted">
-                          {formatRelative(comment.createdAt)}
+                          {quando(comment.createdAt)}
                         </span>
                       </div>
                       <p className="font-sans text-sm text-foreground mt-1 leading-relaxed whitespace-pre-wrap break-words">
@@ -222,7 +226,7 @@ export default function CommentSection({ lessonId, currentUserId, currentUserRol
                           }}
                           className="font-sans text-[11px] text-muted hover:text-primary transition-colors"
                         >
-                          Responder
+                          {t("responder")}
                         </button>
                         {(comment.user.id === currentUserId || isStaff) && (
                           <button
@@ -247,15 +251,15 @@ export default function CommentSection({ lessonId, currentUserId, currentUserRol
                           <div className="flex-1 min-w-0">
                             <div className="flex items-baseline gap-2 flex-wrap">
                               <span className="font-sans text-xs font-semibold text-foreground">
-                                {reply.user.name ?? "Aluno"}
+                                {reply.user.name ?? t("aluno")}
                               </span>
                               {(reply.user.role === "ADMIN" || reply.user.role === "INSTRUCTOR") && (
                                 <span className="font-sans text-[9px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-1.5 py-0.5 rounded">
-                                  {reply.user.role === "ADMIN" ? "Admin" : "Instrutor"}
+                                  {reply.user.role === "ADMIN" ? t("admin") : t("instrutor")}
                                 </span>
                               )}
                               <span className="font-sans text-[10px] text-muted">
-                                {formatRelative(reply.createdAt)}
+                                {quando(reply.createdAt)}
                               </span>
                             </div>
                             <p className="font-sans text-sm text-foreground mt-1 leading-relaxed whitespace-pre-wrap break-words">
@@ -283,7 +287,7 @@ export default function CommentSection({ lessonId, currentUserId, currentUserRol
                         autoFocus
                         value={replyText}
                         onChange={(e) => setReplyText(e.target.value)}
-                        placeholder={`Responder ${replyTo.name ?? ""}…`}
+                        placeholder={t("responderA", { nome: replyTo.name ?? "" })}
                         className="flex-1 px-3 py-2 rounded-lg border border-border bg-background font-sans text-xs text-foreground placeholder:text-muted/50 focus:outline-none focus:border-primary/50"
                       />
                       <button
@@ -291,14 +295,15 @@ export default function CommentSection({ lessonId, currentUserId, currentUserRol
                         disabled={submitting || !replyText.trim()}
                         className="px-3 py-2 rounded-lg bg-primary text-white font-sans text-xs font-semibold hover:bg-primary-dark transition-colors disabled:opacity-40"
                       >
-                        <Send className="w-3.5 h-3.5" />
+                        <Send className="w-3.5 h-3.5" aria-hidden="true" />
+                        <span className="sr-only">{t("enviar")}</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => setReplyTo(null)}
                         className="px-3 py-2 rounded-lg border border-border text-muted font-sans text-xs hover:text-foreground transition-colors"
                       >
-                        Cancelar
+                        {t("cancelar")}
                       </button>
                     </form>
                   )}
@@ -328,7 +333,7 @@ export default function CommentSection({ lessonId, currentUserId, currentUserRol
                       submitComment(e as unknown as React.FormEvent);
                     }
                   }}
-                  placeholder="Deixe uma dúvida ou comentário… (Enter para enviar)"
+                  placeholder={t("placeholder")}
                   rows={2}
                   className="flex-1 px-3 py-2 rounded-lg border border-border bg-background font-sans text-xs text-foreground placeholder:text-muted/50 focus:outline-none focus:border-primary/50 resize-none"
                 />
@@ -337,7 +342,8 @@ export default function CommentSection({ lessonId, currentUserId, currentUserRol
                   disabled={submitting || !text.trim()}
                   className="px-3 py-2 rounded-lg bg-primary text-white font-sans text-xs font-semibold hover:bg-primary-dark transition-colors disabled:opacity-40 self-end"
                 >
-                  <Send className="w-3.5 h-3.5" />
+                  <Send className="w-3.5 h-3.5" aria-hidden="true" />
+                        <span className="sr-only">{t("enviar")}</span>
                 </button>
               </div>
             </form>
