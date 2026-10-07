@@ -64,8 +64,23 @@ export async function updateCourse(courseId: string, slug: string, formData: For
   redirect(`/admin/cursos/${newSlug}`);
 }
 
+const TIPOS_DE_AULA = ["VIDEO", "LIVE", "TEXT"] as const;
+
 export async function updateLesson(lessonId: string, courseSlug: string, formData: FormData) {
   await requireAdmin();
+  const atual = await prisma.lesson.findUnique({ where: { id: lessonId }, select: { muxAssetId: true } });
+
+  // Com vídeo no Mux, a duração vem do vídeo (webhook e scripts/preencher-duracoes.ts)
+  // e não é editável. Sem vídeo, o campo aceita uma estimativa em minutos.
+  const minutos = formData.get("duration");
+  const duracao =
+    atual?.muxAssetId || minutos === null
+      ? undefined
+      : minutos === ""
+        ? null
+        : Math.max(0, Math.round(Number(minutos)));
+
+  const tipo = formData.get("type");
   await prisma.lesson.update({
     where: { id: lessonId },
     data: {
@@ -73,10 +88,63 @@ export async function updateLesson(lessonId: string, courseSlug: string, formDat
       videoUrl:    (formData.get("videoUrl") as string) || null,
       audioUrl:    (formData.get("audioUrl") as string) || null,
       description: (formData.get("description") as string) || null,
-      duration:    formData.get("duration") ? Math.round(parseFloat(formData.get("duration") as string) * 60) : null,
       isFree:      formData.get("isFree") === "on",
+      ...(duracao !== undefined && !Number.isNaN(duracao) ? { duration: duracao } : {}),
+      ...(TIPOS_DE_AULA.includes(tipo as (typeof TIPOS_DE_AULA)[number])
+        ? { type: tipo as (typeof TIPOS_DE_AULA)[number] }
+        : {}),
     },
   });
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
+// ── Reordenação ─────────────────────────────────────────────────────────────
+// Troca o item de lugar com o vizinho e renumera a lista inteira (1, 2, 3…),
+// o que também conserta ordens repetidas que já existam no banco.
+
+function reposicionar<T extends { id: string }>(lista: T[], id: string, direcao: "cima" | "baixo") {
+  const i = lista.findIndex((x) => x.id === id);
+  const j = direcao === "cima" ? i - 1 : i + 1;
+  if (i < 0 || j < 0 || j >= lista.length) return null;
+  const nova = [...lista];
+  [nova[i], nova[j]] = [nova[j], nova[i]];
+  return nova;
+}
+
+export async function moveModule(moduleId: string, courseSlug: string, direcao: "cima" | "baixo") {
+  await requireAdmin();
+  const mod = await prisma.module.findUnique({ where: { id: moduleId }, select: { courseId: true } });
+  if (!mod) return;
+  const lista = await prisma.module.findMany({ where: { courseId: mod.courseId }, orderBy: [{ order: "asc" }, { createdAt: "asc" }], select: { id: true } });
+  const nova = reposicionar(lista, moduleId, direcao);
+  if (!nova) return;
+  await prisma.$transaction(nova.map((m, i) => prisma.module.update({ where: { id: m.id }, data: { order: i + 1 } })));
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
+export async function moveTopic(topicId: string, courseSlug: string, direcao: "cima" | "baixo") {
+  await requireAdmin();
+  const topico = await prisma.topic.findUnique({ where: { id: topicId }, select: { moduleId: true } });
+  if (!topico) return;
+  const lista = await prisma.topic.findMany({ where: { moduleId: topico.moduleId }, orderBy: [{ order: "asc" }, { createdAt: "asc" }], select: { id: true } });
+  const nova = reposicionar(lista, topicId, direcao);
+  if (!nova) return;
+  await prisma.$transaction(nova.map((t, i) => prisma.topic.update({ where: { id: t.id }, data: { order: i + 1 } })));
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
+export async function moveLesson(lessonId: string, courseSlug: string, direcao: "cima" | "baixo") {
+  await requireAdmin();
+  const aula = await prisma.lesson.findUnique({ where: { id: lessonId }, select: { moduleId: true, topicId: true } });
+  if (!aula) return;
+  const lista = await prisma.lesson.findMany({
+    where: aula.topicId ? { topicId: aula.topicId } : { moduleId: aula.moduleId, topicId: null },
+    orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+    select: { id: true },
+  });
+  const nova = reposicionar(lista, lessonId, direcao);
+  if (!nova) return;
+  await prisma.$transaction(nova.map((a, i) => prisma.lesson.update({ where: { id: a.id }, data: { order: i + 1 } })));
   revalidatePath(`/admin/cursos/${courseSlug}`);
 }
 
@@ -87,7 +155,7 @@ export async function updateModuleInstructors(
 ) {
   await requireAdmin();
 
-  const module = await prisma.module.findUnique({ where: { id: moduleId }, select: { courseId: true } });
+  const modulo = await prisma.module.findUnique({ where: { id: moduleId }, select: { courseId: true } });
 
   await prisma.$transaction([
     prisma.moduleInstructor.deleteMany({ where: { moduleId } }),
@@ -98,9 +166,9 @@ export async function updateModuleInstructors(
     ),
   ]);
 
-  if (module) {
+  if (modulo) {
     for (const instructorId of instructorIds) {
-      await enrollInstructorInCourse(module.courseId, instructorId);
+      await enrollInstructorInCourse(modulo.courseId, instructorId);
     }
   }
 
