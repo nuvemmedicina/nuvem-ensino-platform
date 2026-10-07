@@ -4,13 +4,14 @@ import { prisma } from "@/lib/prisma";
 import LessonPlayerClient from "./LessonPlayerClient";
 import NovaTelaAula from "./NovaTelaAula";
 import { usaNovaArea } from "@/lib/novaArea";
+import { traduzirModulos } from "@/lib/i18n-content";
 
 type Props = {
   params: Promise<{ slug: string; lessonId: string; locale: string }>;
 };
 
 export default async function LessonPage({ params }: Props) {
-  const { slug, lessonId } = await params;
+  const { slug, lessonId, locale } = await params;
 
   const session = await auth();
   if (!session?.user?.id) {
@@ -45,7 +46,11 @@ export default async function LessonPage({ params }: Props) {
                 select: {
                   id: true,
                   title: true,
+                  titleEs: true,
+                  titleEn: true,
                   description: true,
+                  descriptionEs: true,
+                  descriptionEn: true,
                   duration: true,
                   type: true,
                   videoUrl: true,
@@ -95,7 +100,9 @@ export default async function LessonPage({ params }: Props) {
 
   // Sanitize locked modules
   const now = new Date();
-  const sanitizedModules = course.modules.map((mod) => {
+  const tituloCurso = (locale === "es" ? course.titleEs : locale === "en" ? course.titleEn : null) || course.title;
+  // Títulos e descrições no idioma do aluno (vazio = português)
+  const sanitizedModules = traduzirModulos(course.modules, locale).map((mod) => {
     const locked = mod.releaseDate && new Date(mod.releaseDate) > now;
     if (!locked) return mod;
     return {
@@ -193,7 +200,7 @@ export default async function LessonPage({ params }: Props) {
         key={lessonId}
         courseId={course.id}
         courseSlug={slug}
-        courseTitle={course.title}
+        courseTitle={tituloCurso}
         modules={sanitizedModules}
         currentLessonId={lessonId}
         initialProgress={progressMap}
@@ -215,7 +222,7 @@ export default async function LessonPage({ params }: Props) {
     <LessonPlayerClient
       courseId={course.id}
       courseSlug={slug}
-      courseTitle={course.title}
+      courseTitle={tituloCurso}
       modules={sanitizedModules}
       currentLessonId={lessonId}
       initialProgress={progressMap}

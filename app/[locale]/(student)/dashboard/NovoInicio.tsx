@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { BookOpen, ExternalLink, Headphones, PlayCircle, Radio, Video } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { traduzirItem, traduzirModulos } from "@/lib/i18n-content";
 
 /**
  * Início da nova área do aluno (redesenho de outubro/2026).
@@ -56,7 +57,7 @@ export async function NovoInicio({ userId, nome, locale }: { userId: string; nom
   const dl = dataLocale(locale);
   const agora = new Date();
 
-  const matriculas = await prisma.enrollment.findMany({
+  const matriculasRaw = await prisma.enrollment.findMany({
     where: { userId, status: { in: ["ACTIVE", "COMPLETED"] } },
     orderBy: { enrolledAt: "desc" },
     select: {
@@ -69,6 +70,8 @@ export async function NovoInicio({ userId, nome, locale }: { userId: string; nom
           id: true,
           slug: true,
           title: true,
+          titleEs: true,
+          titleEn: true,
           hours: true,
           contentUrl: true,
           thumbnailUrl: true,
@@ -77,14 +80,18 @@ export async function NovoInicio({ userId, nome, locale }: { userId: string; nom
             orderBy: { order: "asc" },
             select: {
               title: true,
+              titleEs: true,
+              titleEn: true,
               releaseDate: true,
               topics: {
                 orderBy: { order: "asc" },
                 select: {
                   title: true,
+                  titleEs: true,
+                  titleEn: true,
                   lessons: {
                     orderBy: { order: "asc" },
-                    select: { id: true, title: true, duration: true, type: true, videoUrl: true, audioUrl: true, muxPlaybackId: true },
+                    select: { id: true, title: true, titleEs: true, titleEn: true, duration: true, type: true, videoUrl: true, audioUrl: true, muxPlaybackId: true },
                   },
                 },
               },
@@ -95,15 +102,21 @@ export async function NovoInicio({ userId, nome, locale }: { userId: string; nom
     },
   });
 
+  // Títulos no idioma do aluno (vazio = português)
+  const matriculas = matriculasRaw.map((m) => ({
+    ...m,
+    course: { ...traduzirItem(m.course, locale), modules: traduzirModulos(m.course.modules, locale) },
+  }));
+
   const idsCursos = matriculas.map((m) => m.course.id);
 
-  const [aoVivo, liberacoes, catalogo] = await Promise.all([
+  const [aoVivoRaw, liberacoesRaw, catalogoRaw] = await Promise.all([
     idsCursos.length
       ? prisma.liveSession.findMany({
           where: { courseId: { in: idsCursos }, endAt: { gte: agora } },
           orderBy: { startAt: "asc" },
           take: 3,
-          select: { id: true, title: true, startAt: true, endAt: true, meetUrl: true, course: { select: { title: true } } },
+          select: { id: true, title: true, startAt: true, endAt: true, meetUrl: true, course: { select: { title: true, titleEs: true, titleEn: true } } },
         })
       : Promise.resolve([]),
     idsCursos.length
@@ -111,16 +124,20 @@ export async function NovoInicio({ userId, nome, locale }: { userId: string; nom
           where: { courseId: { in: idsCursos }, releaseDate: { gt: agora } },
           orderBy: { releaseDate: "asc" },
           take: 2,
-          select: { id: true, title: true, releaseDate: true },
+          select: { id: true, title: true, titleEs: true, titleEn: true, releaseDate: true },
         })
       : Promise.resolve([]),
     prisma.course.findMany({
       where: { status: "PUBLISHED", id: { notIn: idsCursos } },
       orderBy: { createdAt: "desc" },
       take: 3,
-      select: { id: true, slug: true, title: true, hours: true, instructor: { select: { user: { select: { name: true } } } } },
+      select: { id: true, slug: true, title: true, titleEs: true, titleEn: true, hours: true, instructor: { select: { user: { select: { name: true } } } } },
     }),
   ]);
+
+  const aoVivo = aoVivoRaw.map((s) => ({ ...s, course: traduzirItem(s.course, locale) }));
+  const liberacoes = liberacoesRaw.map((m) => traduzirItem(m, locale));
+  const catalogo = catalogoRaw.map((c) => traduzirItem(c, locale));
 
   // ── Situação de cada curso ──
   const cursos = matriculas.map((m) => {

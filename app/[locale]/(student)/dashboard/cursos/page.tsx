@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { traduzirItem } from "@/lib/i18n-content";
 import Link from "next/link";
 import Image from "next/image";
 import { Award, BookOpen, ExternalLink, PlayCircle } from "lucide-react";
@@ -33,7 +34,7 @@ export default async function MeusCursosPage({ params }: { params: Promise<{ loc
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard/cursos");
 
-  const matriculas = await prisma.enrollment.findMany({
+  const matriculasRaw = await prisma.enrollment.findMany({
     where: { userId: session.user.id, status: { in: ["ACTIVE", "COMPLETED"] } },
     orderBy: { enrolledAt: "desc" },
     select: {
@@ -45,6 +46,8 @@ export default async function MeusCursosPage({ params }: { params: Promise<{ loc
         select: {
           slug: true,
           title: true,
+          titleEs: true,
+          titleEn: true,
           hours: true,
           contentUrl: true,
           thumbnailUrl: true,
@@ -58,7 +61,7 @@ export default async function MeusCursosPage({ params }: { params: Promise<{ loc
                 select: {
                   lessons: {
                     orderBy: { order: "asc" },
-                    select: { id: true, title: true, duration: true, type: true, videoUrl: true, audioUrl: true, muxPlaybackId: true },
+                    select: { id: true, title: true, titleEs: true, titleEn: true, duration: true, type: true, videoUrl: true, audioUrl: true, muxPlaybackId: true },
                   },
                 },
               },
@@ -68,6 +71,18 @@ export default async function MeusCursosPage({ params }: { params: Promise<{ loc
       },
     },
   });
+
+  // Títulos do curso e das aulas no idioma do aluno (vazio = português)
+  const matriculas = matriculasRaw.map((m) => ({
+    ...m,
+    course: {
+      ...traduzirItem(m.course, locale),
+      modules: m.course.modules.map((mod) => ({
+        ...mod,
+        topics: mod.topics.map((tp) => ({ ...tp, lessons: tp.lessons.map((a) => traduzirItem(a, locale)) })),
+      })),
+    },
+  }));
 
   const agora = new Date();
   const cursos = matriculas.map((m) => {

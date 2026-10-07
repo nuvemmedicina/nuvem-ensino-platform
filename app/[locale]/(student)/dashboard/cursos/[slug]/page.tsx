@@ -36,6 +36,7 @@ import { FlashcardsPanel } from "./FlashcardsPanel";
 import { RespiratoryGameInvite } from "./RespiratoryGameInvite";
 import { calcularDominioPorTema } from "@/lib/gamification";
 import { usaNovaArea } from "@/lib/novaArea";
+import { traduzirModulos } from "@/lib/i18n-content";
 import { NovaPaginaCurso, ABAS, type Aba } from "./NovaPaginaCurso";
 
 type Props = {
@@ -64,7 +65,7 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard");
 
-  const course = await prisma.course.findFirst({
+  const courseRaw = await prisma.course.findFirst({
     where: { slug },
     include: {
       instructor: {
@@ -97,6 +98,8 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
                 select: {
                   id: true,
                   title: true,
+                  titleEs: true,
+                  titleEn: true,
                   duration: true,
                   type: true,
                   videoUrl: true,
@@ -123,7 +126,13 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
     },
   });
 
-  if (!course) notFound();
+  if (!courseRaw) notFound();
+  // Títulos de curso, módulos, temas e aulas no idioma do aluno (vazio = português)
+  const course = {
+    ...courseRaw,
+    title: (locale === "es" ? courseRaw.titleEs : locale === "en" ? courseRaw.titleEn : null) || courseRaw.title,
+    modules: traduzirModulos(courseRaw.modules, locale),
+  };
 
   const enrollment = await prisma.enrollment.findUnique({
     where: { userId_courseId: { userId: session.user.id, courseId: course.id } },

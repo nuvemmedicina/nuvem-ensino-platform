@@ -15,6 +15,7 @@ import { ImageUploader } from "@/components/ImageUploader";
 import { ReferencesManager } from "./ReferencesManager";
 import { ConteudoCurso } from "./ConteudoCurso";
 import { ProvasCurso } from "./ProvasCurso";
+import { TraducoesConteudo } from "./TraducoesConteudo";
 
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
@@ -525,6 +526,10 @@ export default async function AdminCursoEditPage({ params, searchParams }: Props
             </div>
           </form>
       </section>
+      )}
+
+      {aba === "traducoes" && (
+        <TraducoesConteudo slug={slug} modules={course.modules} moduloId={modulo} />
       )}
 
       {/* ── Conteúdo: árvore + um item por vez ── */}
