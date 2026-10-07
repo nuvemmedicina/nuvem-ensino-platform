@@ -89,7 +89,7 @@ async function main() {
     create: {
       userId: eliane.id,
       slug: "dra-eliane-basques",
-      title: "Especialista em Manometria Anorretal",
+      title: "Cirurgia Geral e Pediátrica · Especialista em Manometria Anorretal",
       crm: "CRM-MG",
       photoUrl: "/instructors/dra-eliane.jpg",
     },
