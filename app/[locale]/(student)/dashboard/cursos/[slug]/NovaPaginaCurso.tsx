@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import {
   Award,
@@ -39,7 +40,7 @@ import { CompleteCourseButton } from "./CompleteCourseButton";
 export const ABAS = ["visao-geral", "aulas", "avaliacoes", "materiais", "comunidade"] as const;
 export type Aba = (typeof ABAS)[number];
 
-type Professor = { id: string; title: string | null; displayOrder: number; user: { name: string | null } };
+type Professor = { id: string; title: string | null; displayOrder: number; photoUrl: string | null; user: { name: string | null } };
 
 type Aula = {
   id: string;
@@ -846,17 +847,27 @@ export async function NovaPaginaCurso(props: NovaPaginaCursoProps) {
                       const nome = p.user.name!;
                       return (
                       <li key={p.id} className="flex items-center gap-3">
-                        <span
-                          className="w-9 h-9 rounded-full bg-accent/50 text-primary flex items-center justify-center font-sans text-xs font-semibold shrink-0"
-                          aria-hidden="true"
-                        >
-                          {nome
-                            .replace(/^(Dra?\.)\s*/, "")
-                            .split(" ")
-                            .slice(0, 2)
-                            .map((p) => p[0])
-                            .join("")}
-                        </span>
+                        {p.photoUrl ? (
+                          <Image
+                            src={p.photoUrl}
+                            alt=""
+                            width={48}
+                            height={48}
+                            className="w-12 h-12 rounded-full object-cover object-top shrink-0 bg-accent/50"
+                          />
+                        ) : (
+                          <span
+                            className="w-12 h-12 rounded-full bg-accent/50 text-primary flex items-center justify-center font-sans text-sm font-semibold shrink-0"
+                            aria-hidden="true"
+                          >
+                            {nome
+                              .replace(/^(Dra?\.)\s*/, "")
+                              .split(" ")
+                              .slice(0, 2)
+                              .map((parte) => parte[0])
+                              .join("")}
+                          </span>
+                        )}
                         <span className="flex flex-col">
                           <span className="font-sans text-[15px] font-semibold text-foreground">{nome}</span>
                           {p.title && <span className="font-sans text-sm text-muted">{p.title}</span>}
