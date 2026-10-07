@@ -9,31 +9,13 @@ import {
   updateCourseContent,
   updateCourseTranslations,
   updateCourseCoInstructor,
-  updateLesson,
   updateModule,
-  createModule,
-  createLesson,
-  createTopic,
-  updateTopic,
-  deleteTopic,
-  createLessonUnderTopic,
-  deleteLesson,
   deleteModule,
   updateModuleReleaseDate,
-  updateTopicApostila,
-  removeLessonVideo,
 } from "./actions";
 import { ModuleInstructorSelector } from "./ModuleInstructorSelector";
-import { LessonInstructorSelector } from "./LessonInstructorSelector";
 import { FaqEditor } from "./FaqEditor";
 import { ImageUploader } from "@/components/ImageUploader";
-import {
-  createQuiz,
-  addQuestion,
-  addOption,
-  deleteQuiz,
-  deleteQuestion,
-} from "./quizActions";
 import {
   createModuleQuiz,
   updateModuleQuiz,
@@ -46,16 +28,13 @@ import {
   deleteModuleQuizOption,
 } from "./moduleQuizActions";
 import { DeleteButton } from "./DeleteButton";
-import { MuxUploader } from "./MuxUploader";
-import { RemoveVideoButton } from "./RemoveVideoButton";
 import { ModuleAccordion } from "./ModuleAccordion";
-import { TopicAccordion } from "./TopicAccordion";
-import { ApostilaUploader } from "./ApostilaUploader";
 import { ReferencesManager } from "./ReferencesManager";
+import { ConteudoCurso } from "./ConteudoCurso";
 
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
-  searchParams: Promise<{ aba?: string }>;
+  searchParams: Promise<{ aba?: string; item?: string }>;
 };
 
 // Abas da página de edição. Só a aba aberta é montada: com tudo numa página,
@@ -83,7 +62,7 @@ const btnDanger =
 
 export default async function AdminCursoEditPage({ params, searchParams }: Props) {
   const { slug } = await params;
-  const { aba: abaPedida } = await searchParams;
+  const { aba: abaPedida, item } = await searchParams;
   const aba: Aba = ABAS.some((a) => a.id === abaPedida) ? (abaPedida as Aba) : "informacoes";
 
   const [courseRaw, courseReferences] = await Promise.all([
@@ -145,7 +124,7 @@ export default async function AdminCursoEditPage({ params, searchParams }: Props
   const updateCourseCoInstructorAction = updateCourseCoInstructor.bind(null, course.id, slug);
 
   return (
-    <div className="max-w-3xl">
+    <div className={aba === "conteudo" ? "max-w-6xl" : "max-w-3xl"}>
       {/* Breadcrumb */}
       <Link
         href="/admin/cursos"
@@ -469,7 +448,7 @@ export default async function AdminCursoEditPage({ params, searchParams }: Props
             <input
               name="coInstructorInstagram"
               type="url"
-              defaultValue={/* eslint-disable-next-line @typescript-eslint/no-explicit-any */ (course as any).coInstructorInstagram ?? ""}
+              defaultValue={course.coInstructorInstagram ?? ""}
               placeholder="https://www.instagram.com/username/"
               className={inputClass}
             />
@@ -560,17 +539,27 @@ export default async function AdminCursoEditPage({ params, searchParams }: Props
       </section>
       )}
 
-      {/* ── Módulos & Aulas (aba Conteúdo) e provas dos módulos (aba Provas) ── */}
-      {(aba === "conteudo" || aba === "provas") && (
+      {/* ── Conteúdo: árvore + um item por vez ── */}
+      {aba === "conteudo" && (
+        <ConteudoCurso
+          courseId={course.id}
+          slug={slug}
+          modules={course.modules}
+          item={item}
+          allInstructors={allInstructors.map((i) => ({ id: i.id, name: i.user.name, title: i.title }))}
+        />
+      )}
+
+      {/* ── Provas dos módulos ── */}
+      {aba === "provas" && (
       <section className="bg-surface border border-border rounded-2xl p-6 mb-6">
         <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-5">
-          {aba === "provas" ? "Provas dos módulos" : "Módulos & Aulas"}
+          Provas dos módulos
         </h2>
 
         <div className="flex flex-col gap-6">
           {course.modules.map((mod, modIndex) => {
             const deleteModAction = deleteModule.bind(null, mod.id, slug);
-            const createTopicAction = createTopic.bind(null, mod.id, slug);
 
             const updateModuleAction = updateModule.bind(null, mod.id, slug);
             const updateReleaseDateAction = updateModuleReleaseDate.bind(null, mod.id, slug);
@@ -637,286 +626,6 @@ export default async function AdminCursoEditPage({ params, searchParams }: Props
                 }
               >
 
-                {aba === "conteudo" && (<>
-                {/* Temas (Topics) */}
-                <div className="divide-y divide-border/50 px-4 py-3 flex flex-col gap-3">
-                  {mod.topics.map((topic, topicIndex) => {
-                    const updateTopicAction = updateTopic.bind(null, topic.id, slug);
-                    const deleteTopicAction = deleteTopic.bind(null, topic.id, slug);
-                    const createLessonAction = createLessonUnderTopic.bind(null, topic.id, mod.id, slug);
-
-                    return (
-                      <TopicAccordion
-                        key={topic.id}
-                        title={topic.title}
-                        index={topicIndex}
-                        lessonCount={topic.lessons.length}
-                        defaultOpen={topicIndex === 0 && modIndex === 0}
-                        header={
-                          <div className="flex items-center gap-2 px-3 py-2.5">
-                            <form action={updateTopicAction} className="flex items-center gap-2 flex-1 min-w-0">
-                              <input
-                                name="title"
-                                defaultValue={topic.title}
-                                required
-                                className={`${inputClass} text-sm flex-1`}
-                              />
-                              <button type="submit" className={btnGhost}>Salvar</button>
-                            </form>
-                            <DeleteButton
-                              action={deleteTopicAction}
-                              confirm={`Excluir tema "${topic.title}" e todas as suas aulas?`}
-                              className={btnDanger}
-                            />
-                          </div>
-                        }
-                      >
-                        {/* Apostila do tema */}
-                        <div className="px-3 py-2 border-b border-border/50 bg-background/30">
-                          <ApostilaUploader
-                            moduleId={topic.id}
-                            courseSlug={slug}
-                            currentUrl={topic.apostilaUrl ?? null}
-                            updateAction={updateTopicApostila}
-                          />
-                        </div>
-                        {/* Aulas do tema */}
-                        <div className="divide-y divide-border/40">
-                          {topic.lessons.map((lesson) => {
-                            const updateLessonAction = updateLesson.bind(null, lesson.id, slug);
-                            const deleteLessonAction = deleteLesson.bind(null, lesson.id, slug);
-
-                            return (
-                              <div key={lesson.id} className="px-3 py-4">
-                                <div className="flex items-start gap-3 mb-3">
-                                  <form action={updateLessonAction} className="flex-1 space-y-3">
-                                    <div className="space-y-2">
-                                      <input
-                                        name="title"
-                                        defaultValue={lesson.title}
-                                        placeholder="Título da aula"
-                                        className={inputClass}
-                                      />
-                                      <input
-                                        name="videoUrl"
-                                        defaultValue={lesson.videoUrl ?? ""}
-                                        placeholder="URL do YouTube (opcional — use se não tiver vídeo Mux)"
-                                        className={inputClass}
-                                      />
-                                      <input
-                                        name="audioUrl"
-                                        defaultValue={lesson.audioUrl ?? ""}
-                                        placeholder="🎙 AudioCast — URL do MP3 (opcional)"
-                                        className={inputClass}
-                                      />
-                                      <textarea
-                                        name="description"
-                                        defaultValue={lesson.description ?? ""}
-                                        placeholder="Descrição da aula (opcional)"
-                                        rows={5}
-                                        className={`${inputClass} resize-y text-xs`}
-                                      />
-                                    </div>
-
-                                    <div className="flex items-center gap-4">
-                                      <div className="flex items-center gap-2 w-28">
-                                        <input
-                                          name="duration"
-                                          type="number"
-                                          min="0"
-                                          step="0.5"
-                                          defaultValue={lesson.duration != null ? lesson.duration / 60 : ""}
-                                          placeholder="Duração"
-                                          className={`${inputClass} text-xs`}
-                                        />
-                                        <span className="font-sans text-xs text-muted shrink-0">h</span>
-                                      </div>
-                                      <label className="flex items-center gap-2 font-sans text-xs text-muted cursor-pointer">
-                                        <input
-                                          type="checkbox"
-                                          name="isFree"
-                                          defaultChecked={lesson.isFree}
-                                          className="accent-primary"
-                                        />
-                                        Aula gratuita
-                                      </label>
-                                      <button type="submit" className={btnGhost}>Salvar</button>
-                                    </div>
-                                  </form>
-
-                                  <DeleteButton
-                                    action={deleteLessonAction}
-                                    confirm={`Excluir aula "${lesson.title}"?`}
-                                    className={`${btnDanger} shrink-0 mt-1`}
-                                  />
-                                </div>
-
-                                {/* Docentes da aula */}
-                                <div className="flex items-center gap-2 mt-2 pt-2 border-t border-border/50">
-                                  <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted shrink-0">Docentes</span>
-                                  <LessonInstructorSelector
-                                    lessonId={lesson.id}
-                                    courseSlug={slug}
-                                    allInstructors={allInstructors.map((i) => ({ id: i.id, name: i.user.name, title: i.title }))}
-                                    initialIds={lesson.instructors.map((li) => li.instructorId)}
-                                  />
-                                </div>
-
-                                {/* Mux video section */}
-                                <div className="mt-1 pt-3 border-t border-border/50">
-                                  {lesson.muxPlaybackId ? (
-                                    <div className="flex items-center gap-2">
-                                      <CheckCircle className="w-4 h-4 shrink-0 text-green-600" />
-                                      <span className="font-sans text-xs font-semibold text-green-600">
-                                        Vídeo Mux ativo
-                                      </span>
-                                      <span className="font-sans text-[10px] text-muted font-mono">
-                                        {lesson.muxPlaybackId.slice(0, 12)}…
-                                      </span>
-                                      <RemoveVideoButton action={removeLessonVideo.bind(null, lesson.id, slug)} />
-                                    </div>
-                                  ) : lesson.muxAssetId ? (
-                                    <div className="flex items-center gap-2 text-amber-600">
-                                      <span className="font-sans text-xs">
-                                        ⏳ Processando no Mux… aguarde o webhook
-                                      </span>
-                                    </div>
-                                  ) : (
-                                    <MuxUploader lessonId={lesson.id} />
-                                  )}
-                                </div>
-
-                                {/* Quiz section */}
-                                <div className="mt-3 pt-3 border-t border-border/50">
-                                  <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted mb-2">
-                                    Quiz
-                                  </p>
-                                  {!lesson.quiz ? (
-                                    <form action={createQuiz.bind(null, lesson.id, slug)} className="flex gap-2">
-                                      <input
-                                        name="title"
-                                        placeholder="Título do quiz (ex: Quiz da aula)"
-                                        required
-                                        className={`${inputClass} flex-1 text-xs`}
-                                      />
-                                      <button type="submit" className={btnGhost}>
-                                        <Plus className="w-3.5 h-3.5 inline mr-1" />
-                                        Criar Quiz
-                                      </button>
-                                    </form>
-                                  ) : (
-                                    <div className="space-y-3">
-                                      <div className="flex items-center justify-between">
-                                        <span className="font-sans text-xs font-semibold text-foreground">
-                                          {lesson.quiz.title}
-                                        </span>
-                                        <DeleteButton
-                                          action={deleteQuiz.bind(null, lesson.quiz.id, slug)}
-                                          confirm={`Excluir o quiz "${lesson.quiz.title}" e todas as perguntas?`}
-                                          className={btnDanger}
-                                        />
-                                      </div>
-
-                                      {lesson.quiz.questions.map((question) => (
-                                        <div key={question.id} className="border border-border/60 rounded-lg p-3 space-y-2">
-                                          <div className="flex items-start justify-between gap-2">
-                                            <span className="font-sans text-xs text-foreground leading-snug flex-1">
-                                              {question.order}. {question.text}
-                                            </span>
-                                            <DeleteButton
-                                              action={deleteQuestion.bind(null, question.id, slug)}
-                                              confirm={`Excluir pergunta "${question.text}"?`}
-                                              className={btnDanger}
-                                            />
-                                          </div>
-
-                                          <div className="pl-3 space-y-1">
-                                            {question.options.map((opt) => (
-                                              <div key={opt.id} className="flex items-center gap-2">
-                                                <span className={`font-sans text-[11px] ${opt.isCorrect ? "text-green-600 font-semibold" : "text-muted"}`}>
-                                                  {opt.isCorrect ? "✓" : "○"} {opt.text}
-                                                </span>
-                                              </div>
-                                            ))}
-                                          </div>
-
-                                          <form action={addOption.bind(null, question.id, slug)} className="flex gap-2 pt-1">
-                                            <input
-                                              name="text"
-                                              placeholder="Texto da opção"
-                                              required
-                                              className={`${inputClass} flex-1 text-xs`}
-                                            />
-                                            <label className="flex items-center gap-1.5 font-sans text-xs text-muted cursor-pointer shrink-0">
-                                              <input type="checkbox" name="isCorrect" className="accent-primary" />
-                                              Correta
-                                            </label>
-                                            <button type="submit" className={btnGhost}>+ Opção</button>
-                                          </form>
-                                        </div>
-                                      ))}
-
-                                      <form action={addQuestion.bind(null, lesson.quiz.id, slug)} className="flex gap-2">
-                                        <input
-                                          name="text"
-                                          placeholder="Texto da pergunta"
-                                          required
-                                          className={`${inputClass} flex-1 text-xs`}
-                                        />
-                                        <button type="submit" className={btnGhost}>
-                                          <Plus className="w-3.5 h-3.5 inline mr-1" />
-                                          Pergunta
-                                        </button>
-                                      </form>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        {/* Adicionar aula ao tema */}
-                        <div className="px-3 py-2.5 bg-background/40 border-t border-border/40">
-                          <form action={createLessonAction} className="flex gap-2">
-                            <input
-                              name="title"
-                              placeholder="Título da nova aula"
-                              required
-                              className={`${inputClass} flex-1 text-xs`}
-                            />
-                            <input
-                              name="videoUrl"
-                              placeholder="URL YouTube (opcional)"
-                              className={`${inputClass} flex-1 text-xs`}
-                            />
-                            <button type="submit" className={btnGhost}>
-                              <Plus className="w-3.5 h-3.5 inline mr-1" />
-                              Aula
-                            </button>
-                          </form>
-                        </div>
-                      </TopicAccordion>
-                    );
-                  })}
-                </div>
-
-                {/* Adicionar tema */}
-                <div className="px-4 py-3 bg-background/50 border-t border-border">
-                  <form action={createTopicAction} className="flex gap-2">
-                    <input
-                      name="title"
-                      placeholder="Título do novo tema"
-                      required
-                      className={`${inputClass} flex-1 text-xs`}
-                    />
-                    <button type="submit" className={btnGhost}>
-                      <Plus className="w-3.5 h-3.5 inline mr-1" />
-                      Tema
-                    </button>
-                  </form>
-                </div>
-                </>)}
 
                 {/* ── Prova do módulo ── */}
                 {aba === "provas" && (
@@ -1126,24 +835,6 @@ export default async function AdminCursoEditPage({ params, searchParams }: Props
           })}
         </div>
 
-        {/* Add module */}
-        {aba === "conteudo" && (
-        <div className="mt-5 pt-5 border-t border-border">
-          <p className="font-sans text-xs font-semibold text-muted mb-3">Adicionar módulo</p>
-          <form action={createModule.bind(null, course.id, slug)} className="flex gap-2">
-            <input
-              name="title"
-              placeholder="Título do novo módulo"
-              required
-              className={`${inputClass} flex-1`}
-            />
-            <button type="submit" className={btnPrimary}>
-              <Plus className="w-4 h-4 inline mr-1" />
-              Criar
-            </button>
-          </form>
-        </div>
-        )}
       </section>
       )}
 
