@@ -805,5 +805,108 @@
       "button": "View courses"
     },
     "seeAllLink": "See all publications at Editora Rubio →"
+  },
+  "novaArea": {
+    "curso": {
+      "voltar": "My courses",
+      "eEquipe": "and team",
+      "horas": "{horas}h",
+      "aulasConcluidas": "{feitas} of {total} lessons completed",
+      "certificado": "Certificate",
+      "provasAprovadas": "{feitas} of {total} exams",
+      "verOQueFalta": "see what's left",
+      "certificadoDisponivel": "Certificate available",
+      "secoes": "Course sections",
+      "abas": {
+        "visao-geral": "Overview",
+        "aulas": "Lessons",
+        "avaliacoes": "Assessments",
+        "materiais": "Materials",
+        "comunidade": "Community"
+      },
+      "proximo": {
+        "continuar": "Continue: {titulo}",
+        "comecar": "Start: {titulo}",
+        "prova": "Take the {modulo} exam",
+        "aoVivo": "Join the live session",
+        "aoVivoHoje": "Live session today at {hora}",
+        "externo": "Join the lesson",
+        "verCertificado": "View certificate"
+      },
+      "sucesso": "Enrollment confirmed! Welcome to the course.",
+      "modulo": {
+        "aulas": "{count, plural, one {# lesson} other {# lessons}}",
+        "progresso": "{feitas} of {total} lessons",
+        "concluido": "Completed",
+        "emAndamento": "In progress",
+        "abreEm": "Opens {data}",
+        "voceParou": "You stopped here",
+        "apostila": "Handout",
+        "provaItem": "Module exam",
+        "provaRegra": "{questoes} questions · {nota}% to pass",
+        "flashcards": "Flashcards",
+        "cartoes": "{count, plural, one {# card} other {# cards}}"
+      },
+      "tipo": {
+        "video": "Video lesson",
+        "audio": "Audio",
+        "aoVivo": "Live session",
+        "gravacao": "Live session · recording",
+        "leitura": "Reading",
+        "emBreve": "Coming soon"
+      },
+      "avaliacoes": {
+        "provas": "Module exams",
+        "regra": "{questoes} random questions · {nota}% to pass · up to {tentativas} attempts",
+        "aprovado": "Passed · {acertos}/{total}",
+        "aberta": "Open",
+        "abreEm": "Opens with the module, on {data}",
+        "esgotada": "No attempts left",
+        "fechada": "Closed",
+        "semQuestoes": "Being prepared",
+        "provaAtual": "Open exam",
+        "flashcards": "Flashcards by topic",
+        "flashcardsVazio": "Flashcards show up here as each topic gets its deck.",
+        "desempenho": "See my performance",
+        "desempenhoTexto": "Exam scores and mastery by topic."
+      },
+      "materiais": {
+        "apostilas": "Handouts",
+        "apostilasVazio": "Handouts show up here as they are published.",
+        "referencias": "Scientific references",
+        "referenciasTexto": "Papers selected by the course director to go deeper in each module.",
+        "audios": "Audio lessons",
+        "audiosTexto": "{count, plural, one {# lesson has} other {# lessons have}} an audio version. Listen in the lesson player."
+      },
+      "comunidade": {
+        "forum": "Course forum",
+        "forumTexto": "Questions and case discussions with classmates and faculty.",
+        "abrirForum": "Open the forum",
+        "grupo": "Class group",
+        "grupoTexto": "Questions straight to Dr. Vera Ângelo, on WhatsApp.",
+        "entrarGrupo": "Join the group",
+        "aoVivo": "Next live session",
+        "entrarMeet": "Join on Meet",
+        "agenda": "Add to calendar",
+        "semAoVivo": "No live sessions scheduled. Recordings are inside each module, in the Lessons tab."
+      },
+      "geral": {
+        "certificadoTitulo": "To earn the certificate",
+        "certificadoRegra": "Complete the lessons and pass the module exams with the minimum score.",
+        "certificadoRegraSemProva": "Complete the course lessons.",
+        "aulas": "Lessons",
+        "provas": "Exams passed",
+        "faltamAulas": "{count, plural, one {# lesson to go} other {# lessons to go}}",
+        "faltamProvas": "{count, plural, one {# exam to go} other {# exams to go}}",
+        "tudoCerto": "All done",
+        "irAsProvas": "Go to exams",
+        "continuar": "Continue",
+        "baixarCertificado": "View the certificate",
+        "professores": "Faculty",
+        "coordenacao": "Course director",
+        "avaliar": "Rate the course",
+        "paginaPublica": "View the public course page"
+      }
+    }
   }
 }
