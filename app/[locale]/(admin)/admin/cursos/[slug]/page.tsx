@@ -2,39 +2,23 @@ export const dynamic = "force-dynamic";
 
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, Plus, CheckCircle, Users, BarChart2 } from "lucide-react";
+import { ChevronLeft, Users, BarChart2 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import {
   updateCourse,
   updateCourseContent,
   updateCourseTranslations,
   updateCourseCoInstructor,
-  updateModule,
-  deleteModule,
-  updateModuleReleaseDate,
 } from "./actions";
-import { ModuleInstructorSelector } from "./ModuleInstructorSelector";
 import { FaqEditor } from "./FaqEditor";
 import { ImageUploader } from "@/components/ImageUploader";
-import {
-  createModuleQuiz,
-  updateModuleQuiz,
-  deleteModuleQuiz,
-  addModuleQuizQuestion,
-  updateModuleQuizQuestion,
-  deleteModuleQuizQuestion,
-  addModuleQuizOption,
-  setCorrectOption,
-  deleteModuleQuizOption,
-} from "./moduleQuizActions";
-import { DeleteButton } from "./DeleteButton";
-import { ModuleAccordion } from "./ModuleAccordion";
 import { ReferencesManager } from "./ReferencesManager";
 import { ConteudoCurso } from "./ConteudoCurso";
+import { ProvasCurso } from "./ProvasCurso";
 
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
-  searchParams: Promise<{ aba?: string; item?: string }>;
+  searchParams: Promise<{ aba?: string; item?: string; modulo?: string; questao?: string; q?: string }>;
 };
 
 // Abas da página de edição. Só a aba aberta é montada: com tudo numa página,
@@ -57,12 +41,10 @@ const btnPrimary =
   "font-sans text-sm font-semibold px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors";
 const btnGhost =
   "font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border border-border text-muted hover:border-primary/40 hover:text-foreground transition-colors";
-const btnDanger =
-  "font-sans text-xs px-2 py-1.5 rounded-lg text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-colors";
 
 export default async function AdminCursoEditPage({ params, searchParams }: Props) {
   const { slug } = await params;
-  const { aba: abaPedida, item } = await searchParams;
+  const { aba: abaPedida, item, modulo, questao, q } = await searchParams;
   const aba: Aba = ABAS.some((a) => a.id === abaPedida) ? (abaPedida as Aba) : "informacoes";
 
   const [courseRaw, courseReferences] = await Promise.all([
@@ -118,13 +100,19 @@ export default async function AdminCursoEditPage({ params, searchParams }: Props
     orderBy: { displayOrder: "asc" },
   });
 
+  // Quantas tentativas já receberam a questão aberta (aviso antes de mexer no gabarito)
+  const vezesSorteada =
+    aba === "provas" && questao
+      ? await prisma.moduleQuizAttempt.count({ where: { servedQuestionIds: { has: questao } } })
+      : 0;
+
   const updateCourseAction = updateCourse.bind(null, course.id, slug);
   const updateCourseContentAction = updateCourseContent.bind(null, course.id, slug);
   const updateCourseTranslationsAction = updateCourseTranslations.bind(null, course.id, slug);
   const updateCourseCoInstructorAction = updateCourseCoInstructor.bind(null, course.id, slug);
 
   return (
-    <div className={aba === "conteudo" ? "max-w-6xl" : "max-w-3xl"}>
+    <div className={aba === "conteudo" || aba === "provas" ? "max-w-6xl" : "max-w-3xl"}>
       {/* Breadcrumb */}
       <Link
         href="/admin/cursos"
@@ -550,292 +538,16 @@ export default async function AdminCursoEditPage({ params, searchParams }: Props
         />
       )}
 
-      {/* ── Provas dos módulos ── */}
+      {/* ── Provas: lista de questões + uma questão por vez ── */}
       {aba === "provas" && (
-      <section className="bg-surface border border-border rounded-2xl p-6 mb-6">
-        <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-5">
-          Provas dos módulos
-        </h2>
-
-        <div className="flex flex-col gap-6">
-          {course.modules.map((mod, modIndex) => {
-            const deleteModAction = deleteModule.bind(null, mod.id, slug);
-
-            const updateModuleAction = updateModule.bind(null, mod.id, slug);
-            const updateReleaseDateAction = updateModuleReleaseDate.bind(null, mod.id, slug);
-            const releaseDateValue = mod.releaseDate
-              ? new Date(mod.releaseDate).toISOString().slice(0, 16)
-              : "";
-            const isLocked = !!mod.releaseDate && new Date(mod.releaseDate) > new Date();
-
-            return (
-              <ModuleAccordion
-                key={mod.id}
-                title={mod.title}
-                index={modIndex}
-                lessonCount={mod.topics.length}
-                locked={isLocked}
-                defaultOpen={modIndex === 0}
-                header={
-                  <>
-                    {/* Editar título + excluir */}
-                    <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
-                      <form action={updateModuleAction} className="flex items-center gap-2 flex-1 min-w-0">
-                        <input
-                          name="title"
-                          defaultValue={mod.title}
-                          required
-                          className={`${inputClass} text-sm font-semibold flex-1`}
-                        />
-                        <button type="submit" className={btnGhost}>Salvar</button>
-                      </form>
-                      <DeleteButton
-                        action={deleteModAction}
-                        confirm={`Excluir módulo "${mod.title}" e todos os seus temas e aulas?`}
-                        className={btnDanger}
-                      />
-                    </div>
-                    {/* Release date (drip) */}
-                    <form action={updateReleaseDateAction} className="flex items-center gap-2 px-4 py-2.5 bg-background/50 border-b border-border">
-                      <label className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted shrink-0">
-                        Liberar em
-                      </label>
-                      <input
-                        name="releaseDate"
-                        type="datetime-local"
-                        defaultValue={releaseDateValue}
-                        className={`${inputClass} text-xs flex-1`}
-                      />
-                      <button type="submit" className={btnGhost}>Salvar</button>
-                      {isLocked && (
-                        <span className="font-sans text-[10px] text-amber-600 shrink-0">🔒 Bloqueado</span>
-                      )}
-                    </form>
-
-                    {/* Docentes do módulo */}
-                    <div className="flex items-center gap-2 px-4 py-2 bg-background/30 border-b border-border">
-                      <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted shrink-0">Docentes</span>
-                      <ModuleInstructorSelector
-                        moduleId={mod.id}
-                        courseSlug={slug}
-                        allInstructors={allInstructors.map((i) => ({ id: i.id, name: i.user.name, title: i.title }))}
-                        initialIds={mod.instructors.map((mi) => mi.instructorId)}
-                      />
-                    </div>
-                  </>
-                }
-              >
-
-
-                {/* ── Prova do módulo ── */}
-                {aba === "provas" && (
-                <div className="border-t border-border bg-amber-500/5">
-                  <div className="px-4 py-3 flex items-center justify-between">
-                    <p className="font-sans text-xs font-bold uppercase tracking-wider text-amber-700">
-                      Prova do Módulo
-                    </p>
-                    {!mod.quiz && (
-                      <form action={createModuleQuiz.bind(null, mod.id, slug)}>
-                        <button type="submit" className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg bg-amber-500/10 text-amber-700 hover:bg-amber-500/20 transition-colors">
-                          <Plus className="w-3.5 h-3.5 inline mr-1" />
-                          Criar prova
-                        </button>
-                      </form>
-                    )}
-                    {mod.quiz && (
-                      <form action={deleteModuleQuiz.bind(null, mod.quiz.id, slug)}>
-                        <button type="submit" className={btnDanger}>Excluir prova</button>
-                      </form>
-                    )}
-                  </div>
-
-                  {mod.quiz && (
-                    <div className="px-4 pb-4 space-y-4">
-                      {/* Config da prova */}
-                      <form action={updateModuleQuiz.bind(null, mod.quiz.id, slug)} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div className="sm:col-span-3">
-                          <label className={labelClass}>Título da prova</label>
-                          <input name="title" defaultValue={mod.quiz.title} required className={`${inputClass} text-xs`} />
-                        </div>
-                        <div>
-                          <label className={labelClass}>Disponível a partir de</label>
-                          <input
-                            name="availableFrom"
-                            type="datetime-local"
-                            defaultValue={mod.quiz.availableFrom ? new Date(mod.quiz.availableFrom).toISOString().slice(0, 16) : ""}
-                            className={`${inputClass} text-xs`}
-                          />
-                        </div>
-                        <div>
-                          <label className={labelClass}>Prazo final</label>
-                          <input
-                            name="availableUntil"
-                            type="datetime-local"
-                            defaultValue={mod.quiz.availableUntil ? new Date(mod.quiz.availableUntil).toISOString().slice(0, 16) : ""}
-                            className={`${inputClass} text-xs`}
-                          />
-                        </div>
-                        <div>
-                          <label className={labelClass}>Questões por tentativa</label>
-                          <input
-                            name="questionsPerAttempt"
-                            type="number"
-                            min="1"
-                            placeholder={`vazio = todas (${mod.quiz.questions.length})`}
-                            defaultValue={mod.quiz.questionsPerAttempt ?? ""}
-                            className={`${inputClass} text-xs`}
-                          />
-                        </div>
-                        <div>
-                          <label className={labelClass}>Nota mínima (%)</label>
-                          <input
-                            name="passingPct"
-                            type="number"
-                            min="1"
-                            max="100"
-                            defaultValue={mod.quiz.passingPct}
-                            className={`${inputClass} text-xs`}
-                          />
-                        </div>
-                        <div>
-                          <label className={labelClass}>Tentativas permitidas</label>
-                          <input
-                            name="maxAttempts"
-                            type="number"
-                            min="1"
-                            defaultValue={mod.quiz.maxAttempts}
-                            className={`${inputClass} text-xs`}
-                          />
-                        </div>
-                        <div className="sm:col-span-3 flex flex-wrap items-center gap-x-5 gap-y-2 pt-1">
-                          <label className="flex items-center gap-1.5 font-sans text-[11px] text-muted">
-                            <input type="checkbox" name="shuffleQuestions" defaultChecked={mod.quiz.shuffleQuestions} className="w-3.5 h-3.5" />
-                            Embaralhar questões
-                          </label>
-                          <label className="flex items-center gap-1.5 font-sans text-[11px] text-muted">
-                            <input type="checkbox" name="shuffleOptions" defaultChecked={mod.quiz.shuffleOptions} className="w-3.5 h-3.5" />
-                            Embaralhar alternativas
-                          </label>
-                          <label className="flex items-center gap-1.5 font-sans text-[11px] text-muted">
-                            <input type="checkbox" name="avoidRepeats" defaultChecked={mod.quiz.avoidRepeats} className="w-3.5 h-3.5" />
-                            Não repetir questões nas novas tentativas
-                          </label>
-                          <label className="flex items-center gap-1.5 font-sans text-[11px] text-muted">
-                            <input type="checkbox" name="showExplanations" defaultChecked={mod.quiz.showExplanations} className="w-3.5 h-3.5" />
-                            Mostrar justificativa das erradas
-                          </label>
-                          <label className="flex items-center gap-1.5 font-sans text-[11px] text-muted" title="O aluno pratica as questões sem valer nota e vê a justificativa na hora. Expõe os gabaritos do banco.">
-                            <input type="checkbox" name="practiceEnabled" defaultChecked={mod.quiz.practiceEnabled} className="w-3.5 h-3.5" />
-                            Liberar modo treino
-                          </label>
-                        </div>
-                        <div className="sm:col-span-3 flex items-end">
-                          <button type="submit" className={btnGhost}>Salvar configuração</button>
-                        </div>
-                      </form>
-
-                      <p className="font-sans text-[10px] text-muted">
-                        {mod.quiz.questions.length} questão(ões) cadastrada(s)
-                        {" · "}
-                        {mod.quiz.questionsPerAttempt && mod.quiz.questionsPerAttempt < mod.quiz.questions.length
-                          ? `${mod.quiz.questionsPerAttempt} sorteadas por aluno`
-                          : "todas entregues a cada aluno"}
-                        {" · "}mín. {mod.quiz.passingPct}% · até {mod.quiz.maxAttempts} tentativas
-                      </p>
-
-                      {/* Questões existentes */}
-                      {mod.quiz.questions.map((q, qi) => (
-                        <div key={q.id} className="border border-border rounded-xl p-3 bg-background space-y-2">
-                          <div className="flex items-start gap-2">
-                            <span className="font-sans text-xs font-bold text-muted shrink-0 mt-0.5">{qi + 1}.</span>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-sans text-xs text-foreground">{q.text}</p>
-                              {q.topic && (
-                                <span className="inline-block mt-1 font-sans text-[10px] text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded">
-                                  {q.topic}
-                                </span>
-                              )}
-                            </div>
-                            <form action={deleteModuleQuizQuestion.bind(null, q.id, slug)}>
-                              <button type="submit" className={btnDanger}>✕</button>
-                            </form>
-                          </div>
-
-                          {/* Justificativa do gabarito */}
-                          <form action={updateModuleQuizQuestion.bind(null, q.id, slug)} className="pl-4 flex items-start gap-2">
-                            <textarea
-                              name="explanation"
-                              rows={2}
-                              defaultValue={q.explanation ?? ""}
-                              placeholder="Justificativa do gabarito — mostrada ao aluno que errar"
-                              className={`${inputClass} flex-1 text-[11px] resize-y`}
-                            />
-                            <button type="submit" className={btnGhost} title="Salvar justificativa">Salvar</button>
-                          </form>
-
-                          {/* Opções */}
-                          <div className="pl-4 space-y-1">
-                            {q.options.map((opt) => (
-                              <div key={opt.id} className="flex items-center gap-2">
-                                <form action={setCorrectOption.bind(null, opt.id, q.id, slug)}>
-                                  <button
-                                    type="submit"
-                                    className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${opt.isCorrect ? "bg-green-500 border-green-500" : "border-border hover:border-green-400"}`}
-                                    title="Marcar como correta"
-                                  >
-                                    {opt.isCorrect && <CheckCircle className="w-3 h-3 text-white" />}
-                                  </button>
-                                </form>
-                                <span className={`font-sans text-xs flex-1 ${opt.isCorrect ? "text-green-700 font-semibold" : "text-muted"}`}>{opt.text}</span>
-                                <form action={deleteModuleQuizOption.bind(null, opt.id, slug)}>
-                                  <button type="submit" className={btnDanger}>✕</button>
-                                </form>
-                              </div>
-                            ))}
-
-                            {/* Add option */}
-                            <form action={addModuleQuizOption.bind(null, q.id, slug)} className="flex items-center gap-2 pt-1">
-                              <input name="text" placeholder="Nova alternativa…" required className={`${inputClass} text-xs flex-1`} />
-                              <label className="flex items-center gap-1 font-sans text-[10px] text-muted shrink-0">
-                                <input type="checkbox" name="isCorrect" className="w-3 h-3" />
-                                Correta
-                              </label>
-                              <button type="submit" className={btnGhost}>+</button>
-                            </form>
-                          </div>
-                        </div>
-                      ))}
-
-                      {/* Add question */}
-                      <form action={addModuleQuizQuestion.bind(null, mod.quiz.id, slug)} className="space-y-2">
-                        <div className="flex gap-2">
-                          <input
-                            name="text"
-                            placeholder={`Enunciado da questão ${mod.quiz.questions.length + 1}…`}
-                            required
-                            className={`${inputClass} flex-1 text-xs`}
-                          />
-                          <button type="submit" className={btnGhost}>
-                            <Plus className="w-3.5 h-3.5 inline mr-1" />
-                            Questão
-                          </button>
-                        </div>
-                        <input
-                          name="explanation"
-                          placeholder="Justificativa do gabarito (opcional) — mostrada a quem errar"
-                          className={`${inputClass} w-full text-xs`}
-                        />
-                      </form>
-                    </div>
-                  )}
-                </div>
-                )}
-              </ModuleAccordion>
-            );
-          })}
-        </div>
-
-      </section>
+        <ProvasCurso
+          slug={slug}
+          modules={course.modules.map((m) => ({ id: m.id, title: m.title, quiz: m.quiz }))}
+          moduloId={modulo}
+          questaoId={questao}
+          busca={q}
+          vezesSorteada={vezesSorteada}
+        />
       )}
 
       {/* Referências do curso */}
