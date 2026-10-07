@@ -8,6 +8,8 @@ import { CertificateCard } from "./CertificateCard";
 import { ProgressoPanel } from "./ProgressoPanel";
 import { calcularEstatisticas } from "@/lib/gamification";
 import { getTranslations } from "next-intl/server";
+import { usaNovaArea } from "@/lib/novaArea";
+import { NovoInicio } from "./NovoInicio";
 
 async function getDashboardData(userId: string) {
   const [enrollments, certificates, allCourses] = await Promise.all([
@@ -60,6 +62,12 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
 
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard");
+
+  // Nova área do aluno: a chave em /admin/configuracoes/area-do-aluno decide
+  if (await usaNovaArea((session.user as { role?: string }).role)) {
+    return <NovoInicio userId={session.user.id} nome={session.user.name?.split(" ")[0] ?? ""} locale={locale} />;
+  }
+
   const { enrollments, certificates, allCourses } = await getDashboardData(session.user.id);
   const stats = await calcularEstatisticas(session.user.id);
 

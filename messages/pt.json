@@ -951,6 +951,47 @@
       "parabensTexto": "Você concluiu todas as aulas de",
       "baixarCertificado": "Baixar certificado",
       "continuarNoCurso": "Continuar no curso"
+    },
+    "menu": {
+      "rotulo": "Menu principal",
+      "inicio": "Início",
+      "cursos": "Meus cursos",
+      "cursosCurto": "Cursos",
+      "agenda": "Agenda",
+      "conquistas": "Conquistas",
+      "perfil": "Perfil",
+      "suporte": "Suporte"
+    },
+    "inicio": {
+      "bomDia": "Bom dia, {nome}",
+      "boaTarde": "Boa tarde, {nome}",
+      "boaNoite": "Boa noite, {nome}",
+      "proximoPasso": "Seu próximo passo",
+      "continuarAula": "Continuar aula",
+      "comecarAula": "Começar aula",
+      "abrirCurso": "Abrir curso",
+      "aoVivoAgora": "Aula ao vivo acontecendo agora",
+      "aoVivoHoje": "Aula ao vivo hoje às {hora}",
+      "entrarAoVivo": "Entrar na aula ao vivo",
+      "cursoExterno": "Curso online · conteúdo em link externo",
+      "aulasConcluidas": "{feitas} de {total} aulas concluídas",
+      "meusCursos": "Meus cursos",
+      "verTodos": "Ver todos",
+      "concluido": "Concluído",
+      "compromissos": "Próximos compromissos",
+      "aoVivo": "Ao vivo",
+      "liberacao": "Liberação",
+      "liberacaoTexto": "Aulas e prova liberadas",
+      "fusoBrasilia": "Brasília",
+      "semCompromissos": "Nenhum compromisso nas próximas semanas.",
+      "agendaCompleta": "Ver agenda completa",
+      "conhecaTambem": "Conheça também",
+      "verCurso": "Ver curso",
+      "semCursos": "Você ainda não está matriculado em nenhum curso.",
+      "verCatalogo": "Ver os cursos da Nuvem",
+      "tudoConcluido": "Você concluiu todas as aulas disponíveis.",
+      "conquistasTitulo": "Conquistas",
+      "conquistasSubtitulo": "Seus pontos, sua sequência de estudos e seus certificados."
     }
   }
 }

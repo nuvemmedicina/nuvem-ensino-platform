@@ -951,6 +951,47 @@
       "parabensTexto": "You completed every lesson in",
       "baixarCertificado": "Download certificate",
       "continuarNoCurso": "Keep going in the course"
+    },
+    "menu": {
+      "rotulo": "Main menu",
+      "inicio": "Home",
+      "cursos": "My courses",
+      "cursosCurto": "Courses",
+      "agenda": "Schedule",
+      "conquistas": "Achievements",
+      "perfil": "Profile",
+      "suporte": "Support"
+    },
+    "inicio": {
+      "bomDia": "Good morning, {nome}",
+      "boaTarde": "Good afternoon, {nome}",
+      "boaNoite": "Good evening, {nome}",
+      "proximoPasso": "Your next step",
+      "continuarAula": "Continue lesson",
+      "comecarAula": "Start lesson",
+      "abrirCurso": "Open course",
+      "aoVivoAgora": "Live session happening now",
+      "aoVivoHoje": "Live session today at {hora}",
+      "entrarAoVivo": "Join the live session",
+      "cursoExterno": "Online course · content on external link",
+      "aulasConcluidas": "{feitas} of {total} lessons completed",
+      "meusCursos": "My courses",
+      "verTodos": "See all",
+      "concluido": "Completed",
+      "compromissos": "Coming up",
+      "aoVivo": "Live",
+      "liberacao": "Release",
+      "liberacaoTexto": "Lessons and exam open",
+      "fusoBrasilia": "Brasília time",
+      "semCompromissos": "Nothing scheduled for the coming weeks.",
+      "agendaCompleta": "See full schedule",
+      "conhecaTambem": "Also from Nuvem",
+      "verCurso": "View course",
+      "semCursos": "You are not enrolled in any course yet.",
+      "verCatalogo": "See Nuvem's courses",
+      "tudoConcluido": "You have completed every available lesson.",
+      "conquistasTitulo": "Achievements",
+      "conquistasSubtitulo": "Your points, your study streak and your certificates."
     }
   }
 }
