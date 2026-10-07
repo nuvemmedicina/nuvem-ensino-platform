@@ -907,6 +907,50 @@
         "avaliar": "Rate the course",
         "paginaPublica": "View the public course page"
       }
+    },
+    "aula": {
+      "voltar": "Back to course",
+      "progresso": "{feitas} of {total} lessons",
+      "aulas": "Lessons",
+      "fecharIndice": "Close the lesson list",
+      "formato": "Lesson format",
+      "assistir": "Watch",
+      "ouvir": "Listen",
+      "audioTitulo": "Audio version of this lesson",
+      "playerProtegido": "Video not available yet",
+      "playerProtegidoTexto": "This lesson will be published soon.",
+      "direitos": "Reproducing these lessons in whole or in part, by any means, is prohibited (Brazilian Penal Code art. 184 and Law 9,610/98).",
+      "concluirProxima": "Complete and go to next",
+      "concluir": "Complete lesson",
+      "proxima": "Go to next lesson",
+      "concluida": "Lesson completed",
+      "desmarcar": "Undo",
+      "aSeguir": "Up next: {titulo}",
+      "anterior": "Previous lesson",
+      "copiarLink": "Copy link",
+      "linkCopiado": "Link copied",
+      "copieOLink": "Copy the lesson link:",
+      "secoes": "Lesson sections",
+      "abas": {
+        "resumo": "Summary",
+        "materiais": "Materials",
+        "anotacoes": "Notes",
+        "discussao": "Discussion"
+      },
+      "semResumo": "This lesson has no summary yet.",
+      "apostila": "Topic handout",
+      "referencias": "Course scientific references",
+      "semMateriais": "This lesson has no materials of its own.",
+      "suasAnotacoes": "Your notes for this lesson",
+      "anotacoesAjuda": "Only you can see what you write here. Saves automatically.",
+      "salvando": "Saving…",
+      "salvo": "Saved",
+      "indice": "Module lessons",
+      "verTodos": "See all modules",
+      "parabens": "Congratulations! Course completed.",
+      "parabensTexto": "You completed every lesson in",
+      "baixarCertificado": "Download certificate",
+      "continuarNoCurso": "Keep going in the course"
     }
   }
 }
