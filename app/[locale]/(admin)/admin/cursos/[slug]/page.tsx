@@ -53,7 +53,23 @@ import { TopicAccordion } from "./TopicAccordion";
 import { ApostilaUploader } from "./ApostilaUploader";
 import { ReferencesManager } from "./ReferencesManager";
 
-type Props = { params: Promise<{ slug: string; locale: string }> };
+type Props = {
+  params: Promise<{ slug: string; locale: string }>;
+  searchParams: Promise<{ aba?: string }>;
+};
+
+// Abas da página de edição. Só a aba aberta é montada: com tudo numa página,
+// o DICI chegava a 23 telas de rolagem e mais de 5.700 campos de formulário,
+// e cada "Salvar" remontava tudo.
+const ABAS = [
+  { id: "informacoes", rotulo: "Informações" },
+  { id: "venda", rotulo: "Página de venda" },
+  { id: "conteudo", rotulo: "Conteúdo" },
+  { id: "provas", rotulo: "Provas" },
+  { id: "materiais", rotulo: "Materiais" },
+  { id: "traducoes", rotulo: "Traduções" },
+] as const;
+type Aba = (typeof ABAS)[number]["id"];
 
 const inputClass =
   "w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-primary/50";
@@ -65,8 +81,10 @@ const btnGhost =
 const btnDanger =
   "font-sans text-xs px-2 py-1.5 rounded-lg text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-colors";
 
-export default async function AdminCursoEditPage({ params }: Props) {
+export default async function AdminCursoEditPage({ params, searchParams }: Props) {
   const { slug } = await params;
+  const { aba: abaPedida } = await searchParams;
+  const aba: Aba = ABAS.some((a) => a.id === abaPedida) ? (abaPedida as Aba) : "informacoes";
 
   const [courseRaw, courseReferences] = await Promise.all([
     prisma.course.findFirst({
@@ -159,7 +177,24 @@ export default async function AdminCursoEditPage({ params }: Props) {
         </div>
       </div>
 
+      <nav aria-label="Seções do curso" className="flex flex-wrap gap-1 border-b border-border mb-6 -mt-2">
+        {ABAS.map((a) => (
+          <Link
+            key={a.id}
+            href={`/admin/cursos/${slug}?aba=${a.id}`}
+            scroll={false}
+            aria-current={aba === a.id ? "page" : undefined}
+            className={`font-sans text-sm px-4 py-2.5 -mb-px border-b-2 transition-colors ${
+              aba === a.id ? "border-primary text-primary font-semibold" : "border-transparent text-muted hover:text-foreground"
+            }`}
+          >
+            {a.rotulo}
+          </Link>
+        ))}
+      </nav>
+
       {/* ── Dados do curso ── */}
+      {aba === "informacoes" && (
       <section className="bg-surface border border-border rounded-2xl p-6 mb-6">
         <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-5">
           Dados do Curso
@@ -315,8 +350,10 @@ export default async function AdminCursoEditPage({ params }: Props) {
           </div>
         </form>
       </section>
+      )}
 
       {/* ── Conteúdo da Página ── */}
+      {aba === "venda" && (
       <section className="bg-surface border border-border rounded-2xl p-6 mb-6">
         <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-1">
           Conteúdo da Página do Curso
@@ -377,8 +414,10 @@ export default async function AdminCursoEditPage({ params }: Props) {
           </div>
         </form>
       </section>
+      )}
 
       {/* ── Co-instrutor ── */}
+      {aba === "informacoes" && (
       <section className="bg-surface border border-border rounded-2xl p-6 mb-6">
         <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-1">
           Co-instrutor (opcional)
@@ -440,8 +479,10 @@ export default async function AdminCursoEditPage({ params }: Props) {
           </div>
         </form>
       </section>
+      )}
 
       {/* ── FAQ personalizado ── */}
+      {aba === "venda" && (
       <section className="bg-surface border border-border rounded-2xl p-6 mb-6">
         <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-1">
           Perguntas Frequentes (FAQ)
@@ -455,8 +496,10 @@ export default async function AdminCursoEditPage({ params }: Props) {
           initial={course.faqJson ? (JSON.parse(course.faqJson) as { q: string; a: string }[]) : []}
         />
       </section>
+      )}
 
       {/* ── Traduções ── */}
+      {aba === "traducoes" && (
       <section className="bg-surface border border-border rounded-2xl p-6 mb-6">
         <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-1">
           Traduções de Conteúdo
@@ -515,11 +558,13 @@ export default async function AdminCursoEditPage({ params }: Props) {
             </div>
           </form>
       </section>
+      )}
 
-      {/* ── Módulos & Aulas ── */}
+      {/* ── Módulos & Aulas (aba Conteúdo) e provas dos módulos (aba Provas) ── */}
+      {(aba === "conteudo" || aba === "provas") && (
       <section className="bg-surface border border-border rounded-2xl p-6 mb-6">
         <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-5">
-          Módulos & Aulas
+          {aba === "provas" ? "Provas dos módulos" : "Módulos & Aulas"}
         </h2>
 
         <div className="flex flex-col gap-6">
@@ -592,6 +637,7 @@ export default async function AdminCursoEditPage({ params }: Props) {
                 }
               >
 
+                {aba === "conteudo" && (<>
                 {/* Temas (Topics) */}
                 <div className="divide-y divide-border/50 px-4 py-3 flex flex-col gap-3">
                   {mod.topics.map((topic, topicIndex) => {
@@ -870,8 +916,10 @@ export default async function AdminCursoEditPage({ params }: Props) {
                     </button>
                   </form>
                 </div>
+                </>)}
 
                 {/* ── Prova do módulo ── */}
+                {aba === "provas" && (
                 <div className="border-t border-border bg-amber-500/5">
                   <div className="px-4 py-3 flex items-center justify-between">
                     <p className="font-sans text-xs font-bold uppercase tracking-wider text-amber-700">
@@ -1072,12 +1120,14 @@ export default async function AdminCursoEditPage({ params }: Props) {
                     </div>
                   )}
                 </div>
+                )}
               </ModuleAccordion>
             );
           })}
         </div>
 
         {/* Add module */}
+        {aba === "conteudo" && (
         <div className="mt-5 pt-5 border-t border-border">
           <p className="font-sans text-xs font-semibold text-muted mb-3">Adicionar módulo</p>
           <form action={createModule.bind(null, course.id, slug)} className="flex gap-2">
@@ -1093,9 +1143,12 @@ export default async function AdminCursoEditPage({ params }: Props) {
             </button>
           </form>
         </div>
+        )}
       </section>
+      )}
 
       {/* Referências do curso */}
+      {aba === "materiais" && (
       <section className="bg-surface border border-border rounded-2xl p-6 space-y-4">
         <div>
           <h2 className="font-serif text-xl font-medium text-foreground">Referências</h2>
@@ -1103,6 +1156,7 @@ export default async function AdminCursoEditPage({ params }: Props) {
         </div>
         <ReferencesManager courseSlug={slug} initial={courseReferences} />
       </section>
+      )}
 
       {/* Link para ver o curso público */}
       <div className="flex gap-3">
