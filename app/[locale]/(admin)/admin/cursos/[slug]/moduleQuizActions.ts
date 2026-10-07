@@ -131,3 +131,71 @@ export async function deleteModuleQuizOption(optionId: string, courseSlug: strin
   await prisma.moduleQuizOption.delete({ where: { id: optionId } });
   revalidatePath(`/admin/cursos/${courseSlug}`);
 }
+
+// ── Editor de provas (uma questão por vez) ─────────────────────────────────
+
+function texto(formData: FormData, campo: string) {
+  const v = (formData.get(campo) as string | null)?.trim();
+  return v ? v : null;
+}
+
+/**
+ * Salva a questão inteira de uma vez: enunciado, tema, justificativa, texto
+ * de cada alternativa, gabarito e, se preenchida, uma alternativa nova.
+ * Os ids não mudam, então o sorteio já feito para cada aluno continua o mesmo
+ * e as notas registradas não são recalculadas.
+ */
+export async function salvarQuestao(questionId: string, courseSlug: string, formData: FormData) {
+  await requireAdmin();
+  const enunciado = texto(formData, "text");
+  if (!enunciado) return;
+
+  const opcoes = await prisma.moduleQuizOption.findMany({ where: { questionId }, orderBy: { order: "asc" } });
+  const nova = texto(formData, "novaOpcao");
+  // "Nova" marcada como correta sem texto: mantém o gabarito atual
+  const marcada = texto(formData, "correta");
+  const correta = marcada === "nova" && !nova ? null : marcada;
+
+  await prisma.$transaction([
+    prisma.moduleQuizQuestion.update({
+      where: { id: questionId },
+      data: { text: enunciado, topic: texto(formData, "topic"), explanation: texto(formData, "explanation") },
+    }),
+    ...opcoes.map((o) =>
+      prisma.moduleQuizOption.update({
+        where: { id: o.id },
+        data: {
+          text: texto(formData, `opcao:${o.id}`) ?? o.text,
+          isCorrect: correta ? correta === o.id : o.isCorrect,
+        },
+      }),
+    ),
+    ...(nova
+      ? [
+          prisma.moduleQuizOption.create({
+            data: {
+              questionId,
+              text: nova,
+              isCorrect: correta === "nova",
+              order: (opcoes.at(-1)?.order ?? -1) + 1,
+            },
+          }),
+        ]
+      : []),
+  ]);
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+}
+
+/** Cria a questão no fim da prova e abre o editor dela. */
+export async function criarQuestao(quizId: string, moduleId: string, courseSlug: string, formData: FormData) {
+  await requireAdmin();
+  const enunciado = texto(formData, "text");
+  if (!enunciado) return;
+  const ultima = await prisma.moduleQuizQuestion.findFirst({ where: { quizId }, orderBy: { order: "desc" }, select: { order: true } });
+  const q = await prisma.moduleQuizQuestion.create({
+    data: { quizId, text: enunciado, order: (ultima?.order ?? -1) + 1 },
+    select: { id: true },
+  });
+  revalidatePath(`/admin/cursos/${courseSlug}`);
+  redirect(`/admin/cursos/${courseSlug}?aba=provas&modulo=${moduleId}&questao=${q.id}`);
+}
