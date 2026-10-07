@@ -39,6 +39,8 @@ import { CompleteCourseButton } from "./CompleteCourseButton";
 export const ABAS = ["visao-geral", "aulas", "avaliacoes", "materiais", "comunidade"] as const;
 export type Aba = (typeof ABAS)[number];
 
+type Professor = { id: string; title: string | null; displayOrder: number; user: { name: string | null } };
+
 type Aula = {
   id: string;
   title: string;
@@ -47,7 +49,7 @@ type Aula = {
   videoUrl: string | null;
   audioUrl: string | null;
   muxPlaybackId: string | null;
-  instructors: { instructor: { user: { name: string | null } } }[];
+  instructors: { instructor: Professor }[];
 };
 
 type Topico = {
@@ -91,7 +93,7 @@ export type NovaPaginaCursoProps = {
     shortDesc: string | null;
     hours: number;
     contentUrl: string | null;
-    instructor: { title: string | null; user: { name: string | null } };
+    instructor: Professor;
     modules: Modulo[];
   };
   progressMap: Record<string, boolean>;
@@ -168,13 +170,16 @@ export async function NovaPaginaCurso(props: NovaPaginaCursoProps) {
   const aprovadas = modulosComProva.filter((m) => tentativas.some((a) => a.quizId === m.quiz!.id && a.passed));
   const cursoExterno = !!course.contentUrl && totalAulas === 0;
 
+  // Todos os professores do curso, cada um com o seu cargo. A ordem segue
+  // displayOrder: a Dra. Vera e a Dra. Eliane, sócias fundadoras da Nuvem,
+  // vêm sempre primeiro; os demais, em ordem alfabética.
   const professores = Array.from(
-    new Set(
-      [course.instructor.user.name, ...todasAulas.flatMap((a) => a.instructors.map((i) => i.instructor.user.name))].filter(
-        (n): n is string => !!n,
-      ),
-    ),
-  );
+    new Map(
+      [course.instructor, ...todasAulas.flatMap((a) => a.instructors.map((i) => i.instructor))]
+        .filter((p) => !!p.user.name)
+        .map((p) => [p.id, p] as const),
+    ).values(),
+  ).sort((a, b) => a.displayOrder - b.displayOrder || (a.user.name ?? "").localeCompare(b.user.name ?? "", "pt-BR"));
 
   // ── Situação de cada prova ──
   type Situacao = "aprovado" | "aberta" | "abreEm" | "esgotada" | "fechada" | "semQuestoes";
@@ -837,8 +842,10 @@ export async function NovaPaginaCurso(props: NovaPaginaCursoProps) {
                 <section className="bg-surface border border-border rounded-2xl p-5">
                   <h2 className="font-sans text-lg font-semibold text-foreground mb-3">{t("geral.professores")}</h2>
                   <ul className="flex flex-col gap-3">
-                    {professores.map((nome, i) => (
-                      <li key={nome} className="flex items-center gap-3">
+                    {professores.map((p) => {
+                      const nome = p.user.name!;
+                      return (
+                      <li key={p.id} className="flex items-center gap-3">
                         <span
                           className="w-9 h-9 rounded-full bg-accent/50 text-primary flex items-center justify-center font-sans text-xs font-semibold shrink-0"
                           aria-hidden="true"
@@ -852,14 +859,11 @@ export async function NovaPaginaCurso(props: NovaPaginaCursoProps) {
                         </span>
                         <span className="flex flex-col">
                           <span className="font-sans text-[15px] font-semibold text-foreground">{nome}</span>
-                          {i === 0 && (
-                            <span className="font-sans text-sm text-muted">
-                              {course.instructor.title ?? t("geral.coordenacao")}
-                            </span>
-                          )}
+                          {p.title && <span className="font-sans text-sm text-muted">{p.title}</span>}
                         </span>
                       </li>
-                    ))}
+                      );
+                    })}
                   </ul>
                 </section>
 
