@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import { LogoPainel } from "@/components/LogoPainel";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, BookOpen, TrendingUp, Radio } from "lucide-react";
 import SignOutButton from "@/components/SignOutButton";
@@ -28,9 +28,7 @@ export default function InstructorMobileNav({ initials }: Props) {
       {/* ── Barra superior — logo, selo e sair ── */}
       <header className="md:hidden sticky top-0 z-40 bg-white border-b border-border">
         <div className="flex items-center justify-between gap-3 px-5 h-14">
-          <Link href="/instrutor" className="shrink-0">
-            <Image src="/logo.png" alt="NU.V.E.M ENSINO" width={100} height={78} className="h-7 w-auto" />
-          </Link>
+          <LogoPainel href="/instrutor" variante="celular" />
           <div className="flex items-center gap-2 min-w-0">
             <span className="font-sans text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/8 border border-primary/20 px-2 py-0.5 rounded-md shrink-0">
               Instrutor

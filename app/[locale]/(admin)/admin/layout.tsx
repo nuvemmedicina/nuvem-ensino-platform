@@ -1,7 +1,7 @@
 ﻿import { auth } from "@/auth";
+import { LogoPainel } from "@/components/LogoPainel";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import SignOutButton from "@/components/SignOutButton";
 import { AdminSidebarNav } from "@/components/AdminSidebarNav";
 import { getTranslations } from "next-intl/server";
@@ -60,16 +60,8 @@ export default async function AdminLayout({
 
         {/* Logo + badge */}
         <div className="px-5 py-5">
-          <Link href="/" className="block">
-            <Image
-              src="/logo.png"
-              alt="NU.V.E.M ENSINO"
-              width={120}
-              height={94}
-              className="h-8 w-auto"
-            />
-          </Link>
-          <span className="mt-2 inline-flex items-center font-sans text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/8 border border-primary/20 px-2 py-0.5 rounded-md">
+          <LogoPainel />
+          <span className="mt-3 inline-flex items-center font-sans text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/8 border border-primary/20 px-2 py-0.5 rounded-md">
             {roleBadge}
           </span>
         </div>
@@ -101,15 +93,7 @@ export default async function AdminLayout({
         {/* Mobile header */}
         <header className="md:hidden sticky top-0 z-40 bg-white border-b border-border shrink-0">
           <div className="flex items-center justify-between px-4 h-14">
-            <Link href="/" className="flex items-center gap-2">
-              <Image
-                src="/logo.png"
-                alt="NU.V.E.M ENSINO"
-                width={100}
-                height={78}
-                className="h-7 w-auto"
-              />
-            </Link>
+            <LogoPainel variante="celular" />
             <div className="flex items-center gap-2">
               <span className="font-sans text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/8 border border-primary/20 px-2 py-0.5 rounded-md">
                 {role === "EDITOR" ? "Editor" : "Admin"}

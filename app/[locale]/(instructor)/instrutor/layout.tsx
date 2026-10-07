@@ -1,7 +1,6 @@
 ﻿import { auth } from "@/auth";
+import { LogoPainel } from "@/components/LogoPainel";
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
 import SignOutButton from "@/components/SignOutButton";
 import { InstructorSidebarNav } from "@/components/InstructorSidebarNav";
 import InstructorMobileNav from "@/components/InstructorMobileNav";
@@ -45,16 +44,8 @@ export default async function InstructorLayout({
 
         {/* Logo + badge */}
         <div className="px-5 py-5">
-          <Link href="/" className="block">
-            <Image
-              src="/logo.png"
-              alt="NU.V.E.M ENSINO"
-              width={120}
-              height={94}
-              className="h-8 w-auto"
-            />
-          </Link>
-          <span className="mt-2 inline-flex items-center font-sans text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/8 border border-primary/20 px-2 py-0.5 rounded-md">
+          <LogoPainel />
+          <span className="mt-3 inline-flex items-center font-sans text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/8 border border-primary/20 px-2 py-0.5 rounded-md">
             Instrutor
           </span>
         </div>
