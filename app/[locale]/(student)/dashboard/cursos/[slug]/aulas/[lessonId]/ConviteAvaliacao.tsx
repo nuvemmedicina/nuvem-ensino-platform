@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Star, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 /**
  * Convite que aparece quando o aluno fecha um módulo. É a resposta ao gargalo
@@ -13,6 +14,7 @@ export function ConviteAvaliacao({
   courseSlug: string;
   moduloTitulo: string;
 }) {
+  const t = useTranslations("novaArea.componentes.convite");
   const rotulo = moduloTitulo.split(/\s+[—–-]\s+/)[0].trim() || moduloTitulo;
 
   return (
@@ -23,11 +25,10 @@ export function ConviteAvaliacao({
 
       <div className="flex-1 min-w-0">
         <p className="font-sans text-sm font-semibold text-foreground">
-          Você concluiu o {rotulo}. Conta como foi?
+          {t("titulo", { modulo: rotulo })}
         </p>
         <p className="font-sans text-sm text-muted mt-0.5">
-          Leva um minuto e ajuda a melhorar as próximas aulas. Você avalia o curso e cada
-          professor separadamente.
+          {t("texto")}
         </p>
       </div>
 
@@ -35,7 +36,7 @@ export function ConviteAvaliacao({
         href={`/dashboard/cursos/${courseSlug}/avaliacao`}
         className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 font-sans text-sm font-bold px-5 py-3 sm:py-2.5 rounded-full bg-amber-400 text-amber-900 hover:bg-amber-300 transition-colors"
       >
-        Avaliar
+        {t("avaliar")}
         <ChevronRight className="w-4 h-4" />
       </Link>
     </div>

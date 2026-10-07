@@ -906,7 +906,8 @@
         "coordenacao": "Coordinación",
         "avaliar": "Evaluar el curso",
         "paginaPublica": "Ver la página pública del curso"
-      }
+      },
+      "fuso": "hora de Brasilia"
     },
     "aula": {
       "voltar": "Volver al curso",
@@ -992,6 +993,178 @@
       "tudoConcluido": "Completaste todas las clases disponibles.",
       "conquistasTitulo": "Logros",
       "conquistasSubtitulo": "Tus puntos, tu racha de estudio y tus certificados."
+    },
+    "componentes": {
+      "prova": {
+        "rotulo": "Examen",
+        "aprovado": "Aprobado",
+        "disponivelEm": "Disponible el {data}",
+        "prazoEncerrado": "Plazo cerrado",
+        "esgotadas": "Intentos agotados",
+        "pendente": "Pendiente",
+        "questoes": "{count, plural, one {# pregunta} other {# preguntas}}",
+        "sorteadas": "al azar de {total}",
+        "minimo": "mínimo {nota}%",
+        "melhor": "Mejor: {acertos}/{total} ({pct}%)",
+        "tentativasUsadas": "{usadas}/{max} intentos usados",
+        "sorteioAviso": "Cada alumno recibe una selección distinta. Si necesitas intentarlo de nuevo, las preguntas serán otras.",
+        "preparando": "Preparando…",
+        "tentarNovamente": "Intentar de nuevo",
+        "fazerProva": "Hacer el examen",
+        "restantes": "{count, plural, one {# intento restante} other {# intentos restantes}}",
+        "restantesCurto": "({count, plural, one {# restante} other {# restantes}})",
+        "cancelar": "Cancelar",
+        "enviando": "Enviando…",
+        "enviar": "Enviar respuestas",
+        "proxima": "Siguiente",
+        "aprovadoExcl": "¡Aprobado!",
+        "naoAtingiu": "No alcanzaste la nota mínima",
+        "corretas": "{acertos} de {total} preguntas correctas",
+        "minimoResultado": "mínimo: {nota}%",
+        "concluido": "Completado",
+        "agoraNao": "Ahora no",
+        "fechar": "Cerrar",
+        "revisao": "Revisión · {count, plural, one {# pregunta para repasar} other {# preguntas para repasar}}",
+        "revisaoAjuda": "Abajo solo lo que fallaste, con la explicación de la respuesta.",
+        "suaResposta": "Tu respuesta",
+        "emBranco": "— en blanco —",
+        "correta": "Correcta",
+        "proximaTentativa": "En el próximo intento recibirás preguntas distintas de estas.",
+        "guarde": "Guarda estas explicaciones: resumen los puntos clave del módulo."
+      },
+      "treino": {
+        "rotulo": "Práctica — {modulo}",
+        "titulo": "Practica sin nota",
+        "texto": "Preguntas del módulo con la explicación justo después de cada respuesta. No cuenta como intento ni nota.",
+        "preparando": "Preparando…",
+        "treinar": "Practicar",
+        "contador": "Práctica · {atual} de {total}",
+        "acertos": "{count, plural, one {# acierto hasta ahora} other {# aciertos hasta ahora}}",
+        "voceAcertou": "Acertaste",
+        "respostaCorreta": "Respuesta correcta: {texto}",
+        "terminar": "Terminar práctica",
+        "proxima": "Siguiente",
+        "concluido": "Práctica completada",
+        "placar": "{acertos} de {total}",
+        "taxa": "{pct}% de aciertos · no cuenta como intento del examen",
+        "deNovo": "Practicar de nuevo",
+        "fechar": "Cerrar",
+        "ordem": "En la próxima práctica, las preguntas que aún no acertaste aparecen primero."
+      },
+      "feedback": {
+        "pergunta": "¿Te sirvió esta clase?",
+        "obrigada": "¡Gracias por tu respuesta!",
+        "sim": "Sí",
+        "nao": "No",
+        "oQueFuncionou": "¿Quieres contarnos qué funcionó bien? (opcional)",
+        "oQueFaltou": "¿Qué le faltó a esta clase? (opcional)",
+        "umaLinha": "Escríbelo en una línea",
+        "enviar": "Enviar"
+      },
+      "convite": {
+        "titulo": "Completaste el {modulo}. ¿Cómo te fue?",
+        "texto": "Toma un minuto y ayuda a mejorar las próximas clases. Evalúas el curso y a cada profesor por separado.",
+        "avaliar": "Evaluar"
+      },
+      "quiz": {
+        "rotulo": "Quiz",
+        "resultado": "{acertos} de {total} correctas — {pct}%",
+        "parabens": "¡Felicitaciones! Te fue bien en el quiz.",
+        "continue": "Sigue estudiando e inténtalo de nuevo.",
+        "tentarNovamente": "Intentar de nuevo",
+        "faltam": "Responde todas las preguntas antes de enviar ({count, plural, one {# sin responder} other {# sin responder}}).",
+        "erro": "Error al enviar el quiz. Inténtalo de nuevo.",
+        "enviando": "Enviando…",
+        "enviar": "Enviar respuestas"
+      },
+      "comentarios": {
+        "titulo": "Comentarios",
+        "carregando": "Cargando…",
+        "vazio": "Todavía no hay comentarios. ¡Sé el primero!",
+        "aluno": "Alumno",
+        "admin": "Admin",
+        "instrutor": "Profesor",
+        "responder": "Responder",
+        "responderA": "Responder a {nome}…",
+        "cancelar": "Cancelar",
+        "placeholder": "Deja una duda o comentario… (Enter para enviar)",
+        "enviar": "Enviar",
+        "agora": "ahora"
+      },
+      "dominio": {
+        "rotulo": "Tu dominio por tema",
+        "resumo": "{acertos} aciertos en {total} preguntas respondidas",
+        "geral": "{pct}% en general",
+        "investir": "Dónde conviene invertir ahora: <forte>{tema}</forte>, tu tema con más errores ({pct}% de aciertos)."
+      },
+      "jogo": {
+        "rotulo": "Juego de casos clínicos",
+        "titulo": "Practica la interpretación de SIBO, IMO e intolerancias",
+        "texto": "Arrastra las tarjetas, lee la curva de H₂/CH₄ y recibe comentarios caso a caso — banco de 30 casos."
+      },
+      "concluirCurso": {
+        "confirmar": "¿Confirmar tu participación y generar el certificado de finalización?",
+        "emitido": "¡Certificado emitido! Míralo en Logros.",
+        "processando": "Procesando…",
+        "botao": "Marcar como completado y generar certificado"
+      },
+      "progresso": {
+        "titulo": "Tu progreso",
+        "conquistasContagem": "{feitas} de {total} logros",
+        "pontos": "Puntos",
+        "ofensiva": "Racha",
+        "dias": "{count, plural, one {día} other {días}}",
+        "diasValor": "{count, plural, one {# día} other {# días}}",
+        "manter": "Estudia hoy para mantener la racha.",
+        "interrompida": "Tu racha se interrumpió: vuelve a empezar hoy.",
+        "comecar": "Completa una clase para empezar.",
+        "melhorSequencia": "Mejor racha",
+        "diasEstudados": "Días de estudio",
+        "conquistas": "Logros",
+        "itens": {
+          "aulas": "Clases completadas",
+          "sessoesFlashcards": "Sesiones de flashcards",
+          "cardsRevisados": "Tarjetas repasadas",
+          "provasAprovadas": "Exámenes aprobados",
+          "dePrimeira": "Aprobado a la primera",
+          "semErro": "Examen sin errores",
+          "certificados": "Certificados",
+          "treino": "Preguntas dominadas en la práctica"
+        },
+        "medalhas": {
+          "primeira-prova": {
+            "nome": "Primer logro",
+            "descricao": "Aprobaste un examen de módulo"
+          },
+          "de-primeira": {
+            "nome": "A la primera",
+            "descricao": "Aprobaste sin necesitar un segundo intento"
+          },
+          "sem-erro": {
+            "nome": "Respuestas perfectas",
+            "descricao": "Un examen completo sin ningún error"
+          },
+          "constante": {
+            "nome": "Constancia",
+            "descricao": "7 días seguidos estudiando",
+            "detalhe": "mejor racha: {count, plural, one {# día} other {# días}}"
+          },
+          "curso-completo": {
+            "nome": "Curso completo",
+            "descricao": "Aprobaste los cuatro exámenes del curso",
+            "detalhe": "{feitas} de 4"
+          },
+          "certificado": {
+            "nome": "Certificado en mano",
+            "descricao": "Completaste un curso y emitiste el certificado"
+          }
+        }
+      }
+    },
+    "listaCursos": {
+      "emAndamento": "En curso",
+      "concluidos": "Completados",
+      "concluido": "Completado"
     }
   }
 }

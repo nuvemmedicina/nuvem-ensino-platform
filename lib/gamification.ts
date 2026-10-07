@@ -90,7 +90,8 @@ export type Medalha = {
   detalhe?: string;
 };
 
-export type PontosDetalhe = { rotulo: string; quantidade: number; pontos: number };
+/** `chave` identifica a linha para a tradução (novaArea.componentes.progresso.itens). */
+export type PontosDetalhe = { chave: string; rotulo: string; quantidade: number; pontos: number };
 
 export type EstatisticasAluno = {
   xp: number;
@@ -150,14 +151,14 @@ export async function calcularEstatisticas(userId: string): Promise<Estatisticas
   const cardsRevisados = sessoes.reduce((s, x) => s + x.cardsReviewed, 0);
 
   const detalhe: PontosDetalhe[] = [
-    { rotulo: "Aulas concluídas", quantidade: progressos.length, pontos: progressos.length * XP.lesson },
-    { rotulo: "Sessões de flashcards", quantidade: sessoes.length, pontos: sessoes.length * XP.flashcardSession },
-    { rotulo: "Cards revisados", quantidade: cardsRevisados, pontos: cardsRevisados * XP.flashcardCard },
-    { rotulo: "Provas aprovadas", quantidade: aprovadas, pontos: aprovadas * XP.quizPassed },
-    { rotulo: "Aprovado de primeira", quantidade: dePrimeira, pontos: dePrimeira * XP.firstTryBonus },
-    { rotulo: "Prova sem erro", quantidade: semErro, pontos: semErro * XP.perfectBonus },
-    { rotulo: "Certificados", quantidade: certificados.length, pontos: certificados.length * XP.certificate },
-    { rotulo: "Questões dominadas no treino", quantidade: treinosCertos.length, pontos: treinosCertos.length * XP.practiceQuestion },
+    { chave: "aulas", rotulo: "Aulas concluídas", quantidade: progressos.length, pontos: progressos.length * XP.lesson },
+    { chave: "sessoesFlashcards", rotulo: "Sessões de flashcards", quantidade: sessoes.length, pontos: sessoes.length * XP.flashcardSession },
+    { chave: "cardsRevisados", rotulo: "Cards revisados", quantidade: cardsRevisados, pontos: cardsRevisados * XP.flashcardCard },
+    { chave: "provasAprovadas", rotulo: "Provas aprovadas", quantidade: aprovadas, pontos: aprovadas * XP.quizPassed },
+    { chave: "dePrimeira", rotulo: "Aprovado de primeira", quantidade: dePrimeira, pontos: dePrimeira * XP.firstTryBonus },
+    { chave: "semErro", rotulo: "Prova sem erro", quantidade: semErro, pontos: semErro * XP.perfectBonus },
+    { chave: "certificados", rotulo: "Certificados", quantidade: certificados.length, pontos: certificados.length * XP.certificate },
+    { chave: "treino", rotulo: "Questões dominadas no treino", quantidade: treinosCertos.length, pontos: treinosCertos.length * XP.practiceQuestion },
   ].filter((d) => d.quantidade > 0);
 
   const xp = detalhe.reduce((s, d) => s + d.pontos, 0);

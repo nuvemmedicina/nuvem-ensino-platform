@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle, Loader2, Award } from "lucide-react";
 import { completeCourse } from "./completeCourseAction";
+import { useTranslations } from "next-intl";
 
 export function CompleteCourseButton({ courseId }: { courseId: string }) {
   const router = useRouter();
@@ -11,8 +12,10 @@ export function CompleteCourseButton({ courseId }: { courseId: string }) {
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
 
+  const t = useTranslations("novaArea.componentes.concluirCurso");
+
   function handleComplete() {
-    if (!confirm("Confirmar sua participação e gerar o certificado de conclusão?")) return;
+    if (!confirm(t("confirmar"))) return;
     startTransition(async () => {
       try {
         await completeCourse(courseId);
@@ -28,7 +31,7 @@ export function CompleteCourseButton({ courseId }: { courseId: string }) {
     return (
       <div className="flex items-center gap-2 font-sans text-sm font-semibold text-green-600">
         <Award className="w-4 h-4" />
-        Certificado emitido! Acesse em Certificados.
+        {t("emitido")}
       </div>
     );
   }
@@ -41,7 +44,7 @@ export function CompleteCourseButton({ courseId }: { courseId: string }) {
         className="inline-flex items-center gap-2 font-sans text-sm font-semibold px-6 py-2.5 rounded-full border border-primary/40 text-primary hover:bg-primary/10 disabled:opacity-50 transition-colors"
       >
         {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
-        {isPending ? "Processando…" : "Marcar como concluído e gerar certificado"}
+        {isPending ? t("processando") : t("botao")}
       </button>
       {error && <p className="font-sans text-xs text-red-500">{error}</p>}
     </div>

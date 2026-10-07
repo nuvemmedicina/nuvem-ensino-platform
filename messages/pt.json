@@ -906,7 +906,8 @@
         "coordenacao": "Coordenação",
         "avaliar": "Avaliar o curso",
         "paginaPublica": "Ver página pública do curso"
-      }
+      },
+      "fuso": "Brasília"
     },
     "aula": {
       "voltar": "Voltar ao curso",
@@ -992,6 +993,178 @@
       "tudoConcluido": "Você concluiu todas as aulas disponíveis.",
       "conquistasTitulo": "Conquistas",
       "conquistasSubtitulo": "Seus pontos, sua sequência de estudos e seus certificados."
+    },
+    "componentes": {
+      "prova": {
+        "rotulo": "Prova",
+        "aprovado": "Aprovado",
+        "disponivelEm": "Disponível em {data}",
+        "prazoEncerrado": "Prazo encerrado",
+        "esgotadas": "Tentativas esgotadas",
+        "pendente": "Pendente",
+        "questoes": "{count, plural, one {# questão} other {# questões}}",
+        "sorteadas": "sorteadas de {total}",
+        "minimo": "mínimo {nota}%",
+        "melhor": "Melhor: {acertos}/{total} ({pct}%)",
+        "tentativasUsadas": "{usadas}/{max} tentativas usadas",
+        "sorteioAviso": "Cada aluno recebe uma seleção diferente. Se precisar tentar de novo, as questões serão outras.",
+        "preparando": "Preparando…",
+        "tentarNovamente": "Tentar novamente",
+        "fazerProva": "Fazer prova",
+        "restantes": "{count, plural, one {# tentativa restante} other {# tentativas restantes}}",
+        "restantesCurto": "({count, plural, one {# restante} other {# restantes}})",
+        "cancelar": "Cancelar",
+        "enviando": "Enviando…",
+        "enviar": "Enviar respostas",
+        "proxima": "Próxima",
+        "aprovadoExcl": "Aprovado!",
+        "naoAtingiu": "Não atingiu a nota mínima",
+        "corretas": "{acertos} de {total} questões corretas",
+        "minimoResultado": "mínimo: {nota}%",
+        "concluido": "Concluído",
+        "agoraNao": "Agora não",
+        "fechar": "Fechar",
+        "revisao": "Revisão · {count, plural, one {# questão para rever} other {# questões para rever}}",
+        "revisaoAjuda": "Abaixo apenas o que você errou, com a explicação do gabarito.",
+        "suaResposta": "Sua resposta",
+        "emBranco": "— em branco —",
+        "correta": "Correta",
+        "proximaTentativa": "Na próxima tentativa você receberá questões diferentes destas.",
+        "guarde": "Guarde estas explicações — elas resumem os pontos-chave do módulo."
+      },
+      "treino": {
+        "rotulo": "Treino — {modulo}",
+        "titulo": "Pratique sem valer nota",
+        "texto": "Questões do módulo com a explicação logo após cada resposta. Não conta tentativa nem nota.",
+        "preparando": "Preparando…",
+        "treinar": "Treinar",
+        "contador": "Treino · {atual} de {total}",
+        "acertos": "{count, plural, one {# acerto até aqui} other {# acertos até aqui}}",
+        "voceAcertou": "Você acertou",
+        "respostaCorreta": "Resposta correta: {texto}",
+        "terminar": "Terminar treino",
+        "proxima": "Próxima",
+        "concluido": "Treino concluído",
+        "placar": "{acertos} de {total}",
+        "taxa": "{pct}% de acerto · não conta como tentativa da prova",
+        "deNovo": "Treinar de novo",
+        "fechar": "Fechar",
+        "ordem": "No próximo treino, as questões que você ainda não acertou vêm primeiro."
+      },
+      "feedback": {
+        "pergunta": "Esta aula foi útil para você?",
+        "obrigada": "Obrigada pela resposta!",
+        "sim": "Sim",
+        "nao": "Não",
+        "oQueFuncionou": "Quer contar o que funcionou bem? (opcional)",
+        "oQueFaltou": "O que faltou nesta aula? (opcional)",
+        "umaLinha": "Escreva em uma linha",
+        "enviar": "Enviar"
+      },
+      "convite": {
+        "titulo": "Você concluiu o {modulo}. Conta como foi?",
+        "texto": "Leva um minuto e ajuda a melhorar as próximas aulas. Você avalia o curso e cada professor separadamente.",
+        "avaliar": "Avaliar"
+      },
+      "quiz": {
+        "rotulo": "Quiz",
+        "resultado": "{acertos} de {total} corretas — {pct}%",
+        "parabens": "Parabéns! Você foi bem no quiz.",
+        "continue": "Continue estudando e tente novamente.",
+        "tentarNovamente": "Tentar novamente",
+        "faltam": "Responda todas as perguntas antes de enviar ({count, plural, one {# sem resposta} other {# sem resposta}}).",
+        "erro": "Erro ao enviar o quiz. Tente novamente.",
+        "enviando": "Enviando…",
+        "enviar": "Enviar respostas"
+      },
+      "comentarios": {
+        "titulo": "Comentários",
+        "carregando": "Carregando…",
+        "vazio": "Nenhum comentário ainda. Seja o primeiro!",
+        "aluno": "Aluno",
+        "admin": "Admin",
+        "instrutor": "Instrutor",
+        "responder": "Responder",
+        "responderA": "Responder {nome}…",
+        "cancelar": "Cancelar",
+        "placeholder": "Deixe uma dúvida ou comentário… (Enter para enviar)",
+        "enviar": "Enviar",
+        "agora": "agora"
+      },
+      "dominio": {
+        "rotulo": "Seu domínio por tema",
+        "resumo": "{acertos} acertos em {total} questões respondidas",
+        "geral": "{pct}% no geral",
+        "investir": "Onde vale investir agora: <forte>{tema}</forte>, seu tema com mais erros ({pct}% de acerto)."
+      },
+      "jogo": {
+        "rotulo": "Jogo de casos clínicos",
+        "titulo": "Treine a interpretação de SIBO, IMO e intolerâncias",
+        "texto": "Arraste os cartões, leia a curva de H₂/CH₄ e receba feedback caso a caso — banco de 30 casos."
+      },
+      "concluirCurso": {
+        "confirmar": "Confirmar sua participação e gerar o certificado de conclusão?",
+        "emitido": "Certificado emitido! Acesse em Certificados.",
+        "processando": "Processando…",
+        "botao": "Marcar como concluído e gerar certificado"
+      },
+      "progresso": {
+        "titulo": "Seu progresso",
+        "conquistasContagem": "{feitas} de {total} conquistas",
+        "pontos": "Pontos",
+        "ofensiva": "Ofensiva",
+        "dias": "{count, plural, one {dia} other {dias}}",
+        "diasValor": "{count, plural, one {# dia} other {# dias}}",
+        "manter": "Estude hoje para manter a sequência.",
+        "interrompida": "Sua sequência foi interrompida — recomece hoje.",
+        "comecar": "Conclua uma aula para começar.",
+        "melhorSequencia": "Melhor sequência",
+        "diasEstudados": "Dias estudados",
+        "conquistas": "Conquistas",
+        "itens": {
+          "aulas": "Aulas concluídas",
+          "sessoesFlashcards": "Sessões de flashcards",
+          "cardsRevisados": "Cards revisados",
+          "provasAprovadas": "Provas aprovadas",
+          "dePrimeira": "Aprovado de primeira",
+          "semErro": "Prova sem erro",
+          "certificados": "Certificados",
+          "treino": "Questões dominadas no treino"
+        },
+        "medalhas": {
+          "primeira-prova": {
+            "nome": "Primeira conquista",
+            "descricao": "Aprovado em uma prova de módulo"
+          },
+          "de-primeira": {
+            "nome": "De primeira",
+            "descricao": "Aprovado sem precisar de segunda tentativa"
+          },
+          "sem-erro": {
+            "nome": "Gabarito limpo",
+            "descricao": "Uma prova inteira sem nenhum erro"
+          },
+          "constante": {
+            "nome": "Constância",
+            "descricao": "7 dias seguidos estudando",
+            "detalhe": "melhor sequência: {count, plural, one {# dia} other {# dias}}"
+          },
+          "curso-completo": {
+            "nome": "Curso completo",
+            "descricao": "Aprovado nas quatro provas do curso",
+            "detalhe": "{feitas} de 4"
+          },
+          "certificado": {
+            "nome": "Certificado em mãos",
+            "descricao": "Concluiu um curso e emitiu o certificado"
+          }
+        }
+      }
+    },
+    "listaCursos": {
+      "emAndamento": "Em andamento",
+      "concluidos": "Concluídos",
+      "concluido": "Concluído"
     }
   }
 }

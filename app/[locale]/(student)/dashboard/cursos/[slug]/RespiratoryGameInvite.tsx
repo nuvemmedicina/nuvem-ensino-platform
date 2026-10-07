@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Gamepad2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 /**
  * Convite para o jogo de casos clínicos de interpretação de testes
@@ -8,6 +9,7 @@ import { Gamepad2 } from "lucide-react";
  * é uma ferramenta de treino livre, não presa ao currículo.
  */
 export function RespiratoryGameInvite({ slug }: { slug: string }) {
+  const t = useTranslations("novaArea.componentes.jogo");
   return (
     <div className="rounded-2xl border border-border bg-surface overflow-hidden">
       <Link
@@ -19,11 +21,11 @@ export function RespiratoryGameInvite({ slug }: { slug: string }) {
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted mb-0.5">
-            Jogo de casos clínicos
+            {t("rotulo")}
           </p>
-          <p className="font-sans text-sm text-foreground">Treine a interpretação de SIBO, IMO e intolerâncias</p>
+          <p className="font-sans text-sm text-foreground">{t("titulo")}</p>
           <p className="font-sans text-xs text-muted mt-0.5">
-            Arraste os cartões, leia a curva de H₂/CH₄ e receba feedback caso a caso — banco de 30 casos.
+            {t("texto")}
           </p>
         </div>
       </Link>

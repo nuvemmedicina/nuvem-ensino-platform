@@ -7,6 +7,7 @@ import {
 import { submitModuleQuiz, type ReviewItem } from "./submitModuleQuiz";
 import { startModuleQuiz } from "./startModuleQuiz";
 import { moduleColor } from "@/lib/moduleColors";
+import { useLocale, useTranslations } from "next-intl";
 
 type Question = { id: string; text: string; options: { id: string; text: string }[] };
 type Quiz = {
@@ -28,8 +29,8 @@ type Result = {
 
 type Props = { moduleTitle: string; moduleIndex: number; quiz: Quiz; previousAttempts: Attempt[] };
 
-function fmt(d: Date | string) {
-  return new Intl.DateTimeFormat("pt-BR", {
+function fmt(d: Date | string, locale: string) {
+  return new Intl.DateTimeFormat(locale === "pt" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US", {
     day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit",
   }).format(new Date(d));
 }
@@ -37,6 +38,8 @@ function fmt(d: Date | string) {
 const LETTERS = ["A", "B", "C", "D", "E"];
 
 export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttempts }: Props) {
+  const t = useTranslations("novaArea.componentes.prova");
+  const locale = useLocale();
   const cor = moduleColor(moduleIndex);
   const now = new Date();
   const availableFrom = quiz.availableFrom ? new Date(quiz.availableFrom) : null;
@@ -156,51 +159,51 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
                 }`}
                 style={destacado ? { color: cor.accent } : undefined}
               >
-                Prova — <span className="sm:hidden">{moduleLabel}</span>
+                {t("rotulo")} — <span className="sm:hidden">{moduleLabel}</span>
                 <span className="hidden sm:inline">{moduleTitle}</span>
               </p>
               <p className="font-sans text-sm font-semibold text-foreground">{quiz.title}</p>
               <div className="flex flex-col items-start gap-1.5 mt-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2 sm:mt-1.5">
                 {alreadyPassed && (
                   <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-green-700 bg-green-500/10 border border-green-500/20 px-2.5 py-0.5 rounded-full">
-                    <CheckCircle className="w-3 h-3" /> Aprovado
+                    <CheckCircle className="w-3 h-3" /> {t("aprovado")}
                   </span>
                 )}
                 {notYet && (
                   <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-muted bg-border/40 px-2.5 py-0.5 rounded-full">
-                    <Clock className="w-3 h-3 shrink-0" /> Disponível em {fmt(availableFrom!)}
+                    <Clock className="w-3 h-3 shrink-0" /> {t("disponivelEm", { data: fmt(availableFrom!, locale) })}
                   </span>
                 )}
                 {expired && !alreadyPassed && (
                   <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-red-600 bg-red-500/10 border border-red-500/20 px-2.5 py-0.5 rounded-full">
-                    <Lock className="w-3 h-3" /> Prazo encerrado
+                    <Lock className="w-3 h-3" /> {t("prazoEncerrado")}
                   </span>
                 )}
                 {exhausted && !alreadyPassed && !expired && (
                   <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-red-600 bg-red-500/10 border border-red-500/20 px-2.5 py-0.5 rounded-full">
-                    <XCircle className="w-3 h-3" /> Tentativas esgotadas
+                    <XCircle className="w-3 h-3" /> {t("esgotadas")}
                   </span>
                 )}
                 {!alreadyPassed && !notYet && !expired && !exhausted && hasQuestions && (
                   <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-full">
-                    Pendente
+                    {t("pendente")}
                   </span>
                 )}
 
                 {hasQuestions && (
                   <span className="font-sans text-[11px] text-muted">
-                    {perAttempt} questõe{perAttempt !== 1 ? "s" : ""}
-                    {isDrawn && ` sorteadas de ${quiz.totalQuestions}`}
+                    {t("questoes", { count: perAttempt })}
+                    {isDrawn && ` ${t("sorteadas", { total: quiz.totalQuestions })}`}
                     <span className="mx-1.5 text-border">·</span>
-                    mínimo {quiz.passingPct}%
+                    {t("minimo", { nota: quiz.passingPct })}
                   </span>
                 )}
 
                 {attemptsUsed > 0 && bestAttempt && (
                   <span className="font-sans text-[11px] text-muted">
-                    Melhor: {bestAttempt.score}/{bestAttempt.total} ({Math.round((bestAttempt.score / bestAttempt.total) * 100)}%)
+                    {t("melhor", { acertos: bestAttempt.score, total: bestAttempt.total, pct: Math.round((bestAttempt.score / bestAttempt.total) * 100) })}
                     <span className="mx-1.5 text-border">·</span>
-                    {attemptsUsed}/{quiz.maxAttempts} tentativas usadas
+                    {t("tentativasUsadas", { usadas: attemptsUsed, max: quiz.maxAttempts })}
                   </span>
                 )}
               </div>
@@ -208,7 +211,7 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
               {isDrawn && canTake && (
                 <p className="flex items-start gap-1.5 font-sans text-[11px] text-muted leading-snug mt-2">
                   <Shuffle className="w-3 h-3 shrink-0 mt-0.5" />
-                  Cada aluno recebe uma seleção diferente. Se precisar tentar de novo, as questões serão outras.
+                  {t("sorteioAviso")}
                 </p>
               )}
               {error && <p className="font-sans text-xs text-red-500 mt-2">{error}</p>}
@@ -221,7 +224,7 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
               disabled={isPending}
               className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 font-sans text-sm font-semibold px-4 py-3 sm:py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark disabled:opacity-50 transition-colors"
             >
-              {isPending ? "Preparando…" : attemptsUsed > 0 ? "Tentar novamente" : "Fazer prova"}
+              {isPending ? t("preparando") : attemptsUsed > 0 ? t("tentarNovamente") : t("fazerProva")}
               {!isPending && <ChevronRight className="w-4 h-4" />}
             </button>
           )}
@@ -259,7 +262,7 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
               </div>
             </div>
             <span className="font-sans text-[11px] text-muted">
-              {attemptsLeft} tentativa{attemptsLeft !== 1 ? "s" : ""} restante{attemptsLeft !== 1 ? "s" : ""}
+              {t("restantes", { count: attemptsLeft })}
             </span>
           </div>
 
@@ -303,7 +306,7 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
               onClick={() => { setPhase("summary"); setAnswers({}); setCurrentIndex(0); setQuestions([]); }}
               className="font-sans text-xs text-muted hover:text-foreground transition-colors"
             >
-              Cancelar
+              {t("cancelar")}
             </button>
             <button
               type="button"
@@ -311,7 +314,7 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
               disabled={!currentAnswered || isPending}
               className="flex items-center gap-2 font-sans text-sm font-semibold px-5 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark disabled:opacity-40 transition-all"
             >
-              {isPending ? "Enviando…" : isLastQuestion ? "Enviar respostas" : "Próxima"}
+              {isPending ? t("enviando") : isLastQuestion ? t("enviar") : t("proxima")}
               {!isPending && <ChevronRight className="w-4 h-4" />}
             </button>
           </div>
@@ -340,13 +343,13 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
             <p className={`font-sans text-sm font-bold uppercase tracking-widest mb-1 ${
               result.passed ? "text-green-600" : "text-red-500"
             }`}>
-              {result.passed ? "Aprovado!" : "Não atingiu a nota mínima"}
+              {result.passed ? t("aprovadoExcl") : t("naoAtingiu")}
             </p>
             <p className="font-sans text-5xl font-bold text-foreground">{pct}%</p>
             <p className="font-sans text-sm text-muted mt-1">
-              {result.score} de {result.total} questões corretas
+              {t("corretas", { acertos: result.score, total: result.total })}
               <span className="mx-1.5 text-border">·</span>
-              mínimo: {quiz.passingPct}%
+              {t("minimoResultado", { nota: quiz.passingPct })}
             </p>
           </div>
 
@@ -357,7 +360,7 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
                 className="flex items-center gap-2 font-sans text-sm font-semibold px-6 py-2.5 rounded-xl bg-green-500/10 text-green-700 hover:bg-green-500/20 border border-green-500/20 transition-colors"
               >
                 <CheckCircle className="w-4 h-4" />
-                Concluído
+                {t("concluido")}
               </button>
             ) : result.attemptsLeft > 0 ? (
               <>
@@ -367,16 +370,16 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
                   className="flex items-center gap-2 font-sans text-sm font-semibold px-6 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark disabled:opacity-50 transition-colors"
                 >
                   <RotateCcw className="w-4 h-4" />
-                  {isPending ? "Preparando…" : "Tentar novamente"}
+                  {isPending ? t("preparando") : t("tentarNovamente")}
                   <span className="font-sans text-[11px] opacity-70">
-                    ({result.attemptsLeft} restante{result.attemptsLeft !== 1 ? "s" : ""})
+                    {t("restantesCurto", { count: result.attemptsLeft })}
                   </span>
                 </button>
                 <button
                   onClick={() => setPhase("summary")}
                   className="font-sans text-xs text-muted hover:text-foreground transition-colors"
                 >
-                  Agora não
+                  {t("agoraNao")}
                 </button>
               </>
             ) : (
@@ -384,7 +387,7 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
                 onClick={() => setPhase("summary")}
                 className="font-sans text-sm font-semibold px-6 py-2.5 rounded-xl border border-border text-muted hover:text-foreground transition-colors"
               >
-                Fechar
+                {t("fechar")}
               </button>
             )}
           </div>
@@ -396,10 +399,10 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
         {wrong.length > 0 && (
           <div className="border-t border-border bg-background/60 px-5 py-5">
             <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted mb-1">
-              Revisão · {wrong.length} questõe{wrong.length !== 1 ? "s" : ""} para rever
+              {t("revisao", { count: wrong.length })}
             </p>
             <p className="font-sans text-xs text-muted mb-4">
-              Abaixo apenas o que você errou, com a explicação do gabarito.
+              {t("revisaoAjuda")}
             </p>
 
             <div className="space-y-3">
@@ -418,15 +421,15 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
                   <div className="px-4 pb-4 pt-3 space-y-2.5 border-t border-border/60">
                     <div className="flex items-start gap-2">
                       <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-red-500 shrink-0 w-24 pt-0.5">
-                        Sua resposta
+                        {t("suaResposta")}
                       </span>
                       <span className="font-sans text-xs text-muted leading-snug">
-                        {item.chosenText ?? "— em branco —"}
+                        {item.chosenText ?? t("emBranco")}
                       </span>
                     </div>
                     <div className="flex items-start gap-2">
                       <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-green-600 shrink-0 w-24 pt-0.5">
-                        Correta
+                        {t("correta")}
                       </span>
                       <span className="font-sans text-xs text-foreground font-medium leading-snug">
                         {item.correctText}
@@ -447,8 +450,8 @@ export function ModuleQuizPanel({ moduleTitle, moduleIndex, quiz, previousAttemp
 
             <p className="font-sans text-[11px] text-muted mt-4">
               {result.attemptsLeft > 0
-                ? "Na próxima tentativa você receberá questões diferentes destas."
-                : "Guarde estas explicações — elas resumem os pontos-chave do módulo."}
+                ? t("proximaTentativa")
+                : t("guarde")}
             </p>
           </div>
         )}

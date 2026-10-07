@@ -727,7 +727,7 @@ export async function NovaPaginaCurso(props: NovaPaginaCursoProps) {
                     <p className="font-sans text-[15px] text-foreground">{aoVivo.title}</p>
                     <p className="font-sans text-sm text-muted">
                       {new Intl.DateTimeFormat(dl, { dateStyle: "full", timeStyle: "short", timeZone: FUSO }).format(aoVivo.startAt)} (
-                      {locale === "pt" ? "Brasília" : "Brasília time"})
+                      {t("fuso")})
                     </p>
                     <div className="flex flex-wrap gap-2 mt-1">
                       {aoVivo.meetUrl && (

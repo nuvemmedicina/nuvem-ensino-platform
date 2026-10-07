@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { submitQuiz } from "./quizActions";
+import { useTranslations } from "next-intl";
 
 type Option = {
   id: string;
@@ -26,6 +27,7 @@ type QuizPanelProps = {
 };
 
 export default function QuizPanel({ quiz, previousAttempt }: QuizPanelProps) {
+  const t = useTranslations("novaArea.componentes.quiz");
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<{
     score: number;
@@ -46,7 +48,7 @@ export default function QuizPanel({ quiz, previousAttempt }: QuizPanelProps) {
 
     const unanswered = quiz.questions.filter((q) => !answers[q.id]);
     if (unanswered.length > 0) {
-      setError(`Responda todas as perguntas antes de enviar (${unanswered.length} sem resposta).`);
+      setError(t("faltam", { count: unanswered.length }));
       return;
     }
 
@@ -56,7 +58,7 @@ export default function QuizPanel({ quiz, previousAttempt }: QuizPanelProps) {
         setResult(res);
         setShowQuiz(false);
       } catch {
-        setError("Erro ao enviar o quiz. Tente novamente.");
+        setError(t("erro"));
       }
     });
   }
@@ -75,7 +77,7 @@ export default function QuizPanel({ quiz, previousAttempt }: QuizPanelProps) {
     <div className="border-t border-border bg-surface px-6 py-6">
       <div className="max-w-2xl">
         <p className="font-sans text-[10px] font-bold uppercase tracking-widest text-muted mb-1">
-          Quiz
+          {t("rotulo")}
         </p>
         <h2 className="font-serif text-lg font-medium text-foreground mb-4">{quiz.title}</h2>
 
@@ -90,10 +92,10 @@ export default function QuizPanel({ quiz, previousAttempt }: QuizPanelProps) {
               }`}
             >
               <p className="font-sans text-sm font-semibold">
-                {displayAttempt.score} de {displayAttempt.total} corretas — {pct}%
+                {t("resultado", { acertos: displayAttempt.score, total: displayAttempt.total, pct })}
               </p>
               <p className="font-sans text-xs mt-0.5">
-                {pct >= 70 ? "Parabéns! Você foi bem no quiz." : "Continue estudando e tente novamente."}
+                {pct >= 70 ? t("parabens") : t("continue")}
               </p>
             </div>
 
@@ -144,7 +146,7 @@ export default function QuizPanel({ quiz, previousAttempt }: QuizPanelProps) {
               onClick={handleRetry}
               className="font-sans text-sm font-semibold px-4 py-2 rounded-lg border border-border text-muted hover:border-primary/40 hover:text-foreground transition-colors"
             >
-              Tentar novamente
+              {t("tentarNovamente")}
             </button>
           </div>
         )}
@@ -191,7 +193,7 @@ export default function QuizPanel({ quiz, previousAttempt }: QuizPanelProps) {
               disabled={isPending}
               className="font-sans text-sm font-semibold px-6 py-2.5 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors disabled:opacity-60"
             >
-              {isPending ? "Enviando…" : "Enviar respostas"}
+              {isPending ? t("enviando") : t("enviar")}
             </button>
           </form>
         )}
