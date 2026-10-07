@@ -40,15 +40,13 @@ export default async function StudentLayout({
       {/* ── Sidebar desktop ── */}
       <aside className="hidden md:flex flex-col w-52 bg-white border-r border-border shrink-0 sticky top-0 h-screen">
         {/* Logo */}
-        <div className="px-5 py-5">
-          <Link href="/">
-            <Image
-              src="/logo.png"
-              alt="NU.V.E.M ENSINO"
-              width={100}
-              height={78}
-              className="h-8 w-auto"
-            />
+        <div className="px-5 pt-6 pb-5">
+          <Link href="/" className="flex items-center gap-3" aria-label="NU.V.E.M ENSINO">
+            <Image src="/logo-icone.png" alt="" width={56} height={56} className="w-14 h-14 shrink-0" priority />
+            <span className="flex flex-col leading-none">
+              <span className="font-serif text-[26px] font-semibold text-primary">nuvem</span>
+              <span className="font-sans text-xs font-medium uppercase tracking-[0.2em] text-muted mt-1">ensino</span>
+            </span>
           </Link>
         </div>
 

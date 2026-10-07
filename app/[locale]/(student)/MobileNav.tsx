@@ -41,7 +41,11 @@ export default function MobileNav({ userImage, initials, nova = false }: Props) 
       <header className="md:hidden sticky top-0 z-40 bg-white border-b border-border">
         <div className="flex items-center justify-between px-5 h-14">
           <Link href="/dashboard">
-            <Image src="/logo.png" alt="NU.V.E.M ENSINO" width={100} height={78} className="h-7 w-auto" />
+            <span className="flex items-center gap-2.5">
+              <Image src="/logo-icone.png" alt="" width={40} height={40} className="w-10 h-10" priority />
+              <span className="font-serif text-[22px] font-semibold text-primary leading-none">nuvem</span>
+              <span className="sr-only">NU.V.E.M ENSINO</span>
+            </span>
           </Link>
           <Link href="/dashboard/perfil" className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden shrink-0">
             {userImage ? (
