@@ -35,10 +35,12 @@ import { TreinoPanel } from "./TreinoPanel";
 import { FlashcardsPanel } from "./FlashcardsPanel";
 import { RespiratoryGameInvite } from "./RespiratoryGameInvite";
 import { calcularDominioPorTema } from "@/lib/gamification";
+import { usaNovaArea } from "@/lib/novaArea";
+import { NovaPaginaCurso, ABAS, type Aba } from "./NovaPaginaCurso";
 
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
-  searchParams: Promise<{ sucesso?: string }>;
+  searchParams: Promise<{ sucesso?: string; aba?: string }>;
 };
 
 const categoryLabel: Record<string, string> = {
@@ -57,7 +59,7 @@ const categoryLabel: Record<string, string> = {
 
 export default async function CourseOverviewPage({ params, searchParams }: Props) {
   const { slug, locale } = await params;
-  const { sucesso } = await searchParams;
+  const { sucesso, aba } = await searchParams;
 
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard");
@@ -96,6 +98,7 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
                   id: true,
                   title: true,
                   duration: true,
+                  type: true,
                   videoUrl: true,
                   audioUrl: true,
                   muxPlaybackId: true,
@@ -223,6 +226,58 @@ export default async function CourseOverviewPage({ params, searchParams }: Props
   const referencesCount = await prisma.courseReference.count({
     where: { courseId: course.id },
   });
+
+  // Nova área do aluno: a chave em /admin/configuracoes/area-do-aluno decide
+  // quem vê a página nova. Os dados são os mesmos da página atual.
+  if (await usaNovaArea((session.user as { role?: string }).role)) {
+    const [referencias, aoVivo] = await Promise.all([
+      prisma.courseReference.findMany({
+        where: { courseId: course.id },
+        orderBy: { order: "asc" },
+        select: { id: true, title: true, fileUrl: true },
+      }),
+      // Inclui a aula que já começou e ainda não terminou
+      prisma.liveSession.findFirst({
+        where: { courseId: course.id, endAt: { gte: now } },
+        orderBy: { startAt: "asc" },
+      }),
+    ]);
+    const fmtCal = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    return (
+      <NovaPaginaCurso
+        locale={locale}
+        aba={(ABAS as readonly string[]).includes(aba ?? "") ? (aba as Aba) : "aulas"}
+        sucesso={!!sucesso}
+        course={course}
+        progressMap={progressMap}
+        nextLesson={nextLesson}
+        tentativas={moduleQuizAttempts}
+        provaAtualId={currentQuizModule?.quiz?.id ?? null}
+        aoVivo={
+          aoVivo
+            ? {
+                title: aoVivo.title,
+                startAt: aoVivo.startAt,
+                endAt: aoVivo.endAt,
+                meetUrl: aoVivo.meetUrl,
+                calendarUrl: `https://calendar.google.com/calendar/render?${new URLSearchParams({
+                  action: "TEMPLATE",
+                  text: aoVivo.title,
+                  dates: `${fmtCal(aoVivo.startAt)}/${fmtCal(aoVivo.endAt)}`,
+                  details: aoVivo.meetUrl ? `Link: ${aoVivo.meetUrl}` : course.title,
+                  location: aoVivo.location ?? aoVivo.meetUrl ?? "",
+                }).toString()}`,
+              }
+            : null
+        }
+        dominioTemas={dominioTemas}
+        certificadoId={enrollment.certificate?.id ?? null}
+        referencias={referencias}
+        whatsappUrl={course.slug === "dici-neurogastroenterologia-2026" ? DICI_WHATSAPP_GROUP_URL : null}
+        temJogo={RESPIRATORY_GAME_COURSE_SLUGS.includes(course.slug)}
+      />
+    );
+  }
 
   const catLabel = categoryLabel[course.category] ?? course.category;
 

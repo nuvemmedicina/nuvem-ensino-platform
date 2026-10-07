@@ -805,5 +805,108 @@
       "button": "Ver cursos"
     },
     "seeAllLink": "Ver todas las publicaciones en la Editora Rubio →"
+  },
+  "novaArea": {
+    "curso": {
+      "voltar": "Mis cursos",
+      "eEquipe": "y equipo",
+      "horas": "{horas} h",
+      "aulasConcluidas": "{feitas} de {total} clases completadas",
+      "certificado": "Certificado",
+      "provasAprovadas": "{feitas} de {total} exámenes",
+      "verOQueFalta": "ver qué falta",
+      "certificadoDisponivel": "Certificado disponible",
+      "secoes": "Secciones del curso",
+      "abas": {
+        "visao-geral": "Resumen",
+        "aulas": "Clases",
+        "avaliacoes": "Evaluaciones",
+        "materiais": "Materiales",
+        "comunidade": "Comunidad"
+      },
+      "proximo": {
+        "continuar": "Continuar: {titulo}",
+        "comecar": "Empezar: {titulo}",
+        "prova": "Hacer el examen del {modulo}",
+        "aoVivo": "Entrar a la clase en vivo",
+        "aoVivoHoje": "Clase en vivo hoy a las {hora}",
+        "externo": "Entrar a la clase",
+        "verCertificado": "Ver certificado"
+      },
+      "sucesso": "¡Matrícula confirmada! Bienvenido al curso.",
+      "modulo": {
+        "aulas": "{count, plural, one {# clase} other {# clases}}",
+        "progresso": "{feitas} de {total} clases",
+        "concluido": "Completado",
+        "emAndamento": "En curso",
+        "abreEm": "Abre el {data}",
+        "voceParou": "Te quedaste aquí",
+        "apostila": "Apunte",
+        "provaItem": "Examen del módulo",
+        "provaRegra": "{questoes} preguntas · mínimo {nota}%",
+        "flashcards": "Flashcards",
+        "cartoes": "{count, plural, one {# tarjeta} other {# tarjetas}}"
+      },
+      "tipo": {
+        "video": "Videoclase",
+        "audio": "Audio",
+        "aoVivo": "Clase en vivo",
+        "gravacao": "Clase en vivo · grabación",
+        "leitura": "Lectura",
+        "emBreve": "Próximamente"
+      },
+      "avaliacoes": {
+        "provas": "Exámenes de los módulos",
+        "regra": "{questoes} preguntas al azar · nota mínima {nota}% · hasta {tentativas} intentos",
+        "aprovado": "Aprobado · {acertos}/{total}",
+        "aberta": "Abierto",
+        "abreEm": "Abre junto con el módulo, el {data}",
+        "esgotada": "Intentos agotados",
+        "fechada": "Cerrado",
+        "semQuestoes": "En preparación",
+        "provaAtual": "Examen abierto",
+        "flashcards": "Flashcards por tema",
+        "flashcardsVazio": "Las flashcards aparecen aquí a medida que cada tema recibe su mazo.",
+        "desempenho": "Ver mi desempeño",
+        "desempenhoTexto": "Notas de los exámenes y dominio por tema."
+      },
+      "materiais": {
+        "apostilas": "Apuntes",
+        "apostilasVazio": "Los apuntes aparecen aquí a medida que se publican.",
+        "referencias": "Referencias científicas",
+        "referenciasTexto": "Artículos seleccionados por la coordinación para profundizar cada módulo.",
+        "audios": "Clases en audio",
+        "audiosTexto": "{count, plural, one {# clase tiene} other {# clases tienen}} versión en audio. Escúchala en el reproductor de la clase."
+      },
+      "comunidade": {
+        "forum": "Foro del curso",
+        "forumTexto": "Preguntas y discusión de casos con el grupo y los profesores.",
+        "abrirForum": "Abrir el foro",
+        "grupo": "Grupo del curso",
+        "grupoTexto": "Dudas directamente con la Dra. Vera Ângelo, por WhatsApp.",
+        "entrarGrupo": "Unirse al grupo",
+        "aoVivo": "Próxima clase en vivo",
+        "entrarMeet": "Entrar a Meet",
+        "agenda": "Añadir al calendario",
+        "semAoVivo": "No hay clases en vivo programadas. Las grabaciones están dentro de cada módulo, en la pestaña Clases."
+      },
+      "geral": {
+        "certificadoTitulo": "Para obtener el certificado",
+        "certificadoRegra": "Completar las clases y aprobar los exámenes de módulo con la nota mínima.",
+        "certificadoRegraSemProva": "Completar las clases del curso.",
+        "aulas": "Clases",
+        "provas": "Exámenes aprobados",
+        "faltamAulas": "{count, plural, one {Falta # clase} other {Faltan # clases}}",
+        "faltamProvas": "{count, plural, one {Falta # examen} other {Faltan # exámenes}}",
+        "tudoCerto": "Todo completado",
+        "irAsProvas": "Ir a los exámenes",
+        "continuar": "Continuar",
+        "baixarCertificado": "Ver el certificado",
+        "professores": "Profesores",
+        "coordenacao": "Coordinación",
+        "avaliar": "Evaluar el curso",
+        "paginaPublica": "Ver la página pública del curso"
+      }
+    }
   }
 }
