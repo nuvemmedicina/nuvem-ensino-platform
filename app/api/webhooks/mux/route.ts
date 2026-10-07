@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Mux from "@mux/mux-node";
 import { prisma } from "@/lib/prisma";
+import { mux } from "@/lib/mux";
 
 // Instância usada apenas para verificação de assinatura do webhook
 function getMuxWebhookVerifier() {
@@ -44,7 +45,17 @@ export async function POST(req: NextRequest) {
   if (event.type === "video.asset.ready") {
     const assetId = event.data.id;
     const playbackId = event.data.playback_ids?.find((p) => p.policy === "public")?.id;
-    const durationSecs = event.data.duration;
+    let durationSecs = event.data.duration;
+
+    // 44 aulas do DICI ficaram sem duração porque o evento chegou sem ela.
+    // Nesse caso, pergunta ao Mux; se falhar, segue sem a duração.
+    if (!durationSecs) {
+      try {
+        durationSecs = (await mux().video.assets.retrieve(assetId)).duration ?? undefined;
+      } catch (err) {
+        console.warn("[Mux Webhook] Não foi possível ler a duração do asset", assetId, err);
+      }
+    }
 
     if (!playbackId) {
       console.warn("[Mux Webhook] Asset pronto mas sem playback_id público", assetId);
