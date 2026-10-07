@@ -835,7 +835,7 @@
       },
       "sucesso": "Matrícula confirmada! Bem-vindo ao curso.",
       "modulo": {
-        "aulas": "{count, plural, one {# aula} other {# aulas}}",
+        "aulas": "{count, plural, =1 {# aula} other {# aulas}}",
         "progresso": "{feitas} de {total} aulas",
         "concluido": "Concluído",
         "emAndamento": "Em andamento",
@@ -845,7 +845,7 @@
         "provaItem": "Prova do módulo",
         "provaRegra": "{questoes} questões · mínimo {nota}%",
         "flashcards": "Flashcards",
-        "cartoes": "{count, plural, one {# cartão} other {# cartões}}"
+        "cartoes": "{count, plural, =1 {# cartão} other {# cartões}}"
       },
       "tipo": {
         "video": "Videoaula",
@@ -876,7 +876,7 @@
         "referencias": "Referências científicas",
         "referenciasTexto": "Artigos selecionados pela coordenação para aprofundar cada módulo.",
         "audios": "Aulas em áudio",
-        "audiosTexto": "{count, plural, one {# aula tem} other {# aulas têm}} versão em áudio. Ouça pelo player da própria aula."
+        "audiosTexto": "{count, plural, =1 {# aula tem} other {# aulas têm}} versão em áudio. Ouça pelo player da própria aula."
       },
       "comunidade": {
         "forum": "Fórum do curso",
@@ -896,8 +896,8 @@
         "certificadoRegraSemProva": "Concluir as aulas do curso.",
         "aulas": "Aulas",
         "provas": "Provas aprovadas",
-        "faltamAulas": "{count, plural, one {Falta # aula} other {Faltam # aulas}}",
-        "faltamProvas": "{count, plural, one {Falta # prova} other {Faltam # provas}}",
+        "faltamAulas": "{count, plural, =1 {Falta # aula} other {Faltam # aulas}}",
+        "faltamProvas": "{count, plural, =1 {Falta # prova} other {Faltam # provas}}",
         "tudoCerto": "Tudo concluído",
         "irAsProvas": "Ir para as provas",
         "continuar": "Continuar",
@@ -1002,7 +1002,7 @@
         "prazoEncerrado": "Prazo encerrado",
         "esgotadas": "Tentativas esgotadas",
         "pendente": "Pendente",
-        "questoes": "{count, plural, one {# questão} other {# questões}}",
+        "questoes": "{count, plural, =1 {# questão} other {# questões}}",
         "sorteadas": "sorteadas de {total}",
         "minimo": "mínimo {nota}%",
         "melhor": "Melhor: {acertos}/{total} ({pct}%)",
@@ -1011,8 +1011,8 @@
         "preparando": "Preparando…",
         "tentarNovamente": "Tentar novamente",
         "fazerProva": "Fazer prova",
-        "restantes": "{count, plural, one {# tentativa restante} other {# tentativas restantes}}",
-        "restantesCurto": "({count, plural, one {# restante} other {# restantes}})",
+        "restantes": "{count, plural, =1 {# tentativa restante} other {# tentativas restantes}}",
+        "restantesCurto": "({count, plural, =1 {# restante} other {# restantes}})",
         "cancelar": "Cancelar",
         "enviando": "Enviando…",
         "enviar": "Enviar respostas",
@@ -1024,7 +1024,7 @@
         "concluido": "Concluído",
         "agoraNao": "Agora não",
         "fechar": "Fechar",
-        "revisao": "Revisão · {count, plural, one {# questão para rever} other {# questões para rever}}",
+        "revisao": "Revisão · {count, plural, =1 {# questão para rever} other {# questões para rever}}",
         "revisaoAjuda": "Abaixo apenas o que você errou, com a explicação do gabarito.",
         "suaResposta": "Sua resposta",
         "emBranco": "— em branco —",
@@ -1039,7 +1039,7 @@
         "preparando": "Preparando…",
         "treinar": "Treinar",
         "contador": "Treino · {atual} de {total}",
-        "acertos": "{count, plural, one {# acerto até aqui} other {# acertos até aqui}}",
+        "acertos": "{count, plural, =1 {# acerto até aqui} other {# acertos até aqui}}",
         "voceAcertou": "Você acertou",
         "respostaCorreta": "Resposta correta: {texto}",
         "terminar": "Terminar treino",
@@ -1072,7 +1072,7 @@
         "parabens": "Parabéns! Você foi bem no quiz.",
         "continue": "Continue estudando e tente novamente.",
         "tentarNovamente": "Tentar novamente",
-        "faltam": "Responda todas as perguntas antes de enviar ({count, plural, one {# sem resposta} other {# sem resposta}}).",
+        "faltam": "Responda todas as perguntas antes de enviar ({count, plural, =1 {# sem resposta} other {# sem resposta}}).",
         "erro": "Erro ao enviar o quiz. Tente novamente.",
         "enviando": "Enviando…",
         "enviar": "Enviar respostas"
@@ -1113,8 +1113,8 @@
         "conquistasContagem": "{feitas} de {total} conquistas",
         "pontos": "Pontos",
         "ofensiva": "Ofensiva",
-        "dias": "{count, plural, one {dia} other {dias}}",
-        "diasValor": "{count, plural, one {# dia} other {# dias}}",
+        "dias": "{count, plural, =1 {dia} other {dias}}",
+        "diasValor": "{count, plural, =1 {# dia} other {# dias}}",
         "manter": "Estude hoje para manter a sequência.",
         "interrompida": "Sua sequência foi interrompida — recomece hoje.",
         "comecar": "Conclua uma aula para começar.",
@@ -1147,7 +1147,7 @@
           "constante": {
             "nome": "Constância",
             "descricao": "7 dias seguidos estudando",
-            "detalhe": "melhor sequência: {count, plural, one {# dia} other {# dias}}"
+            "detalhe": "melhor sequência: {count, plural, =1 {# dia} other {# dias}}"
           },
           "curso-completo": {
             "nome": "Curso completo",
