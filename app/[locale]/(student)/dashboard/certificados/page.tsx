@@ -5,6 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { Award, Download, BookOpen } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { usaNovaArea } from "@/lib/novaArea";
+import { calcularEstatisticas } from "@/lib/gamification";
+import { ProgressoPanel } from "../ProgressoPanel";
 
 export default async function CertificadosPage({
   params,
@@ -46,12 +49,27 @@ export default async function CertificadosPage({
       ? t("countOne")
       : t("countPlural", { count: certificates.length });
 
+  // Nova área do aluno: esta página vira "Conquistas", com pontos, sequência
+  // de estudos e medalhas (que saíram do Início) acima dos certificados.
+  const nova = await usaNovaArea((session.user as { role?: string }).role);
+  const ti = await getTranslations({ locale, namespace: "novaArea.inicio" });
+  const stats = nova ? await calcularEstatisticas(session.user.id) : null;
+
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-serif text-2xl font-medium text-foreground">{t("title")}</h1>
-        <p className="font-sans text-sm text-muted mt-1">{subtitle}</p>
+        <h1 className="font-serif text-2xl font-medium text-foreground">{nova ? ti("conquistasTitulo") : t("title")}</h1>
+        <p className="font-sans text-sm text-muted mt-1">{nova ? ti("conquistasSubtitulo") : subtitle}</p>
       </div>
+
+      {stats && stats.xp > 0 && (
+        <div className="-mx-6 lg:-mx-8 mb-8">
+          <ProgressoPanel stats={stats} />
+        </div>
+      )}
+
+      {nova && <h2 className="font-sans text-lg font-semibold text-foreground mb-1">{t("title")}</h2>}
+      {nova && <p className="font-sans text-sm text-muted mb-5">{subtitle}</p>}
 
       {certificates.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center bg-surface border border-border rounded-2xl">

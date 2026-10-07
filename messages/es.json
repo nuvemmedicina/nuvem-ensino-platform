@@ -951,6 +951,47 @@
       "parabensTexto": "Completaste todas las clases de",
       "baixarCertificado": "Descargar certificado",
       "continuarNoCurso": "Seguir en el curso"
+    },
+    "menu": {
+      "rotulo": "Menú principal",
+      "inicio": "Inicio",
+      "cursos": "Mis cursos",
+      "cursosCurto": "Cursos",
+      "agenda": "Agenda",
+      "conquistas": "Logros",
+      "perfil": "Perfil",
+      "suporte": "Soporte"
+    },
+    "inicio": {
+      "bomDia": "Buenos días, {nome}",
+      "boaTarde": "Buenas tardes, {nome}",
+      "boaNoite": "Buenas noches, {nome}",
+      "proximoPasso": "Tu próximo paso",
+      "continuarAula": "Continuar clase",
+      "comecarAula": "Empezar clase",
+      "abrirCurso": "Abrir curso",
+      "aoVivoAgora": "Clase en vivo en este momento",
+      "aoVivoHoje": "Clase en vivo hoy a las {hora}",
+      "entrarAoVivo": "Entrar a la clase en vivo",
+      "cursoExterno": "Curso en línea · contenido en enlace externo",
+      "aulasConcluidas": "{feitas} de {total} clases completadas",
+      "meusCursos": "Mis cursos",
+      "verTodos": "Ver todos",
+      "concluido": "Completado",
+      "compromissos": "Próximos compromisos",
+      "aoVivo": "En vivo",
+      "liberacao": "Apertura",
+      "liberacaoTexto": "Clases y examen disponibles",
+      "fusoBrasilia": "hora de Brasilia",
+      "semCompromissos": "No hay compromisos en las próximas semanas.",
+      "agendaCompleta": "Ver agenda completa",
+      "conhecaTambem": "Conoce también",
+      "verCurso": "Ver curso",
+      "semCursos": "Todavía no estás inscrito en ningún curso.",
+      "verCatalogo": "Ver los cursos de Nuvem",
+      "tudoConcluido": "Completaste todas las clases disponibles.",
+      "conquistasTitulo": "Logros",
+      "conquistasSubtitulo": "Tus puntos, tu racha de estudio y tus certificados."
     }
   }
 }
