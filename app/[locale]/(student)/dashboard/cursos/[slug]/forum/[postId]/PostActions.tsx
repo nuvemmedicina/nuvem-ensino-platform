@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { Heart, Pin, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -17,6 +18,7 @@ type Props = {
 
 export function PostActions({ courseSlug, postId, likeCount, liked, isPinned, isModerator, isAuthor }: Props) {
   const router = useRouter();
+  const t = useTranslations("novaArea.paginas.forum");
   const [isPending, startTransition] = useTransition();
 
   function handleLike() {
@@ -34,7 +36,7 @@ export function PostActions({ courseSlug, postId, likeCount, liked, isPinned, is
   }
 
   function handleDelete() {
-    if (!confirm("Excluir este tópico e todas as respostas?")) return;
+    if (!confirm(t("excluirTopicoConfirmar"))) return;
     startTransition(async () => {
       await deleteForumPost(courseSlug, postId);
       router.push(`/dashboard/cursos/${courseSlug}/forum`);
@@ -53,7 +55,7 @@ export function PostActions({ courseSlug, postId, likeCount, liked, isPinned, is
         }`}
       >
         <Heart className={`w-3.5 h-3.5 ${liked ? "fill-red-400" : ""}`} />
-        {likeCount} {likeCount === 1 ? "curtida" : "curtidas"}
+        {t("curtidas", { n: likeCount })}
       </button>
 
       {isModerator && (
@@ -67,7 +69,7 @@ export function PostActions({ courseSlug, postId, likeCount, liked, isPinned, is
           }`}
         >
           <Pin className="w-3.5 h-3.5" />
-          {isPinned ? "Desafixar" : "Fixar"}
+          {isPinned ? t("desafixar") : t("fixar")}
         </button>
       )}
 
@@ -78,7 +80,7 @@ export function PostActions({ courseSlug, postId, likeCount, liked, isPinned, is
           className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold px-3 py-1.5 rounded-full border border-border text-muted hover:border-red-300 hover:text-red-500 transition-all ml-auto"
         >
           <Trash2 className="w-3.5 h-3.5" />
-          Excluir tópico
+          {t("excluirTopico")}
         </button>
       )}
     </div>

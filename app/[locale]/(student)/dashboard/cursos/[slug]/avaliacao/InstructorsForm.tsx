@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Star, CheckCircle, Loader2, GraduationCap } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export type DocenteParaAvaliar = {
   id: string;
@@ -21,6 +22,7 @@ type Props = {
 };
 
 function Estrelas({ name, valorInicial }: { name: string; valorInicial: number | null }) {
+  const t = useTranslations("novaArea.paginas.avaliacao");
   const [hover, setHover] = useState(0);
   const [sel, setSel] = useState(valorInicial ?? 0);
   const ativo = hover || sel;
@@ -36,7 +38,7 @@ function Estrelas({ name, valorInicial }: { name: string; valorInicial: number |
             onMouseLeave={() => setHover(0)}
             onClick={() => setSel(n === sel ? 0 : n)}
             className="transition-transform hover:scale-110 focus:outline-none"
-            aria-label={`${n} estrela${n > 1 ? "s" : ""}`}
+            aria-label={t("estrelas", { n })}
           >
             <Star
               className="w-6 h-6 transition-colors"
@@ -54,7 +56,7 @@ function Estrelas({ name, valorInicial }: { name: string; valorInicial: number |
           onClick={() => setSel(0)}
           className="font-sans text-[11px] text-muted hover:text-foreground transition-colors"
         >
-          limpar
+          {t("limpar")}
         </button>
       )}
       <input type="hidden" name={name} value={sel} />
@@ -63,6 +65,7 @@ function Estrelas({ name, valorInicial }: { name: string; valorInicial: number |
 }
 
 export function InstructorsForm({ action, docentes }: Props) {
+  const t = useTranslations("novaArea.paginas.avaliacao");
   const [isPending, startTransition] = useTransition();
   const [done, setDone] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
@@ -77,7 +80,7 @@ export function InstructorsForm({ action, docentes }: Props) {
       ([k, v]) => k.startsWith("rating:") && Number(v) > 0,
     );
     if (!algumaNota) {
-      setErro("Dê pelo menos uma nota antes de enviar.");
+      setErro(t("umaNota"));
       return;
     }
     setErro(null);
@@ -87,7 +90,7 @@ export function InstructorsForm({ action, docentes }: Props) {
         await action(formData);
         setDone(true);
       } catch {
-        setErro("Ocorreu um erro. Tente novamente.");
+        setErro(t("erro"));
       }
     });
   }
@@ -99,9 +102,9 @@ export function InstructorsForm({ action, docentes }: Props) {
           <CheckCircle className="w-7 h-7 text-green-500" />
         </div>
         <div>
-          <p className="font-serif text-lg font-medium text-foreground">Obrigada!</p>
+          <p className="font-serif text-lg font-medium text-foreground">{t("obrigadaCurta")}</p>
           <p className="font-sans text-sm text-muted">
-            Sua avaliação dos docentes foi registrada.
+            {t("docentesRegistrada")}
           </p>
         </div>
       </div>
@@ -114,7 +117,7 @@ export function InstructorsForm({ action, docentes }: Props) {
         <div className="flex items-start gap-3 bg-primary/8 border border-primary/20 rounded-xl px-4 py-3">
           <CheckCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
           <p className="font-sans text-sm text-primary/90">
-            Você já avaliou docentes deste curso. Pode atualizar abaixo.
+            {t("jaAvaliouDocentes")}
           </p>
         </div>
       )}
@@ -135,11 +138,11 @@ export function InstructorsForm({ action, docentes }: Props) {
               <p className="font-sans text-sm font-semibold text-foreground">{d.nome}</p>
               {d.titulo && <p className="font-sans text-xs text-muted">{d.titulo}</p>}
               <p className="font-sans text-[11px] text-muted mt-0.5">
-                {d.aulas} aula{d.aulas !== 1 ? "s" : ""} neste curso
+                {t("aulasNoCurso", { n: d.aulas })}
                 {d.assistiu && (
                   <>
                     <span className="mx-1.5 text-border">·</span>
-                    <span className="text-primary font-semibold">você assistiu</span>
+                    <span className="text-primary font-semibold">{t("voceAssistiu")}</span>
                   </>
                 )}
               </p>
@@ -152,7 +155,7 @@ export function InstructorsForm({ action, docentes }: Props) {
                 name={`suggestion:${d.id}`}
                 defaultValue={d.sugestaoAnterior ?? ""}
                 rows={2}
-                placeholder={`O que ${d.nome.split(" ").slice(0, 2).join(" ")} poderia melhorar? (opcional)`}
+                placeholder={t("melhorarPlaceholder", { nome: d.nome.split(" ").slice(0, 2).join(" ") })}
                 className="mt-3 w-full px-3.5 py-2.5 font-sans text-sm text-foreground bg-background border border-border rounded-xl placeholder:text-muted/40 focus:outline-none focus:border-primary/50 resize-none transition-colors"
               />
             </div>
@@ -172,11 +175,11 @@ export function InstructorsForm({ action, docentes }: Props) {
         className="w-full flex items-center justify-center gap-2 font-sans text-sm font-semibold py-3.5 rounded-full bg-primary text-white hover:bg-primary-dark disabled:opacity-60 transition-all hover:shadow-[0_4px_20px_rgba(0,71,94,0.35)]"
       >
         {isPending ? (
-          <><Loader2 className="w-4 h-4 animate-spin" /> Enviando...</>
+          <><Loader2 className="w-4 h-4 animate-spin" /> {t("enviando")}</>
         ) : jaAvaliou ? (
-          "Atualizar avaliação dos docentes"
+          t("atualizarDocentes")
         ) : (
-          "Enviar avaliação dos docentes"
+          t("enviarDocentes")
         )}
       </button>
     </form>

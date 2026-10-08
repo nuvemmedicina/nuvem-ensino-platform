@@ -6,18 +6,21 @@ import { prisma } from "@/lib/prisma";
 import { EvaluationForm } from "./EvaluationForm";
 import { InstructorsForm, type DocenteParaAvaliar } from "./InstructorsForm";
 import { submitEvaluation, submitInstructorEvaluations } from "./actions";
+import { getTranslations } from "next-intl/server";
+import { traduzirItem } from "@/lib/i18n-content";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
 export default async function AvaliacaoPage({ params }: Props) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
+  const t = await getTranslations({ locale, namespace: "novaArea.paginas.avaliacao" });
 
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard");
 
   const course = await prisma.course.findFirst({
     where: { slug },
-    select: { id: true, title: true },
+    select: { id: true, title: true, titleEs: true, titleEn: true },
   });
   if (!course) notFound();
 
@@ -110,16 +113,16 @@ export default async function AvaliacaoPage({ params }: Props) {
           className="flex items-center gap-1.5 font-sans text-sm text-muted hover:text-foreground transition-colors"
         >
           <ChevronLeft className="w-4 h-4" />
-          Voltar ao curso
+          {t("voltar")}
         </Link>
         <span className="text-border">/</span>
-        <span className="font-sans text-sm text-foreground font-medium">{course.title}</span>
+        <span className="font-sans text-sm text-foreground font-medium">{traduzirItem(course, locale).title}</span>
       </div>
 
       <div className="mb-6">
-        <h1 className="font-serif text-2xl font-medium text-foreground mb-1">Avaliação do curso</h1>
+        <h1 className="font-serif text-2xl font-medium text-foreground mb-1">{t("titulo")}</h1>
         <p className="font-sans text-sm text-muted">
-          Sua opinião é muito importante para continuar aprimorando a qualidade do conteúdo.
+          {t("subtitulo")}
         </p>
       </div>
 
@@ -131,11 +134,10 @@ export default async function AvaliacaoPage({ params }: Props) {
         <div className="mt-12">
           <div className="mb-5">
             <h2 className="font-serif text-xl font-medium text-foreground mb-1">
-              Avaliação dos docentes
+              {t("docentesTitulo")}
             </h2>
             <p className="font-sans text-sm text-muted">
-              Avalie quem você acompanhou. Deixe em branco os docentes cujas aulas você ainda
-              não assistiu. Sua resposta chega ao professor sem identificação.
+              {t("docentesTexto")}
             </p>
           </div>
 
@@ -147,9 +149,9 @@ export default async function AvaliacaoPage({ params }: Props) {
       <div className="mt-12 rounded-2xl border border-border bg-surface overflow-hidden">
         <div className="bg-gradient-to-br from-primary/10 to-primary/5 px-6 py-5 border-b border-border">
           <p className="font-sans text-[10px] font-bold uppercase tracking-widest text-primary mb-0.5">
-            Direção Científica
+            {t("direcao")}
           </p>
-          <p className="font-sans text-xs text-muted">Conheça a responsável pelo conteúdo do curso</p>
+          <p className="font-sans text-xs text-muted">{t("direcaoTexto")}</p>
         </div>
 
         <div className="p-6">
@@ -169,15 +171,8 @@ export default async function AvaliacaoPage({ params }: Props) {
             {/* Info */}
             <div className="flex-1 min-w-0">
               <h2 className="font-serif text-lg font-medium text-foreground">Dra. Vera Ângelo</h2>
-              <p className="font-sans text-xs text-primary font-semibold mb-3">Diretora Científica · NU.V.E.M Ensino</p>
-              <p className="font-sans text-sm text-muted leading-relaxed">
-                Médica gastroenterologista com mais de 30 anos de dedicação à saúde digestiva e à formação acadêmica.
-                Especialista em Neurogastroenterologia e Manometria Digestiva pelo Hospital Israelita Albert Einstein,
-                possui Mestrado e Doutorado em Patologia pela UFMG. Sua trajetória é marcada pela vanguarda no estudo
-                da Motilidade Digestiva, Microbiota Intestinal e Testes Respiratórios. Autora de livros e publicações
-                científicas de relevância, é palestrante frequente em congressos nacionais e internacionais.
-                Atualmente, lidera a disseminação de conhecimento especializado como Diretora Científica da NU.V.E.M Ensino.
-              </p>
+              <p className="font-sans text-xs text-primary font-semibold mb-3">{t("veraCargo")}</p>
+              <p className="font-sans text-sm text-muted leading-relaxed">{t("veraBio")}</p>
 
               {/* Links */}
               <div className="flex flex-wrap justify-center gap-2 mt-4">
@@ -190,7 +185,7 @@ export default async function AvaliacaoPage({ params }: Props) {
                   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
                   </svg>
-                  Perfil completo
+                  {t("perfilCompleto")}
                 </a>
                 <a
                   href="https://www.instagram.com/veraangelo/"
@@ -212,7 +207,7 @@ export default async function AvaliacaoPage({ params }: Props) {
       {/* ── Redes sociais & Google Review ── */}
       <div className="mt-6 rounded-2xl border border-border bg-surface p-6 text-center">
         <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-6">
-          Siga e avalie a Nuvem
+          {t("sigaAvalie")}
         </p>
 
         {/* Nuvem Ensino */}
@@ -265,7 +260,7 @@ export default async function AvaliacaoPage({ params }: Props) {
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            Avaliar no Google
+            {t("avaliarGoogle")}
           </a>
         </div>
       </div>
@@ -275,7 +270,7 @@ export default async function AvaliacaoPage({ params }: Props) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/selos-mec-iso.svg"
-          alt="ISO 9001 · Reconhecido pelo MEC"
+          alt={t("selosAlt")}
           className="h-24 opacity-80"
         />
       </div>

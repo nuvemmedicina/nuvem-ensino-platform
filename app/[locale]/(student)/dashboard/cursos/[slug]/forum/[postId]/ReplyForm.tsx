@@ -4,9 +4,11 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Send } from "lucide-react";
 import { createForumReply } from "../actions";
+import { useTranslations } from "next-intl";
 
 export function ReplyForm({ courseSlug, postId }: { courseSlug: string; postId: string }) {
   const router = useRouter();
+  const t = useTranslations("novaArea.paginas.forum");
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -26,9 +28,9 @@ export function ReplyForm({ courseSlug, postId }: { courseSlug: string; postId: 
 
   return (
     <div className="bg-surface border border-border rounded-2xl p-5">
-      <h3 className="font-sans text-sm font-semibold text-foreground mb-3">Sua resposta</h3>
+      <h3 className="font-sans text-sm font-semibold text-foreground mb-3">{t("suaResposta")}</h3>
       <textarea
-        placeholder="Escreva sua resposta…"
+        placeholder={t("respostaPlaceholder")}
         value={content}
         onChange={(e) => setContent(e.target.value)}
         rows={4}
@@ -42,7 +44,7 @@ export function ReplyForm({ courseSlug, postId }: { courseSlug: string; postId: 
           className="flex items-center gap-2 font-sans text-sm font-semibold px-5 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark disabled:opacity-50 transition-colors"
         >
           {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-          {isPending ? "Enviando…" : "Responder"}
+          {isPending ? t("enviando") : t("responder")}
         </button>
       </div>
     </div>
