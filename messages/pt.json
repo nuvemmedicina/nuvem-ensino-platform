@@ -1302,7 +1302,14 @@
         "atalhos": "Atalhos: espaço vira o card · 1, 2 e 3 dão a nota · setas navegam",
         "finalOtimo": "Excelente domínio!",
         "finalBom": "Bom caminho, siga revisando.",
-        "finalRevisar": "Vale revisar de novo em breve."
+        "finalRevisar": "Vale revisar de novo em breve.",
+        "tema": "Tema {n}",
+        "estudado": "Estudado",
+        "comecar": "Começar",
+        "revisar": "Revisar de novo",
+        "statTemas": "{n, plural, =1 {# tema} other {# temas}}",
+        "statEstudados": "{feitos} de {total} estudados",
+        "estudadosModulo": "{feitos}/{total} estudados"
       },
       "resultado": {
         "voltar": "Voltar ao curso",
