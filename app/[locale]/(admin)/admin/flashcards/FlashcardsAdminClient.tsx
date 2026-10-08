@@ -2,7 +2,8 @@
 
 import { useState, useRef } from "react";
 import { uploadFileToBlob } from "@/app/actions/uploadToBlob";
-import { Plus, Upload, Pencil, Trash2, BookOpen, Loader2, AlertTriangle, X, Check, Sparkles, LayersIcon } from "lucide-react";
+import { Plus, Upload, Pencil, Trash2, BookOpen, Loader2, AlertTriangle, X, Check, Sparkles, LayersIcon, Lock } from "lucide-react";
+import { moduleColor, type ModuleColor } from "@/lib/moduleColors";
 
 type Group = {
   id: string;
@@ -25,23 +26,6 @@ type EditableCard = { id?: string; front: string; back: string };
 const inputClass = "w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground focus:outline-none focus:border-primary/50";
 const btnPrimary = "inline-flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark transition-colors disabled:opacity-50";
 const btnGhost = "inline-flex items-center gap-2 font-sans text-sm font-medium px-3 py-1.5 rounded-lg border border-border hover:bg-surface transition-colors";
-
-/* Stacked-cards illustration rendered inside the poster area */
-function FlashcardIllustration({ count }: { count: number }) {
-  return (
-    <div className="absolute inset-0 flex items-center justify-center">
-      {/* back card */}
-      <div className="absolute w-28 h-20 rounded-xl border border-white/20 bg-white/10 rotate-6 translate-y-1" />
-      {/* middle card */}
-      <div className="absolute w-28 h-20 rounded-xl border border-white/25 bg-white/15 rotate-2" />
-      {/* front card */}
-      <div className="absolute w-28 h-20 rounded-xl border border-white/40 bg-white/25 -rotate-2 flex flex-col items-center justify-center gap-1.5 shadow-lg">
-        <LayersIcon className="w-5 h-5 text-white/70" />
-        <span className="font-sans text-[11px] font-bold text-white/80 tabular-nums">{count} card{count !== 1 ? "s" : ""}</span>
-      </div>
-    </div>
-  );
-}
 
 export function FlashcardsAdminClient({
   groups: initial,
@@ -205,6 +189,93 @@ export function FlashcardsAdminClient({
 
   function closeModal() { setModal(null); setTitle(""); setDescription(""); setCourseId(""); setTopicId(""); setImageUrl(""); setGeneratedCards([]); setAiError(null); setFileName(null); setEditingId(null); setEditCards([]); }
 
+  // ── Estrutura: curso › módulo › tema, com os grupos de cada tema ──
+  const porTema = new Map<string, Group[]>();
+  for (const g of groups) if (g.topicId) porTema.set(g.topicId, [...(porTema.get(g.topicId) ?? []), g]);
+  const temasConhecidos = new Set(courses.flatMap((c) => c.modules.flatMap((m) => m.topics.map((t) => t.id))));
+  const estrutura = courses
+    .map((curso) => ({
+      curso,
+      modulos: curso.modules
+        .map((modulo, indice) => ({
+          modulo,
+          indice,
+          temas: modulo.topics.map((tema, i) => ({ tema, numero: i + 1, grupos: porTema.get(tema.id) ?? [] })),
+        }))
+        .filter((m) => m.temas.length > 0),
+      semTema: groups.filter((g) => g.course?.slug === curso.slug && (!g.topicId || !temasConhecidos.has(g.topicId))),
+    }))
+    // Curso aparece se já tem algum grupo; os temas vazios dele viram atalho para criar
+    .filter((c) => c.semTema.length > 0 || c.modulos.some((m) => m.temas.some((t) => t.grupos.length > 0)));
+  const semCurso = groups.filter((g) => !g.course);
+
+  function criarNoTema(curso: string, tema: string, nome: string) {
+    setCourseId(curso);
+    setTopicId(tema);
+    setTitle(nome);
+    setModal("manual");
+  }
+
+  /** Card compacto de um grupo, na cor do módulo. */
+  function cardGrupo(g: Group, cor: ModuleColor, rotulo: string | null, nomeDoTema: string | null) {
+    const nomeDiferente = nomeDoTema !== null && g.title.trim() !== nomeDoTema.trim();
+    return (
+      <div key={g.id} className="flex flex-col rounded-xl overflow-hidden border border-border bg-surface hover:shadow-md transition-shadow">
+        <div
+          className="relative h-20 overflow-hidden"
+          style={{ background: `linear-gradient(140deg, ${cor.accent} 0%, color-mix(in srgb, ${cor.accent} 60%, black) 100%)` }}
+        >
+          {g.imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={g.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-35 mix-blend-luminosity" />
+          ) : (
+            <div aria-hidden="true" className="absolute -right-6 -bottom-10 w-24 h-24 rounded-full bg-white/10" />
+          )}
+          <LayersIcon aria-hidden="true" className="absolute right-3 bottom-2.5 w-6 h-6 text-white/25" />
+          <div className="absolute inset-x-3 top-2.5 flex items-center justify-between gap-2">
+            {rotulo && <span className="font-sans text-[10px] font-bold uppercase tracking-widest text-white/85">{rotulo}</span>}
+            <span className="ml-auto font-sans text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/20 text-white">
+              {g._count.cards} card{g._count.cards !== 1 ? "s" : ""}
+            </span>
+          </div>
+        </div>
+        <div className="flex-1 flex flex-col gap-1.5 px-3 py-2.5">
+          <h3 className="font-sans text-[13px] font-semibold text-foreground leading-snug line-clamp-2">{g.title}</h3>
+          {nomeDiferente && (
+            <p className="flex items-start gap-1 font-sans text-[11px] text-amber-800 leading-snug">
+              <AlertTriangle className="w-3 h-3 mt-0.5 shrink-0" />
+              <span>Nome diferente do tema: {nomeDoTema}. O aluno vê o nome do tema.</span>
+            </p>
+          )}
+          <div className="flex items-center gap-1 border-t border-border/60 pt-2 mt-auto -mx-3 px-3">
+            <button
+              onClick={() => openEdit(g)}
+              className="flex items-center gap-1 font-sans text-[11px] font-semibold px-2 py-1 rounded-md text-primary hover:bg-primary/10 transition-colors"
+            >
+              <Pencil className="w-3 h-3" /> Editar
+            </button>
+            <a
+              href={`/dashboard/flashcards/${g.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 font-sans text-[11px] font-semibold px-2 py-1 rounded-md text-muted hover:text-foreground hover:bg-background transition-colors"
+            >
+              <BookOpen className="w-3 h-3" /> Ver
+            </a>
+            <button
+              onClick={() => handleDelete(g.id)}
+              className="p-1.5 rounded-md text-muted/60 hover:text-red-500 hover:bg-red-500/10 transition-colors ml-auto"
+              title="Excluir grupo"
+              aria-label="Excluir grupo"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Action buttons */}
@@ -217,87 +288,84 @@ export function FlashcardsAdminClient({
         </button>
       </div>
 
-      {/* Netflix grid */}
+      {/* Grupos organizados por curso e módulo, na cor de cada módulo (a
+          mesma da área do aluno). Antes era uma grade única, com a capa do
+          curso repetida em todos os cards. */}
       {groups.length === 0 ? (
         <div className="text-center py-24 text-muted">
           <LayersIcon className="w-10 h-10 mx-auto mb-3 opacity-20" />
           <p className="font-sans text-sm">Nenhum grupo de flashcards ainda.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4">
-          {groups.map((g) => {
-            const thumb = g.imageUrl ?? g.course?.thumbnailUrl ?? null;
-            return (
-              <div key={g.id} className="group relative flex flex-col rounded-xl overflow-hidden border border-border bg-surface hover:border-primary/40 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+        <div className="flex flex-col gap-12">
+          {estrutura.map(({ curso, modulos, semTema }) => (
+            <section key={curso.id} className="flex flex-col gap-6">
+              <h2 className="font-serif text-2xl font-medium text-foreground">{curso.title}</h2>
 
-                {/* Poster thumbnail area */}
-                <div className="relative aspect-[2/3] shrink-0 overflow-hidden bg-gradient-to-b from-violet-900 to-indigo-950">
-                  {thumb ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={thumb} alt={g.title} className="absolute inset-0 w-full h-full object-cover opacity-40" />
-                  ) : null}
-
-                  {/* gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-
-                  {/* Card count badge */}
-                  <span className="absolute top-2.5 left-2.5 font-sans text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-violet-500/90 text-white">
-                    {g._count.cards} cards
-                  </span>
-
-                  {/* Stacked cards illustration */}
-                  <FlashcardIllustration count={g._count.cards} />
-
-                  {/* Course name at bottom of poster */}
-                  {g.course && (
-                    <div className="absolute bottom-0 left-0 right-0 px-3 pb-2.5">
-                      <p className="font-sans text-[10px] text-white/60 truncate">📚 {g.course.title}</p>
+              {modulos.map(({ modulo, indice, temas }) => {
+                const cor = moduleColor(indice);
+                const prontos = temas.filter((t) => t.grupos.length > 0).length;
+                return (
+                  <div key={modulo.id} className="flex flex-col gap-3">
+                    <div
+                      className="rounded-xl px-4 py-3 text-white flex flex-wrap items-center gap-x-3 gap-y-1"
+                      style={{ background: `linear-gradient(120deg, ${cor.accent} 0%, color-mix(in srgb, ${cor.accent} 70%, black) 100%)` }}
+                    >
+                      <span className="flex items-center justify-center w-7 h-7 rounded-md bg-white/15 font-sans text-xs font-bold">{indice + 1}</span>
+                      <h3 className="flex-1 min-w-[12rem] font-sans text-sm font-semibold">{modulo.title}</h3>
+                      <span className="font-sans text-xs text-white/80 tabular-nums">{prontos}/{temas.length} temas com flashcards</span>
                     </div>
-                  )}
-                </div>
-
-                {/* Card body */}
-                <div className="flex flex-col gap-2 px-3 py-2.5 flex-1">
-                  <h2 className="font-serif text-sm font-medium text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-                    {g.title}
-                  </h2>
-
-                  {g.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {g.tags.map((t) => (
-                        <span key={t} className="font-sans text-[9px] text-muted bg-border/60 px-1.5 py-0.5 rounded">{t}</span>
-                      ))}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                      {temas.flatMap(({ tema, numero, grupos }) =>
+                        grupos.length > 0
+                          ? grupos.map((g) => cardGrupo(g, cor, `Tema ${numero}`, tema.title))
+                          : [
+                              <button
+                                key={tema.id}
+                                type="button"
+                                onClick={() => criarNoTema(curso.id, tema.id, tema.title)}
+                                className="flex flex-col rounded-xl overflow-hidden border border-dashed text-left hover:shadow-md transition-shadow"
+                                style={{ borderColor: cor.border }}
+                              >
+                                <div className="relative h-20 flex items-center justify-center" style={{ background: cor.tint }}>
+                                  <span className="absolute left-3 top-2.5 font-sans text-[10px] font-bold uppercase tracking-widest" style={{ color: cor.accent, opacity: 0.6 }}>
+                                    Tema {numero}
+                                  </span>
+                                  <Lock className="w-5 h-5" style={{ color: cor.accent, opacity: 0.4 }} />
+                                </div>
+                                <div className="px-3 py-2.5 flex flex-col gap-1.5">
+                                  <p className="font-sans text-[13px] font-medium text-muted leading-snug line-clamp-2">{tema.title}</p>
+                                  <span className="inline-flex items-center gap-1 font-sans text-[11px] font-semibold" style={{ color: cor.accent }}>
+                                    <Plus className="w-3 h-3" /> Criar flashcards
+                                  </span>
+                                </div>
+                              </button>,
+                            ],
+                      )}
                     </div>
-                  )}
+                  </div>
+                );
+              })}
 
-                  {/* Ações — sempre visíveis: antes só apareciam ao passar o
-                      mouse sobre a capa, e ninguém as encontrava. */}
-                  <div className="flex items-center gap-1.5 border-t border-border/50 pt-2 -mx-3 px-3 mt-auto">
-                    <button
-                      onClick={() => openEdit(g)}
-                      className="flex items-center gap-1 font-sans text-[11px] font-semibold px-2 py-1 rounded-md text-primary hover:bg-primary/10 transition-colors"
-                    >
-                      <Pencil className="w-3 h-3" /> Editar
-                    </button>
-                    <a
-                      href={`/dashboard/flashcards/${g.id}`}
-                      target="_blank"
-                      className="flex items-center gap-1 font-sans text-[11px] font-semibold px-2 py-1 rounded-md text-muted hover:text-foreground hover:bg-surface transition-colors"
-                    >
-                      <BookOpen className="w-3 h-3" /> Ver
-                    </a>
-                    <button
-                      onClick={() => handleDelete(g.id)}
-                      className="p-1.5 rounded-md text-muted/50 hover:text-red-500 hover:bg-red-500/10 transition-colors ml-auto"
-                      title="Excluir grupo"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+              {semTema.length > 0 && (
+                <div className="flex flex-col gap-3">
+                  <p className="font-sans text-xs font-semibold text-muted uppercase tracking-wider">Sem tema definido</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {semTema.map((g) => cardGrupo(g, moduleColor(0), null, null))}
                   </div>
                 </div>
+              )}
+            </section>
+          ))}
+
+          {semCurso.length > 0 && (
+            <section className="flex flex-col gap-3">
+              <h2 className="font-serif text-2xl font-medium text-foreground">Material geral</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                {semCurso.map((g) => cardGrupo(g, moduleColor(0), null, null))}
               </div>
-            );
-          })}
+            </section>
+          )}
         </div>
       )}
 
