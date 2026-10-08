@@ -26,6 +26,7 @@ import { TreinoPanel } from "./TreinoPanel";
 import { DominioTemas } from "./DominioTemas";
 import { RespiratoryGameInvite } from "./RespiratoryGameInvite";
 import { CompleteCourseButton } from "./CompleteCourseButton";
+import { FundoCartao } from "../../FundoCartao";
 
 /**
  * Página do curso da nova área do aluno (redesenho de outubro/2026).
@@ -94,6 +95,7 @@ export type NovaPaginaCursoProps = {
     shortDesc: string | null;
     hours: number;
     contentUrl: string | null;
+    studentHeroUrl: string | null;
     instructor: Professor;
     modules: Modulo[];
   };
@@ -243,7 +245,8 @@ export async function NovaPaginaCurso(props: NovaPaginaCursoProps) {
   return (
     <div className="-mx-6 -mt-6 lg:-mx-8 lg:-mt-8 min-h-screen bg-background">
       {/* ── Cabeçalho ── */}
-      <header className="bg-canvas text-white px-6 lg:px-10 pt-7">
+      <header className="relative isolate overflow-hidden bg-canvas text-white px-6 lg:px-10 pt-7">
+        <FundoCartao url={course.studentHeroUrl} />
         <div className="max-w-5xl mx-auto flex flex-col gap-4">
           <Link href="/dashboard/cursos" className="font-sans text-sm text-white/60 hover:text-white w-fit">
             ← {t("voltar")}

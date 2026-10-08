@@ -313,6 +313,20 @@ export default async function AdminCursoEditPage({ params, searchParams }: Props
             />
           </div>
 
+          <div>
+            <label className={labelClass}>Imagem de fundo da área do aluno</label>
+            <ImageUploader
+              name="studentHeroUrl"
+              folder="courses"
+              aspectHint="16:9"
+              label="Imagem de fundo da área do aluno"
+              initialUrl={course.studentHeroUrl}
+            />
+            <p className="font-sans text-[11px] text-muted/60 mt-1">
+              Aparece atrás do cartão escuro do Início (&ldquo;Seu próximo passo&rdquo;) e do topo da página do curso, com uma camada escura por cima para o texto continuar legível. Sem imagem, o cartão fica liso.
+            </p>
+          </div>
+
           <div className="pt-2">
             <button type="submit" className={btnPrimary}>Salvar dados do curso</button>
           </div>

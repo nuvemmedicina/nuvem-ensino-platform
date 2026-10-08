@@ -49,6 +49,7 @@ export async function updateCourse(courseId: string, slug: string, formData: For
       category:    formData.get("category") as "HANDS_ON" | "ONLINE" | "HYBRID",
       location:    str("location"),
       thumbnailUrl:        str("thumbnailUrl"),
+      studentHeroUrl:      str("studentHeroUrl"),
       contentUrl:          str("contentUrl"),
       externalCheckoutUrl: str("externalCheckoutUrl"),
       totalSeats:     formData.get("totalSeats") ? parseInt(formData.get("totalSeats") as string) : null,
