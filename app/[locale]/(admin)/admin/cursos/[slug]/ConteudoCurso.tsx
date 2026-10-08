@@ -21,6 +21,7 @@ import { addOption, addQuestion, createQuiz, deleteQuestion, deleteQuiz } from "
 import { ModuleInstructorSelector } from "./ModuleInstructorSelector";
 import { LessonInstructorSelector } from "./LessonInstructorSelector";
 import { DeleteButton } from "./DeleteButton";
+import { BotaoConfirmar } from "./BotaoConfirmar";
 import { MuxUploader } from "./MuxUploader";
 import { RemoveVideoButton } from "./RemoveVideoButton";
 import { ApostilaUploader } from "./ApostilaUploader";
@@ -91,20 +92,37 @@ export function ConteudoCurso({
     tipoSel === "tema" ? modules.flatMap((m) => m.topics.map((t) => ({ t, m }))).find((x) => x.t.id === idSel) : undefined;
   const moduloSel = aulaSel || temaSel ? undefined : modules.find((m) => m.id === idSel) ?? modules[0];
 
-  const setas = (acaoCima: () => Promise<void>, acaoBaixo: () => Promise<void>, primeiro: boolean, ultimo: boolean, nome: string) => (
+  const setas = (
+    acaoCima: () => Promise<void>,
+    acaoBaixo: () => Promise<void>,
+    primeiro: boolean,
+    ultimo: boolean,
+    nome: string,
+    confirmar?: { cima: string; baixo: string },
+  ) => (
     <div className="flex items-center gap-1.5">
       <form action={acaoCima}>
-        <button type="submit" className={btnSeta} disabled={primeiro} aria-label={`Mover ${nome} para cima`} title="Mover para cima">
+        <BotaoConfirmar className={btnSeta} disabled={primeiro} confirmar={confirmar?.cima} aria-label={`Mover ${nome} para cima`} title="Mover para cima">
           <ArrowUp className="w-4 h-4" aria-hidden="true" />
-        </button>
+        </BotaoConfirmar>
       </form>
       <form action={acaoBaixo}>
-        <button type="submit" className={btnSeta} disabled={ultimo} aria-label={`Mover ${nome} para baixo`} title="Mover para baixo">
+        <BotaoConfirmar className={btnSeta} disabled={ultimo} confirmar={confirmar?.baixo} aria-label={`Mover ${nome} para baixo`} title="Mover para baixo">
           <ArrowDown className="w-4 h-4" aria-hidden="true" />
-        </button>
+        </BotaoConfirmar>
       </form>
     </div>
   );
+
+  // Mover módulo muda a ordem do curso para todos os alunos: pede confirmação
+  const confirmarModulo = (i: number) => {
+    const nome = (x: { title: string }) => `"${x.title.split("—")[0].trim()}"`;
+    const aviso = "Os alunos passam a ver a nova ordem na hora.";
+    return {
+      cima: i > 0 ? `Mover ${nome(modules[i])} para antes de ${nome(modules[i - 1])}? ${aviso}` : "",
+      baixo: i < modules.length - 1 ? `Mover ${nome(modules[i])} para depois de ${nome(modules[i + 1])}? ${aviso}` : "",
+    };
+  };
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] items-start">
@@ -189,7 +207,7 @@ export function ConteudoCurso({
               <div className="flex items-center justify-between gap-3">
                 <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted">Módulo {i + 1}</p>
                 <div className="flex items-center gap-2">
-                  {setas(moveModule.bind(null, m.id, slug, "cima"), moveModule.bind(null, m.id, slug, "baixo"), i === 0, i === modules.length - 1, "o módulo")}
+                  {setas(moveModule.bind(null, m.id, slug, "cima"), moveModule.bind(null, m.id, slug, "baixo"), i === 0, i === modules.length - 1, "o módulo", confirmarModulo(i))}
                   <DeleteButton
                     action={deleteModule.bind(null, m.id, slug)}
                     confirm={`Excluir o módulo "${m.title}" e todos os seus temas e aulas?`}
