@@ -1,4 +1,5 @@
 import { Star, MessageSquareQuote, ThumbsUp, ThumbsDown, Users } from "lucide-react";
+import { CabecalhoAdmin, botaoCabecalhoSecundario } from "@/components/admin/CabecalhoAdmin";
 
 export type Resumo = {
   total: number;
@@ -248,20 +249,18 @@ export function AvaliacoesView({ cursos, courseId, resumo, porCurso, porDocente,
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-        <div>
-          <h1 className="font-serif text-2xl font-medium text-foreground">Avaliações</h1>
-          <p className="font-sans text-sm text-muted mt-0.5">
-            O que os alunos responderam no formulário de avaliação do curso.
-          </p>
-        </div>
-
-        {/* Filtro por curso — form nativo, sem JS */}
+      <CabecalhoAdmin
+        titulo="Avaliações"
+        subtitulo="O que os alunos responderam no formulário de avaliação do curso."
+        icone={Star}
+        destaques={resumo.total > 0 ? [{ rotulo: resumo.total === 1 ? "avaliação" : "avaliações", valor: resumo.total, tom: "ok" }] : []}
+        acoes={
+        /* Filtro por curso — form nativo, sem JS */
         <form className="flex items-center gap-2">
           <select
             name="courseId"
             defaultValue={courseId ?? ""}
-            className="font-sans text-sm text-foreground bg-background border border-border rounded-xl px-3 py-2 max-w-[18rem] focus:outline-none focus:border-primary/50"
+            className="font-sans text-sm text-foreground bg-white border border-white rounded-full px-4 min-h-[44px] max-w-[18rem] focus:outline-none"
           >
             <option value="">Todos os cursos</option>
             {cursos.map((c) => (
@@ -270,14 +269,12 @@ export function AvaliacoesView({ cursos, courseId, resumo, porCurso, porDocente,
               </option>
             ))}
           </select>
-          <button
-            type="submit"
-            className="font-sans text-sm font-semibold px-4 py-2 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors"
-          >
+          <button type="submit" className={botaoCabecalhoSecundario}>
             Filtrar
           </button>
         </form>
-      </div>
+        }
+      />
 
       {resumo.total === 0 && porDocente.length === 0 && porAula.length === 0 ? (
         <div className="rounded-2xl border border-border bg-surface px-6 py-12 text-center">

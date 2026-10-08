@@ -1,4 +1,6 @@
 import { Suspense } from "react";
+import { Users as UsersIcon } from "lucide-react";
+import { CabecalhoAdmin } from "@/components/admin/CabecalhoAdmin";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { UserFilters } from "./UserFilters";
@@ -63,15 +65,16 @@ export default async function AdminUsuariosPage({ params, searchParams }: Props)
   return (
     <div>
       {/* Cabeçalho */}
-      <div className="flex items-start justify-between gap-4 mb-6 flex-wrap">
-        <div>
-          <h1 className="font-serif text-3xl font-light text-foreground">{t("title")}</h1>
-          <p className="font-sans text-sm text-muted mt-1">
-            {users.length === 200
-              ? t("limit200")
-              : `${users.length === 1 ? t("countOne", { count: 1 }) : t("countPlural", { count: users.length })}${q || role !== "ALL" ? t("found") : t("registered")}`}
-          </p>
-        </div>
+      <CabecalhoAdmin
+        titulo={t("title")}
+        subtitulo={
+          users.length === 200
+            ? t("limit200")
+            : `${users.length === 1 ? t("countOne", { count: 1 }) : t("countPlural", { count: users.length })}${q || role !== "ALL" ? t("found") : t("registered")}`
+        }
+        icone={UsersIcon}
+      />
+      <div className="flex justify-end mb-6">
         <Suspense fallback={null}>
           <UserFilters />
         </Suspense>

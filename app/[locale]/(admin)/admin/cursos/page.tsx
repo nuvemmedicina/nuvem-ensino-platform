@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { CabecalhoAdmin, botaoCabecalho } from "@/components/admin/CabecalhoAdmin";
 import Link from "next/link";
 import { BarChart2, BookOpen, ExternalLink, Eye, Pencil, Plus, Users } from "lucide-react";
 import { getTranslations } from "next-intl/server";
@@ -54,21 +55,17 @@ export default async function AdminCursosPage({ params }: { params: Promise<{ lo
 
   return (
     <div className="max-w-6xl">
-      <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
-        <div>
-          <h1 className="font-serif text-3xl font-light text-foreground">{t("title")}</h1>
-          <p className="font-sans text-sm text-muted mt-1">
-            {SITUACOES.map((s) => `${courses.filter((c) => c.status === s.status).length} ${s.titulo.toLowerCase()}`).join(" · ")}
-          </p>
-        </div>
-        <Link
-          href="/admin/cursos/novo"
-          className="inline-flex items-center gap-2 min-h-[44px] px-5 rounded-full bg-primary text-white font-sans text-sm font-semibold hover:bg-primary/90"
-        >
-          <Plus className="w-4 h-4" aria-hidden="true" />
-          {t("newCourse")}
-        </Link>
-      </div>
+      <CabecalhoAdmin
+        titulo={t("title")}
+        icone={BookOpen}
+        destaques={SITUACOES.map((s) => ({ rotulo: s.titulo.toLowerCase(), valor: courses.filter((c) => c.status === s.status).length }))}
+        acoes={
+          <Link href="/admin/cursos/novo" className={botaoCabecalho}>
+            <Plus className="w-4 h-4" aria-hidden="true" />
+            {t("newCourse")}
+          </Link>
+        }
+      />
 
       <div className="flex flex-col gap-10">
         {SITUACOES.map((situacao) => {

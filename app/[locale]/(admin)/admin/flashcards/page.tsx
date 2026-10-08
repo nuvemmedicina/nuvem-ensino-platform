@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { Layers } from "lucide-react";
+import { CabecalhoAdmin } from "@/components/admin/CabecalhoAdmin";
 import { FlashcardsAdminClient } from "./FlashcardsAdminClient";
 
 export const dynamic = "force-dynamic";
@@ -32,12 +34,15 @@ export default async function AdminFlashcardsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="font-serif text-3xl font-light text-foreground">Flashcards</h1>
-          <p className="font-sans text-sm text-muted mt-1">{groups.length} grupo{groups.length !== 1 ? "s" : ""} cadastrado{groups.length !== 1 ? "s" : ""}</p>
-        </div>
-      </div>
+      <CabecalhoAdmin
+        titulo="Flashcards"
+        subtitulo="Grupos de revisão por tema, na cor de cada módulo."
+        icone={Layers}
+        destaques={[
+          { rotulo: groups.length === 1 ? "grupo" : "grupos", valor: groups.length },
+          { rotulo: "cards", valor: groups.reduce((n, g) => n + g._count.cards, 0) },
+        ]}
+      />
       <FlashcardsAdminClient groups={groups} courses={courses} defaultDesign={defaultDesign} />
     </div>
   );

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { CreditCard } from "lucide-react";
+import { CabecalhoAdmin, botaoCabecalho, botaoCabecalhoSecundario } from "@/components/admin/CabecalhoAdmin";
 import { RefreshCw, AlertTriangle, CheckCircle } from "lucide-react";
 
 type Row = {
@@ -232,29 +234,29 @@ export function PagamentosClient({ rows, divergent }: { rows: Row[]; divergent: 
     <div className="flex flex-col gap-6">
 
       {/* ── Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-        <div>
-          <h1 className="font-serif text-2xl font-light text-foreground">Pagamentos</h1>
-          <p className="text-sm text-muted mt-1">
-            {rows.length} registros ·{" "}
-            {divergent > 0
-              ? <span className="text-orange-600 font-semibold">{divergent} divergentes</span>
-              : <span className="text-green-600 font-semibold">nenhuma divergência</span>}
-          </p>
-        </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <button onClick={() => runReconcile(true)} disabled={loading}
-            className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg border border-border text-foreground hover:bg-background transition-colors disabled:opacity-50">
-            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-            Verificar (simulação)
-          </button>
-          <button onClick={() => runReconcile(false)} disabled={loading}
-            className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors disabled:opacity-50">
-            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-            Conciliar agora
-          </button>
-        </div>
-      </div>
+      <CabecalhoAdmin
+        titulo="Pagamentos"
+        subtitulo="Pagamentos registrados e conciliação com o Asaas."
+        icone={CreditCard}
+        destaques={[
+          { rotulo: "registros", valor: rows.length },
+          divergent > 0
+            ? { rotulo: "divergentes", valor: divergent, tom: "alerta" as const }
+            : { rotulo: "divergências", valor: "nenhuma", tom: "ok" as const },
+        ]}
+        acoes={
+          <>
+            <button onClick={() => runReconcile(true)} disabled={loading} className={`${botaoCabecalhoSecundario} disabled:opacity-50`}>
+              <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+              Verificar (simulação)
+            </button>
+            <button onClick={() => runReconcile(false)} disabled={loading} className={`${botaoCabecalho} disabled:opacity-50`}>
+              <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+              Conciliar agora
+            </button>
+          </>
+        }
+      />
 
       {/* ── Result banner ── */}
       {result && (

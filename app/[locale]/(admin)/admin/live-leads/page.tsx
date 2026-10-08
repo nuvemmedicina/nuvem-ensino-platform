@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { Radio } from "lucide-react";
+import { CabecalhoAdmin, botaoCabecalho } from "@/components/admin/CabecalhoAdmin";
 
 export const metadata = { title: "Inscrições Live" };
 
@@ -18,22 +20,18 @@ export default async function LiveLeadsPage() {
 
   return (
     <div>
-      <div className="mb-8 flex items-start justify-between gap-4">
-        <div>
-          <h1 className="font-serif text-3xl font-light text-foreground">
-            Inscrições — Live DICI
-          </h1>
-          <p className="font-sans text-sm text-muted mt-1">
-            {leads.length} {leads.length === 1 ? "inscrito" : "inscritos"} · 22/07/2026 às 19h30
-          </p>
-        </div>
-        <a
-          href={`/api/admin/live-leads-csv`}
-          className="shrink-0 font-sans text-xs font-semibold bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent/90 transition-colors"
-        >
-          Exportar CSV
-        </a>
-      </div>
+      <CabecalhoAdmin
+        titulo="Inscrições — Live DICI"
+        subtitulo="22/07/2026 às 19h30"
+        icone={Radio}
+        destaques={[{ rotulo: leads.length === 1 ? "inscrito" : "inscritos", valor: leads.length, tom: "ok" }]}
+        acoes={
+          // eslint-disable-next-line @next/next/no-html-link-for-pages -- download do CSV, não é navegação
+          <a href="/api/admin/live-leads-csv" className={botaoCabecalho}>
+            Exportar CSV
+          </a>
+        }
+      />
 
       {leads.length === 0 ? (
         <p className="font-sans text-sm text-muted">Nenhuma inscrição ainda.</p>

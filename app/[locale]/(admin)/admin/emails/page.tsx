@@ -1,4 +1,6 @@
 import { Suspense } from "react";
+import { Mail } from "lucide-react";
+import { CabecalhoAdmin } from "@/components/admin/CabecalhoAdmin";
 import { prisma } from "@/lib/prisma";
 import { EmailFilters } from "./EmailFilters";
 
@@ -42,15 +44,24 @@ export default async function AdminEmailsPage({ params, searchParams }: Props) {
 
   return (
     <div>
-      <div className="flex items-start justify-between gap-4 mb-6 flex-wrap">
-        <div>
-          <h1 className="font-serif text-3xl font-light text-foreground">E-mails</h1>
-          <p className="font-sans text-sm text-muted mt-1">
-            {total === 0
-              ? "Nenhum envio registrado ainda."
-              : `${logs.length} de ${total} envio${total !== 1 ? "s" : ""} registrado${total !== 1 ? "s" : ""}`}
-          </p>
-        </div>
+      <CabecalhoAdmin
+        titulo="E-mails"
+        subtitulo={
+          total === 0
+            ? "Nenhum envio registrado ainda."
+            : `${logs.length} de ${total} envio${total !== 1 ? "s" : ""} registrado${total !== 1 ? "s" : ""}`
+        }
+        icone={Mail}
+        destaques={
+          total > 0
+            ? [
+                { rotulo: "entregues", valor: enviados, tom: "ok" as const },
+                { rotulo: "falharam", valor: falhas, tom: falhas > 0 ? ("alerta" as const) : undefined },
+              ]
+            : []
+        }
+      />
+      <div className="flex justify-end mb-6">
         <Suspense fallback={null}>
           <EmailFilters />
         </Suspense>

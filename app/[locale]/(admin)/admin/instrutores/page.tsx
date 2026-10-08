@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { GraduationCap } from "lucide-react";
+import { CabecalhoAdmin } from "@/components/admin/CabecalhoAdmin";
 import { getTranslations } from "next-intl/server";
 import { InstructorCard } from "./InstructorCard";
 import { CreateInstructorForm } from "./CreateInstructorForm";
@@ -19,14 +21,11 @@ export default async function AdminInstrutoresPage({ params }: Props) {
 
   return (
     <div className="max-w-3xl">
-      <div className="mb-8">
-        <h1 className="font-serif text-3xl font-light text-foreground">
-          {t("instructors")}
-        </h1>
-        <p className="font-sans text-sm text-muted mt-1">
-          {instructors.length} instrutor{instructors.length !== 1 ? "es" : ""} cadastrado{instructors.length !== 1 ? "s" : ""}
-        </p>
-      </div>
+      <CabecalhoAdmin
+        titulo={t("instructors")}
+        subtitulo={`${instructors.length} instrutor${instructors.length !== 1 ? "es" : ""} cadastrado${instructors.length !== 1 ? "s" : ""}`}
+        icone={GraduationCap}
+      />
 
       {/* Lista de instrutores */}
       <div className="flex flex-col gap-3 mb-10">

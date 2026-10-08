@@ -1,4 +1,7 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { ClipboardList } from "lucide-react";
+import { CabecalhoAdmin, botaoCabecalhoSecundario } from "@/components/admin/CabecalhoAdmin";
 import { getTranslations } from "next-intl/server";
 import { EnrollmentTable } from "./EnrollmentTable";
 
@@ -54,10 +57,21 @@ export default async function AdminMatriculasPage({
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="font-serif text-3xl font-light text-foreground">{t("title")}</h1>
-        <p className="font-sans text-sm text-muted mt-1">{t("count", { count: enrollments.length })}</p>
-      </div>
+      <CabecalhoAdmin
+        titulo={t("title")}
+        subtitulo={t("count", { count: enrollments.length })}
+        icone={ClipboardList}
+        destaques={[
+          { rotulo: "ativas", valor: enrollments.filter((e) => e.status === "ACTIVE").length, tom: "ok" },
+          { rotulo: "concluídas", valor: enrollments.filter((e) => e.status === "COMPLETED").length },
+          { rotulo: "pendentes", valor: enrollments.filter((e) => e.status === "PENDING").length },
+        ]}
+        acoes={
+          <Link href="/admin/matriculas/reativar" className={botaoCabecalhoSecundario}>
+            Reativar matrícula
+          </Link>
+        }
+      />
 
       {enrollments.length === 0 ? (
         <p className="font-sans text-sm text-muted">{t("none")}</p>

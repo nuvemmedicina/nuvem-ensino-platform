@@ -1,4 +1,6 @@
 import { Suspense } from "react";
+import { BarChart3 } from "lucide-react";
+import { CabecalhoAdmin } from "@/components/admin/CabecalhoAdmin";
 import { prisma } from "@/lib/prisma";
 import { RelatorioFilters } from "./RelatorioFilters";
 import { getTranslations } from "next-intl/server";
@@ -107,11 +109,15 @@ export default async function RelatoriosPage({ params, searchParams }: Props) {
 
   return (
     <div>
-      {/* Cabeçalho */}
-      <div className="mb-6">
-        <h1 className="font-serif text-3xl font-light text-foreground">{t("title")}</h1>
-        <p className="font-sans text-sm text-muted mt-1">{t("subtitle")}</p>
-      </div>
+      <CabecalhoAdmin
+        titulo={t("title")}
+        subtitulo={t("subtitle")}
+        icone={BarChart3}
+        destaques={[
+          { rotulo: "inscritos", valor: totalInscritos },
+          { rotulo: "receita confirmada", valor: fmtBRL.format(totalPago), tom: "ok" },
+        ]}
+      />
 
       {/* Filtros */}
       <div className="bg-surface border border-border rounded-2xl p-5 mb-6">
