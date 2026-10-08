@@ -57,20 +57,28 @@ export function ImageUploader({
       <input type="hidden" name={name} value={url} />
 
       {url ? (
-        <div className="relative group w-full">
+        <div className="w-full">
           <div className="relative w-full rounded-xl overflow-hidden border border-border bg-background"
                style={{ aspectRatio: aspectHint.replace(":", "/") }}>
             <Image src={url} alt={label} fill className="object-cover" unoptimized />
+            {uploading && (
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center gap-2 text-white">
+                <Loader2 className="w-5 h-5 animate-spin" /><span className="font-sans text-xs">Enviando…</span>
+              </div>
+            )}
           </div>
-          <div className="absolute inset-0 rounded-xl bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-            <button type="button" onClick={() => inputRef.current?.click()}
-              className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg bg-white text-foreground hover:bg-white/90 transition-colors">
-              Trocar
+          {/* Sempre visíveis: o "aparecer ao passar o mouse" não funcionava em
+              telas sensíveis ao toque, e a Ana não achava como trocar. */}
+          <div className="flex items-center gap-2 mt-2">
+            <button type="button" onClick={() => inputRef.current?.click()} disabled={uploading}
+              className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border border-border text-foreground hover:border-primary/40 transition-colors disabled:opacity-60">
+              <ImagePlus className="w-3.5 h-3.5" /> Trocar imagem
             </button>
-            <button type="button" onClick={() => setUrl("")}
-              className="p-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors" title="Remover imagem">
-              <X className="w-3.5 h-3.5" />
+            <button type="button" onClick={() => setUrl("")} disabled={uploading}
+              className="inline-flex items-center gap-1.5 font-sans text-xs px-3 py-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors disabled:opacity-60">
+              <X className="w-3.5 h-3.5" /> Remover
             </button>
+            <span className="font-sans text-[11px] text-muted">Depois, clique em salvar no fim do formulário.</span>
           </div>
         </div>
       ) : (
