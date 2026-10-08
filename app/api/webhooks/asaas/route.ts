@@ -70,11 +70,9 @@ export async function POST(req: NextRequest) {
           prisma.couponUsage.create({ data: { couponId: dbPayment.couponId, courseId: enrollment.courseId, userId: enrollment.userId } }),
         ]).catch((err) => console.error("Asaas coupon usage error:", err));
       }
-      prisma.certificate.upsert({
-        where: { enrollmentId: dbPayment.enrollmentId },
-        create: { userId: enrollment.userId, enrollmentId: dbPayment.enrollmentId },
-        update: {},
-      }).catch((err) => console.error("Asaas certificate error:", err));
+      // O certificado não é emitido aqui: ele sai quando o aluno conclui o curso
+      // (api/progress e completeCourseAction). Emitir no pagamento liberava o
+      // certificado no ato da compra (08/10/2026: 57 do DICI sem ninguém ter concluído).
       sendAfterResponse("confirmação de matrícula (Asaas)", enrollment.user.email, () =>
         sendEnrollmentConfirmation({
           to: enrollment.user.email,

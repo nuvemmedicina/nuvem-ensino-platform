@@ -18,6 +18,7 @@ export default async function AdminMatriculasPage({
         course: { select: { id: true, title: true, slug: true, totalSeats: true } },
         _count: { select: { attendances: { where: { status: { in: ["PRESENT", "LATE"] } } } } },
         payments: { select: { id: true, status: true, method: true, amount: true, couponId: true }, orderBy: { createdAt: "desc" }, take: 1 },
+        certificate: { select: { id: true } },
       },
       orderBy: { enrolledAt: "desc" },
     }),
@@ -40,6 +41,7 @@ export default async function AdminMatriculasPage({
     ...e,
     courseId: e.course.id,
     enrolledAt: e.enrolledAt.toISOString(),
+    temCertificado: !!e.certificate,
     payment: e.payments[0]
       ? {
           status: e.payments[0].status,

@@ -29,16 +29,14 @@ export async function POST(req: Request) {
       },
     });
 
-    const enrollment = await prisma.enrollment.update({
+    await prisma.enrollment.update({
       where: { id: enrollmentId },
       data: { status: "ACTIVE" },
     });
 
-    await prisma.certificate.upsert({
-      where: { enrollmentId },
-      create: { userId: enrollment.userId, enrollmentId },
-      update: {},
-    });
+    // O certificado não é emitido aqui: ele sai quando o aluno conclui o curso
+    // (api/progress e completeCourseAction). Emitir no pagamento liberava o
+    // certificado no ato da compra (08/10/2026: 57 do DICI sem ninguém ter concluído).
   } else if (status === "rejected" || status === "cancelled") {
     await prisma.payment.updateMany({
       where: { enrollmentId, status: "PENDING" },

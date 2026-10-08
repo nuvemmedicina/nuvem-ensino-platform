@@ -80,11 +80,9 @@ export async function POST(req: NextRequest) {
         if (dbPayment.couponId) {
           await prisma.coupon.update({ where: { id: dbPayment.couponId }, data: { usesCount: { increment: 1 } } }).catch(() => {});
         }
-        await prisma.certificate.upsert({
-          where: { enrollmentId: enrollment.id },
-          create: { userId: enrollment.userId, enrollmentId: enrollment.id },
-          update: {},
-        }).catch(() => {});
+        // O certificado não é emitido aqui: ele sai quando o aluno conclui o curso
+        // (api/progress e completeCourseAction). Emitir no pagamento liberava o
+        // certificado no ato da compra (08/10/2026: 57 do DICI sem ninguém ter concluído).
         // Aqui o envio é aguardado: a rota é manual, e o admin precisa ver no
         // retorno se o aluno foi avisado ou não.
         const mail = await sendEnrollmentConfirmation({
