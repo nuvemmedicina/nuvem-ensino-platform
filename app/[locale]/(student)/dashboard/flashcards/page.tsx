@@ -137,7 +137,10 @@ export default async function FlashcardsPage({ params }: { params: Promise<{ loc
         </div>
       )}
 
-      {cursos.map((curso) => (
+      {cursos
+        // Curso sem nenhum tema nem grupo solto não tem o que mostrar (a equipe vê todos os cursos)
+        .filter((curso) => curso.soltos.length > 0 || curso.modulos.some((m) => m.topicos.length > 0))
+        .map((curso) => (
         <section key={curso.id} className="flex flex-col gap-8">
           <h2 className="font-serif text-2xl sm:text-3xl font-medium text-foreground text-balance">{curso.title}</h2>
 
