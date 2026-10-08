@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Layers } from "lucide-react";
 import { moduleColor } from "@/lib/moduleColors";
+import { useTranslations } from "next-intl";
 
 type TopicoComFlashcards = {
   id: string;
@@ -22,6 +23,7 @@ export function FlashcardsPanel({
   moduleIndex: number;
   topicos: TopicoComFlashcards[];
 }) {
+  const t = useTranslations("novaArea.paginas.flashcards");
   const prontos = topicos.filter(
     (t): t is TopicoComFlashcards & { grupo: { id: string; cards: number } } => t.grupo !== null,
   );
@@ -37,11 +39,11 @@ export function FlashcardsPanel({
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-muted mb-0.5">
-            Flashcards — {moduleTitle}
+            {t("painelTitulo", { modulo: moduleTitle })}
           </p>
-          <p className="font-sans text-sm text-foreground">Reforce o que você estudou</p>
+          <p className="font-sans text-sm text-foreground">{t("painelChamada")}</p>
           <p className="font-sans text-xs text-muted mt-0.5">
-            Revise os pontos principais deste módulo, um card por vez — bom para a reta final antes da prova.
+            {t("painelTexto")}
           </p>
         </div>
       </div>
@@ -58,7 +60,7 @@ export function FlashcardsPanel({
               {topico.title}
             </h3>
             <p className="font-sans text-[11px] text-muted mt-1">
-              {topico.grupo.cards} card{topico.grupo.cards !== 1 ? "s" : ""}
+              {t("cards", { n: topico.grupo.cards })}
             </p>
           </Link>
         ))}

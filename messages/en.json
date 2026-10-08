@@ -961,7 +961,8 @@
       "agenda": "Schedule",
       "conquistas": "Achievements",
       "perfil": "Profile",
-      "suporte": "Support"
+      "suporte": "Support",
+      "sair": "Sign out"
     },
     "inicio": {
       "bomDia": "Good morning, {nome}",
@@ -1241,6 +1242,56 @@
         "ajuda": "Help",
         "whatsapp": "Talk to the team on WhatsApp",
         "sair": "Sign out"
+      },
+      "comunidade": {
+        "titulo": "Community",
+        "subtitulo": "Discussions from your courses — ask questions and share experiences with other physicians.",
+        "vazioTitulo": "No discussions yet",
+        "vazioTexto": "Open a course forum to start the first discussion.",
+        "fixado": "Pinned",
+        "respondido": "Answered",
+        "anonimo": "Anonymous",
+        "admin": "Admin",
+        "instrutor": "Instructor"
+      },
+      "flashcards": {
+        "titulo": "Flashcards",
+        "subtitulo": "Review the key points of your courses, one card at a time.",
+        "vazio": "There are no flashcards available for your courses yet.",
+        "cards": "{n, plural, =1 {# card} other {# cards}}",
+        "emBreve": "coming soon",
+        "semTopico": "No topic assigned",
+        "materialGeral": "General material",
+        "grupoVazio": "This set has no cards yet.",
+        "voltar": "Back to flashcards",
+        "sessaoConcluida": "Session complete!",
+        "revisados": "{n, plural, =1 {# card reviewed} other {# cards reviewed}}",
+        "facil": "Easy",
+        "medio": "Medium",
+        "dificil": "Hard",
+        "estudarNovamente": "Study again",
+        "revisandoDificil": "Reviewing — Hard",
+        "frente": "Front",
+        "verso": "Back",
+        "toqueVirar": "Tap to flip",
+        "verFrente": "See front",
+        "virar": "Flip",
+        "anterior": "Previous card",
+        "proximo": "Next card",
+        "painelTitulo": "Flashcards — {modulo}",
+        "painelChamada": "Reinforce what you studied",
+        "painelTexto": "Review the key points of this module, one card at a time — great for the final stretch before the exam."
+      },
+      "resultado": {
+        "voltar": "Back to course",
+        "subtitulo": "Your course performance",
+        "progressoGeral": "Overall progress",
+        "aulasConcluidas": "{feitas} of {total} lessons completed",
+        "certificadoEmitido": "Certificate issued",
+        "baixarPdf": "Download PDF",
+        "aulasModulo": "{feitas}/{total} lessons",
+        "quiz": "Quiz:",
+        "pontos": "{pontos}/{max} points"
       }
     }
   }

@@ -3,15 +3,20 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { MessageSquare, CheckCircle, Pin, Heart } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import { traduzirItem } from "@/lib/i18n-content";
 
-export default async function ComunidadePage() {
+export default async function ComunidadePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "novaArea.paginas.comunidade" });
+  const dl = locale === "pt" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US";
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar");
 
   // Busca cursos em que o aluno está ativo
   const enrollments = await prisma.enrollment.findMany({
     where: { userId: session.user.id, status: { in: ["ACTIVE", "COMPLETED"] } },
-    select: { courseId: true, course: { select: { title: true, slug: true } } },
+    select: { courseId: true, course: { select: { title: true, titleEs: true, titleEn: true, slug: true } } },
   });
   const courseIds = enrollments.map((e) => e.courseId);
 
@@ -20,7 +25,7 @@ export default async function ComunidadePage() {
     orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
     take: 50,
     include: {
-      course: { select: { title: true, slug: true } },
+      course: { select: { title: true, titleEs: true, titleEn: true, slug: true } },
       author: { select: { name: true, image: true, role: true } },
       _count: { select: { replies: true, likes: true } },
       likes: { where: { userId: session.user.id }, select: { id: true } },
@@ -30,18 +35,18 @@ export default async function ComunidadePage() {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="mb-8">
-        <h1 className="font-serif text-2xl font-medium text-foreground">Comunidade</h1>
+        <h1 className="font-serif text-2xl font-medium text-foreground">{t("titulo")}</h1>
         <p className="font-sans text-sm text-muted mt-1">
-          Discussões dos seus cursos — tire dúvidas e troque experiências com outros médicos.
+          {t("subtitulo")}
         </p>
       </div>
 
       {posts.length === 0 ? (
         <div className="text-center py-16 bg-surface border border-border rounded-2xl">
           <MessageSquare className="w-10 h-10 text-muted/30 mx-auto mb-3" />
-          <p className="font-serif text-lg text-foreground/40">Nenhuma discussão ainda</p>
+          <p className="font-serif text-lg text-foreground/40">{t("vazioTitulo")}</p>
           <p className="font-sans text-sm text-muted mt-1 mb-6">
-            Acesse o fórum de um curso para iniciar a primeira discussão.
+            {t("vazioTexto")}
           </p>
           {enrollments.length > 0 && (
             <div className="flex flex-wrap justify-center gap-2">
@@ -51,7 +56,7 @@ export default async function ComunidadePage() {
                   href={`/dashboard/cursos/${e.course.slug}/forum`}
                   className="font-sans text-sm font-semibold px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                 >
-                  {e.course.title}
+                  {traduzirItem(e.course, locale).title}
                 </Link>
               ))}
             </div>
@@ -82,16 +87,16 @@ export default async function ComunidadePage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap mb-1">
                       <span className="font-sans text-[10px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
-                        {post.course.title}
+                        {traduzirItem(post.course, locale).title}
                       </span>
                       {post.isPinned && (
                         <span className="inline-flex items-center gap-1 font-sans text-[10px] font-semibold text-amber-600 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">
-                          <Pin className="w-3 h-3" /> Fixado
+                          <Pin className="w-3 h-3" /> {t("fixado")}
                         </span>
                       )}
                       {post.isAnswered && (
                         <span className="inline-flex items-center gap-1 font-sans text-[10px] font-semibold text-green-600 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded-full">
-                          <CheckCircle className="w-3 h-3" /> Respondido
+                          <CheckCircle className="w-3 h-3" /> {t("respondido")}
                         </span>
                       )}
                     </div>
@@ -102,16 +107,16 @@ export default async function ComunidadePage() {
 
                     <div className="flex items-center gap-3 mt-2 flex-wrap">
                       <span className="font-sans text-xs text-muted">
-                        {post.author.name ?? "Anônimo"}
+                        {post.author.name ?? t("anonimo")}
                         {isAuthorMod && (
                           <span className="ml-1.5 text-[10px] font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">
-                            {post.author.role === "ADMIN" ? "Admin" : "Instrutor"}
+                            {post.author.role === "ADMIN" ? t("admin") : t("instrutor")}
                           </span>
                         )}
                       </span>
                       <span className="text-border">·</span>
                       <span className="font-sans text-xs text-muted">
-                        {new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short" }).format(new Date(post.createdAt))}
+                        {new Intl.DateTimeFormat(dl, { day: "2-digit", month: "short" }).format(new Date(post.createdAt))}
                       </span>
                       <span className="text-border">·</span>
                       <span className="inline-flex items-center gap-1 font-sans text-xs text-muted">

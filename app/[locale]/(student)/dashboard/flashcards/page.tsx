@@ -4,9 +4,12 @@ import { Layers, Lock } from "lucide-react";
 import { auth } from "@/auth";
 import { estruturaParaUsuario, type GrupoResumo } from "@/lib/flashcards";
 import { moduleColor } from "@/lib/moduleColors";
+import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
 /** Card de um grupo que já existe. */
 function CardDoGrupo({ grupo, cor }: { grupo: GrupoResumo; cor: string }) {
+  const t = useTranslations("novaArea.paginas.flashcards");
   return (
     <Link
       href={`/dashboard/flashcards/${grupo.id}`}
@@ -21,7 +24,7 @@ function CardDoGrupo({ grupo, cor }: { grupo: GrupoResumo; cor: string }) {
           <Layers className="absolute inset-0 m-auto w-7 h-7 text-white/50" />
         )}
         <span className="absolute top-2 right-2 font-sans text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-black/55 text-white backdrop-blur-sm">
-          {grupo.cards} card{grupo.cards !== 1 ? "s" : ""}
+          {t("cards", { n: grupo.cards })}
         </span>
       </div>
 
@@ -36,6 +39,7 @@ function CardDoGrupo({ grupo, cor }: { grupo: GrupoResumo; cor: string }) {
 
 /** Lugar reservado do tópico que ainda não tem flashcards. */
 function CardVazio({ titulo, cor }: { titulo: string; cor: string }) {
+  const t = useTranslations("novaArea.paginas.flashcards");
   return (
     <div
       className="flex flex-col rounded-xl overflow-hidden border border-dashed border-border/70 bg-background/40"
@@ -46,18 +50,20 @@ function CardVazio({ titulo, cor }: { titulo: string; cor: string }) {
       </div>
       <div className="px-3 py-2.5">
         <h3 className="font-sans text-[13px] font-medium text-muted/70 leading-snug line-clamp-2">{titulo}</h3>
-        <p className="font-sans text-[10px] text-muted/50 mt-0.5">em breve</p>
+        <p className="font-sans text-[10px] text-muted/50 mt-0.5">{t("emBreve")}</p>
       </div>
     </div>
   );
 }
 
-export default async function FlashcardsPage() {
+export default async function FlashcardsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "novaArea.paginas.flashcards" });
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard/flashcards");
 
   const role = (session.user as { role?: string }).role;
-  const { cursos, gerais } = await estruturaParaUsuario(session.user.id, role);
+  const { cursos, gerais } = await estruturaParaUsuario(session.user.id, role, locale);
 
   const temAlgumaCoisa =
     gerais.length > 0 ||
@@ -65,16 +71,16 @@ export default async function FlashcardsPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-6">
-      <h1 className="font-serif text-3xl font-light text-foreground">Flashcards</h1>
+      <h1 className="font-serif text-3xl font-light text-foreground">{t("titulo")}</h1>
       <p className="font-sans text-sm text-muted mt-1 mb-10">
-        Revise os pontos principais dos seus cursos, um card por vez.
+        {t("subtitulo")}
       </p>
 
       {!temAlgumaCoisa && (
         <div className="border border-border rounded-2xl px-6 py-16 text-center">
           <Layers className="w-8 h-8 text-muted/40 mx-auto mb-3" />
           <p className="font-sans text-sm text-muted">
-            Ainda não há flashcards disponíveis para os seus cursos.
+            {t("vazio")}
           </p>
         </div>
       )}
@@ -126,7 +132,7 @@ export default async function FlashcardsPage() {
           {curso.soltos.length > 0 && (
             <div className="mb-8">
               <p className="font-sans text-xs font-semibold text-muted uppercase tracking-wider mb-3">
-                Sem tópico definido
+                {t("semTopico")}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {curso.soltos.map((g) => (
@@ -140,7 +146,7 @@ export default async function FlashcardsPage() {
 
       {gerais.length > 0 && (
         <section className="mb-14">
-          <h2 className="font-serif text-xl font-light text-foreground mb-6">Material geral</h2>
+          <h2 className="font-serif text-xl font-light text-foreground mb-6">{t("materialGeral")}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {gerais.map((g) => (
               <CardDoGrupo key={g.id} grupo={g} cor="#8b8b8b" />

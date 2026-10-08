@@ -961,7 +961,8 @@
       "agenda": "Agenda",
       "conquistas": "Logros",
       "perfil": "Perfil",
-      "suporte": "Soporte"
+      "suporte": "Soporte",
+      "sair": "Salir"
     },
     "inicio": {
       "bomDia": "Buenos días, {nome}",
@@ -1241,6 +1242,56 @@
         "ajuda": "Ayuda",
         "whatsapp": "Hablar con el equipo por WhatsApp",
         "sair": "Cerrar sesión"
+      },
+      "comunidade": {
+        "titulo": "Comunidad",
+        "subtitulo": "Debates de sus cursos: resuelva dudas e intercambie experiencias con otros médicos.",
+        "vazioTitulo": "Todavía no hay debates",
+        "vazioTexto": "Entre en el foro de un curso para iniciar el primer debate.",
+        "fixado": "Fijado",
+        "respondido": "Respondido",
+        "anonimo": "Anónimo",
+        "admin": "Admin",
+        "instrutor": "Instructor"
+      },
+      "flashcards": {
+        "titulo": "Flashcards",
+        "subtitulo": "Repase los puntos principales de sus cursos, una tarjeta a la vez.",
+        "vazio": "Todavía no hay flashcards disponibles para sus cursos.",
+        "cards": "{n, plural, =1 {# tarjeta} other {# tarjetas}}",
+        "emBreve": "próximamente",
+        "semTopico": "Sin tema definido",
+        "materialGeral": "Material general",
+        "grupoVazio": "Este grupo todavía no tiene tarjetas.",
+        "voltar": "Volver a las flashcards",
+        "sessaoConcluida": "¡Sesión completada!",
+        "revisados": "{n, plural, =1 {# tarjeta repasada} other {# tarjetas repasadas}}",
+        "facil": "Fácil",
+        "medio": "Media",
+        "dificil": "Difícil",
+        "estudarNovamente": "Estudiar de nuevo",
+        "revisandoDificil": "Repasando — Difícil",
+        "frente": "Anverso",
+        "verso": "Reverso",
+        "toqueVirar": "Toque para girar",
+        "verFrente": "Ver anverso",
+        "virar": "Girar",
+        "anterior": "Tarjeta anterior",
+        "proximo": "Siguiente tarjeta",
+        "painelTitulo": "Flashcards — {modulo}",
+        "painelChamada": "Refuerce lo que estudió",
+        "painelTexto": "Repase los puntos principales de este módulo, una tarjeta a la vez: ideal para la recta final antes del examen."
+      },
+      "resultado": {
+        "voltar": "Volver al curso",
+        "subtitulo": "Su desempeño en el curso",
+        "progressoGeral": "Progreso general",
+        "aulasConcluidas": "{feitas} de {total} clases completadas",
+        "certificadoEmitido": "Certificado emitido",
+        "baixarPdf": "Descargar PDF",
+        "aulasModulo": "{feitas}/{total} clases",
+        "quiz": "Quiz:",
+        "pontos": "{pontos}/{max} puntos"
       }
     }
   }
