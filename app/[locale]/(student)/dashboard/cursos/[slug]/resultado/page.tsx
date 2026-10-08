@@ -3,16 +3,19 @@ import Link from "next/link";
 import { ChevronLeft, CheckCircle, Circle, Award, Download, Trophy } from "lucide-react";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { getTranslations } from "next-intl/server";
+import { traduzirItem, traduzirModulos } from "@/lib/i18n-content";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
 export default async function ResultadoPage({ params }: Props) {
   const { slug, locale } = await params;
+  const t = await getTranslations({ locale, namespace: "novaArea.paginas.resultado" });
 
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard");
 
-  const course = await prisma.course.findFirst({
+  const courseRaw = await prisma.course.findFirst({
     where: { slug },
     include: {
       modules: {
@@ -20,14 +23,16 @@ export default async function ResultadoPage({ params }: Props) {
         include: {
           lessons: {
             orderBy: { order: "asc" },
-            select: { id: true, title: true, quiz: { select: { id: true, title: true } } },
+            select: { id: true, title: true, titleEs: true, titleEn: true, quiz: { select: { id: true, title: true } } },
           },
         },
       },
     },
   });
 
-  if (!course) notFound();
+  if (!courseRaw) notFound();
+  // Títulos no idioma do aluno (vazio = português)
+  const course = { ...traduzirItem(courseRaw, locale), modules: traduzirModulos(courseRaw.modules, locale) };
 
   const enrollment = await prisma.enrollment.findUnique({
     where: { userId_courseId: { userId: session.user.id, courseId: course.id } },
@@ -79,12 +84,12 @@ export default async function ResultadoPage({ params }: Props) {
         className="inline-flex items-center gap-1.5 font-sans text-sm text-muted hover:text-foreground transition-colors mb-6"
       >
         <ChevronLeft className="w-4 h-4" />
-        Voltar ao curso
+        {t("voltar")}
       </Link>
 
       <div className="mb-6">
         <h1 className="font-serif text-2xl font-medium text-foreground">{course.title}</h1>
-        <p className="font-sans text-sm text-muted mt-1">Seu desempenho no curso</p>
+        <p className="font-sans text-sm text-muted mt-1">{t("subtitulo")}</p>
       </div>
 
       {/* Resumo geral */}
@@ -95,7 +100,7 @@ export default async function ResultadoPage({ params }: Props) {
           </div>
           <div>
             <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-0.5">
-              Progresso geral
+              {t("progressoGeral")}
             </p>
             <p className="font-serif text-3xl font-medium text-foreground">{overallPct}%</p>
           </div>
@@ -108,14 +113,14 @@ export default async function ResultadoPage({ params }: Props) {
           />
         </div>
         <p className="font-sans text-xs text-muted">
-          {completedLessons} de {totalLessons} aulas concluídas
+          {t("aulasConcluidas", { feitas: completedLessons, total: totalLessons })}
         </p>
 
         {enrollment.certificate && (
           <div className="mt-5 pt-5 border-t border-border flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Award className="w-4 h-4 text-amber-500" />
-              <span className="font-sans text-sm font-semibold text-foreground">Certificado emitido</span>
+              <span className="font-sans text-sm font-semibold text-foreground">{t("certificadoEmitido")}</span>
               <span className="font-sans text-xs text-muted">
                 · {new Intl.DateTimeFormat(dateLocale).format(new Date(enrollment.certificate.issueDate))}
               </span>
@@ -127,7 +132,7 @@ export default async function ResultadoPage({ params }: Props) {
               className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-primary hover:text-primary-dark transition-colors"
             >
               <Download className="w-3.5 h-3.5" />
-              Baixar PDF
+              {t("baixarPdf")}
             </a>
           </div>
         )}
@@ -166,10 +171,10 @@ export default async function ResultadoPage({ params }: Props) {
                   />
                 </div>
                 <p className="font-sans text-[10px] text-muted mt-1.5">
-                  {modCompleted}/{modLessons.length} aulas
+                  {t("aulasModulo", { feitas: modCompleted, total: modLessons.length })}
                   {totalQuizMax > 0 && (
-                    <> · Quiz: <span className={`font-semibold ${totalQuizScore / totalQuizMax >= 0.7 ? "text-green-600" : "text-amber-600"}`}>
-                      {totalQuizScore}/{totalQuizMax} pontos
+                    <> · {t("quiz")} <span className={`font-semibold ${totalQuizScore / totalQuizMax >= 0.7 ? "text-green-600" : "text-amber-600"}`}>
+                      {t("pontos", { pontos: totalQuizScore, max: totalQuizMax })}
                     </span></>
                   )}
                 </p>

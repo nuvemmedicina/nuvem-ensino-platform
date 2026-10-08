@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { RotateCcw, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type Card = { id: string; front: string; back: string };
 type DesignConfig = {
@@ -24,6 +25,7 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export function FlashcardPlayer({ group, userId }: { group: Group; userId: string }) {
+  const t = useTranslations("novaArea.paginas.flashcards");
   const design = group.designConfig;
   const bg = design?.backgroundValue ?? "#ffffff";
   const textColor = design?.textColor ?? "#1a1a1a";
@@ -94,27 +96,27 @@ export function FlashcardPlayer({ group, userId }: { group: Group; userId: strin
     return (
       <div className="text-center max-w-sm w-full">
         <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-4" />
-        <h2 className="font-serif text-2xl font-medium text-foreground mb-2">Sessão concluída!</h2>
-        <p className="font-sans text-sm text-muted mb-6">{summary.cardsReviewed} cards revisados</p>
+        <h2 className="font-serif text-2xl font-medium text-foreground mb-2">{t("sessaoConcluida")}</h2>
+        <p className="font-sans text-sm text-muted mb-6">{t("revisados", { n: summary.cardsReviewed })}</p>
         <div className="grid grid-cols-3 gap-3 mb-8">
           <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-4 text-center">
             <p className="font-sans text-2xl font-bold text-green-600">{summary.easy}</p>
-            <p className="font-sans text-xs text-green-700 mt-1">Fácil</p>
+            <p className="font-sans text-xs text-green-700 mt-1">{t("facil")}</p>
           </div>
           <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-center">
             <p className="font-sans text-2xl font-bold text-amber-600">{summary.medium}</p>
-            <p className="font-sans text-xs text-amber-700 mt-1">Médio</p>
+            <p className="font-sans text-xs text-amber-700 mt-1">{t("medio")}</p>
           </div>
           <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 text-center">
             <p className="font-sans text-2xl font-bold text-red-600">{summary.hard}</p>
-            <p className="font-sans text-xs text-red-700 mt-1">Difícil</p>
+            <p className="font-sans text-xs text-red-700 mt-1">{t("dificil")}</p>
           </div>
         </div>
         <button
           onClick={() => { setDeck(shouldShuffle ? shuffle(group.cards) : group.cards); setIndex(0); setFlipped(false); setRatings({}); setDone(false); setSummary(null); }}
           className="inline-flex items-center gap-2 font-sans text-sm font-semibold px-5 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors"
         >
-          <RotateCcw className="w-4 h-4" /> Estudar novamente
+          <RotateCcw className="w-4 h-4" /> {t("estudarNovamente")}
         </button>
       </div>
     );
@@ -142,7 +144,7 @@ export function FlashcardPlayer({ group, userId }: { group: Group; userId: strin
 
       {isRepeat && (
         <div className="text-center mb-2">
-          <span className="font-sans text-[10px] font-bold text-red-600 bg-red-500/10 px-2 py-0.5 rounded-full uppercase tracking-wider">Revisando — Difícil</span>
+          <span className="font-sans text-[10px] font-bold text-red-600 bg-red-500/10 px-2 py-0.5 rounded-full uppercase tracking-wider">{t("revisandoDificil")}</span>
         </div>
       )}
 
@@ -166,16 +168,16 @@ export function FlashcardPlayer({ group, userId }: { group: Group; userId: strin
             className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center"
             style={{ backfaceVisibility: "hidden", background: bg, borderRadius: radius, color: textColor }}
           >
-            <span className="font-sans text-[10px] font-bold uppercase tracking-widest opacity-40 mb-3">Frente</span>
+            <span className="font-sans text-[10px] font-bold uppercase tracking-widest opacity-40 mb-3">{t("frente")}</span>
             <p className="font-sans text-lg font-medium leading-relaxed">{current.front.replace("_repeat", "")}</p>
-            <p className="font-sans text-xs opacity-40 mt-6">Toque para virar</p>
+            <p className="font-sans text-xs opacity-40 mt-6">{t("toqueVirar")}</p>
           </div>
           {/* Back */}
           <div
             className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center"
             style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)", background: bg, borderRadius: radius, color: textColor, filter: "brightness(0.96)" }}
           >
-            <span className="font-sans text-[10px] font-bold uppercase tracking-widest opacity-40 mb-3">Verso</span>
+            <span className="font-sans text-[10px] font-bold uppercase tracking-widest opacity-40 mb-3">{t("verso")}</span>
             <p className="font-sans text-base leading-relaxed">{current.back}</p>
           </div>
         </div>
@@ -184,25 +186,25 @@ export function FlashcardPlayer({ group, userId }: { group: Group; userId: strin
       {/* Rating buttons */}
       <div className={`mt-6 flex gap-3 transition-opacity duration-300 ${flipped ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
         <button onClick={() => rate("HARD")} className="flex-1 py-3 rounded-xl font-sans text-sm font-bold border-2 border-red-400 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors">
-          😰 Difícil
+          😰 {t("dificil")}
         </button>
         <button onClick={() => rate("MEDIUM")} className="flex-1 py-3 rounded-xl font-sans text-sm font-bold border-2 border-amber-400 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-colors">
-          🤔 Médio
+          🤔 {t("medio")}
         </button>
         <button onClick={() => rate("EASY")} className="flex-1 py-3 rounded-xl font-sans text-sm font-bold border-2 border-green-400 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/10 transition-colors">
-          😊 Fácil
+          😊 {t("facil")}
         </button>
       </div>
 
       {/* Nav */}
       <div className="flex justify-between mt-4">
-        <button onClick={() => { if (index > 0) { setIndex((i) => i - 1); setFlipped(false); } }} disabled={index === 0} className="p-2 rounded-lg text-muted hover:text-foreground disabled:opacity-20">
+        <button onClick={() => { if (index > 0) { setIndex((i) => i - 1); setFlipped(false); } }} disabled={index === 0} aria-label={t("anterior")} className="p-2 rounded-lg text-muted hover:text-foreground disabled:opacity-20">
           <ChevronLeft className="w-5 h-5" />
         </button>
         <button onClick={() => setFlipped((f) => !f)} className="font-sans text-xs text-muted hover:text-foreground">
-          {flipped ? "Ver frente" : "Virar"}
+          {flipped ? t("verFrente") : t("virar")}
         </button>
-        <button onClick={() => { setIndex((i) => Math.min(i + 1, deck.length - 1)); setFlipped(false); }} disabled={index >= deck.length - 1} className="p-2 rounded-lg text-muted hover:text-foreground disabled:opacity-20">
+        <button onClick={() => { setIndex((i) => Math.min(i + 1, deck.length - 1)); setFlipped(false); }} disabled={index >= deck.length - 1} aria-label={t("proximo")} className="p-2 rounded-lg text-muted hover:text-foreground disabled:opacity-20">
           <ChevronRight className="w-5 h-5" />
         </button>
       </div>

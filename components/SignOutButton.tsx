@@ -2,8 +2,10 @@
 
 import { signOut } from "next-auth/react";
 import { LogOut } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function SignOutButton({ dark = false }: { dark?: boolean }) {
+  const t = useTranslations("novaArea.menu");
   return (
     <button
       onClick={() => signOut({ callbackUrl: "/" })}
@@ -14,7 +16,7 @@ export default function SignOutButton({ dark = false }: { dark?: boolean }) {
       }`}
     >
       <LogOut className="w-4 h-4 shrink-0" />
-      Sair
+      {t("sair")}
     </button>
   );
 }

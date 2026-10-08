@@ -10,6 +10,7 @@ import MobileNav from "./MobileNav";
 import SidebarNav from "./SidebarNav";
 import { NuveteWidget } from "./NuveteWidget";
 import { usaNovaArea } from "@/lib/novaArea";
+import { getTranslations } from "next-intl/server";
 
 export default async function StudentLayout({
   children,
@@ -18,7 +19,8 @@ export default async function StudentLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  await params;
+  const { locale } = await params;
+  const tMenu = await getTranslations({ locale, namespace: "novaArea.menu" });
 
   const session = await auth();
   if (!session) redirect("/entrar?callbackUrl=/dashboard");
@@ -56,7 +58,7 @@ export default async function StudentLayout({
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg font-sans text-sm text-muted hover:text-foreground hover:bg-background transition-all"
           >
             <MessageCircle className="w-4 h-4 shrink-0 text-green-500" />
-            Suporte
+            {tMenu("suporte")}
           </a>
         </div>
 

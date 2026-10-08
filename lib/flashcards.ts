@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { traduzirItem } from "@/lib/i18n-content";
 
 export type CardEntrada = { id?: string; front: string; back: string };
 
@@ -71,7 +72,7 @@ const resumo = (g: {
  * inteiro do curso e deixa claro o que ainda está por vir, em vez de exibir
  * só o punhado de grupos que existe hoje.
  */
-export async function estruturaParaUsuario(userId: string, role: string | undefined) {
+export async function estruturaParaUsuario(userId: string, role: string | undefined, locale = "pt") {
   const cuidaDoConteudo = role === "ADMIN" || role === "EDITOR" || role === "INSTRUCTOR";
 
   const cursos = await prisma.course.findMany({
@@ -80,15 +81,15 @@ export async function estruturaParaUsuario(userId: string, role: string | undefi
       : { enrollments: { some: { userId, status: { in: ["ACTIVE", "COMPLETED"] } } } },
     orderBy: { title: "asc" },
     select: {
-      id: true, title: true, thumbnailUrl: true,
+      id: true, title: true, titleEs: true, titleEn: true, thumbnailUrl: true,
       modules: {
         orderBy: { order: "asc" },
         select: {
-          id: true, title: true,
+          id: true, title: true, titleEs: true, titleEn: true,
           topics: {
             orderBy: { order: "asc" },
             select: {
-              id: true, title: true,
+              id: true, title: true, titleEs: true, titleEn: true,
               flashcardGroups: {
                 where: { cards: { some: {} } },
                 orderBy: { createdAt: "asc" },
@@ -109,16 +110,17 @@ export async function estruturaParaUsuario(userId: string, role: string | undefi
 
   const estrutura: CursoComFlashcards[] = cursos.map((c) => ({
     id: c.id,
-    title: c.title,
+    // Títulos no idioma do aluno (vazio = português)
+    title: traduzirItem(c, locale).title,
     thumbnailUrl: c.thumbnailUrl,
     soltos: c.flashcardGroups.map(resumo),
     modulos: c.modules.map((m, i) => ({
       id: m.id,
-      title: m.title,
+      title: traduzirItem(m, locale).title,
       indice: i,
       topicos: m.topics.map((t) => ({
         id: t.id,
-        title: t.title,
+        title: traduzirItem(t, locale).title,
         grupo: t.flashcardGroups[0] ? resumo(t.flashcardGroups[0]) : null,
       })),
     })),
