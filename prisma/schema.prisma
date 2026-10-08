@@ -223,6 +223,15 @@ model Course {
   titleEs       String?
   shortDescEs   String?
   descriptionEs String? @db.Text
+  // Blocos da página de venda (uma entrada por linha, como no português)
+  objectivesEs       String? @db.Text
+  objectivesEn       String? @db.Text
+  targetAudienceEs   String? @db.Text
+  targetAudienceEn   String? @db.Text
+  includesEs         String? @db.Text
+  includesEn         String? @db.Text
+  startDateLabelEs   String?
+  startDateLabelEn   String?
 
   showCertificationSeals Boolean @default(false) // exibe selos MEC/ISO na página do curso
   faqJson                String? @db.Text // JSON: [{q,a}[]] — FAQ personalizado por curso
