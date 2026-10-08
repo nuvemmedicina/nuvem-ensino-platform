@@ -497,6 +497,22 @@ export default async function AdminCursoEditPage({ params, searchParams }: Props
                   <label className={labelClass}>Descrição completa (EN)</label>
                   <textarea name="descriptionEn" defaultValue={course.descriptionEn ?? ""} placeholder={course.description} rows={4} className={`${inputClass} resize-none`} />
                 </div>
+                <div>
+                  <label className={labelClass}>O que você vai aprender · um item por linha (EN)</label>
+                  <textarea name="objectivesEn" defaultValue={course.objectivesEn ?? ""} placeholder={course.objectives ?? ""} rows={5} className={`${inputClass} resize-y`} />
+                </div>
+                <div>
+                  <label className={labelClass}>Para quem é · um item por linha (EN)</label>
+                  <textarea name="targetAudienceEn" defaultValue={course.targetAudienceEn ?? ""} placeholder={course.targetAudience ?? ""} rows={4} className={`${inputClass} resize-y`} />
+                </div>
+                <div>
+                  <label className={labelClass}>O que está incluído · um item por linha (EN)</label>
+                  <textarea name="includesEn" defaultValue={course.includesEn ?? ""} placeholder={course.includes ?? ""} rows={5} className={`${inputClass} resize-y`} />
+                </div>
+                <div>
+                  <label className={labelClass}>Data de início (EN)</label>
+                  <input name="startDateLabelEn" defaultValue={course.startDateLabelEn ?? ""} placeholder={course.startDateLabel ?? ""} className={inputClass} />
+                </div>
               </div>
             </div>
 
@@ -517,6 +533,22 @@ export default async function AdminCursoEditPage({ params, searchParams }: Props
                 <div>
                   <label className={labelClass}>Descrição completa (ES)</label>
                   <textarea name="descriptionEs" defaultValue={course.descriptionEs ?? ""} placeholder={course.description} rows={4} className={`${inputClass} resize-none`} />
+                </div>
+                <div>
+                  <label className={labelClass}>O que você vai aprender · um item por linha (ES)</label>
+                  <textarea name="objectivesEs" defaultValue={course.objectivesEs ?? ""} placeholder={course.objectives ?? ""} rows={5} className={`${inputClass} resize-y`} />
+                </div>
+                <div>
+                  <label className={labelClass}>Para quem é · um item por linha (ES)</label>
+                  <textarea name="targetAudienceEs" defaultValue={course.targetAudienceEs ?? ""} placeholder={course.targetAudience ?? ""} rows={4} className={`${inputClass} resize-y`} />
+                </div>
+                <div>
+                  <label className={labelClass}>O que está incluído · um item por linha (ES)</label>
+                  <textarea name="includesEs" defaultValue={course.includesEs ?? ""} placeholder={course.includes ?? ""} rows={5} className={`${inputClass} resize-y`} />
+                </div>
+                <div>
+                  <label className={labelClass}>Data de início (ES)</label>
+                  <input name="startDateLabelEs" defaultValue={course.startDateLabelEs ?? ""} placeholder={course.startDateLabel ?? ""} className={inputClass} />
                 </div>
               </div>
             </div>

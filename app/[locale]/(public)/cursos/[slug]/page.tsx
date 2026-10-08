@@ -147,11 +147,14 @@ export default async function CoursePage({ params }: Props) {
   const splitLines = (s: string | null | undefined) =>
     s ? s.split("\n").map((l) => l.trim()).filter(Boolean) : null;
 
+  // Blocos no idioma da página; vazio = português
+  const noIdioma = (pt: string | null, es: string | null, en: string | null) =>
+    (locale === "es" ? es : locale === "en" ? en : null) || pt;
   const content = {
-    startDate:      course.startDateLabel ?? null,
-    objectives:     splitLines(course.objectives)     ?? null,
-    targetAudience: splitLines(course.targetAudience) ?? null,
-    includes:       splitLines(course.includes)       ?? null,
+    startDate:      noIdioma(course.startDateLabel, course.startDateLabelEs, course.startDateLabelEn) ?? null,
+    objectives:     splitLines(noIdioma(course.objectives, course.objectivesEs, course.objectivesEn))             ?? null,
+    targetAudience: splitLines(noIdioma(course.targetAudience, course.targetAudienceEs, course.targetAudienceEn)) ?? null,
+    includes:       splitLines(noIdioma(course.includes, course.includesEs, course.includesEn))                   ?? null,
     instructorBio:  course.instructor.bio             ?? null,
   };
 
