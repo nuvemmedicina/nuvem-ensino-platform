@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Loader2, X, CheckCircle } from "lucide-react";
+import { Loader2, X, CheckCircle, Award } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { cancelEnrollment, confirmPayment } from "./actions";
+import { cancelEnrollment, confirmPayment, emitirCertificado } from "./actions";
 
 const statusColors: Record<string, string> = {
   PENDING:   "text-orange-600 bg-orange-500/10 border-orange-500/20",
@@ -20,6 +20,7 @@ type Props = {
     courseId: string;
     status: string;
     enrolledAt: string;
+    temCertificado: boolean;
     user: { name: string | null; email: string; phone: string | null };
     course: { title: string; slug: string; totalSeats: number | null };
     _count: { attendances: number };
@@ -32,6 +33,7 @@ export function EnrollmentRow({ enrollment: e, dateLocale }: Props) {
   const t = useTranslations("admin.enrollments");
   const [loading, setLoading] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  const [emitindo, setEmitindo] = useState(false);
   const [error, setError] = useState("");
   const statusColor = statusColors[e.status] ?? statusColors.ACTIVE;
 
@@ -57,6 +59,19 @@ export function EnrollmentRow({ enrollment: e, dateLocale }: Props) {
       setError((err as Error).message);
     } finally {
       setConfirming(false);
+    }
+  }
+
+  async function handleEmitir() {
+    if (!confirm(`Emitir o certificado de ${e.user.name ?? e.user.email} em "${e.course.title}"? A matrícula fica como concluída e o aluno já pode baixar o certificado.`)) return;
+    setEmitindo(true);
+    setError("");
+    try {
+      await emitirCertificado(e.id);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setEmitindo(false);
     }
   }
 
@@ -142,7 +157,7 @@ export function EnrollmentRow({ enrollment: e, dateLocale }: Props) {
           <span className={`font-sans text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${statusColor}`}>
             {t(statusKey)}
           </span>
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+          <div className="flex items-center gap-1">
             {e.payment?.status !== "PAID" && e.payment && (
               <button
                 onClick={handleConfirmPayment}
@@ -151,6 +166,17 @@ export function EnrollmentRow({ enrollment: e, dateLocale }: Props) {
                 className="p-1 rounded-lg text-muted hover:text-green-600 hover:bg-green-500/10"
               >
                 {confirming ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5" />}
+              </button>
+            )}
+            {(e.status === "ACTIVE" || e.status === "COMPLETED") && !e.temCertificado && (
+              <button
+                onClick={handleEmitir}
+                disabled={emitindo}
+                title="Emitir certificado"
+                aria-label="Emitir certificado"
+                className="p-1 rounded-lg text-muted hover:text-amber-600 hover:bg-amber-500/10"
+              >
+                {emitindo ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Award className="w-3.5 h-3.5" />}
               </button>
             )}
             {e.status !== "CANCELLED" && e.status !== "REFUNDED" && (
