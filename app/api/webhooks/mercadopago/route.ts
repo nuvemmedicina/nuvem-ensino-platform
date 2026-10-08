@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { MercadoPagoConfig, Payment } from "mercadopago";
 import { prisma } from "@/lib/prisma";
+import { sincronizarVagas } from "@/lib/vagas";
 
 export async function POST(req: Request) {
   const mp = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN! });
@@ -52,10 +53,7 @@ export async function POST(req: Request) {
         where: { id: enrollmentId },
         data: { status: "CANCELLED" },
       });
-      await prisma.course.update({
-        where: { id: enrollment.courseId },
-        data: { reservedSeats: { decrement: 1 } },
-      });
+      await sincronizarVagas(prisma, enrollment.courseId);
     }
   } else if (status === "refunded") {
     await prisma.payment.updateMany({
@@ -71,10 +69,7 @@ export async function POST(req: Request) {
         where: { id: enrollmentId },
         data: { status: "REFUNDED" },
       });
-      await prisma.course.update({
-        where: { id: enrollment.courseId },
-        data: { reservedSeats: { decrement: 1 } },
-      });
+      await sincronizarVagas(prisma, enrollment.courseId);
     }
   }
 

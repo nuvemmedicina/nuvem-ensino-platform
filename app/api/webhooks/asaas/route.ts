@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sincronizarVagas } from "@/lib/vagas";
 import { sendEnrollmentConfirmation, sendPaymentPendingEmail } from "@/lib/email";
 import { APP_URL } from "@/lib/appUrl";
 import { sendAfterResponse } from "@/lib/emailBackground";
@@ -101,8 +102,8 @@ export async function POST(req: NextRequest) {
         await prisma.$transaction([
           prisma.payment.update({ where: { id: dbPayment.id }, data: { status: "FAILED" } }),
           prisma.enrollment.update({ where: { id: dbPayment.enrollmentId }, data: { status: "CANCELLED" } }),
-          prisma.course.update({ where: { id: enrollment.courseId }, data: { reservedSeats: { decrement: 1 } } }),
         ]);
+        await sincronizarVagas(prisma, enrollment.courseId);
         const [user, course] = await Promise.all([
           prisma.user.findUnique({ where: { id: enrollment.userId }, select: { email: true, name: true } }),
           prisma.course.findUnique({ where: { id: enrollment.courseId }, select: { title: true, slug: true } }),
@@ -157,10 +158,8 @@ export async function POST(req: NextRequest) {
         await prisma.$transaction([
           prisma.payment.update({ where: { id: dbPayment.id }, data: { status: "FAILED" } }),
           prisma.enrollment.update({ where: { id: dbPayment.enrollmentId }, data: { status: newStatus } }),
-          ...(enrollment.status === "PENDING"
-            ? [prisma.course.update({ where: { id: enrollment.courseId }, data: { reservedSeats: { decrement: 1 } } })]
-            : []),
         ]);
+        await sincronizarVagas(prisma, enrollment.courseId);
       }
     }
   }
@@ -179,10 +178,8 @@ export async function POST(req: NextRequest) {
       await prisma.$transaction([
         prisma.payment.update({ where: { id: dbPayment.id }, data: { status: "REFUNDED" } }),
         prisma.enrollment.update({ where: { id: dbPayment.enrollmentId }, data: { status: "REFUNDED" } }),
-        ...(enrollment
-          ? [prisma.course.update({ where: { id: enrollment.courseId }, data: { reservedSeats: { decrement: 1 } } })]
-          : []),
       ]);
+      if (enrollment) await sincronizarVagas(prisma, enrollment.courseId);
     }
   }
 

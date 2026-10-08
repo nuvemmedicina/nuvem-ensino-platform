@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
+import { sincronizarVagas } from "@/lib/vagas";
 import { sendEnrollmentConfirmation } from "@/lib/email";
 import { sendAfterResponse } from "@/lib/emailBackground";
 
@@ -86,10 +87,7 @@ export async function POST(req: Request) {
           where: { id: enrollmentId },
           data: { status: "CANCELLED" },
         });
-        await prisma.course.update({
-          where: { id: enrollment.courseId },
-          data: { reservedSeats: { decrement: 1 } },
-        });
+        await sincronizarVagas(prisma, enrollment.courseId);
       }
     }
   }
@@ -116,10 +114,7 @@ export async function POST(req: Request) {
             where: { id: payment.enrollmentId },
             data: { status: "REFUNDED" },
           });
-          await prisma.course.update({
-            where: { id: enrollment.courseId },
-            data: { reservedSeats: { decrement: 1 } },
-          });
+          await sincronizarVagas(prisma, enrollment.courseId);
         }
       }
     }

@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { sincronizarVagas } from "@/lib/vagas";
 import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 
@@ -32,6 +33,7 @@ async function reativarMatricula(formData: FormData) {
       data: { id: randomUUID(), userId: user.id, courseId: course.id, status: "ACTIVE" },
     });
   }
+  await sincronizarVagas(prisma, course.id);
 
   revalidatePath("/admin/matriculas");
   redirect("/admin/matriculas?reativada=1");

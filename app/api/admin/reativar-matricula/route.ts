@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { sincronizarVagas } from "@/lib/vagas";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -26,6 +27,7 @@ export async function POST(req: NextRequest) {
       where: { id: existing.id },
       data: { status: "ACTIVE" },
     });
+    await sincronizarVagas(prisma, course.id);
     return NextResponse.json({ ok: true, action: "reativada", enrollmentId: existing.id });
   }
 
@@ -37,5 +39,6 @@ export async function POST(req: NextRequest) {
       status: "ACTIVE",
     },
   });
+  await sincronizarVagas(prisma, course.id);
   return NextResponse.json({ ok: true, action: "criada", enrollmentId: enrollment.id });
 }
