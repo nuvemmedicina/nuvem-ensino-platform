@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { LogoPainel } from "@/components/LogoPainel";
 import { LayoutDashboard, BookOpen, Video, User, CalendarDays, Trophy } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -40,13 +41,7 @@ export default function MobileNav({ userImage, initials, nova = false }: Props) 
       {/* ── Top bar mobile — só logo + avatar ── */}
       <header className="md:hidden sticky top-0 z-40 bg-white border-b border-border">
         <div className="flex items-center justify-between px-5 h-14">
-          <Link href="/dashboard">
-            <span className="flex items-center gap-2.5">
-              <Image src="/logo-icone.png" alt="" width={40} height={40} className="w-10 h-10" priority />
-              <span className="font-serif text-[22px] font-semibold text-primary leading-none">nuvem</span>
-              <span className="sr-only">NU.V.E.M ENSINO</span>
-            </span>
-          </Link>
+          <LogoPainel href="/dashboard" variante="celular" />
           <Link href="/dashboard/perfil" className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden shrink-0">
             {userImage ? (
               <Image src={userImage} alt="Perfil" width={32} height={32} className="rounded-full w-full h-full object-cover" />
