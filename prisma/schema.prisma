@@ -186,6 +186,7 @@ model Course {
   description         String         @db.Text
   shortDesc           String?
   thumbnailUrl        String?
+  studentHeroUrl      String? // fundo do cartão escuro na área do aluno (Início e página do curso)
   previewUrl          String?
   contentUrl          String? // link do conteúdo online (YouTube, Vimeo, plataforma externa)
   externalCheckoutUrl String? // quando preenchido, o botão de compra redireciona para URL externa

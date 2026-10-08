@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { BookOpen, ExternalLink, Headphones, PlayCircle, Radio, Video } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { traduzirItem, traduzirModulos } from "@/lib/i18n-content";
+import { FundoCartao } from "./FundoCartao";
 
 /**
  * Início da nova área do aluno (redesenho de outubro/2026).
@@ -75,6 +76,7 @@ export async function NovoInicio({ userId, nome, locale }: { userId: string; nom
           hours: true,
           contentUrl: true,
           thumbnailUrl: true,
+          studentHeroUrl: true,
           instructor: { select: { user: { select: { name: true, image: true } } } },
           modules: {
             orderBy: { order: "asc" },
@@ -204,7 +206,8 @@ export async function NovoInicio({ userId, nome, locale }: { userId: string; nom
             </a>
           </section>
         ) : emFoco ? (
-          <section aria-labelledby="proximo" className="bg-canvas text-white rounded-3xl px-6 sm:px-10 py-8 sm:py-10 flex flex-wrap gap-6 items-end justify-between">
+          <section aria-labelledby="proximo" className="relative isolate overflow-hidden bg-canvas text-white rounded-3xl px-6 sm:px-10 py-8 sm:py-10 flex flex-wrap gap-6 items-end justify-between">
+            <FundoCartao url={emFoco.m.course.studentHeroUrl} />
             <div className="flex-1 min-w-[min(100%,24rem)] flex flex-col gap-2.5">
               <p id="proximo" className="font-sans text-xs font-semibold uppercase tracking-[0.14em] text-accent">
                 {t("proximoPasso")}
