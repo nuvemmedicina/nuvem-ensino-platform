@@ -11,10 +11,18 @@ export async function POST(req: NextRequest) {
     return new Response(JSON.stringify({ error: "Não autorizado" }), { status: 401 });
   }
 
-  const { messages, context } = await req.json() as {
+  const { messages, context, locale } = await req.json() as {
     messages: Array<{ role: "user" | "assistant"; content: string }>;
     context?: { courseTitle?: string; moduleTitle?: string; lessonTitle?: string };
+    locale?: string;
   };
+  // Idioma da resposta: o da página em que o aluno está (ele pode escrever em outro)
+  const idioma =
+    locale === "es"
+      ? "Responda em espanhol, que é o idioma em que o aluno usa a plataforma; se ele escrever em outro idioma, acompanhe o idioma dele"
+      : locale === "en"
+        ? "Responda em inglês, que é o idioma em que o aluno usa a plataforma; se ele escrever em outro idioma, acompanhe o idioma dele"
+        : "Português do Brasil";
 
   // Busca configuração ativa da IA
   const cfg = await prisma.aIProviderConfig.findFirst({
@@ -74,7 +82,7 @@ FORMATAÇÃO — siga rigorosamente:
 - Termine respostas longas com "📌 Resumindo:" + 1 frase
 
 CONTEÚDO:
-- Português do Brasil, linguagem clara e tecnicamente precisa
+- ${idioma}, linguagem clara e tecnicamente precisa
 - Exemplos clínicos práticos sempre que possível
 - Reforce que decisões clínicas são do médico quando pertinente
 - Seja encorajadora — o aprendizado médico é exigente

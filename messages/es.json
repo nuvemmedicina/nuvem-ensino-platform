@@ -1160,6 +1160,21 @@
             "descricao": "Completaste un curso y emitiste el certificado"
           }
         }
+      },
+      "nuvete": {
+        "subtitulo": "Asistente de estudio con IA",
+        "limpar": "Borrar conversación",
+        "fechar": "Cerrar",
+        "ola": "¡Hola, {nome}!",
+        "apresentacao1": "Soy Nuvete, su asistente de estudio.",
+        "apresentacao2": "Puede preguntarme sobre el contenido del curso, resolver dudas médicas o pedirme un resumen.",
+        "sugestao1": "Explique el mecanismo del nervio vago",
+        "sugestao2": "Hágame 3 preguntas de repaso sobre este módulo",
+        "sugestao3": "¿Cuáles son los criterios diagnósticos de SIBO?",
+        "placeholder": "Pregunte algo sobre el contenido…",
+        "enviar": "Enviar",
+        "abrir": "Abrir Nuvete",
+        "erro": "⚠️ Error de conexión. Inténtelo de nuevo."
       }
     },
     "listaCursos": {

@@ -1160,6 +1160,21 @@
             "descricao": "Completed a course and issued the certificate"
           }
         }
+      },
+      "nuvete": {
+        "subtitulo": "AI study assistant",
+        "limpar": "Clear conversation",
+        "fechar": "Close",
+        "ola": "Hi, {nome}!",
+        "apresentacao1": "I'm Nuvete, your study assistant.",
+        "apresentacao2": "You can ask me about the course content, clear up medical questions or ask for a summary.",
+        "sugestao1": "Explain how the vagus nerve works",
+        "sugestao2": "Give me 3 review questions about this module",
+        "sugestao3": "What are the diagnostic criteria for SIBO?",
+        "placeholder": "Ask something about the content…",
+        "enviar": "Send",
+        "abrir": "Open Nuvete",
+        "erro": "⚠️ Connection error. Please try again."
       }
     },
     "listaCursos": {

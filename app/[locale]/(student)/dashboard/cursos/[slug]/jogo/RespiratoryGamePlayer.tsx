@@ -74,18 +74,20 @@ function Chart({ c, feedback }: { c: RespiratoryCase; feedback?: boolean }) {
   );
 }
 
-function loadSettings(): PersistedSettings {
-  if (typeof window === "undefined") return DEFAULT_SETTINGS;
+/** Preferências salvas; sem preferência, abre no idioma da página (o jogo tem português e espanhol). */
+function loadSettings(idiomaPagina: string): PersistedSettings {
+  const padrao: PersistedSettings = { ...DEFAULT_SETTINGS, lang: idiomaPagina === "es" ? "es" : "pt" };
+  if (typeof window === "undefined") return padrao;
   try {
     const raw = window.localStorage.getItem(SETTINGS_KEY);
-    if (raw) return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+    if (raw) return { ...padrao, ...JSON.parse(raw) };
   } catch {
     // localStorage indisponível — segue com os padrões
   }
-  return DEFAULT_SETTINGS;
+  return padrao;
 }
 
-export function RespiratoryGamePlayer({ initialProgress }: { initialProgress: RespiratoryProgressData }) {
+export function RespiratoryGamePlayer({ initialProgress, idiomaPagina = "pt" }: { initialProgress: RespiratoryProgressData; idiomaPagina?: string }) {
   // Estado inicial é fixo (igual no servidor e no cliente) de propósito: ler
   // localStorage ou embaralhar casos com Math.random() direto no useState
   // faria o HTML da hidratação divergir do renderizado no servidor. A sessão
@@ -146,7 +148,7 @@ export function RespiratoryGamePlayer({ initialProgress }: { initialProgress: Re
    * (localStorage + Math.random()) que precisa ficar fora da renderização do
    * servidor; ver comentário acima dos estados. */
   useEffect(() => {
-    const loaded = loadSettings();
+    const loaded = loadSettings(idiomaPagina);
     setSettings(loaded);
     setDraftSettings(loaded);
     setSessionCases(buildSession(casesFor(loaded.lang), loaded.level, initialProgress.conceptStats));
