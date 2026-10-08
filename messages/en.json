@@ -1295,7 +1295,14 @@
         "proximo": "Next card",
         "painelTitulo": "Flashcards — {modulo}",
         "painelChamada": "Reinforce what you studied",
-        "painelTexto": "Review the key points of this module, one card at a time — great for the final stretch before the exam."
+        "painelTexto": "Review the key points of this module, one card at a time — great for the final stretch before the exam.",
+        "pergunta": "Question",
+        "resposta": "Answer",
+        "comoFoi": "How well did you remember?",
+        "atalhos": "Shortcuts: space flips the card · 1, 2 and 3 rate it · arrows navigate",
+        "finalOtimo": "Excellent command!",
+        "finalBom": "Good progress, keep reviewing.",
+        "finalRevisar": "Worth reviewing again soon."
       },
       "resultado": {
         "voltar": "Back to course",

@@ -1295,7 +1295,14 @@
         "proximo": "Próximo card",
         "painelTitulo": "Flashcards — {modulo}",
         "painelChamada": "Reforce o que você estudou",
-        "painelTexto": "Revise os pontos principais deste módulo, um card por vez — bom para a reta final antes da prova."
+        "painelTexto": "Revise os pontos principais deste módulo, um card por vez — bom para a reta final antes da prova.",
+        "pergunta": "Pergunta",
+        "resposta": "Resposta",
+        "comoFoi": "Como foi lembrar?",
+        "atalhos": "Atalhos: espaço vira o card · 1, 2 e 3 dão a nota · setas navegam",
+        "finalOtimo": "Excelente domínio!",
+        "finalBom": "Bom caminho, siga revisando.",
+        "finalRevisar": "Vale revisar de novo em breve."
       },
       "resultado": {
         "voltar": "Voltar ao curso",
