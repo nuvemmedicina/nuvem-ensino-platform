@@ -116,7 +116,7 @@ export default async function MeusCursosPage({ params }: { params: Promise<{ loc
       <li key={c.m.id} className="bg-surface border border-border rounded-2xl p-4 sm:p-5 flex flex-wrap gap-5 items-center">
         <Link href={`/dashboard/cursos/${c.m.course.slug}`} className="relative w-20 h-28 sm:w-24 sm:h-32 shrink-0 rounded-xl overflow-hidden bg-canvas" tabIndex={-1} aria-hidden="true">
           {capa ? (
-            <Image src={capa} alt="" fill sizes="96px" className="object-cover" />
+            <Image src={capa} alt="" fill sizes="240px" className="object-cover" />
           ) : (
             <BookOpen className="absolute inset-0 m-auto w-7 h-7 text-white/40" />
           )}
