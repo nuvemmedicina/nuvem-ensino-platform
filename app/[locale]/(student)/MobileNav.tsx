@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { LogoPainel } from "@/components/LogoPainel";
-import { LayoutDashboard, BookOpen, Video, User, CalendarDays, Trophy } from "lucide-react";
+import { LayoutDashboard, BookOpen, User, CalendarDays, Trophy } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 
@@ -12,18 +12,10 @@ type Props = {
   userEmail: string | null;
   userImage: string | null;
   initials: string;
-  /** Nova área do aluno: os mesmos cinco itens do menu do computador. */
-  nova?: boolean;
 };
 
-const bottomTabs = [
-  { label: "Início",     href: "/dashboard",                icon: LayoutDashboard },
-  { label: "Cursos",     href: "/dashboard/cursos",         icon: BookOpen },
-  { label: "Ao vivo",    href: "/dashboard/aulas-ao-vivo",  icon: Video },
-  { label: "Perfil",     href: "/dashboard/perfil",         icon: User },
-];
-
-const novasAbas = [
+// Os mesmos cinco itens do menu do computador
+const abasMenu = [
   { chave: "inicio",      href: "/dashboard",               icon: LayoutDashboard },
   { chave: "cursosCurto", href: "/dashboard/cursos",        icon: BookOpen },
   { chave: "agenda",      href: "/dashboard/aulas-ao-vivo", icon: CalendarDays },
@@ -31,10 +23,10 @@ const novasAbas = [
   { chave: "perfil",      href: "/dashboard/perfil",        icon: User },
 ] as const;
 
-export default function MobileNav({ userImage, initials, nova = false }: Props) {
+export default function MobileNav({ userImage, initials }: Props) {
   const pathname = usePathname();
   const t = useTranslations("novaArea.menu");
-  const abas = nova ? novasAbas.map((a) => ({ label: t(a.chave), href: a.href, icon: a.icon })) : bottomTabs;
+  const abas = abasMenu.map((a) => ({ label: t(a.chave), href: a.href, icon: a.icon }));
 
   return (
     <>
@@ -53,7 +45,7 @@ export default function MobileNav({ userImage, initials, nova = false }: Props) 
       </header>
 
       {/* ── Bottom tab bar ── */}
-      <nav aria-label={nova ? t("rotulo") : undefined} className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-border" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+      <nav aria-label={t("rotulo")} className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-border" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
         <div className="flex items-stretch">
           {abas.map(({ label, href, icon: Icon }) => {
             const active = pathname === href || (href !== "/dashboard" && pathname.includes(href.replace("/dashboard", "")));
@@ -67,7 +59,7 @@ export default function MobileNav({ userImage, initials, nova = false }: Props) 
                 }`}
               >
                 <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 1.8} />
-                <span className={`font-sans ${nova ? "text-[11px]" : "text-[10px]"} ${active ? "font-bold" : "font-medium"}`}>
+                <span className={`font-sans text-[11px] ${active ? "font-bold" : "font-medium"}`}>
                   {label}
                 </span>
               </Link>

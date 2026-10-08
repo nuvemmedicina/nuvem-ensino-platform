@@ -9,7 +9,6 @@ import SignOutButton from "@/components/SignOutButton";
 import MobileNav from "./MobileNav";
 import SidebarNav from "./SidebarNav";
 import { NuveteWidget } from "./NuveteWidget";
-import { usaNovaArea } from "@/lib/novaArea";
 import { getTranslations } from "next-intl/server";
 
 export default async function StudentLayout({
@@ -24,9 +23,6 @@ export default async function StudentLayout({
 
   const session = await auth();
   if (!session) redirect("/entrar?callbackUrl=/dashboard");
-
-  // Nova área do aluno: menu de cinco itens (ver lib/novaArea.ts)
-  const nova = await usaNovaArea((session.user as { role?: string } | undefined)?.role);
 
   const initials = session.user?.name
     ? session.user.name
@@ -47,7 +43,7 @@ export default async function StudentLayout({
         </div>
 
         {/* Nav */}
-        <SidebarNav nova={nova} />
+        <SidebarNav />
 
         {/* Suporte */}
         <div className="px-3 pb-2">
@@ -101,7 +97,6 @@ export default async function StudentLayout({
           userEmail={session.user?.email ?? null}
           userImage={session.user?.image ?? null}
           initials={initials}
-          nova={nova}
         />
 
         {/* Page content */}

@@ -31,9 +31,8 @@ import { FundoCartao } from "../../FundoCartao";
 /**
  * Página do curso da nova área do aluno (redesenho de outubro/2026).
  *
- * Aparece no lugar da página atual quando a chave em
- * /admin/configuracoes/area-do-aluno libera para esta pessoa. Os dados são
- * os mesmos; muda a organização: cada tipo de conteúdo tem um lugar fixo,
+ * Substituiu a página antiga do curso (removida em 08/10/2026). Os dados
+ * são os mesmos; muda a organização: cada tipo de conteúdo tem um lugar fixo,
  * nas mesmas cinco abas em todos os cursos, e o topo mostra um único
  * próximo passo.
  */

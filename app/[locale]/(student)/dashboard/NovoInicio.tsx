@@ -10,10 +10,7 @@ import { FundoCartao } from "./FundoCartao";
  * Início da nova área do aluno (redesenho de outubro/2026).
  *
  * Responde a uma pergunta: "o que eu faço agora?". Um único próximo passo
- * em destaque; embaixo, os cursos e os próximos compromissos. Aparece no
- * lugar do painel atual quando a chave em /admin/configuracoes/area-do-aluno
- * libera para esta pessoa.
- */
+ * em destaque; embaixo, os cursos e os próximos compromissos. */
 
 const FUSO = "America/Sao_Paulo";
 

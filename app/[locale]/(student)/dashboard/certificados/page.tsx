@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Award, Download, ShieldCheck } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { usaNovaArea } from "@/lib/novaArea";
 import { calcularEstatisticas } from "@/lib/gamification";
 import { ProgressoPanel } from "../ProgressoPanel";
 
@@ -47,15 +46,14 @@ export default async function CertificadosPage({ params }: { params: Promise<{ l
 
   // Nova área do aluno: esta página vira "Conquistas", com pontos, sequência
   // de estudos e medalhas acima dos certificados.
-  const nova = await usaNovaArea((session.user as { role?: string }).role);
-  const stats = nova ? await calcularEstatisticas(session.user.id) : null;
+  const stats = await calcularEstatisticas(session.user.id);
 
   return (
     <div className="-mx-6 -mt-6 lg:-mx-8 lg:-mt-8 min-h-screen bg-background">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-10 py-8 lg:py-12 flex flex-col gap-8">
         <div>
-          <h1 className="font-serif text-4xl font-medium text-foreground leading-tight">{nova ? ti("conquistasTitulo") : t("title")}</h1>
-          <p className="font-sans text-[15px] text-muted mt-1">{nova ? ti("conquistasSubtitulo") : subtitle}</p>
+          <h1 className="font-serif text-4xl font-medium text-foreground leading-tight">{ti("conquistasTitulo")}</h1>
+          <p className="font-sans text-[15px] text-muted mt-1">{ti("conquistasSubtitulo")}</p>
         </div>
 
         {stats && stats.xp > 0 && (
@@ -67,7 +65,7 @@ export default async function CertificadosPage({ params }: { params: Promise<{ l
         <section aria-labelledby="certificados" className="flex flex-col gap-3">
           <div>
             <h2 id="certificados" className="font-sans text-lg font-semibold text-foreground">{t("title")}</h2>
-            {nova && <p className="font-sans text-sm text-muted">{subtitle}</p>}
+            <p className="font-sans text-sm text-muted">{subtitle}</p>
           </div>
 
           {certificates.length === 0 ? (
