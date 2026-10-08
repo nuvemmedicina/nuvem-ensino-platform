@@ -6,18 +6,19 @@ import { prisma } from "@/lib/prisma";
 import { podeEstudarGrupo } from "@/lib/flashcards";
 import { getRespiratoryGameProgress } from "./actions";
 import { RespiratoryGamePlayer } from "./RespiratoryGamePlayer";
+import { traduzirItem } from "@/lib/i18n-content";
 
 export default async function RespiratoryGamePage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
 
   const session = await auth();
   if (!session?.user?.id) redirect(`/entrar?callbackUrl=/dashboard/cursos/${slug}/jogo`);
 
-  const course = await prisma.course.findFirst({ where: { slug }, select: { id: true, title: true } });
+  const course = await prisma.course.findFirst({ where: { slug }, select: { id: true, title: true, titleEs: true, titleEn: true } });
   if (!course) notFound();
 
   const role = (session.user as { role?: string }).role;
@@ -33,10 +34,10 @@ export default async function RespiratoryGamePage({
         href={`/dashboard/cursos/${slug}`}
         className="inline-flex items-center gap-1 font-sans text-xs text-muted hover:text-foreground transition-colors mb-4"
       >
-        <ChevronLeft className="w-3.5 h-3.5" /> {course.title}
+        <ChevronLeft className="w-3.5 h-3.5" /> {traduzirItem(course, locale).title}
       </Link>
 
-      <RespiratoryGamePlayer initialProgress={progress} />
+      <RespiratoryGamePlayer initialProgress={progress} idiomaPagina={locale} />
     </div>
   );
 }

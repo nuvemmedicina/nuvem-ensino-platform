@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useTransition } from "react";
 import { usePathname } from "next/navigation";
 import { X, Send, Loader2, Sparkles, RotateCcw } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -51,6 +52,8 @@ function usePageContext(): CourseContext {
 }
 
 export function NuveteWidget({ userName }: { userName: string }) {
+  const t = useTranslations("novaArea.componentes.nuvete");
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -84,7 +87,7 @@ export function NuveteWidget({ userName }: { userName: string }) {
       const res = await fetch("/api/chat/nuvete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextMessages, context: ctx }),
+        body: JSON.stringify({ messages: nextMessages, context: ctx, locale }),
       });
 
       if (!res.ok || !res.body) {
@@ -115,7 +118,7 @@ export function NuveteWidget({ userName }: { userName: string }) {
     } catch {
       setMessages((prev) => {
         const updated = [...prev];
-        updated[updated.length - 1] = { role: "assistant", content: "⚠️ Erro ao conectar. Tente novamente." };
+        updated[updated.length - 1] = { role: "assistant", content: t("erro") };
         return updated;
       });
     } finally {
@@ -145,16 +148,16 @@ export function NuveteWidget({ userName }: { userName: string }) {
             <NuveteAvatar size={36} />
             <div className="flex-1 min-w-0">
               <p className="text-white text-sm font-semibold leading-tight">Nuvete</p>
-              <p className="text-white/60 text-[11px] leading-tight">Assistente de estudos IA</p>
+              <p className="text-white/60 text-[11px] leading-tight">{t("subtitulo")}</p>
             </div>
             <div className="flex items-center gap-1">
               {messages.length > 0 && (
-                <button onClick={() => setMessages([])} title="Limpar conversa"
+                <button onClick={() => setMessages([])} title={t("limpar")} aria-label={t("limpar")}
                   className="text-white/50 hover:text-white/90 transition-colors p-1.5 rounded-lg hover:bg-white/10">
                   <RotateCcw className="w-3.5 h-3.5" />
                 </button>
               )}
-              <button onClick={() => setOpen(false)}
+              <button onClick={() => setOpen(false)} aria-label={t("fechar")}
                 className="text-white/50 hover:text-white/90 transition-colors p-1.5 rounded-lg hover:bg-white/10">
                 <X className="w-4 h-4" />
               </button>
@@ -174,18 +177,14 @@ export function NuveteWidget({ userName }: { userName: string }) {
               <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
                 <NuveteAvatar size={52} />
                 <div>
-                  <p className="text-sm font-semibold text-foreground">Olá, {userName}!</p>
+                  <p className="text-sm font-semibold text-foreground">{t("ola", { nome: userName })}</p>
                   <p className="text-xs text-muted mt-1 leading-relaxed">
-                    Sou a Nuvete, sua assistente de estudos.<br />
-                    Pode me perguntar sobre o conteúdo do curso, tirar dúvidas médicas ou pedir um resumo.
+                    {t("apresentacao1")}<br />
+                    {t("apresentacao2")}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 w-full mt-2">
-                  {[
-                    "Explique o mecanismo do nervo vago",
-                    "Faça 3 perguntas de revisão sobre este módulo",
-                    "Quais os critérios diagnósticos de SIBO?",
-                  ].map((s) => (
+                  {[t("sugestao1"), t("sugestao2"), t("sugestao3")].map((s) => (
                     <button key={s} onClick={() => { setInput(s); setTimeout(send, 50); }}
                       className="text-left text-xs text-primary bg-primary/5 hover:bg-primary/10 border border-primary/15 rounded-xl px-3 py-2 transition-colors">
                       {s}
@@ -220,12 +219,12 @@ export function NuveteWidget({ userName }: { userName: string }) {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKey}
               disabled={streaming}
-              placeholder="Pergunte algo sobre o conteúdo…"
+              placeholder={t("placeholder")}
               rows={1}
               className="flex-1 resize-none text-sm text-foreground placeholder:text-muted/50 bg-transparent focus:outline-none py-1 max-h-28 overflow-y-auto"
               style={{ lineHeight: "1.5" }}
             />
-            <button onClick={send} disabled={streaming || !input.trim()}
+            <button onClick={send} disabled={streaming || !input.trim()} aria-label={t("enviar")}
               className="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center disabled:opacity-40 transition-opacity shrink-0 hover:bg-primary/90">
               {streaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
             </button>
@@ -239,7 +238,7 @@ export function NuveteWidget({ userName }: { userName: string }) {
           onClick={() => setOpen(true)}
           className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center overflow-hidden border-2 border-white"
           style={{ width: 52, height: 52, background: "var(--primary)" }}
-          aria-label="Abrir Nuvete"
+          aria-label={t("abrir")}
         >
           <img src="/nuvete.jpg" alt="Nuvete" style={{ width: 52, height: 52, objectFit: "cover" }} />
         </button>
