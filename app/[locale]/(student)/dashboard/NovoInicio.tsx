@@ -312,7 +312,7 @@ export async function NovoInicio({ userId, nome, locale }: { userId: string; nom
                       >
                         <span className="relative w-16 h-20 shrink-0 rounded-xl overflow-hidden bg-canvas">
                           {capa ? (
-                            <Image src={capa} alt="" fill sizes="64px" className="object-cover" />
+                            <Image src={capa} alt="" fill sizes="144px" className="object-cover" />
                           ) : (
                             <BookOpen className="absolute inset-0 m-auto w-6 h-6 text-white/40" aria-hidden="true" />
                           )}
