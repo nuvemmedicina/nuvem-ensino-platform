@@ -2,6 +2,7 @@
 import Stripe from "stripe";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { sincronizarVagas, vagasOcupadas } from "@/lib/vagas";
 import {
   findOrCreateCustomer,
   createPayment,
@@ -111,8 +112,9 @@ export async function POST(req: Request) {
       });
       if (!c) throw Object.assign(new Error("Curso não cadastrado no banco."), { status: 404 });
 
+      // Vaga pela contagem real; a matrícula da própria pessoa (nova tentativa) não conta
       if (c.totalSeats !== null) {
-        const available = c.totalSeats - c.reservedSeats;
+        const available = c.totalSeats - (await vagasOcupadas(tx, c.id, { userId }));
         if (available <= 0)
           throw Object.assign(new Error("Não há vagas disponíveis para este curso."), { status: 409 });
       }
@@ -123,10 +125,6 @@ export async function POST(req: Request) {
       });
       if (existing?.status === "ACTIVE" || existing?.status === "COMPLETED")
         throw Object.assign(new Error("Você já está matriculado neste curso."), { status: 409 });
-
-      // Só reserva vaga se não há matrícula existente (evita leak em retentativas)
-      if (c.totalSeats !== null && !existing)
-        await tx.course.update({ where: { id: c.id }, data: { reservedSeats: { increment: 1 } } });
 
       const enr = existing
         ? await tx.enrollment.update({ where: { id: existing.id }, data: { status: "PENDING" } })
@@ -142,6 +140,7 @@ export async function POST(req: Request) {
             },
           });
 
+      await sincronizarVagas(tx, c.id);
       return { course: c, enrollment: enr };
     });
 

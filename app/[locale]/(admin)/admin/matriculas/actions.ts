@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { sincronizarVagas } from "@/lib/vagas";
 import { revalidatePath } from "next/cache";
 
 export async function confirmPayment(enrollmentId: string) {
@@ -42,21 +43,11 @@ export async function cancelEnrollment(enrollmentId: string) {
   if (!enrollment) throw new Error("Matrícula não encontrada.");
   if (enrollment.status === "CANCELLED") throw new Error("Matrícula já cancelada.");
 
-  const course = await prisma.course.findUnique({
-    where: { id: enrollment.courseId },
-    select: { reservedSeats: true },
+  await prisma.enrollment.update({
+    where: { id: enrollmentId },
+    data: { status: "CANCELLED" },
   });
-
-  await prisma.$transaction([
-    prisma.enrollment.update({
-      where: { id: enrollmentId },
-      data: { status: "CANCELLED" },
-    }),
-    prisma.course.update({
-      where: { id: enrollment.courseId },
-      data: { reservedSeats: Math.max(0, (course?.reservedSeats ?? 1) - 1) },
-    }),
-  ]);
+  await sincronizarVagas(prisma, enrollment.courseId);
 
   revalidatePath("/admin/matriculas");
 }

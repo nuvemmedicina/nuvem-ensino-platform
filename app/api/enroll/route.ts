@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { sincronizarVagas, vagasOcupadas } from "@/lib/vagas";
 import { sendEnrollmentConfirmation } from "@/lib/email";
 import { sendAfterResponse } from "@/lib/emailBackground";
 
@@ -19,9 +20,9 @@ export async function POST(req: Request) {
       });
       if (!c) throw Object.assign(new Error("Curso não encontrado."), { status: 404 });
 
-      // Check seat availability for non-online courses
+      // Vaga pela contagem real (lib/vagas); a matrícula da própria pessoa não conta
       if (c.totalSeats !== null) {
-        const available = c.totalSeats - c.reservedSeats;
+        const available = c.totalSeats - (await vagasOcupadas(tx, c.id, { userId: session.user.id }));
         if (available <= 0) {
           throw Object.assign(new Error("Não há vagas disponíveis para este curso."), { status: 409 });
         }
@@ -38,29 +39,19 @@ export async function POST(req: Request) {
       }
 
       if (existing) {
-        // Reactivate cancelled enrollment — only increment seats if it was cancelled/refunded
-        await tx.course.update({
-          where: { id: c.id },
-          data: { reservedSeats: { increment: 1 } },
-        });
+        // Reativa matrícula cancelada
         const updated = await tx.enrollment.update({
           where: { id: existing.id },
           data: { status: "ACTIVE" },
         });
+        await sincronizarVagas(tx, c.id);
         return { enrollment: updated, course: c, isNew: true };
-      }
-
-      // New enrollment
-      if (c.totalSeats !== null) {
-        await tx.course.update({
-          where: { id: c.id },
-          data: { reservedSeats: { increment: 1 } },
-        });
       }
 
       const created = await tx.enrollment.create({
         data: { userId: session.user.id, courseId: c.id, status: "ACTIVE" },
       });
+      await sincronizarVagas(tx, c.id);
       return { enrollment: created, course: c, isNew: true };
     });
 
