@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { Ticket } from "lucide-react";
+import { CabecalhoAdmin } from "@/components/admin/CabecalhoAdmin";
 import CouponManager from "./CouponManager";
 
 export default async function CuponsPage() {
@@ -33,12 +35,15 @@ export default async function CuponsPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="font-serif text-3xl font-light text-foreground">Cupons de desconto</h1>
-        <p className="font-sans text-sm text-muted mt-1">
-          Crie e gerencie cupons para campanhas e testes de pagamento.
-        </p>
-      </div>
+      <CabecalhoAdmin
+        titulo="Cupons de desconto"
+        subtitulo="Crie e gerencie cupons para campanhas e testes de pagamento."
+        icone={Ticket}
+        destaques={[
+          { rotulo: "ativos", valor: serialized.filter((c) => c.active).length, tom: "ok" },
+          { rotulo: "no total", valor: serialized.length },
+        ]}
+      />
 
       <CouponManager initialCoupons={serialized} />
     </div>

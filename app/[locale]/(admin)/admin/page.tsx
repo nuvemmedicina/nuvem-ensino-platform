@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { TrendingUp, TrendingDown, Minus, DollarSign, Users, BookOpen, Zap, Radio, Calendar, MapPin } from "lucide-react";
+import { CabecalhoAdmin } from "@/components/admin/CabecalhoAdmin";
+import { TrendingUp, TrendingDown, Minus, DollarSign, Users, BookOpen, Zap, Radio, Calendar, MapPin, LayoutDashboard } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 const methodBadge: Record<string, { label: string; color: string }> = {
@@ -186,18 +187,15 @@ export default async function AdminOverviewPage({
       {/* ── Header + KPIs — fundo branco ── */}
       <div className="px-6 lg:px-8 pt-10 pb-10 bg-white space-y-6">
 
-      {/* ── Header ── */}
-      <div className="flex items-end justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="font-serif text-2xl font-light text-foreground">{t("title")}</h1>
-          <p className="font-sans text-sm text-muted mt-0.5 capitalize">{currentMonthLabel}</p>
-        </div>
-        <div className="flex items-center gap-2 bg-surface border border-border rounded-xl px-4 py-2.5">
-          <DollarSign className="w-3.5 h-3.5 text-muted" />
-          <span className="font-sans text-xs text-muted">{t("totalRevenueLabel")}</span>
-          <span className="font-sans text-sm font-bold text-foreground">{fmtBRL.format(revTotalVal)}</span>
-        </div>
-      </div>
+      <CabecalhoAdmin
+        titulo={t("title")}
+        subtitulo={<span className="capitalize">{currentMonthLabel}</span>}
+        icone={LayoutDashboard}
+        destaques={[
+          { rotulo: t("totalRevenueLabel").toLowerCase(), valor: fmtBRL.format(revTotalVal), tom: "ok" },
+          { rotulo: "matrículas ativas", valor: activeEnrollments },
+        ]}
+      />
 
       {/* ── KPI Cards ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
