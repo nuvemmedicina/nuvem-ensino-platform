@@ -62,6 +62,7 @@ export async function GET(req: NextRequest, { params }: Props) {
               shortDesc: true,
               instructor: {
                 select: {
+                  id: true,
                   userId: true,
                   user: { select: { name: true, email: true } },
                 },
@@ -94,10 +95,12 @@ export async function GET(req: NextRequest, { params }: Props) {
     loadSignature("vera-angelo.jpg") ||
     undefined;
 
-  // Quando o instrutor é a própria Dra. Vera, exibe só uma assinatura
-  const VERA_EMAIL = "vera.angelo@nuvemensino.com.br";
-  const instructorEmail = cert.enrollment.course.instructor?.user.email;
-  const isInstructorDirector = instructorEmail === VERA_EMAIL;
+  // Quando o instrutor é a própria Dra. Vera, exibe só uma assinatura.
+  // Pelo id do cadastro de instrutora, não pelo e-mail: o e-mail esperado
+  // (vera.angelo@nuvemensino.com.br) não é o da conta dela, e todos os
+  // certificados dos cursos da Dra. Vera saíam com o bloco dela repetido.
+  const VERA_INSTRUCTOR_ID = "cmp5k8bwg0004lk8nx8hx1kb1";
+  const isInstructorDirector = cert.enrollment.course.instructor?.id === VERA_INSTRUCTOR_ID;
 
   // ── Selo ISO 9001 ────────────────────────────────────────────────────────
   const isoSeal =
