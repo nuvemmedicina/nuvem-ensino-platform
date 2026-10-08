@@ -4,17 +4,21 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { MessageSquare, Pin, CheckCircle, Heart, Plus, ChevronLeft } from "lucide-react";
 import { NewPostForm } from "./NewPostForm";
+import { getTranslations } from "next-intl/server";
+import { traduzirItem } from "@/lib/i18n-content";
 
 type Props = { params: Promise<{ slug: string; locale: string }> };
 
 export default async function ForumPage({ params }: Props) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
+  const t = await getTranslations({ locale, namespace: "novaArea.paginas.forum" });
+  const dl = locale === "pt" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US";
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar");
 
   const course = await prisma.course.findFirst({
     where: { slug },
-    select: { id: true, title: true },
+    select: { id: true, title: true, titleEs: true, titleEn: true },
   });
   if (!course) notFound();
 
@@ -48,15 +52,15 @@ export default async function ForumPage({ params }: Props) {
           className="inline-flex items-center gap-1.5 font-sans text-sm text-muted hover:text-foreground mb-4 transition-colors"
         >
           <ChevronLeft className="w-4 h-4" />
-          Voltar ao curso
+          {t("voltarCurso")}
         </Link>
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="font-serif text-2xl font-medium text-foreground">Comunidade</h1>
-            <p className="font-sans text-sm text-muted mt-0.5">{course.title}</p>
+            <h1 className="font-serif text-2xl font-medium text-foreground">{t("titulo")}</h1>
+            <p className="font-sans text-sm text-muted mt-0.5">{traduzirItem(course, locale).title}</p>
           </div>
           <span className="font-sans text-xs text-muted bg-surface border border-border px-3 py-1 rounded-full">
-            {posts.length} {posts.length === 1 ? "tópico" : "tópicos"}
+            {t("topicos", { n: posts.length })}
           </span>
         </div>
       </div>
@@ -68,8 +72,8 @@ export default async function ForumPage({ params }: Props) {
       {posts.length === 0 ? (
         <div className="text-center py-16 bg-surface border border-border rounded-2xl mt-6">
           <MessageSquare className="w-10 h-10 text-muted/30 mx-auto mb-3" />
-          <p className="font-serif text-lg text-foreground/40">Nenhum tópico ainda</p>
-          <p className="font-sans text-sm text-muted mt-1">Seja o primeiro a iniciar uma discussão!</p>
+          <p className="font-serif text-lg text-foreground/40">{t("vazioTitulo")}</p>
+          <p className="font-sans text-sm text-muted mt-1">{t("vazioTexto")}</p>
         </div>
       ) : (
         <div className="mt-6 space-y-3">
@@ -98,12 +102,12 @@ export default async function ForumPage({ params }: Props) {
                     <div className="flex items-center gap-2 flex-wrap mb-1">
                       {post.isPinned && (
                         <span className="inline-flex items-center gap-1 font-sans text-[10px] font-semibold text-amber-600 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">
-                          <Pin className="w-3 h-3" /> Fixado
+                          <Pin className="w-3 h-3" /> {t("fixado")}
                         </span>
                       )}
                       {post.isAnswered && (
                         <span className="inline-flex items-center gap-1 font-sans text-[10px] font-semibold text-green-600 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded-full">
-                          <CheckCircle className="w-3 h-3" /> Respondido
+                          <CheckCircle className="w-3 h-3" /> {t("respondido")}
                         </span>
                       )}
                     </div>
@@ -114,16 +118,16 @@ export default async function ForumPage({ params }: Props) {
 
                     <div className="flex items-center gap-3 mt-2 flex-wrap">
                       <span className="font-sans text-xs text-muted">
-                        {post.author.name ?? "Anônimo"}
+                        {post.author.name ?? t("anonimo")}
                         {isAuthorMod && (
                           <span className="ml-1.5 text-[10px] font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">
-                            {post.author.role === "ADMIN" ? "Admin" : "Instrutor"}
+                            {post.author.role === "ADMIN" ? t("admin") : t("instrutor")}
                           </span>
                         )}
                       </span>
                       <span className="text-border">·</span>
                       <span className="font-sans text-xs text-muted">
-                        {new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(post.createdAt))}
+                        {new Intl.DateTimeFormat(dl, { day: "2-digit", month: "short", year: "numeric" }).format(new Date(post.createdAt))}
                       </span>
                       <span className="text-border">·</span>
                       <span className="inline-flex items-center gap-1 font-sans text-xs text-muted">

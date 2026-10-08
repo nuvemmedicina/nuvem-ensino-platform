@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Star, CheckCircle, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type ExistingEvaluation = {
   overallRating: number;
@@ -27,6 +28,7 @@ function StarRating({
   label: string;
   defaultValue?: number;
 }) {
+  const t = useTranslations("novaArea.paginas.avaliacao");
   const [hovered, setHovered] = useState(0);
   const [selected, setSelected] = useState(defaultValue ?? 0);
 
@@ -42,7 +44,7 @@ function StarRating({
             onMouseLeave={() => setHovered(0)}
             onClick={() => setSelected(star)}
             className="transition-transform hover:scale-110 focus:outline-none"
-            aria-label={`${star} estrela${star > 1 ? "s" : ""}`}
+            aria-label={t("estrelas", { n: star })}
           >
             <Star
               className="w-7 h-7 transition-colors"
@@ -59,11 +61,6 @@ function StarRating({
   );
 }
 
-const LABELS: Record<string, string[]> = {
-  overallRating:  ["Péssimo", "Ruim", "Regular", "Bom", "Excelente"],
-  contentRating:  ["Péssimo", "Ruim", "Regular", "Bom", "Excelente"],
-  platformRating: ["Péssimo", "Ruim", "Regular", "Bom", "Excelente"],
-};
 
 function StarRatingWithLabel({
   name,
@@ -74,6 +71,7 @@ function StarRatingWithLabel({
   label: string;
   defaultValue?: number;
 }) {
+  const t = useTranslations("novaArea.paginas.avaliacao");
   const [hovered, setHovered] = useState(0);
   const [selected, setSelected] = useState(defaultValue ?? 0);
   const active = hovered || selected;
@@ -84,7 +82,7 @@ function StarRatingWithLabel({
         <label className="font-sans text-sm font-medium text-foreground">{label}</label>
         {active > 0 && (
           <span className="font-sans text-xs text-amber-600 font-semibold">
-            {LABELS[name]?.[active - 1]}
+            {t(`nivel${active}` as "nivel1")}
           </span>
         )}
       </div>
@@ -97,7 +95,7 @@ function StarRatingWithLabel({
             onMouseLeave={() => setHovered(0)}
             onClick={() => setSelected(star)}
             className="transition-transform hover:scale-110 focus:outline-none"
-            aria-label={`${star} estrela${star > 1 ? "s" : ""}`}
+            aria-label={t("estrelas", { n: star })}
           >
             <Star
               className="w-7 h-7 transition-colors"
@@ -115,6 +113,7 @@ function StarRatingWithLabel({
 }
 
 export function EvaluationForm({ action, existing, courseSlug }: Props) {
+  const t = useTranslations("novaArea.paginas.avaliacao");
   const [isPending, startTransition] = useTransition();
   const [done, setDone] = useState(false);
   const [recommend, setRecommend] = useState<boolean>(existing?.wouldRecommend ?? true);
@@ -130,10 +129,10 @@ export function EvaluationForm({ action, existing, courseSlug }: Props) {
           </div>
           <div>
             <h2 className="font-serif text-xl font-medium text-foreground mb-1">
-              Obrigada pelo seu feedback!
+              {t("obrigada")}
             </h2>
             <p className="font-sans text-sm text-muted">
-              Sua avaliação foi registrada com sucesso.
+              {t("registrada")}
             </p>
           </div>
         </div>
@@ -149,7 +148,7 @@ export function EvaluationForm({ action, existing, courseSlug }: Props) {
     // Validate all ratings filled
     for (const field of ["overallRating", "contentRating", "platformRating"]) {
       if (!formData.get(field) || Number(formData.get(field)) === 0) {
-        setError("Por favor, preencha todas as notas antes de enviar.");
+        setError(t("preenchaNotas"));
         return;
       }
     }
@@ -160,7 +159,7 @@ export function EvaluationForm({ action, existing, courseSlug }: Props) {
         await action(formData);
         setDone(true);
       } catch {
-        setError("Ocorreu um erro. Tente novamente.");
+        setError(t("erro"));
       }
     });
   }
@@ -172,39 +171,39 @@ export function EvaluationForm({ action, existing, courseSlug }: Props) {
         <div className="flex items-start gap-3 bg-primary/8 border border-primary/20 rounded-xl px-4 py-3">
           <CheckCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
           <p className="font-sans text-sm text-primary/90">
-            Você já avaliou este curso. Pode atualizar sua avaliação abaixo.
+            {t("jaAvaliou")}
           </p>
         </div>
       )}
 
       {/* Notas */}
       <div className="rounded-2xl border border-border bg-surface p-6 space-y-6">
-        <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted">Notas</h2>
+        <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted">{t("notas")}</h2>
 
         <StarRatingWithLabel
           name="overallRating"
-          label="Avaliação geral do curso"
+          label={t("geral")}
           defaultValue={existing?.overallRating}
         />
         <div className="h-px bg-border" />
         <StarRatingWithLabel
           name="contentRating"
-          label="Qualidade do conteúdo"
+          label={t("conteudo")}
           defaultValue={existing?.contentRating}
         />
         <div className="h-px bg-border" />
         <StarRatingWithLabel
           name="platformRating"
-          label="Experiência na plataforma"
+          label={t("plataforma")}
           defaultValue={existing?.platformRating}
         />
       </div>
 
       {/* Recomendação */}
       <div className="rounded-2xl border border-border bg-surface p-6">
-        <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">Recomendação</h2>
+        <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-4">{t("recomendacao")}</h2>
         <p className="font-sans text-sm font-medium text-foreground mb-3">
-          Você recomendaria este curso para um colega médico?
+          {t("recomendaria")}
         </p>
         <input type="hidden" name="wouldRecommend" value={recommend ? "true" : "false"} />
         <div className="flex gap-3">
@@ -217,7 +216,7 @@ export function EvaluationForm({ action, existing, courseSlug }: Props) {
                 : "border-border text-muted hover:border-green-500/40"
             }`}
           >
-            Sim, com certeza!
+            {t("sim")}
           </button>
           <button
             type="button"
@@ -228,23 +227,23 @@ export function EvaluationForm({ action, existing, courseSlug }: Props) {
                 : "border-border text-muted hover:border-red-400/40"
             }`}
           >
-            Não recomendaria
+            {t("nao")}
           </button>
         </div>
       </div>
 
       {/* Comentários */}
       <div className="rounded-2xl border border-border bg-surface p-6 space-y-5">
-        <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted">Comentários</h2>
+        <h2 className="font-sans text-xs font-bold uppercase tracking-widest text-muted">{t("comentarios")}</h2>
 
         <div>
           <label className="font-sans text-sm font-medium text-foreground block mb-2">
-            O que mais gostou no curso?
+            {t("gostou")}
           </label>
           <textarea
             name="highlight"
             defaultValue={existing?.highlight ?? ""}
-            placeholder="Descreva o ponto alto do curso..."
+            placeholder={t("gostouPlaceholder")}
             rows={3}
             className="w-full px-4 py-3 font-sans text-sm text-foreground bg-background border border-border rounded-xl placeholder:text-muted/40 focus:outline-none focus:border-primary/50 resize-none transition-colors"
           />
@@ -252,12 +251,12 @@ export function EvaluationForm({ action, existing, courseSlug }: Props) {
 
         <div>
           <label className="font-sans text-sm font-medium text-foreground block mb-2">
-            Alguma sugestão de melhoria?
+            {t("sugestao")}
           </label>
           <textarea
             name="suggestion"
             defaultValue={existing?.suggestion ?? ""}
-            placeholder="Compartilhe suas ideias para tornar o curso ainda melhor..."
+            placeholder={t("sugestaoPlaceholder")}
             rows={3}
             className="w-full px-4 py-3 font-sans text-sm text-foreground bg-background border border-border rounded-xl placeholder:text-muted/40 focus:outline-none focus:border-primary/50 resize-none transition-colors"
           />
@@ -276,9 +275,9 @@ export function EvaluationForm({ action, existing, courseSlug }: Props) {
         className="w-full flex items-center justify-center gap-2 font-sans text-sm font-semibold py-3.5 rounded-full bg-primary text-white hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed transition-all hover:shadow-[0_4px_20px_rgba(0,71,94,0.35)]"
       >
         {isPending ? (
-          <><Loader2 className="w-4 h-4 animate-spin" /> Enviando...</>
+          <><Loader2 className="w-4 h-4 animate-spin" /> {t("enviando")}</>
         ) : (
-          existing ? "Atualizar avaliação" : "Enviar avaliação"
+          existing ? t("atualizar") : t("enviar")
         )}
       </button>
     </form>

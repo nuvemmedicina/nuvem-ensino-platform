@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale, useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Heart, CheckCircle, Trash2, Award } from "lucide-react";
@@ -27,6 +28,9 @@ type Props = {
 
 export function ReplyCard({ courseSlug, postId, reply, isModerator, isAuthor }: Props) {
   const router = useRouter();
+  const t = useTranslations("novaArea.paginas.forum");
+  const locale = useLocale();
+  const dl = locale === "pt" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US";
   const [isPending, startTransition] = useTransition();
   const liked = reply.likes.length > 0;
   const isReplyAuthorMod = reply.author.role === "ADMIN" || reply.author.role === "INSTRUCTOR";
@@ -46,7 +50,7 @@ export function ReplyCard({ courseSlug, postId, reply, isModerator, isAuthor }: 
   }
 
   function handleDelete() {
-    if (!confirm("Excluir esta resposta?")) return;
+    if (!confirm(t("excluirResposta"))) return;
     startTransition(async () => {
       await deleteForumReply(courseSlug, postId, reply.id);
       router.refresh();
@@ -58,7 +62,7 @@ export function ReplyCard({ courseSlug, postId, reply, isModerator, isAuthor }: 
       {reply.isOfficialAnswer && (
         <div className="flex items-center gap-2 mb-3 font-sans text-xs font-semibold text-green-600">
           <Award className="w-4 h-4" />
-          Resposta oficial
+          {t("respostaOficial")}
         </div>
       )}
 
@@ -76,15 +80,15 @@ export function ReplyCard({ courseSlug, postId, reply, isModerator, isAuthor }: 
         </div>
         <div>
           <p className="font-sans text-sm font-medium text-foreground flex items-center gap-2">
-            {reply.author.name ?? "Anônimo"}
+            {reply.author.name ?? t("anonimo")}
             {isReplyAuthorMod && (
               <span className="text-[10px] font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">
-                {reply.author.role === "ADMIN" ? "Admin" : "Instrutor"}
+                {reply.author.role === "ADMIN" ? t("admin") : t("instrutor")}
               </span>
             )}
           </p>
           <p className="font-sans text-xs text-muted">
-            {new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date(reply.createdAt))}
+            {new Intl.DateTimeFormat(dl, { dateStyle: "short", timeStyle: "short" }).format(new Date(reply.createdAt))}
           </p>
         </div>
       </div>
@@ -117,7 +121,7 @@ export function ReplyCard({ courseSlug, postId, reply, isModerator, isAuthor }: 
             }`}
           >
             <CheckCircle className="w-3.5 h-3.5" />
-            {reply.isOfficialAnswer ? "Remover oficial" : "Marcar oficial"}
+            {reply.isOfficialAnswer ? t("removerOficial") : t("marcarOficial")}
           </button>
         )}
 
@@ -125,6 +129,7 @@ export function ReplyCard({ courseSlug, postId, reply, isModerator, isAuthor }: 
           <button
             onClick={handleDelete}
             disabled={isPending}
+            aria-label={t("excluirRespostaRotulo")}
             className="inline-flex items-center gap-1.5 font-sans text-xs text-muted hover:text-red-500 transition-colors ml-auto"
           >
             <Trash2 className="w-3.5 h-3.5" />
