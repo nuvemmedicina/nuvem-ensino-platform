@@ -1,9 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import LessonPlayerClient from "./LessonPlayerClient";
 import NovaTelaAula from "./NovaTelaAula";
-import { usaNovaArea } from "@/lib/novaArea";
 import { traduzirModulos } from "@/lib/i18n-content";
 
 type Props = {
@@ -190,50 +188,26 @@ export default async function LessonPage({ params }: Props) {
 
   const role = (session.user as { role?: string }).role ?? "STUDENT";
 
-  // Nova área do aluno: a chave em /admin/configuracoes/area-do-aluno decide
-  // quem vê a tela nova. `key` remonta a tela a cada aula, para o estado
-  // (anotação, aba, formato) não vazar de uma aula para a outra.
-  if (await usaNovaArea(role)) {
-    const quizDaAula = quizzesMap[lessonId] ?? null;
-    return (
-      <NovaTelaAula
-        key={lessonId}
-        courseId={course.id}
-        courseSlug={slug}
-        courseTitle={tituloCurso}
-        modules={sanitizedModules}
-        currentLessonId={lessonId}
-        initialProgress={progressMap}
-        initialNote={notesMap[lessonId] ?? ""}
-        quiz={quizDaAula}
-        previousAttempt={quizDaAula ? previousAttemptsMap[quizDaAula.id] ?? null : null}
-        initialCertificateId={enrollment.certificate?.id ?? null}
-        currentUserId={session.user.id}
-        currentUserRole={role}
-        currentUserName={session.user.name ?? null}
-        referencias={courseReferences.map((r) => ({ id: r.id, title: r.title, fileUrl: r.fileUrl }))}
-        feedbackAtual={feedbackAtual}
-        jaAvaliouCurso={!!avaliacao}
-      />
-    );
-  }
-
+  // `key` remonta a tela a cada aula, para o estado (anotação, aba,
+  // formato) não vazar de uma aula para a outra.
+  const quizDaAula = quizzesMap[lessonId] ?? null;
   return (
-    <LessonPlayerClient
+    <NovaTelaAula
+      key={lessonId}
       courseId={course.id}
       courseSlug={slug}
       courseTitle={tituloCurso}
       modules={sanitizedModules}
       currentLessonId={lessonId}
       initialProgress={progressMap}
-      initialNotes={notesMap}
-      quizzes={quizzesMap}
-      previousAttempts={previousAttemptsMap}
+      initialNote={notesMap[lessonId] ?? ""}
+      quiz={quizDaAula}
+      previousAttempt={quizDaAula ? previousAttemptsMap[quizDaAula.id] ?? null : null}
       initialCertificateId={enrollment.certificate?.id ?? null}
       currentUserId={session.user.id}
-      currentUserRole={(session.user as { role?: string }).role ?? "STUDENT"}
+      currentUserRole={role}
       currentUserName={session.user.name ?? null}
-      courseReferences={courseReferences}
+      referencias={courseReferences.map((r) => ({ id: r.id, title: r.title, fileUrl: r.fileUrl }))}
       feedbackAtual={feedbackAtual}
       jaAvaliouCurso={!!avaliacao}
     />

@@ -50,7 +50,6 @@ export default async function AdminLayout({
     { key: "reports",      href: "/admin/relatorios",                   grupo: "Vendas", label: t("reports") },
     { key: "settings",     href: "/admin/configuracoes/pagamentos",     grupo: "Configurações", label: "Mercado Pago" },
     { key: "ai",           href: "/admin/configuracoes/ia",             grupo: "Configurações", label: "Inteligência artificial" },
-    { key: "studentArea",  href: "/admin/configuracoes/area-do-aluno",  grupo: "Configurações", label: "Nova área do aluno" },
   ];
 
   return (

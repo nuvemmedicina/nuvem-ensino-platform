@@ -15,9 +15,8 @@ import { ConviteAvaliacao } from "./ConviteAvaliacao";
 /**
  * Tela de aula da nova área do aluno (redesenho de outubro/2026).
  *
- * Aparece no lugar do LessonPlayerClient quando a chave em
- * /admin/configuracoes/area-do-aluno libera para esta pessoa. Mesmos dados
- * e mesmas ações (progresso, anotações, quiz, comentários, joinha); muda a
+ * Substituiu o antigo LessonPlayerClient (removido em 08/10/2026). Mesmos
+ * dados e mesmas ações (progresso, anotações, quiz, comentários, joinha); muda a
  * organização: o essencial fica em cima (conteúdo, título e o botão de
  * concluir e seguir) e o resto vai para quatro abas.
  */
