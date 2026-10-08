@@ -191,6 +191,15 @@ const s = StyleSheet.create({
     color: C.gray,
     letterSpacing: 1,
     textAlign: "center",
+    marginBottom: 1, // igual ao sigCompany
+  },
+  // Ocupa o lugar do nome do assinante, para o traço da data ficar na
+  // mesma altura dos traços das assinaturas (o rodapé alinha pela base)
+  dateSpacer: {
+    fontFamily: "Helvetica",
+    fontWeight: "bold",
+    fontSize: 6.5,
+    color: C.offwhite,
   },
 
   // ── Coluna direita ───────────────────────────────────────────────────────
@@ -370,6 +379,7 @@ export function CertificatePDF({
                 <Text style={s.dateValue}>{dateStr}</Text>
                 <View style={s.dateLine} />
                 <Text style={s.dateLabel}>DATA</Text>
+                <Text style={s.dateSpacer}> </Text>
               </View>
 
             </View>
