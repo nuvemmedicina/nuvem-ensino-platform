@@ -1302,7 +1302,14 @@
         "atalhos": "Atajos: espacio gira la tarjeta · 1, 2 y 3 califican · flechas navegan",
         "finalOtimo": "¡Excelente dominio!",
         "finalBom": "Buen camino, siga repasando.",
-        "finalRevisar": "Conviene repasar de nuevo pronto."
+        "finalRevisar": "Conviene repasar de nuevo pronto.",
+        "tema": "Tema {n}",
+        "estudado": "Estudiado",
+        "comecar": "Empezar",
+        "revisar": "Repasar de nuevo",
+        "statTemas": "{n, plural, =1 {# tema} other {# temas}}",
+        "statEstudados": "{feitos} de {total} estudiados",
+        "estudadosModulo": "{feitos}/{total} estudiados"
       },
       "resultado": {
         "voltar": "Volver al curso",

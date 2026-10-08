@@ -1302,7 +1302,14 @@
         "atalhos": "Shortcuts: space flips the card · 1, 2 and 3 rate it · arrows navigate",
         "finalOtimo": "Excellent command!",
         "finalBom": "Good progress, keep reviewing.",
-        "finalRevisar": "Worth reviewing again soon."
+        "finalRevisar": "Worth reviewing again soon.",
+        "tema": "Topic {n}",
+        "estudado": "Studied",
+        "comecar": "Start",
+        "revisar": "Review again",
+        "statTemas": "{n, plural, =1 {# topic} other {# topics}}",
+        "statEstudados": "{feitos} of {total} studied",
+        "estudadosModulo": "{feitos}/{total} studied"
       },
       "resultado": {
         "voltar": "Back to course",
