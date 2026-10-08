@@ -369,6 +369,10 @@ export async function updateCourseTranslations(courseId: string, slug: string, f
       includesEn:        str("includesEn"),
       startDateLabelEs:  str("startDateLabelEs"),
       startDateLabelEn:  str("startDateLabelEn"),
+      metaTitleEs:       str("metaTitleEs"),
+      metaTitleEn:       str("metaTitleEn"),
+      metaDescEs:        str("metaDescEs"),
+      metaDescEn:        str("metaDescEn"),
     },
   });
   revalidatePath(`/admin/cursos/${slug}`);

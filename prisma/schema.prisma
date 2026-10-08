@@ -232,6 +232,11 @@ model Course {
   includesEn         String? @db.Text
   startDateLabelEs   String?
   startDateLabelEn   String?
+  // Título e descrição para o Google e a aba do navegador
+  metaTitleEs        String?
+  metaTitleEn        String?
+  metaDescEs         String?
+  metaDescEn         String?
 
   showCertificationSeals Boolean @default(false) // exibe selos MEC/ISO na página do curso
   faqJson                String? @db.Text // JSON: [{q,a}[]] — FAQ personalizado por curso

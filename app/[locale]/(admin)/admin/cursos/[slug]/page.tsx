@@ -513,6 +513,14 @@ export default async function AdminCursoEditPage({ params, searchParams }: Props
                   <label className={labelClass}>Data de início (EN)</label>
                   <input name="startDateLabelEn" defaultValue={course.startDateLabelEn ?? ""} placeholder={course.startDateLabel ?? ""} className={inputClass} />
                 </div>
+                <div>
+                  <label className={labelClass}>Título no Google (EN)</label>
+                  <input name="metaTitleEn" defaultValue={course.metaTitleEn ?? ""} placeholder={course.metaTitle ?? course.title} maxLength={70} className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Descrição no Google (EN)</label>
+                  <textarea name="metaDescEn" defaultValue={course.metaDescEn ?? ""} placeholder={course.metaDesc ?? ""} maxLength={170} rows={2} className={`${inputClass} resize-y`} />
+                </div>
               </div>
             </div>
 
@@ -549,6 +557,14 @@ export default async function AdminCursoEditPage({ params, searchParams }: Props
                 <div>
                   <label className={labelClass}>Data de início (ES)</label>
                   <input name="startDateLabelEs" defaultValue={course.startDateLabelEs ?? ""} placeholder={course.startDateLabel ?? ""} className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Título no Google (ES)</label>
+                  <input name="metaTitleEs" defaultValue={course.metaTitleEs ?? ""} placeholder={course.metaTitle ?? course.title} maxLength={70} className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Descrição no Google (ES)</label>
+                  <textarea name="metaDescEs" defaultValue={course.metaDescEs ?? ""} placeholder={course.metaDesc ?? ""} maxLength={170} rows={2} className={`${inputClass} resize-y`} />
                 </div>
               </div>
             </div>

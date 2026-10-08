@@ -47,8 +47,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!course) return {};
 
   const lc = localizedCourse(course, locale);
+  const noIdioma = (pt: string | null, es: string | null, en: string | null) =>
+    (locale === "es" ? es : locale === "en" ? en : null) || pt;
+  // O layout já acrescenta " | NU.V.E.M ENSINO"; tira o sufixo se vier no campo
+  const metaTitle = noIdioma(course.metaTitle, course.metaTitleEs, course.metaTitleEn)?.replace(/\s*\|\s*NU\.V\.E\.M ENSINO\s*$/i, "") || null;
   const description =
-    course.metaDesc ??
+    noIdioma(course.metaDesc, course.metaDescEs, course.metaDescEn) ??
     lc.shortDesc ??
     `Curso ${lc.title} — ${course.hours}h de formação prática com especialistas. Certificação ISO 9001 pela NU.V.E.M ENSINO.`;
 
@@ -62,7 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const canonical = locale === "en" ? canonicalEn : locale === "es" ? canonicalEs : canonicalPt;
 
   return {
-    title: course.metaTitle ?? `${lc.title} | NU.V.E.M ENSINO`,
+    title: metaTitle ?? lc.title,
     description,
     alternates: {
       canonical,
