@@ -43,7 +43,7 @@ export default async function AdminLayout({
     { key: "rag",          href: "/admin/rag",                          grupo: "Ensino", label: "Base IA (RAG)" },
     { key: "users",        href: "/admin/usuarios",                     grupo: "Alunos", label: t("users") },
     { key: "enrollments",  href: "/admin/matriculas",                   grupo: "Alunos", label: t("enrollments") },
-    { key: "liveLeads",    href: "/admin/live-leads",                   grupo: "Alunos", label: "Inscrições Live" },
+    { key: "liveLeads",    href: "/admin/live-leads",                   grupo: "Alunos", label: "Interessados" },
     { key: "emails",       href: "/admin/emails",                       grupo: "Alunos", label: "E-mails" },
     { key: "payments",     href: "/admin/pagamentos",                   grupo: "Vendas", label: "Pagamentos" },
     { key: "coupons",      href: "/admin/cupons",                       grupo: "Vendas", label: "Cupons" },

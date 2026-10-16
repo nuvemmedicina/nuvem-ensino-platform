@@ -522,6 +522,62 @@ export async function sendCupomReengajamento({
 }
 
 /**
+ * Enviado na hora em que a pessoa se inscreve na aula gratuita (/aula-gratuita).
+ *
+ * Leva o link de volta para a aula — que funciona em qualquer aparelho, sem
+ * precisar se inscrever de novo — e o cupom de desconto para a matrícula.
+ */
+export async function sendAulaGratuita({
+  to,
+  nome,
+  titulo,
+  linkAula,
+  linkMatricula,
+  cupom,
+  descontoPct,
+  precoDe,
+  precoPor,
+}: {
+  to: string;
+  nome: string;
+  titulo: string;
+  linkAula: string;
+  linkMatricula: string;
+  cupom: string;
+  descontoPct: number;
+  precoDe: string;
+  precoPor: string;
+}) {
+  const primeiroNome = nome.trim().split(/\s+/)[0];
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${primeiroNome}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Sua aula está liberada. É a gravação completa do encontro <strong>“${titulo}”</strong>, do Curso de Aperfeiçoamento em DICI, com a Dra. Vera Ângelo.</p>
+    <div style="text-align:center;margin:28px 0;">
+      <a href="${linkAula}"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Assistir à aula
+      </a>
+    </div>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Este link é seu: abre a aula em qualquer aparelho, sem precisar se cadastrar de novo.</p>
+    <div style="background:#f0f7f8;border:1px solid #cbe4e6;border-radius:12px;padding:20px;margin:24px 0;text-align:center;">
+      <p style="margin:0 0 6px;color:#00475e;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;">${descontoPct}% de desconto no curso completo</p>
+      <p style="margin:0 0 10px;color:#00475e;font-size:26px;font-weight:700;letter-spacing:0.06em;">${cupom}</p>
+      <p style="margin:0 0 14px;color:#6b7280;font-size:14px;"><s>${precoDe}</s> &nbsp;→&nbsp; <strong style="color:#00475e;font-size:18px;">${precoPor}</strong></p>
+      <a href="${linkMatricula}" style="color:#00475e;font-size:14px;font-weight:600;">Matricular com o desconto →</a>
+    </div>
+    <p style="margin:0;color:#6b7280;font-size:13px;">Ficou alguma dúvida sobre o curso? É só responder este e-mail.</p>
+  `;
+
+  return deliver("aula gratuita", to, {
+    from: FROM,
+    to,
+    subject: `Sua aula está liberada: ${titulo}`,
+    html: baseLayout("Sua aula está liberada", body),
+  });
+}
+
+/**
  * Lembrete para o aluno matriculado que ainda não abriu nenhuma aula.
  *
  * Não cobra nem culpa: a maioria simplesmente não teve tempo ainda. O objetivo

@@ -6,7 +6,10 @@ import { localizedCourse } from "@/lib/i18n-content";
 import { LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
 import CheckoutClient from "./CheckoutClient";
 
-type Props = { params: Promise<{ slug: string; locale: string }> };
+type Props = {
+  params: Promise<{ slug: string; locale: string }>;
+  searchParams: Promise<{ cupom?: string }>;
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
@@ -25,8 +28,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `Inscrição — ${lc.title} | Nuvem Ensino`, robots };
 }
 
-export default async function CheckoutPage({ params }: Props) {
+export default async function CheckoutPage({ params, searchParams }: Props) {
   const { slug, locale } = await params;
+  const { cupom } = await searchParams;
 
   const course = await prisma.course.findFirst({
     where: { slug, status: "PUBLISHED" },
@@ -69,6 +73,7 @@ export default async function CheckoutPage({ params }: Props) {
       userPhone={dbUser?.phone ?? ""}
       hasPayment={hasPayment}
       isGuest={!session}
+      initialCoupon={typeof cupom === "string" ? cupom.trim().toUpperCase().slice(0, 40) : ""}
     />
   );
 }
