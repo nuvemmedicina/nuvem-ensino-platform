@@ -13,7 +13,7 @@ import AulaGratuitaForm from "./AulaGratuitaForm";
 import AulaGratuitaPlayer from "./AulaGratuitaPlayer";
 
 const descricao =
-  "A NUVEM Medicina completa 5 anos e libera uma aula exclusiva: O Médico Ampliado — aplicações práticas da IA na rotina do gastroenterologista, com a Dra. Vera Ângelo e o Dr. Carlos Eneas Soares Ricca.";
+  `A NUVEM Medicina completa 5 anos e libera uma aula exclusiva: O Médico Ampliado — aplicações práticas da IA na rotina do gastroenterologista, com a Dra. Vera Ângelo e o ${AULA_GRATUITA.convidado}.`;
 const tituloPagina = `Aula gratuita: ${AULA_GRATUITA.titulo} · NU.V.E.M ENSINO`;
 // O openGraph da página substitui o do layout inteiro, por isso repete tudo.
 const capaOg = { url: AULA_GRATUITA.capa, width: 1920, height: 1080, alt: `Dra. Vera Ângelo e ${AULA_GRATUITA.convidado}` };
@@ -132,8 +132,7 @@ export default async function AulaGratuitaPage({ searchParams }: Props) {
         </p>
 
         <p className="text-sm text-[#5C747A] leading-relaxed max-w-[52ch] mb-6">
-          É a gravação completa do {AULA_GRATUITA.encontro} do Curso de Aperfeiçoamento em DICI, exatamente
-          como os alunos viram ao vivo em {AULA_GRATUITA.dataLabel}.
+          É a gravação completa do {AULA_GRATUITA.encontro} do Curso de Aperfeiçoamento em DICI.
         </p>
 
         <div className="flex items-start gap-3 bg-[#F5EDD4] border border-[#B8973A] rounded-xl px-4 py-3.5 mb-8">
