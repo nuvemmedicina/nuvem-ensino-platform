@@ -41,6 +41,8 @@ type Props = {
   userPhone: string;
   hasPayment: boolean;
   isGuest?: boolean;
+  /** Cupom vindo do link (?cupom=), aplicado automaticamente ao abrir. */
+  initialCoupon?: string;
 };
 
 export default function CheckoutClient({
@@ -53,11 +55,12 @@ export default function CheckoutClient({
   userPhone,
   hasPayment,
   isGuest = false,
+  initialCoupon = "",
 }: Props) {
   const t = useTranslations("checkout");
   const router = useRouter();
   const [method, setMethod] = useState<PaymentMethod>("pix");
-  const [couponCode, setCouponCode] = useState("");
+  const [couponCode, setCouponCode] = useState(initialCoupon);
   const [whatsapp, setWhatsapp] = useState(userPhone);
   const [cpf, setCpf] = useState("");
   const [couponApplied, setCouponApplied] = useState(false);
@@ -143,15 +146,15 @@ export default function CheckoutClient({
     return r === parseInt(digits[10]);
   }
 
-  async function applyCoupon() {
-    if (!couponCode.trim()) return;
+  async function applyCoupon(code = couponCode) {
+    if (!code.trim()) return;
     setIsCouponLoading(true);
     setCouponError("");
     try {
       const res = await fetch(`/api/coupons/validate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: couponCode, courseSlug: slug }),
+        body: JSON.stringify({ code, courseSlug: slug }),
       });
       const data = await res.json();
       if (data.valid) {
@@ -172,6 +175,14 @@ export default function CheckoutClient({
       setIsCouponLoading(false);
     }
   }
+
+  // Links de campanha (ex.: aula gratuita) chegam com o cupom na URL.
+  // Fora do corpo do efeito: a validação é uma requisição, e o estado só muda
+  // quando ela começa/termina.
+  useEffect(() => {
+    if (initialCoupon) void Promise.resolve().then(() => applyCoupon(initialCoupon));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- só na abertura
+  }, []);
 
   function validateGuestFields(): boolean {
     if (!isGuest) return true;
@@ -649,7 +660,7 @@ export default function CheckoutClient({
                 />
                 <button
                   type="button"
-                  onClick={applyCoupon}
+                  onClick={() => applyCoupon()}
                   disabled={isCouponLoading || !couponCode.trim()}
                   className="font-sans text-sm font-semibold px-4 py-2.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 transition-colors"
                 >

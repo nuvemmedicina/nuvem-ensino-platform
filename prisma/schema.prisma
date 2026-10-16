@@ -784,6 +784,15 @@ model LiveLead {
   email         String
   createdAt     DateTime @default(now())
 
+  // Usados pela página de aula gratuita (/aula-gratuita): a live de julho
+  // não pedia consentimento nem tinha vídeo para acompanhar.
+  aceitaComunicacoes Boolean   @default(false)
+  /// Maior trecho do vídeo já assistido, em % (0–100).
+  assistiuPct        Int       @default(0)
+  ultimoAcesso       DateTime?
+  /// utm_source da primeira visita, quando houver.
+  origem             String?
+
   @@index([eventSlug])
   @@index([email])
 }
