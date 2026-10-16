@@ -20,8 +20,7 @@ export const AULA_GRATUITA = {
   descontoPct: 20,
   titulo: "IA e o Cuidado Humano",
   encontro: "5º Encontro Síncrono",
-  dataLabel: "14 de outubro de 2026",
-  convidado: "Dr. Carlos Eneas Soares Ricca",
+  convidado: "Dr. Carlos Eneas Ricca",
   convidadoCargo: "Gastroenterologia e Endoscopia Digestiva",
 } as const;
 
