@@ -95,7 +95,7 @@ export default async function AulaGratuitaPage({ searchParams }: Props) {
                 Dra. Vera Ângelo
               </h2>
               <p className="text-white/55 text-xs sm:text-sm mt-1 leading-relaxed">
-                Neurogastroenterologia e Motilidade Digestiva
+                Gastroenterologia e Motilidade Digestiva
               </p>
             </div>
             <div>
