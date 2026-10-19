@@ -12,15 +12,15 @@ const s = StyleSheet.create({
   cabecalho: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingBottom: 14, borderBottomWidth: 1.5, borderBottomColor: AZUL },
   logo: { width: 60 },
   empresa: { fontSize: 8.5, color: CINZA, textAlign: "right", lineHeight: 1.6 },
-  titulo: { marginTop: 36, marginBottom: 24, fontSize: 19, fontFamily: "Helvetica-Bold", color: AZUL, textAlign: "center", letterSpacing: 1.5 },
-  paragrafo: { lineHeight: 1.45, textAlign: "justify" },
+  titulo: { marginTop: 30, marginBottom: 20, fontSize: 19, fontFamily: "Helvetica-Bold", color: AZUL, textAlign: "center", letterSpacing: 1.5 },
+  paragrafo: { lineHeight: 1.35, textAlign: "justify" },
   negrito: { fontFamily: "Helvetica-Bold" },
-  caixa: { marginTop: 24, marginBottom: 20, backgroundColor: "#f3f4f6", borderRadius: 4, paddingVertical: 12, paddingHorizontal: 14 },
+  caixa: { marginTop: 18, marginBottom: 16, backgroundColor: "#f3f4f6", borderRadius: 4, paddingVertical: 12, paddingHorizontal: 14 },
   linha: { flexDirection: "row", marginVertical: 2 },
   rotulo: { width: 150, fontFamily: "Helvetica-Bold", lineHeight: 1.35 },
   valor: { flex: 1, lineHeight: 1.35 },
-  data: { marginTop: 22, textAlign: "right" },
-  assinatura: { marginTop: 50, alignItems: "center" },
+  data: { marginTop: 16, textAlign: "right" },
+  assinatura: { marginTop: 34, alignItems: "center" },
   assinaturaImg: { width: 110, height: 40, objectFit: "contain" },
   assinaturaLinha: { width: 250, borderTopWidth: 0.8, borderTopColor: TEXTO, marginTop: 2, marginBottom: 6 },
   assinaturaNome: { fontFamily: "Helvetica-Bold" },
@@ -39,6 +39,8 @@ export type DeclaracaoMatriculaProps = {
   periodo?: string;
   dataMatricula: string;
   codigo: string;
+  /** Curso com certificado da Faculdade FACOP (Course.showCertificationSeals) */
+  certificacaoFacop?: boolean;
   /** "Belo Horizonte, <data por extenso>." já montado */
   localEData: string;
   logoUri?: string;
@@ -88,6 +90,12 @@ export function DeclaracaoMatriculaPDF(p: DeclaracaoMatriculaProps) {
           ))}
         </View>
 
+        {p.certificacaoFacop && (
+          <Text style={[s.paragrafo, { marginBottom: 10 }]}>
+            O certificado de conclusão do curso é emitido pela Faculdade FACOP, instituição credenciada pelo Ministério
+            da Educação (MEC).
+          </Text>
+        )}
         <Text>Por ser expressão da verdade, firmamos a presente declaração.</Text>
         <Text style={s.data}>{p.localEData}</Text>
 
