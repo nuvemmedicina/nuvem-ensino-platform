@@ -1200,7 +1200,16 @@
         "tudoFeito": "Você concluiu todas as aulas disponíveis.",
         "vazioTitulo": "Você ainda não tem cursos",
         "vazioTexto": "Quando você se matricular, seus cursos aparecem aqui.",
-        "verCatalogo": "Ver os cursos da Nuvem"
+        "verCatalogo": "Ver os cursos da Nuvem",
+        "declaracao": {
+          "baixar": "Baixar declaração de matrícula",
+          "pedirCpf": "Para emitir a declaração, precisamos do seu CPF. Ele fica salvo no seu cadastro.",
+          "salvarEBaixar": "Salvar e baixar",
+          "salvando": "Salvando…",
+          "cpfInvalido": "CPF inválido. Confira os 11 números.",
+          "erro": "Não foi possível salvar agora. Tente de novo em instantes.",
+          "cpfAjuda": "Depois de salvo, só a coordenação pode alterar o CPF."
+        }
       },
       "agenda": {
         "titulo": "Agenda",
