@@ -1200,7 +1200,16 @@
         "tudoFeito": "Completaste todas las clases disponibles.",
         "vazioTitulo": "Todavía no tienes cursos",
         "vazioTexto": "Cuando te inscribas, tus cursos aparecerán aquí.",
-        "verCatalogo": "Ver los cursos de Nuvem"
+        "verCatalogo": "Ver los cursos de Nuvem",
+        "declaracao": {
+          "baixar": "Descargar constancia de matrícula",
+          "pedirCpf": "Para emitir la constancia necesitamos tu CPF. Quedará guardado en tu registro.",
+          "salvarEBaixar": "Guardar y descargar",
+          "salvando": "Guardando…",
+          "cpfInvalido": "CPF inválido. Revisa los 11 números.",
+          "erro": "No fue posible guardar ahora. Inténtalo de nuevo en unos instantes.",
+          "cpfAjuda": "Una vez guardado, solo la coordinación puede cambiar el CPF."
+        }
       },
       "agenda": {
         "titulo": "Agenda",

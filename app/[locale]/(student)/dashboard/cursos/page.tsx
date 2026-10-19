@@ -6,6 +6,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Award, BookOpen, ExternalLink, PlayCircle } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { temCpf } from "@/lib/cpf";
+import { BotaoDeclaracao } from "./BotaoDeclaracao";
 
 function fmtDuracao(min: number) {
   if (min < 60) return `${min} min`;
@@ -33,6 +35,9 @@ export default async function MeusCursosPage({ params }: { params: Promise<{ loc
 
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard/cursos");
+
+  const usuario = await prisma.user.findUnique({ where: { id: session.user.id }, select: { taxId: true } });
+  const cadastroTemCpf = temCpf(usuario?.taxId);
 
   const matriculasRaw = await prisma.enrollment.findMany({
     where: { userId: session.user.id, status: { in: ["ACTIVE", "COMPLETED"] } },
@@ -200,6 +205,7 @@ export default async function MeusCursosPage({ params }: { params: Promise<{ loc
           >
             {t("abrirCurso")}
           </Link>
+          {c.m.status === "ACTIVE" && <BotaoDeclaracao matriculaId={c.m.id} temCpf={cadastroTemCpf} />}
         </div>
       </li>
     );

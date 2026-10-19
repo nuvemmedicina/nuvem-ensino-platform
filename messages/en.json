@@ -1200,7 +1200,16 @@
         "tudoFeito": "You have completed every available lesson.",
         "vazioTitulo": "You have no courses yet",
         "vazioTexto": "Once you enroll, your courses will show up here.",
-        "verCatalogo": "See Nuvem's courses"
+        "verCatalogo": "See Nuvem's courses",
+        "declaracao": {
+          "baixar": "Download enrollment certificate",
+          "pedirCpf": "To issue the certificate we need your CPF (Brazilian taxpayer ID). It will be saved to your profile.",
+          "salvarEBaixar": "Save and download",
+          "salvando": "Saving…",
+          "cpfInvalido": "Invalid CPF. Please check the 11 digits.",
+          "erro": "We couldn't save it right now. Please try again shortly.",
+          "cpfAjuda": "Once saved, only the coordination team can change your CPF."
+        }
       },
       "agenda": {
         "titulo": "Schedule",
