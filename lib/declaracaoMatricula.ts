@@ -52,7 +52,7 @@ export async function gerarDeclaracaoMatricula(
       status: true,
       enrolledAt: true,
       user: { select: { name: true, taxId: true } },
-      course: { select: { title: true, hours: true, startDateLabel: true, startDate: true, endDate: true } },
+      course: { select: { title: true, hours: true, startDateLabel: true, startDate: true, endDate: true, showCertificationSeals: true } },
     },
   });
 
@@ -69,6 +69,7 @@ export async function gerarDeclaracaoMatricula(
       periodo: periodoDoCurso(matricula.course),
       dataMatricula: porExtenso(matricula.enrolledAt),
       codigo: matricula.id,
+      certificacaoFacop: matricula.course.showCertificationSeals,
       // A NU.V.E.M fica em Belo Horizonte (nunca São Paulo)
       localEData: `Belo Horizonte, ${porExtenso(new Date())}.`,
       logoUri: imagemPublica("logo.png"),
