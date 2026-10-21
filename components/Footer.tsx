@@ -161,7 +161,7 @@ export default async function Footer() {
             <LocaleLink href="/" className="w-fit">
               <Image
                 src="/logo.png"
-                alt="NU.V.E.M ENSINO"
+                alt="NU.V.E.M Ensino"
                 width={120}
                 height={94}
                 className="h-12 w-auto brightness-0 invert opacity-90"

@@ -26,7 +26,7 @@ export async function GET() {
     "Avaliações online ao término de cada módulo",
     "Certificado de Conclusão emitido pela FACOP — instituição credenciada pelo MEC",
     "Material complementar atualizado disponibilizado ao longo do curso",
-    "Acesso à plataforma NU.V.E.M ENSINO durante todo o período do curso",
+    "Acesso à plataforma NU.V.E.M Ensino durante todo o período do curso",
   ].join("\n");
 
   await prisma.course.update({

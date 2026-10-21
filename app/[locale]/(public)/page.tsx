@@ -18,7 +18,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "home" });
 
   return {
-    title: `NU.V.E.M ENSINO — ${t("hero.title")} ${t("hero.titleHighlight")}`,
+    title: `NU.V.E.M Ensino — ${t("hero.title")} ${t("hero.titleHighlight")}`,
     description:
       locale === "pt"
         ? "Plataforma de formação médica com cursos hands-on e online de Gastroenterologia, Motilidade Digestiva, Testes Respiratórios e Fisioterapia Pélvica. Certificação ISO 9001 em Belo Horizonte, MG."
@@ -30,7 +30,7 @@ export async function generateMetadata({
       languages: { pt: "/", en: "/en/", es: "/es/", "x-default": "/" },
     },
     openGraph: {
-      title: `NU.V.E.M ENSINO — ${t("hero.title")} ${t("hero.titleHighlight")}`,
+      title: `NU.V.E.M Ensino — ${t("hero.title")} ${t("hero.titleHighlight")}`,
       description: t("hero.description"),
       url: locale === "en" ? "/en/" : locale === "es" ? "/es/" : "/",
       type: "website",
@@ -54,7 +54,7 @@ const jsonLd = {
     {
       "@type": "EducationalOrganization",
       "@id": `${APP_URL}/#organization`,
-      name: "NU.V.E.M ENSINO",
+      name: "NU.V.E.M Ensino",
       url: APP_URL,
       logo: `${APP_URL}/logo.png`,
       description: "Plataforma de formação médica especializada em Gastroenterologia, Motilidade Digestiva e Fisioterapia Pélvica. Certificação ISO 9001.",
@@ -64,7 +64,7 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": `${APP_URL}/#website`,
       url: APP_URL,
-      name: "NU.V.E.M ENSINO",
+      name: "NU.V.E.M Ensino",
     },
   ],
 };

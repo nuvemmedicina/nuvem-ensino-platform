@@ -262,7 +262,7 @@ ${CSS}
 
 <div class="wrap">
 <header>
-  <div class="brandline"><span class="dot"></span>Nuvem Ensino · Relatório de turma</div>
+  <div class="brandline"><span class="dot"></span>NUVEM Ensino · Relatório de turma</div>
   <h1>Aperfeiçoamento em DICI — Pagamentos e Acesso</h1>
   <p class="sub">Neurogastroenterologia e Métodos Diagnósticos Complementares. Somente alunos: as contas dos instrutores foram excluídas de todos os números desta página.</p>
   <div class="meta">

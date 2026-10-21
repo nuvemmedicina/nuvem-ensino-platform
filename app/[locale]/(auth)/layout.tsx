@@ -9,7 +9,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div className="hidden lg:flex lg:w-[52%] relative overflow-hidden">
         <Image
           src="/capa-2.jpeg"
-          alt="NU.V.E.M ENSINO"
+          alt="NU.V.E.M Ensino"
           fill
           className="object-cover"
           priority
@@ -22,7 +22,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <Link href="/">
             <Image
               src="/nuvem-ensino-branca.png"
-              alt="NU.V.E.M ENSINO"
+              alt="NU.V.E.M Ensino"
               width={140}
               height={110}
               className="h-10 w-auto"
@@ -46,7 +46,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <Link href="/">
             <Image
               src="/logo.png"
-              alt="NU.V.E.M ENSINO"
+              alt="NU.V.E.M Ensino"
               width={120}
               height={94}
               className="h-9 w-auto"
@@ -61,7 +61,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </div>
 
         <p className="text-center font-sans text-[11px] text-muted/50 pb-6">
-          © 2026 NU.V.E.M ENSINO · CNPJ 42.679.051/0001-31
+          © 2026 NU.V.E.M Ensino · CNPJ 42.679.051/0001-31
         </p>
       </div>
 

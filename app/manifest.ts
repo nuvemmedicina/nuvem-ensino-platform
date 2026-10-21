@@ -2,7 +2,7 @@
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "NU.V.E.M ENSINO",
+    name: "NU.V.E.M Ensino",
     short_name: "NU.V.E.M",
     description:
       "Plataforma de formação médica com excelência em ensino clínico para profissionais de saúde.",

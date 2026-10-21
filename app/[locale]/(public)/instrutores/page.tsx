@@ -98,7 +98,7 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `${t("title")} | NU.V.E.M ENSINO`,
+      title: `${t("title")} | NU.V.E.M Ensino`,
       description: t("description"),
       url: locale === "en" ? "/en/instructors" : locale === "es" ? "/es/instructores" : "/instrutores",
       locale: locale === "en" ? "en_US" : locale === "es" ? "es_ES" : "pt_BR",

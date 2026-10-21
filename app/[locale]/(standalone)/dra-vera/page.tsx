@@ -76,14 +76,14 @@ const upcomingEvents = [
     date: "Out 2026",
     title: "Testes Respiratórios de H₂, CH₄ e H₂S",
     detail: "Hands-on teórico-prático com equipamentos Dynamed e Health Go",
-    location: "Presencial · Nuvem Ensino",
+    location: "Presencial · NUVEM Ensino",
     href: "https://www.nuvemensino.com.br/cursos/testes-respiratorios-h2-ch4-h2s-outubro",
   },
   {
     date: "2026",
     title: "Curso de Aperfeiçoamento em DICI",
     detail: "Neurogastroenterologia e Métodos Diagnósticos Complementares",
-    location: "Online · Nuvem Ensino",
+    location: "Online · NUVEM Ensino",
     href: "https://www.nuvemensino.com.br/cursos/dici-neurogastroenterologia-2026",
   },
 ];
@@ -107,7 +107,7 @@ export default function DraveraPage() {
           {/* Logo — só no mobile (no desktop fica no painel de texto) */}
           <div className="absolute top-5 left-5 z-10 lg:hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M ENSINO" className="h-8 w-auto drop-shadow-md" />
+            <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M Ensino" className="h-8 w-auto drop-shadow-md" />
           </div>
         </div>
 
@@ -116,7 +116,7 @@ export default function DraveraPage() {
           {/* Logo — só no desktop */}
           <div className="hidden lg:block mb-10">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M ENSINO" className="h-9 w-auto" />
+            <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M Ensino" className="h-9 w-auto" />
           </div>
           <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#C9A84C] mb-1">
             Dra.
@@ -253,7 +253,7 @@ export default function DraveraPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="rounded-2xl border border-border p-5 shadow-sm text-center sm:text-left">
               <p className="font-sans text-xs font-bold uppercase tracking-widest text-muted mb-3">
-                Nuvem Ensino
+                NUVEM Ensino
               </p>
               <div className="space-y-2">
                 {socialLinks.nuvemEnsino.map((s) => (
@@ -316,7 +316,7 @@ export default function DraveraPage() {
       </div>
 
       <footer className="bg-white text-center text-xs text-muted/60 py-6 border-t border-border">
-        © {new Date().getFullYear()} NU.V.E.M ENSINO · Todos os direitos reservados
+        © {new Date().getFullYear()} NU.V.E.M Ensino · Todos os direitos reservados
       </footer>
     </div>
   );

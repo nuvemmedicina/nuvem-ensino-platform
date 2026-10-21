@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import LiveRegistrationForm from "./LiveRegistrationForm";
 
 export const metadata: Metadata = {
-  title: "Live Exclusiva — Curso DICI · NU.V.E.M ENSINO",
+  title: "Live Exclusiva — Curso DICI · NU.V.E.M Ensino",
   description:
     "Participe da live com a Dra. Vera Ângelo sobre o Curso de Aperfeiçoamento em DICI e garanta um desconto exclusivo para os presentes.",
   alternates: { canonical: "/live" },
@@ -30,7 +30,7 @@ export default function LivePage() {
         {/* Logo branca — topo */}
         <div className="absolute top-6 left-6 z-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M ENSINO" className="h-11 w-auto drop-shadow-md" />
+          <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M Ensino" className="h-11 w-auto drop-shadow-md" />
         </div>
 
         {/* Legenda — rodapé */}

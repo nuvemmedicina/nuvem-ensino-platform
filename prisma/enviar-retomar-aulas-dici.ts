@@ -40,7 +40,7 @@ function waLink(tel: string | null): string | null {
 }
 
 const mensagemWhats = (nome: string, aulas: number) =>
-  `Oi, ${nome}! Aqui é da equipe do Nu.V.E.M Ensino 🎓 Vimos que você já concluiu ${aulas === 1 ? "1 aula" : `${aulas} aulas`} do Aperfeiçoamento em DICI, e seu progresso está guardado. A turma avançou: os Módulos I, II e III já estão liberados e os encontros ao vivo ficaram gravados. O Módulo IV chega em novembro, então é um ótimo momento para colocar as aulas em dia!\n\nLink para entrar: ${LINK_ENTRAR}\nDepois de entrar, é só clicar no Aperfeiçoamento em DICI: ${LINK_CURSO}\n\nQualquer dificuldade, me chama por aqui que a gente resolve!`;
+  `Oi, ${nome}! Aqui é da equipe da NU.V.E.M Ensino 🎓 Vimos que você já concluiu ${aulas === 1 ? "1 aula" : `${aulas} aulas`} do Aperfeiçoamento em DICI, e seu progresso está guardado. A turma avançou: os Módulos I, II e III já estão liberados e os encontros ao vivo ficaram gravados. O Módulo IV chega em novembro, então é um ótimo momento para colocar as aulas em dia!\n\nLink para entrar: ${LINK_ENTRAR}\nDepois de entrar, é só clicar no Aperfeiçoamento em DICI: ${LINK_CURSO}\n\nQualquer dificuldade, me chama por aqui que a gente resolve!`;
 
 async function main() {
   const saida = process.argv[2];

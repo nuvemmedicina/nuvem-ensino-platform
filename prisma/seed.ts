@@ -170,7 +170,7 @@ async function main() {
       reservedSeats: 7,
       thumbnailUrl: "/instructors/felipe-nelson.jpg",
       location: "NU.V.E.M Medicina · Belo Horizonte, MG",
-      metaTitle: "Manometria, pHmetria e Impedância | Nuvem Ensino",
+      metaTitle: "Manometria, pHmetria e Impedância | NUVEM Ensino",
       metaDesc:
         "Curso hands-on de manometria esofágica de alta resolução, pHmetria e impedancio-pHmetria com Dr. Felipe Nelson.",
     },
@@ -194,7 +194,7 @@ async function main() {
       reservedSeats: 4,
       thumbnailUrl: "/instructors/dra-eliane.jpg",
       location: "NU.V.E.M Medicina · Belo Horizonte, MG",
-      metaTitle: "Manometria Anorretal | Nuvem Ensino",
+      metaTitle: "Manometria Anorretal | NUVEM Ensino",
       metaDesc:
         "Curso hands-on de manometria anorretal de alta resolução com Dra. Eliane Basques.",
     },
@@ -209,7 +209,7 @@ async function main() {
       shortDesc: "Domine os novos protocolos de teste respiratório de H₂/CH₄ com interpretação de laudos e casos clínicos reais.",
       price: 450,
       hours: 3,
-      metaTitle: "Aperfeiçoamento em Teste Respiratório Hidrogênio e Metano | Nuvem Ensino",
+      metaTitle: "Aperfeiçoamento em Teste Respiratório Hidrogênio e Metano | NUVEM Ensino",
       metaDesc:
         "Curso online com Dra. Vera Ângelo: novos protocolos de teste respiratório de hidrogênio e metano, interpretação de laudos e guidelines internacionais.",
     },
@@ -225,7 +225,7 @@ async function main() {
       status: "PUBLISHED",
       instructorId: instructorVera.id,
       thumbnailUrl: "/instructors/dra-vera.jpg",
-      metaTitle: "Aperfeiçoamento em Teste Respiratório Hidrogênio e Metano | Nuvem Ensino",
+      metaTitle: "Aperfeiçoamento em Teste Respiratório Hidrogênio e Metano | NUVEM Ensino",
       metaDesc:
         "Curso online com Dra. Vera Ângelo: novos protocolos de teste respiratório de hidrogênio e metano, interpretação de laudos e guidelines internacionais.",
     },
@@ -239,7 +239,7 @@ async function main() {
         "Formação teórico-prática em fisioterapia pélvica: anatomia, avaliação clínica e instrumental, estratégias terapêuticas baseadas em evidências, discussão de casos reais e prática supervisionada. Turmas com no máximo 2 alunos.",
       shortDesc: "Treinamento hands-on em disfunções do assoalho pélvico com Dra. Karol Rocha. Turmas com máximo 2 alunos.",
       hours: 30,
-      metaTitle: "Fisioterapia nas Disfunções do Assoalho Pélvico | Nuvem Ensino",
+      metaTitle: "Fisioterapia nas Disfunções do Assoalho Pélvico | NUVEM Ensino",
       metaDesc:
         "Treinamento teórico-prático com Dra. Karol Rocha: avaliação, tratamento e prática supervisionada em disfunções do assoalho pélvico.",
     },
@@ -257,7 +257,7 @@ async function main() {
       totalSeats: 2,
       reservedSeats: 0,
       location: "NU.V.E.M Medicina · Belo Horizonte, MG",
-      metaTitle: "Fisioterapia nas Disfunções do Assoalho Pélvico | Nuvem Ensino",
+      metaTitle: "Fisioterapia nas Disfunções do Assoalho Pélvico | NUVEM Ensino",
       metaDesc:
         "Treinamento teórico-prático com Dra. Karol Rocha: avaliação, tratamento e prática supervisionada em disfunções do assoalho pélvico.",
     },
@@ -287,7 +287,7 @@ async function main() {
       status: "PUBLISHED",
       instructorId: instructorWanderley.id,
       thumbnailUrl: "/instructors/wanderley-bertoni.jpg",
-      metaTitle: "Doenças da Cavidade Oral, Halimetria e Sialometria | Nuvem Ensino",
+      metaTitle: "Doenças da Cavidade Oral, Halimetria e Sialometria | NUVEM Ensino",
       metaDesc:
         "Curso online: diagnóstico de doenças da cavidade oral, halitose, xerostomia, candidose, úlceras aftosas e técnicas de halimetria e sialometria.",
     },
@@ -317,7 +317,7 @@ async function main() {
       instructorId: instructorVera.id,
       thumbnailUrl: "/instructors/dra-vera.jpg",
       location: "NU.V.E.M Medicina · Belo Horizonte, MG",
-      metaTitle: "Testes Respiratórios H₂, CH₄ e H₂S — Turma Junho 2026 | Nuvem Ensino",
+      metaTitle: "Testes Respiratórios H₂, CH₄ e H₂S — Turma Junho 2026 | NUVEM Ensino",
       metaDesc:
         "Curso presencial com Dra. Vera Ângelo: testes respiratórios de hidrogênio, metano e H₂S, intolerâncias alimentares, SIBO, IMO, laudos e prática supervisionada.",
     },
@@ -333,7 +333,7 @@ async function main() {
       price: 380,
       hours: 3,
       previewUrl: "https://www.youtube.com/embed/J5dI4R3xCws",
-      metaTitle: "Desvendando a Constipação Intestinal | Nuvem Ensino",
+      metaTitle: "Desvendando a Constipação Intestinal | NUVEM Ensino",
       metaDesc:
         "Curso online com Dra. Vera Ângelo e Dra. Eliane Basques: Roma IV, tempo de trânsito colônico e manometria anorretal aplicados ao diagnóstico da constipação.",
     },
@@ -350,7 +350,7 @@ async function main() {
       instructorId: instructorEliane.id,
       thumbnailUrl: "/instructors/dra-eliane.jpg",
       previewUrl: "https://www.youtube.com/embed/J5dI4R3xCws",
-      metaTitle: "Desvendando a Constipação Intestinal | Nuvem Ensino",
+      metaTitle: "Desvendando a Constipação Intestinal | NUVEM Ensino",
       metaDesc:
         "Curso online com Dra. Vera Ângelo e Dra. Eliane Basques: Roma IV, tempo de trânsito colônico e manometria anorretal aplicados ao diagnóstico da constipação.",
     },

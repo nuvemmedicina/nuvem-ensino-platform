@@ -140,7 +140,7 @@ export async function GET(req: NextRequest, { params }: Props) {
       studentName:         cert.user.name ?? "Participante",
       courseTitle:         cert.enrollment.course.title,
       hours:               cert.enrollment.course.hours,
-      instructorName:      cert.enrollment.course.instructor?.user.name ?? "NU.V.E.M ENSINO",
+      instructorName:      cert.enrollment.course.instructor?.user.name ?? "NU.V.E.M Ensino",
       issueDate:           cert.issueDate,
       code:                cert.code,
       courseDescription:   cert.enrollment.course.shortDesc ?? undefined,

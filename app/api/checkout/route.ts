@@ -211,7 +211,7 @@ export async function POST(req: Request) {
             currency: "brl",
             product_data: {
               name: dbCourse.title,
-              description: `${dbCourse.hours}h de formação, NU.V.E.M ENSINO`,
+              description: `${dbCourse.hours}h de formação, NU.V.E.M Ensino`,
             },
             unit_amount: Math.round(finalPrice * 100),
           },
@@ -276,7 +276,7 @@ export async function POST(req: Request) {
         customerId:        customer.id,
         billingType,
         value:             finalPrice,
-        description:       `${dbCourse.title} — NU.V.E.M ENSINO`,
+        description:       `${dbCourse.title} — NU.V.E.M Ensino`,
         externalReference: enrollment.id,
         installmentCount:  method === "parcelado" ? Math.min(Math.max(Number(installments) || 1, 1), 10) : 1,
         successUrl,

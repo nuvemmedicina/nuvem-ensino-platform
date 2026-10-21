@@ -9,7 +9,7 @@ import Image from "next/image";
 export function LogoPainel({ href = "/", variante = "lateral" }: { href?: string; variante?: "lateral" | "celular" }) {
   const tamanho = variante === "celular" ? 44 : 64;
   return (
-    <Link href={href} className="inline-flex shrink-0" aria-label="NU.V.E.M ENSINO">
+    <Link href={href} className="inline-flex shrink-0" aria-label="NU.V.E.M Ensino">
       <Image
         src="/logo-icone.png"
         alt=""
