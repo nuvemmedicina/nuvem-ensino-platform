@@ -57,9 +57,12 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
   const mpTokenDb = await prisma.platformSetting.findUnique({ where: { key: "mp_access_token" } });
   const hasPayment = !!(process.env.STRIPE_SECRET_KEY || process.env.ASAAS_API_KEY || process.env.MP_ACCESS_TOKEN || mpTokenDb?.value);
 
-  // Pré-carregar WhatsApp salvo do usuário (só quando há sessão)
+  // Pré-carregar WhatsApp e endereço salvos do usuário (só quando há sessão)
   const dbUser = session
-    ? await prisma.user.findUnique({ where: { id: session.user.id }, select: { phone: true } })
+    ? await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { phone: true, postalCode: true, address: true, addressNumber: true, addressComplement: true, province: true },
+      })
     : null;
 
   return (
@@ -71,6 +74,13 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
       userEmail={session?.user?.email ?? ""}
       userName={session?.user?.name ?? ""}
       userPhone={dbUser?.phone ?? ""}
+      userAddress={{
+        cep: dbUser?.postalCode ?? "",
+        rua: dbUser?.address ?? "",
+        numero: dbUser?.addressNumber ?? "",
+        complemento: dbUser?.addressComplement ?? "",
+        bairro: dbUser?.province ?? "",
+      }}
       hasPayment={hasPayment}
       isGuest={!session}
       initialCoupon={typeof cupom === "string" ? cupom.trim().toUpperCase().slice(0, 40) : ""}

@@ -8,7 +8,9 @@ import {
   createPayment,
   getPixQrCode,
   cancelAsaasPayment,
+  updateCustomerAddress,
 } from "@/lib/asaas";
+import { MAX_PARCELAS } from "@/lib/parcelamento";
 import { LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
 import { createPasswordResetToken } from "@/lib/tokens";
 import { sendSetPasswordEmail } from "@/lib/email";
@@ -19,8 +21,23 @@ export async function POST(req: Request) {
   const session = await auth();
   const {
     courseSlug, method, couponCode, installments, whatsapp, cpf, name, email,
-    gaClientId, fbp, fbc, utmSource, utmMedium, utmCampaign,
+    gaClientId, fbp, fbc, utmSource, utmMedium, utmCampaign, endereco,
   } = await req.json();
+
+  // Endereço de quem paga: o Asaas exige endereço completo com CEP para emitir a nota fiscal.
+  const texto = (v: unknown, max = 120) => (typeof v === "string" ? v.trim().slice(0, max) : "");
+  const addr = {
+    postalCode: texto(endereco?.cep).replace(/\D/g, ""),
+    address: texto(endereco?.rua),
+    addressNumber: texto(endereco?.numero, 20),
+    complement: texto(endereco?.complemento),
+    province: texto(endereco?.bairro),
+  };
+  if (method === "pix" || method === "boleto" || method === "parcelado") {
+    if (addr.postalCode.length !== 8 || !addr.address || !addr.addressNumber || !addr.province) {
+      return NextResponse.json({ error: "Preencha o endereço completo com CEP (usado na nota fiscal)." }, { status: 400 });
+    }
+  }
 
   // ── Resolve o comprador: sessão logada, ou checkout como convidado (só habilitado
   // para o curso da live, pra não afetar o checkout dos demais cursos) ────────────
@@ -56,6 +73,15 @@ export async function POST(req: Request) {
   const profileUpdates: Record<string, string> = {};
   if (whatsapp && typeof whatsapp === "string" && whatsapp.trim()) profileUpdates.phone = whatsapp.trim();
   if (cpf && typeof cpf === "string" && cpf.trim()) profileUpdates.taxId = cpf.replace(/\D/g, "");
+  if (addr.postalCode.length === 8 && addr.address && addr.addressNumber && addr.province) {
+    Object.assign(profileUpdates, {
+      postalCode: addr.postalCode,
+      address: addr.address,
+      addressNumber: addr.addressNumber,
+      addressComplement: addr.complement,
+      province: addr.province,
+    });
+  }
   if (Object.keys(profileUpdates).length > 0) {
     try {
       await prisma.user.update({ where: { id: userId }, data: profileUpdates });
@@ -250,6 +276,7 @@ export async function POST(req: Request) {
         userName || userEmail || "Aluno",
         userProfile?.taxId ?? undefined,
       );
+      await updateCustomerAddress(customer.id, addr);
 
       const billingType =
         method === "pix"      ? "PIX"         :
@@ -278,7 +305,7 @@ export async function POST(req: Request) {
         value:             finalPrice,
         description:       `${dbCourse.title} — NU.V.E.M Ensino`,
         externalReference: enrollment.id,
-        installmentCount:  method === "parcelado" ? Math.min(Math.max(Number(installments) || 1, 1), 10) : 1,
+        installmentCount:  method === "parcelado" ? Math.min(Math.max(Number(installments) || 1, 1), MAX_PARCELAS) : 1,
         successUrl,
       });
 

@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { getGaClientId } from "@/lib/gaClientId";
 import { getFbClientId } from "@/lib/fbClientId";
 import { getStoredAttribution } from "@/lib/utmCapture";
+import { MAX_PARCELAS } from "@/lib/parcelamento";
 
 declare global {
   interface Window {
@@ -31,6 +32,15 @@ function pushBeginCheckout(courseSlug: string, courseName: string, value: number
 
 type PaymentMethod = "pix" | "boleto" | "parcelado";
 
+/** Endereço de quem paga, exigido pelo Asaas para emitir a nota fiscal. */
+type Endereco = { cep: string; rua: string; numero: string; complemento: string; bairro: string };
+const ENDERECO_VAZIO: Endereco = { cep: "", rua: "", numero: "", complemento: "", bairro: "" };
+
+function formatCep(value: string) {
+  const d = value.replace(/\D/g, "").slice(0, 8);
+  return d.length > 5 ? `${d.slice(0, 5)}-${d.slice(5)}` : d;
+}
+
 type Props = {
   slug: string;
   courseName: string;
@@ -39,6 +49,7 @@ type Props = {
   userEmail: string;
   userName: string;
   userPhone: string;
+  userAddress?: Endereco;
   hasPayment: boolean;
   isGuest?: boolean;
   /** Cupom vindo do link (?cupom=), aplicado automaticamente ao abrir. */
@@ -53,6 +64,7 @@ export default function CheckoutClient({
   userEmail,
   userName,
   userPhone,
+  userAddress = ENDERECO_VAZIO,
   hasPayment,
   isGuest = false,
   initialCoupon = "",
@@ -81,6 +93,33 @@ export default function CheckoutClient({
   const [guestEmail, setGuestEmail] = useState(userEmail);
   const [guestNameError, setGuestNameError] = useState("");
   const [guestEmailError, setGuestEmailError] = useState("");
+  const [endereco, setEndereco] = useState<Endereco>({ ...userAddress, cep: formatCep(userAddress.cep) });
+  const [enderecoError, setEnderecoError] = useState("");
+  const [buscandoCep, setBuscandoCep] = useState(false);
+
+  const setCampo = (campo: keyof Endereco, valor: string) => setEndereco((e) => ({ ...e, [campo]: valor }));
+
+  // Preenche rua e bairro pelo CEP (ViaCEP). Se não achar, a pessoa digita.
+  async function buscarCep(cep: string) {
+    const digits = cep.replace(/\D/g, "");
+    if (digits.length !== 8) return;
+    setBuscandoCep(true);
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${digits}/json/`);
+      const data = await res.json();
+      if (!data.erro) {
+        setEndereco((e) => ({
+          ...e,
+          rua: data.logradouro || e.rua,
+          bairro: data.bairro || e.bairro,
+        }));
+      }
+    } catch {
+      // Sem ViaCEP, segue com o preenchimento manual.
+    } finally {
+      setBuscandoCep(false);
+    }
+  }
 
   // Temporizador do PIX (30 minutos = 1800 segundos)
   useEffect(() => {
@@ -228,6 +267,14 @@ export default function CheckoutClient({
     const cpfDigits = cpf.replace(/\D/g, "");
     if (!cpfDigits) { setCpfError("CPF é obrigatório."); return; }
     if (!validateCpf(cpfDigits)) { setCpfError("CPF inválido. Verifique os números e tente novamente."); return; }
+    setEnderecoError("");
+    if (
+      endereco.cep.replace(/\D/g, "").length !== 8 ||
+      !endereco.rua.trim() || !endereco.numero.trim() || !endereco.bairro.trim()
+    ) {
+      setEnderecoError("Preencha CEP, rua, número e bairro. O endereço vai na nota fiscal.");
+      return;
+    }
     pushBeginCheckout(slug, courseName, finalPrice, method);
     startTransition(async () => {
       try {
@@ -241,6 +288,7 @@ export default function CheckoutClient({
             installments: method === "parcelado" ? installments : 1,
             whatsapp: whatsapp.trim() || undefined,
             cpf: cpf.replace(/\D/g, "") || undefined,
+            endereco,
             name: isGuest ? guestName.trim() : undefined,
             email: isGuest ? guestEmail.trim() : undefined,
             gaClientId: getGaClientId() ?? undefined,
@@ -575,6 +623,70 @@ export default function CheckoutClient({
                 />
               </div>
             </div>
+
+            {/* Endereço (vai na nota fiscal) */}
+            <div className="mt-4">
+              <p className="font-sans text-xs text-muted flex items-center gap-1 mb-2">
+                Endereço <span className="text-red-500">*</span>
+                <span className="text-muted/50">(obrigatório para a nota fiscal)</span>
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-3">
+                <div className="relative">
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="postal-code"
+                    aria-label="CEP"
+                    value={endereco.cep}
+                    onChange={(e) => {
+                      const cep = formatCep(e.target.value);
+                      setCampo("cep", cep);
+                      if (cep.replace(/\D/g, "").length === 8) void buscarCep(cep);
+                    }}
+                    placeholder="CEP"
+                    className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/40 focus:outline-none focus:border-primary/50 font-mono"
+                  />
+                  {buscandoCep && <Loader2 className="w-4 h-4 animate-spin text-muted absolute right-3 top-1/2 -translate-y-1/2" />}
+                </div>
+                <input
+                  type="text"
+                  autoComplete="address-line1"
+                  aria-label="Rua"
+                  value={endereco.rua}
+                  onChange={(e) => setCampo("rua", e.target.value)}
+                  placeholder="Rua, avenida…"
+                  className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/40 focus:outline-none focus:border-primary/50"
+                />
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-[140px_1fr_1fr] gap-3 mt-3">
+                <input
+                  type="text"
+                  aria-label="Número"
+                  value={endereco.numero}
+                  onChange={(e) => setCampo("numero", e.target.value)}
+                  placeholder="Número"
+                  className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/40 focus:outline-none focus:border-primary/50"
+                />
+                <input
+                  type="text"
+                  autoComplete="address-line2"
+                  aria-label="Complemento"
+                  value={endereco.complemento}
+                  onChange={(e) => setCampo("complemento", e.target.value)}
+                  placeholder="Complemento"
+                  className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/40 focus:outline-none focus:border-primary/50"
+                />
+                <input
+                  type="text"
+                  aria-label="Bairro"
+                  value={endereco.bairro}
+                  onChange={(e) => setCampo("bairro", e.target.value)}
+                  placeholder="Bairro"
+                  className="col-span-2 sm:col-span-1 w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted/40 focus:outline-none focus:border-primary/50"
+                />
+              </div>
+              {enderecoError && <p className="font-sans text-xs text-red-500 mt-1">{enderecoError}</p>}
+            </div>
           </section>
 
           {/* Forma de pagamento */}
@@ -617,7 +729,7 @@ export default function CheckoutClient({
             {method === "parcelado" && (
               <div className="mt-4 bg-background rounded-xl p-4 font-sans text-sm text-muted">
                 <p className="font-semibold text-foreground mb-3">{t("installments")}</p>
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                {Array.from({ length: MAX_PARCELAS }, (_, i) => i + 1).map((n) => (
                   <button
                     key={n}
                     type="button"

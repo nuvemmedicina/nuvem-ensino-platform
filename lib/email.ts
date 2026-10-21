@@ -804,3 +804,35 @@ export async function sendModuloLiberado({
     html: baseLayout("Novo módulo liberado", body),
   });
 }
+
+/** Aviso interno para a coordenação: a nota fiscal de uma venda não saiu (ver lib/nfse.ts). */
+export async function sendAlertaNotaFiscal({
+  aluno,
+  curso,
+  paymentId,
+  motivo,
+}: {
+  aluno: string;
+  curso: string;
+  paymentId: string;
+  motivo: string;
+}) {
+  const to = process.env.NFSE_ALERTA_EMAIL ?? "cursos@nuvemensino.com.br";
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">A nota fiscal desta venda <strong>não foi emitida</strong> pelo Asaas:</p>
+    <div style="background:#fef2f2;border-left:4px solid #dc2626;border-radius:8px;padding:16px 20px;margin:24px 0;">
+      <p style="margin:0;color:#374151;font-size:14px;">Aluno(a): <strong>${aluno}</strong></p>
+      <p style="margin:6px 0 0;color:#374151;font-size:14px;">Curso: <strong>${curso}</strong></p>
+      <p style="margin:6px 0 0;color:#374151;font-size:14px;">Motivo: ${motivo}</p>
+      <p style="margin:6px 0 0;color:#9ca3af;font-size:12px;">Pagamento na plataforma: ${paymentId}</p>
+    </div>
+    <p style="margin:0;color:#6b7280;font-size:14px;">Confira no painel do Asaas, em Notas Fiscais. Muitas vezes falta o endereço completo com CEP no cadastro do cliente. Depois de corrigir, a nota pode ser emitida por lá.</p>
+  `;
+
+  return deliver("alerta de nota fiscal", to, {
+    from: FROM,
+    to,
+    subject: `Nota fiscal não emitida: ${aluno} (${curso})`,
+    html: baseLayout("Nota fiscal não emitida", body),
+  });
+}

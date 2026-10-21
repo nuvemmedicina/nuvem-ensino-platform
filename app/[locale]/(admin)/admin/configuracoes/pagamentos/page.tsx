@@ -67,7 +67,7 @@ export default async function PagamentosPage({ searchParams }: Props) {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="font-sans text-base font-semibold text-foreground">Asaas</h2>
-              <p className="font-sans text-xs text-muted mt-0.5">PIX · Boleto · Cartão nacional parcelado (até 3x)</p>
+              <p className="font-sans text-xs text-muted mt-0.5">PIX · Boleto · Cartão nacional parcelado (até 5x)</p>
             </div>
             {asaasConnected ? (
               <span className="inline-flex items-center gap-1.5 font-sans text-xs font-semibold text-green-600 bg-green-500/10 border border-green-500/20 px-3 py-1 rounded-full">

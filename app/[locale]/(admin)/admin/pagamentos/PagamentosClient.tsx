@@ -19,9 +19,35 @@ type Row = {
   userName: string;
   course: string;
   divergent: boolean;
+  nfseStatus: string | null;
+  nfseNumber: string | null;
+  nfsePdfUrl: string | null;
 };
 
 // ── helpers ──────────────────────────────────────────────────────────────────
+
+const NFSE_LABEL: Record<string, string> = {
+  SCHEDULED: "Agendada",
+  SYNCHRONIZED: "Enviada",
+  AUTHORIZED: "Emitida",
+  PROCESSING_CANCELLATION: "Cancelando",
+  CANCELED: "Cancelada",
+  CANCELLATION_DENIED: "Cancel. recusado",
+  ERROR: "Erro",
+};
+
+function NotaFiscal({ r }: { r: Row }) {
+  if (r.nfsePdfUrl) {
+    return (
+      <a href={r.nfsePdfUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">
+        nº {r.nfseNumber ?? "—"}
+      </a>
+    );
+  }
+  if (!r.nfseStatus) return <span className="text-xs text-muted">—</span>;
+  const erro = r.nfseStatus === "ERROR" || r.nfseStatus === "CANCELLATION_DENIED";
+  return <span className={`text-xs ${erro ? "text-red-600 font-semibold" : "text-muted"}`}>{NFSE_LABEL[r.nfseStatus] ?? r.nfseStatus}</span>;
+}
 
 const fmtBRL = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const fmtDate = (iso: string) =>
@@ -318,12 +344,13 @@ export function PagamentosClient({ rows, divergent }: { rows: Row[]; divergent: 
                 <th className="text-left text-xs font-semibold text-muted px-4 py-3">Método</th>
                 <th className="text-left text-xs font-semibold text-muted px-4 py-3">Pagamento</th>
                 <th className="text-left text-xs font-semibold text-muted px-4 py-3">Matrícula</th>
+                <th className="text-left text-xs font-semibold text-muted px-4 py-3">Nota fiscal</th>
                 <th className="text-left text-xs font-semibold text-muted px-4 py-3">Data</th>
               </tr>
             </thead>
             <tbody>
               {displayed.length === 0 && (
-                <tr><td colSpan={7} className="text-center text-muted py-12 text-sm">Nenhum registro encontrado</td></tr>
+                <tr><td colSpan={8}className="text-center text-muted py-12 text-sm">Nenhum registro encontrado</td></tr>
               )}
               {displayed.map((r) => (
                 <tr key={r.id} className={`border-t border-border hover:bg-background/40 transition-colors ${r.divergent ? "bg-orange-50/40" : ""}`}>
@@ -341,6 +368,7 @@ export function PagamentosClient({ rows, divergent }: { rows: Row[]; divergent: 
                       {r.divergent && <AlertTriangle className="w-3.5 h-3.5 text-orange-500 shrink-0" />}
                     </div>
                   </td>
+                  <td className="px-4 py-3"><NotaFiscal r={r} /></td>
                   <td className="px-4 py-3 text-xs text-muted">{fmtDate(r.createdAt)}</td>
                 </tr>
               ))}
