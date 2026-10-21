@@ -73,11 +73,11 @@ const books = [
 
 const upcomingEvents = [
   {
-    date: "Out 2026",
-    title: "Testes Respiratórios de H₂, CH₄ e H₂S",
-    detail: "Hands-on teórico-prático com equipamentos Dynamed e Health Go",
-    location: "Presencial · NUVEM Ensino",
-    href: "https://www.nuvemensino.com.br/cursos/testes-respiratorios-h2-ch4-h2s-outubro",
+    date: "Online 2h",
+    title: "Teste Respiratório de Hidrogênio e Metano",
+    detail: "Aplicações no Diagnóstico de SIBO, SIBO-TAU, IMO, LIBO e SIFO",
+    location: "Online · NUVEM Ensino",
+    href: "https://www.nuvemensino.com.br/cursos/teste-respiratorio-de-hidrogenio-e-metano",
   },
   {
     date: "2026",
