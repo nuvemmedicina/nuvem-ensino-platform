@@ -98,6 +98,28 @@ export async function findOrCreateCustomer(
   });
 }
 
+export type AsaasAddress = {
+  postalCode: string;
+  address: string;
+  addressNumber: string;
+  complement?: string;
+  province: string;
+};
+
+/** Grava o endereço no cliente do Asaas: sem endereço completo com CEP, a nota fiscal é recusada. */
+export async function updateCustomerAddress(customerId: string, addr: AsaasAddress): Promise<void> {
+  await req(`/customers/${customerId}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      postalCode: addr.postalCode,
+      address: addr.address,
+      addressNumber: addr.addressNumber,
+      complement: addr.complement || undefined,
+      province: addr.province,
+    }),
+  });
+}
+
 // ─── Payments ─────────────────────────────────────────────────────────────────
 
 interface CreatePaymentInput {
@@ -142,6 +164,53 @@ export async function createPayment(
 /** Cancela uma cobrança pendente no Asaas (usado ao substituir uma cobrança expirada/abandonada). */
 export async function cancelAsaasPayment(paymentId: string): Promise<void> {
   await req(`/payments/${paymentId}`, { method: "DELETE" });
+}
+
+// ─── Notas fiscais (NFS-e) ────────────────────────────────────────────────────
+// Docs: https://docs.asaas.com/docs/emitindo-notas-fiscais-de-servico
+
+export type AsaasInvoice = {
+  id: string;
+  status: string;
+  number: string | null;
+  pdfUrl: string | null;
+};
+
+export type CreateInvoiceInput = {
+  /** Cobrança paga (pagamento à vista). */
+  payment?: string;
+  /** Cliente (nota avulsa, usada no parcelado para sair uma nota só com o total). */
+  customer?: string;
+  externalReference: string;
+  serviceDescription: string;
+  observations: string;
+  value: number;
+  effectiveDate: string; // YYYY-MM-DD
+  municipalServiceCode: string;
+  municipalServiceName: string;
+  taxes: {
+    retainIss: boolean;
+    iss: number;
+    pis: number;
+    cofins: number;
+    csll: number;
+    inss: number;
+    ir: number;
+    nbsCode?: string;
+  };
+};
+
+/** Agenda a nota. Ela só vale como emitida quando chega o webhook INVOICE_AUTHORIZED. */
+export async function createInvoice(input: CreateInvoiceInput): Promise<AsaasInvoice> {
+  return req<AsaasInvoice>("/invoices", {
+    method: "POST",
+    body: JSON.stringify({ ...input, deductions: 0 }),
+  });
+}
+
+/** Cancela a nota (depende de a prefeitura/Portal Nacional aceitar cancelamento automático). */
+export async function cancelInvoice(invoiceId: string): Promise<void> {
+  await req(`/invoices/${invoiceId}/cancel`, { method: "POST" });
 }
 
 // ─── PIX QR Code ──────────────────────────────────────────────────────────────

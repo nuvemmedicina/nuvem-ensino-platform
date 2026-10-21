@@ -28,6 +28,9 @@ export default async function AdminPagamentosPage() {
     email: p.enrollment.user.email,
     userName: p.enrollment.user.name ?? "",
     course: p.enrollment.course.title,
+    nfseStatus: p.nfseStatus,
+    nfseNumber: p.nfseNumber,
+    nfsePdfUrl: p.nfsePdfUrl,
     divergent:
       p.status === "PAID" &&
       p.enrollment.status !== "ACTIVE" &&

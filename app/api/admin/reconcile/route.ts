@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { sendEnrollmentConfirmation } from "@/lib/email";
+import { emitirNotaDoPagamento } from "@/lib/nfse";
 import { APP_URL } from "@/lib/appUrl";
 
 const ASAAS_BASE = process.env.ASAAS_SANDBOX === "true"
@@ -31,10 +32,10 @@ export async function POST(req: NextRequest) {
   // Busca todos os pagamentos CONFIRMED/RECEIVED no Asaas (últimos 90 dias)
   const since = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
   let offset = 0;
-  const asaasConfirmed: Array<{ id: string; status: string; value: number }> = [];
+  const asaasConfirmed: Array<{ id: string; status: string; value: number; customer?: string; installment?: string | null }> = [];
 
   while (true) {
-    const page = await asaasGet<{ data: Array<{ id: string; status: string; value: number }>; hasMore: boolean }>(
+    const page = await asaasGet<{ data: typeof asaasConfirmed; hasMore: boolean }>(
       `/payments?status=CONFIRMED&dateCreated[ge]=${since}&limit=100&offset=${offset}`
     );
     asaasConfirmed.push(...page.data);
@@ -80,6 +81,7 @@ export async function POST(req: NextRequest) {
         if (dbPayment.couponId) {
           await prisma.coupon.update({ where: { id: dbPayment.couponId }, data: { usesCount: { increment: 1 } } }).catch(() => {});
         }
+        await emitirNotaDoPagamento(dbPayment.id, ap);
         // O certificado não é emitido aqui: ele sai quando o aluno conclui o curso
         // (api/progress e completeCourseAction). Emitir no pagamento liberava o
         // certificado no ato da compra (08/10/2026: 57 do DICI sem ninguém ter concluído).

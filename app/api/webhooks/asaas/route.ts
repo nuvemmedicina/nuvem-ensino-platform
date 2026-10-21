@@ -6,6 +6,7 @@ import { APP_URL } from "@/lib/appUrl";
 import { sendAfterResponse } from "@/lib/emailBackground";
 import { sendGA4PurchaseEvent } from "@/lib/ga4MeasurementProtocol";
 import { sendMetaPurchaseEvent } from "@/lib/metaConversionsApi";
+import { emitirNotaDoPagamento, atualizarNotaPeloWebhook, cancelarNotaDoPagamento } from "@/lib/nfse";
 
 export async function POST(req: NextRequest) {
   const secret = process.env.ASAAS_WEBHOOK_TOKEN;
@@ -17,10 +18,20 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { event, payment } = body as {
+  const { event, payment, invoice } = body as {
     event: string;
-    payment?: { id: string; status: string; externalReference?: string; value: number; billingType?: string };
+    payment?: {
+      id: string; status: string; externalReference?: string; value: number; billingType?: string;
+      customer?: string; installment?: string | null;
+    };
+    invoice?: { id: string; status?: string; number?: string | null; pdfUrl?: string | null; statusDescription?: string | null };
   };
+
+  // ── Nota fiscal (INVOICE_AUTHORIZED, INVOICE_ERROR, ...) ────────────────────
+  if (event.startsWith("INVOICE_") && invoice?.id) {
+    await atualizarNotaPeloWebhook(event, invoice);
+    return NextResponse.json({ received: true });
+  }
 
   // ── Pagamento confirmado ────────────────────────────────────────────────────
   if ((event === "PAYMENT_CONFIRMED" || event === "PAYMENT_RECEIVED") && payment?.id) {
@@ -82,6 +93,8 @@ export async function POST(req: NextRequest) {
           courseSlug: enrollment.course.slug,
         }),
       );
+      // Nota fiscal: só pede se ASAAS_NFSE_ATIVO=true; falhas viram e-mail para a coordenação.
+      await emitirNotaDoPagamento(dbPayment.id, payment);
     }
   }
 
@@ -180,6 +193,7 @@ export async function POST(req: NextRequest) {
         prisma.enrollment.update({ where: { id: dbPayment.enrollmentId }, data: { status: "REFUNDED" } }),
       ]);
       if (enrollment) await sincronizarVagas(prisma, enrollment.courseId);
+      await cancelarNotaDoPagamento(dbPayment.id);
     }
   }
 

@@ -84,6 +84,13 @@ model User {
   image         String?
   phone         String?
   taxId         String?
+  // Endereço de quem paga: o Asaas exige endereço completo com CEP para emitir
+  // a nota fiscal (NFS-e). Pedido no checkout; a cidade sai do CEP.
+  postalCode         String?
+  address            String?
+  addressNumber      String?
+  addressComplement  String?
+  province           String?
   role          Role      @default(STUDENT)
   bio           String?
   specialty     String?
@@ -477,7 +484,12 @@ model Payment {
   asaasPaymentId String?
   couponId       String?
   receiptUrl     String?
+  // Nota fiscal de serviço emitida pelo Asaas (lib/nfse.ts). nfseId é o id
+  // da nota no Asaas (inv_...); o status acompanha os webhooks INVOICE_*.
   nfseId         String?
+  nfseStatus     String?
+  nfseNumber     String?
+  nfsePdfUrl     String?
   // Client ID do GA4 (cookie _ga), só existe quando a pessoa aceitou o
   // cookie de analytics no navegador. Usado para mandar o evento de compra
   // pro GA4 pelo servidor quando o pagamento é confirmado (ver
@@ -497,6 +509,8 @@ model Payment {
   updatedAt      DateTime      @updatedAt
 
   enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  @@index([nfseId])
 }
 
 // ─── COUPONS ──────────────────────────────────────────────────────────────────

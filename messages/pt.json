@@ -219,7 +219,7 @@
       },
       "parcelado": {
         "label": "Cartão de Crédito",
-        "desc": "Até 10x no cartão"
+        "desc": "Até 5x no cartão"
       }
     }
   },
@@ -618,7 +618,7 @@
       },
       {
         "q": "Posso parcelar o pagamento?",
-        "a": "Sim, aceitamos parcelamento em até 10x no cartão de crédito. Para pagamento à vista via Pix, pode haver desconto. Verifique na página do curso."
+        "a": "Sim, aceitamos parcelamento em até 5x no cartão de crédito. Para pagamento à vista via Pix, pode haver desconto. Verifique na página do curso."
       },
       {
         "q": "Qual é a política de reembolso?",

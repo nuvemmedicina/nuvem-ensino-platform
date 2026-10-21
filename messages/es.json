@@ -219,7 +219,7 @@
       },
       "parcelado": {
         "label": "Tarjeta de Crédito",
-        "desc": "Hasta 10 cuotas"
+        "desc": "Hasta 5 cuotas"
       }
     }
   },
@@ -618,7 +618,7 @@
       },
       {
         "q": "¿Puedo pagar en cuotas?",
-        "a": "Sí, aceptamos hasta 3 cuotas en tarjeta de crédito. Para pago al contado vía Pix puede haber descuento. Consulta la página del curso."
+        "a": "Sí, aceptamos hasta 5 cuotas en tarjeta de crédito. Para pago al contado vía Pix puede haber descuento. Consulta la página del curso."
       },
       {
         "q": "¿Cuál es la política de reembolso?",

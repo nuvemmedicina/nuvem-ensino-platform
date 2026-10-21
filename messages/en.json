@@ -219,7 +219,7 @@
       },
       "parcelado": {
         "label": "Credit Card",
-        "desc": "Up to 10x installments"
+        "desc": "Up to 5x installments"
       }
     }
   },
@@ -618,7 +618,7 @@
       },
       {
         "q": "Can I pay in installments?",
-        "a": "Yes, we accept up to 3 installments on credit card. For upfront payment via Pix, a discount may apply. Check the course page for details."
+        "a": "Yes, we accept up to 5 installments on credit card. For upfront payment via Pix, a discount may apply. Check the course page for details."
       },
       {
         "q": "What is the refund policy?",
