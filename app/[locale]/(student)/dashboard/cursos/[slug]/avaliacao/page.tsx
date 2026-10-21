@@ -210,9 +210,9 @@ export default async function AvaliacaoPage({ params }: Props) {
           {t("sigaAvalie")}
         </p>
 
-        {/* Nuvem Ensino */}
+        {/* NUVEM Ensino */}
         <div className="mb-5">
-          <p className="font-sans text-[10px] font-semibold uppercase tracking-widest text-muted/60 mb-3">Nuvem Ensino</p>
+          <p className="font-sans text-[10px] font-semibold uppercase tracking-widest text-muted/60 mb-3">NUVEM Ensino</p>
           <div className="flex flex-wrap justify-center gap-2.5">
             <a href="https://www.instagram.com/nuvemensino/" target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-2 font-sans text-sm font-semibold px-4 py-2.5 rounded-full border border-border hover:border-[#e1306c]/40 hover:bg-[#e1306c]/5 transition-colors text-foreground">

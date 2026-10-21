@@ -4,8 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 
 export const metadata: Metadata = {
-  title: "NU.V.E.M ENSINO | Links",
-  description: "Cursos, livros e contato da NU.V.E.M ENSINO.",
+  title: "NU.V.E.M Ensino | Links",
+  description: "Cursos, livros e contato da NU.V.E.M Ensino.",
   robots: { index: false, follow: false },
   alternates: { canonical: "/links" },
 };
@@ -83,7 +83,7 @@ export default async function LinksPage() {
     >
       <div className="max-w-lg mx-auto px-6 py-14 flex flex-col items-center">
         <Image src="/icone-nuvem.png" alt="" width={56} height={56} className="w-12 h-12 object-contain mb-4" />
-        <h1 className="font-serif text-2xl text-[#0E2B33] tracking-wide">NU.V.E.M ENSINO</h1>
+        <h1 className="font-serif text-2xl text-[#0E2B33] tracking-wide">NU.V.E.M Ensino</h1>
         <p className="font-sans text-sm text-[#5B6B6E] text-center mt-2 max-w-sm">
           Plataforma de formação médica com excelência em ensino clínico para profissionais de saúde
         </p>
@@ -125,7 +125,7 @@ export default async function LinksPage() {
 
         <SectionLabel>Sobre</SectionLabel>
         <div className="w-full flex flex-col gap-3">
-          <InternalLinkButton href="/sobre" label="Conheça a NU.V.E.M ENSINO" />
+          <InternalLinkButton href="/sobre" label="Conheça a NU.V.E.M Ensino" />
           <InternalLinkButton href="/instrutores" label="Corpo docente" />
         </div>
 

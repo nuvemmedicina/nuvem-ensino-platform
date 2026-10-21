@@ -4,7 +4,7 @@ import fs from "fs";
 import path from "path";
 
 export const runtime = "nodejs";
-export const alt = "Curso — NU.V.E.M ENSINO";
+export const alt = "Curso — NU.V.E.M Ensino";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -18,9 +18,9 @@ export default async function Image({ params }: Props) {
     include: { instructor: { include: { user: true } } },
   });
 
-  const title       = course?.title       ?? "Curso — NU.V.E.M ENSINO";
+  const title       = course?.title       ?? "Curso — NU.V.E.M Ensino";
   const shortDesc   = course?.shortDesc   ?? "Formação médica hands-on e online com especialistas.";
-  const instructor  = course?.instructor?.user?.name ?? "NU.V.E.M ENSINO";
+  const instructor  = course?.instructor?.user?.name ?? "NU.V.E.M Ensino";
   const hours       = course?.hours       ?? 0;
   const thumbnail   = course?.thumbnailUrl ?? null;
 

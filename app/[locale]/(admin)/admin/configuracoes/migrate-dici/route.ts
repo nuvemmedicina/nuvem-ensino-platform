@@ -37,7 +37,7 @@ export async function GET() {
       status: "PUBLISHED",
       instructorId: instructor.id,
       startDateLabel: "Agosto a novembro de 2026",
-      location: "Online (plataforma NU.V.E.M ENSINO) com encontros síncronos ao vivo",
+      location: "Online (plataforma NU.V.E.M Ensino) com encontros síncronos ao vivo",
       objectives: [
         "Compreender a fisiopatologia dos Distúrbios da Interação Cérebro-Intestino (DICI) com base nos Critérios de Roma V",
         "Diagnosticar e manejar os principais DICI: síndrome do intestino irritável, dispepsia funcional, constipação funcional e diarreia funcional",
@@ -63,10 +63,10 @@ export async function GET() {
         "Avaliações online ao término de cada módulo",
         "Certificado de Conclusão emitido pela FACOP — instituição credenciada pelo MEC",
         "Material complementar atualizado disponibilizado ao longo do curso",
-        "Acesso à plataforma NU.V.E.M ENSINO durante todo o período do curso",
+        "Acesso à plataforma NU.V.E.M Ensino durante todo o período do curso",
         "⚠ Direitos autorais: é proibida a reprodução total ou parcial das aulas por qualquer meio ou processo. A violação constitui crime (Código Penal, art. 184 e Lei nº 9.610/98), sujeitando-se à busca, apreensão e indenizações.",
       ].join("\n"),
-      metaTitle: "Curso DICI: Neurogastroenterologia e Métodos Diagnósticos | NU.V.E.M ENSINO",
+      metaTitle: "Curso DICI: Neurogastroenterologia e Métodos Diagnósticos | NU.V.E.M Ensino",
       metaDesc:
         "Curso de Aperfeiçoamento em Distúrbios da Interação Cérebro-Intestino. 96h, certificado MEC/FACOP. Online com encontros síncronos. Agosto a novembro de 2026.",
     },

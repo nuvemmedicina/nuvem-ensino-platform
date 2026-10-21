@@ -29,8 +29,8 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: "NU.V.E.M ENSINO — Formação Médica de Excelência",
-    template: "%s | NU.V.E.M ENSINO",
+    default: "NU.V.E.M Ensino — Formação Médica de Excelência",
+    template: "%s | NU.V.E.M Ensino",
   },
   description:
     "Curso de Aperfeiçoamento em DICI — 96h | 4 módulos + bônus, 100% online. 4h de aula ao vivo por módulo. Coordenação: Dra. Vera Lúcia Ângelo Andrade. Certificação FACOP / MEC.",
@@ -49,9 +49,9 @@ export const metadata: Metadata = {
     "dra vera angelo",
     "aperfeiçoamento médico",
   ],
-  authors: [{ name: "NU.V.E.M ENSINO", url: APP_URL }],
-  creator: "NU.V.E.M ENSINO",
-  publisher: "NU.V.E.M ENSINO",
+  authors: [{ name: "NU.V.E.M Ensino", url: APP_URL }],
+  creator: "NU.V.E.M Ensino",
+  publisher: "NU.V.E.M Ensino",
   robots: {
     index: true,
     follow: true,
@@ -67,8 +67,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     url: APP_URL,
-    siteName: "NU.V.E.M ENSINO",
-    title: "NU.V.E.M ENSINO — Formação Médica de Excelência",
+    siteName: "NU.V.E.M Ensino",
+    title: "NU.V.E.M Ensino — Formação Médica de Excelência",
     description:
       "Curso de Aperfeiçoamento em DICI — 96h | 4 módulos + bônus, 100% online. 4h de aula ao vivo por módulo. Coordenação: Dra. Vera Lúcia Ângelo Andrade. Certificação FACOP / MEC.",
     images: [
@@ -76,13 +76,13 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "NU.V.E.M ENSINO — Formação Médica de Excelência",
+        alt: "NU.V.E.M Ensino — Formação Médica de Excelência",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NU.V.E.M ENSINO — Formação Médica de Excelência",
+    title: "NU.V.E.M Ensino — Formação Médica de Excelência",
     description:
       "Curso de Aperfeiçoamento em DICI — 96h | 4 módulos + bônus, 100% online. 4h de aula ao vivo por módulo. Coordenação: Dra. Vera Lúcia Ângelo Andrade. Certificação FACOP / MEC.",
     images: ["/opengraph-image"],
@@ -99,7 +99,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Nuvem Ensino",
+    title: "NUVEM Ensino",
   },
   other: {
     "mobile-web-app-capable": "yes",

@@ -22,7 +22,7 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `${t("title")} | NU.V.E.M ENSINO`,
+      title: `${t("title")} | NU.V.E.M Ensino`,
       description: t("description"),
       url: locale === "en" ? "/en/faq" : locale === "es" ? "/es/faq" : "/faq",
       locale: locale === "en" ? "en_US" : locale === "es" ? "es_ES" : "pt_BR",

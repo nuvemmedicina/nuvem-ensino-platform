@@ -277,7 +277,7 @@ export function CertificatePDF({
   return (
     <Document
       title={`Certificado — ${courseTitle}`}
-      author="NU.V.E.M ENSINO"
+      author="NU.V.E.M Ensino"
       subject="Certificado de Conclusão"
     >
       <Page size="A4" orientation="landscape" style={s.page}>
@@ -418,8 +418,8 @@ export function CertificatePDF({
               />
             ) : (
               <View style={{ alignItems: "center" }}>
-                <Text style={{ fontFamily: "Helvetica", fontWeight: "bold", fontSize: 14, color: C.teal, letterSpacing: 2 }}>nu.vem</Text>
-                <Text style={{ fontFamily: "Helvetica", fontSize: 9, color: C.teal, letterSpacing: 3 }}>ensino</Text>
+                <Text style={{ fontFamily: "Helvetica", fontWeight: "bold", fontSize: 14, color: C.teal, letterSpacing: 2 }}>NU.V.E.M</Text>
+                <Text style={{ fontFamily: "Helvetica", fontSize: 9, color: C.teal, letterSpacing: 3 }}>Ensino</Text>
               </View>
             )}
 

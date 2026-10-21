@@ -14,12 +14,12 @@ import AulaGratuitaPlayer from "./AulaGratuitaPlayer";
 
 const descricao =
   `A NUVEM Medicina completa 5 anos e libera uma aula exclusiva: O Médico Ampliado — aplicações práticas da IA na rotina do gastroenterologista, com a Dra. Vera Ângelo e o ${AULA_GRATUITA.convidado}.`;
-const tituloPagina = `Aula gratuita: ${AULA_GRATUITA.titulo} · NU.V.E.M ENSINO`;
+const tituloPagina = `Aula gratuita: ${AULA_GRATUITA.titulo} · NU.V.E.M Ensino`;
 // O openGraph da página substitui o do layout inteiro, por isso repete tudo.
 const capaOg = { url: AULA_GRATUITA.capa, width: 1920, height: 1080, alt: `Dra. Vera Ângelo e ${AULA_GRATUITA.convidado}` };
 
 export const metadata: Metadata = {
-  // O layout já acrescenta " | NU.V.E.M ENSINO" ao título da aba.
+  // O layout já acrescenta " | NU.V.E.M Ensino" ao título da aba.
   title: `Aula gratuita: ${AULA_GRATUITA.titulo}`,
   description: descricao,
   alternates: { canonical: "/aula-gratuita" },
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     url: "/aula-gratuita",
-    siteName: "NU.V.E.M ENSINO",
+    siteName: "NU.V.E.M Ensino",
     title: tituloPagina,
     description: descricao,
     images: [capaOg],
@@ -75,7 +75,7 @@ export default async function AulaGratuitaPage({ searchParams }: Props) {
       {/* ── Painel da foto ── */}
       <div className="relative bg-[#001820] flex flex-col px-6 py-6 sm:px-8 lg:h-screen lg:sticky lg:top-0 lg:px-12 lg:py-10">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M ENSINO" className="h-10 w-auto self-start lg:h-11" />
+        <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M Ensino" className="h-10 w-auto self-start lg:h-11" />
 
         <div className="flex-1 flex flex-col justify-center py-6 lg:py-10">
           <div className="relative aspect-video w-full overflow-hidden rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.45)]">
@@ -176,7 +176,7 @@ function AulaLiberada({
     <div className="min-h-screen bg-[#001820] text-white">
       <header className="px-6 py-5 sm:px-10">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M ENSINO" className="h-10 w-auto" />
+        <img src="/nuvem-ensino-branca.png" alt="NU.V.E.M Ensino" className="h-10 w-auto" />
       </header>
 
       <main className="mx-auto max-w-5xl px-4 pb-16 sm:px-6">

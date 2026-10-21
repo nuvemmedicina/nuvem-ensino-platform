@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     context?.lessonTitle && `Aula: ${context.lessonTitle}`,
   ].filter(Boolean).join(" | ");
 
-  const systemPrompt = `Você é a Nuvete, assistente de estudos da NU.V.E.M ENSINO — plataforma de formação médica de excelência.
+  const systemPrompt = `Você é a Nuvete, assistente de estudos da NU.V.E.M Ensino — plataforma de formação médica de excelência.
 
 Sua missão é ajudar ${userName} a estudar e compreender o conteúdo médico com clareza, rigor científico e didática.
 

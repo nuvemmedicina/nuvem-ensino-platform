@@ -30,9 +30,9 @@ const primeiroNome = (n: string | null) => {
 
 function mensagem(nome: string, temCredencial: boolean): string {
   if (temCredencial) {
-    return `Oi, ${nome}! Aqui é da equipe do Nu.V.E.M Ensino 🎓 Vimos que sua matrícula no Aperfeiçoamento em DICI está ativa, mas você ainda não começou as aulas. Sem pressa nem prazo apertado: as aulas ficam gravadas na plataforma e você assiste no seu ritmo, começando por onde quiser. Que tal dar o primeiro passo hoje?\n\nLink para entrar: ${LINK_ENTRAR}\nDepois de entrar, é só clicar no Aperfeiçoamento em DICI: ${LINK_CURSO}\n\nQualquer dificuldade para entrar, me chama por aqui que a gente resolve na hora!`;
+    return `Oi, ${nome}! Aqui é da equipe da NU.V.E.M Ensino 🎓 Vimos que sua matrícula no Aperfeiçoamento em DICI está ativa, mas você ainda não começou as aulas. Sem pressa nem prazo apertado: as aulas ficam gravadas na plataforma e você assiste no seu ritmo, começando por onde quiser. Que tal dar o primeiro passo hoje?\n\nLink para entrar: ${LINK_ENTRAR}\nDepois de entrar, é só clicar no Aperfeiçoamento em DICI: ${LINK_CURSO}\n\nQualquer dificuldade para entrar, me chama por aqui que a gente resolve na hora!`;
   }
-  return `Oi, ${nome}! Aqui é da equipe do Nu.V.E.M Ensino 🎓 Vimos que sua matrícula no Aperfeiçoamento em DICI está ativa, mas você ainda não conseguiu configurar seu acesso à plataforma. Para entrar pela primeira vez, é só ir em "Esqueci minha senha" na tela de login usando o e-mail que você cadastrou — em 1 minuto você já está com acesso liberado.\n\nLink para entrar: ${LINK_ENTRAR}\n\nQualquer dificuldade, me chama por aqui que a gente resolve junto!`;
+  return `Oi, ${nome}! Aqui é da equipe da NU.V.E.M Ensino 🎓 Vimos que sua matrícula no Aperfeiçoamento em DICI está ativa, mas você ainda não conseguiu configurar seu acesso à plataforma. Para entrar pela primeira vez, é só ir em "Esqueci minha senha" na tela de login usando o e-mail que você cadastrou — em 1 minuto você já está com acesso liberado.\n\nLink para entrar: ${LINK_ENTRAR}\n\nQualquer dificuldade, me chama por aqui que a gente resolve junto!`;
 }
 
 function waLink(telefoneBruto: string | null): string | null {

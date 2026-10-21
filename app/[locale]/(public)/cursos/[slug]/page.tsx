@@ -49,12 +49,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const lc = localizedCourse(course, locale);
   const noIdioma = (pt: string | null, es: string | null, en: string | null) =>
     (locale === "es" ? es : locale === "en" ? en : null) || pt;
-  // O layout já acrescenta " | NU.V.E.M ENSINO"; tira o sufixo se vier no campo
+  // O layout já acrescenta " | NU.V.E.M Ensino"; tira o sufixo se vier no campo
   const metaTitle = noIdioma(course.metaTitle, course.metaTitleEs, course.metaTitleEn)?.replace(/\s*\|\s*NU\.V\.E\.M ENSINO\s*$/i, "") || null;
   const description =
     noIdioma(course.metaDesc, course.metaDescEs, course.metaDescEn) ??
     lc.shortDesc ??
-    `Curso ${lc.title} — ${course.hours}h de formação prática com especialistas. Certificação ISO 9001 pela NU.V.E.M ENSINO.`;
+    `Curso ${lc.title} — ${course.hours}h de formação prática com especialistas. Certificação ISO 9001 pela NU.V.E.M Ensino.`;
 
   const ogImage = course.thumbnailUrl
     ? { url: course.thumbnailUrl, width: 1200, height: 630, alt: lc.title }
@@ -171,7 +171,7 @@ export default async function CoursePage({ params }: Props) {
     image: course.thumbnailUrl ?? `${APP_URL}/og-image.png`,
     provider: {
       "@type": "EducationalOrganization",
-      name: "NU.V.E.M ENSINO",
+      name: "NU.V.E.M Ensino",
       url: APP_URL,
       sameAs: APP_URL,
     },
@@ -670,7 +670,7 @@ export default async function CoursePage({ params }: Props) {
               <div>
                 <p className="font-serif text-xl font-medium text-white mb-2">Reconhecido pelo MEC</p>
                 <p className="font-sans text-sm text-white/60 leading-relaxed">
-                  Os cursos da NU.V.E.M ENSINO são oferecidos em parceria com a <strong className="text-accent font-semibold">Faculdade FACOP</strong>, reconhecida pelo Ministério da Educação (MEC) para oferta de cursos presenciais e EAD, garantindo qualidade acadêmica e certificação válida em todo o território nacional.
+                  Os cursos da NU.V.E.M Ensino são oferecidos em parceria com a <strong className="text-accent font-semibold">Faculdade FACOP</strong>, reconhecida pelo Ministério da Educação (MEC) para oferta de cursos presenciais e EAD, garantindo qualidade acadêmica e certificação válida em todo o território nacional.
                 </p>
               </div>
             </div>

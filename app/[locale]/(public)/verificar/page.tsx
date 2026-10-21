@@ -10,13 +10,13 @@ export async function generateMetadata({
   const { locale } = await params;
   const path = locale === "en" ? "/en/verificar" : locale === "es" ? "/es/verificar" : "/verificar";
   return {
-    title: "Verificar Certificado — NU.V.E.M ENSINO",
+    title: "Verificar Certificado — NU.V.E.M Ensino",
     description:
-      "Verifique a autenticidade de um certificado emitido pela NU.V.E.M ENSINO. Informe o código impresso no certificado para confirmar sua validade.",
+      "Verifique a autenticidade de um certificado emitido pela NU.V.E.M Ensino. Informe o código impresso no certificado para confirmar sua validade.",
     alternates: { canonical: path },
     openGraph: {
-      title: "Verificar Certificado — NU.V.E.M ENSINO",
-      description: "Confirme a autenticidade de certificados emitidos pela NU.V.E.M ENSINO.",
+      title: "Verificar Certificado — NU.V.E.M Ensino",
+      description: "Confirme a autenticidade de certificados emitidos pela NU.V.E.M Ensino.",
       url: path,
     },
   };
@@ -106,7 +106,7 @@ export default async function VerificarPage({ searchParams }: Props) {
                       Certificado válido
                     </p>
                     <p className="font-sans text-xs text-green-600/80">
-                      Emitido pela NU.V.E.M ENSINO
+                      Emitido pela NU.V.E.M Ensino
                     </p>
                   </div>
                 </div>
@@ -166,7 +166,7 @@ export default async function VerificarPage({ searchParams }: Props) {
             <InfoCard
               icon="🛡️"
               title="100% confiável"
-              body="Os certificados da NU.V.E.M ENSINO possuem código único e são verificáveis a qualquer momento."
+              body="Os certificados da NU.V.E.M Ensino possuem código único e são verificáveis a qualquer momento."
             />
           </div>
         </section>

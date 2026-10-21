@@ -86,7 +86,7 @@ export default function AulaGratuitaForm() {
       <label className="flex items-start gap-2.5 text-[13px] text-[#5C747A] leading-relaxed cursor-pointer">
         <input type="checkbox" checked={aceita} onChange={(e) => setAceita(e.target.checked)}
           className="mt-1 h-4 w-4 accent-[#00475E] shrink-0" />
-        <span>Aceito receber da NU.V.E.M ENSINO conteúdos e novidades sobre cursos por e-mail e WhatsApp. Posso cancelar quando quiser.</span>
+        <span>Aceito receber da NU.V.E.M Ensino conteúdos e novidades sobre cursos por e-mail e WhatsApp. Posso cancelar quando quiser.</span>
       </label>
 
       {error && <p className="text-sm text-red-600" role="alert">{error}</p>}

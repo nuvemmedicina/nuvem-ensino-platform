@@ -31,7 +31,7 @@ export default function Header() {
           <Link href="/" className="shrink-0 group">
             <Image
               src="/logo.png"
-              alt="NU.V.E.M ENSINO"
+              alt="NU.V.E.M Ensino"
               width={120}
               height={94}
               className="h-11 w-auto transition-opacity duration-200 group-hover:opacity-80"

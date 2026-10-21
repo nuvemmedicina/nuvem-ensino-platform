@@ -35,7 +35,7 @@
       "subtitle": "The only certified clinic in this segment in BH"
     },
     "legal": {
-      "copyright": "© {year} NU.V.E.M ENSINO · CNPJ 42.679.051/0001-31",
+      "copyright": "© {year} NU.V.E.M Ensino · CNPJ 42.679.051/0001-31",
       "crm": "NU.V.E.M MEDICINA · CRM-MG 20532",
       "director": "Dra. Vera Ângelo · CRM-MG 22284 · RQE 10411 · RQE 22736",
       "disclaimer": "The information on this site is for educational purposes only and does not replace professional medical consultation, in accordance with the Federal Council of Medicine (Res. CFM n° 1.974/2011).",
@@ -101,7 +101,7 @@
     },
     "cta": {
       "title": "Ready to advance your career?",
-      "description": "Join hundreds of healthcare professionals who have already transformed their clinical practice with NU.V.E.M ENSINO.",
+      "description": "Join hundreds of healthcare professionals who have already transformed their clinical practice with NU.V.E.M Ensino.",
       "button": "Get started"
     }
   },
@@ -505,7 +505,7 @@
   "about": {
     "meta": {
       "title": "About",
-      "description": "Learn about NU.V.E.M ENSINO, a specialized medical education platform."
+      "description": "Learn about NU.V.E.M Ensino, a specialized medical education platform."
     },
     "hero": {
       "badge": "About NU.V.E.M",
@@ -515,10 +515,10 @@
     "founders": {
       "badge": "Founded by those who live medicine every day",
       "title": "Clinic and education under one roof",
-      "p1": "NU.V.E.M Medicina and NU.V.E.M ENSINO were founded by Dr. Vera Ângelo and Dr. Eliane Basques, specialists passionate about medicine and the transformative power of shared knowledge.",
+      "p1": "NU.V.E.M Medicina and NU.V.E.M Ensino were founded by Dr. Vera Ângelo and Dr. Eliane Basques, specialists passionate about medicine and the transformative power of shared knowledge.",
       "p2": "Together, they created a unique ecosystem that unites clinic and education under one roof, where each patient seen inspires new content, and each trained professional raises the standard of healthcare.",
       "p3": "NU.V.E.M Medicina is a reference in Gastroenterology, Digestive Motility, Pelvic Physiotherapy and Advanced Diagnostics in Belo Horizonte, with state-of-the-art equipment and a highly specialized multidisciplinary team.",
-      "p4": "NU.V.E.M ENSINO was born as a natural extension of this clinical excellence, training physicians, physiotherapists and specialists through theoretical-practical courses, hands-on immersions and methodology based on real clinical cases from the clinic itself."
+      "p4": "NU.V.E.M Ensino was born as a natural extension of this clinical excellence, training physicians, physiotherapists and specialists through theoretical-practical courses, hands-on immersions and methodology based on real clinical cases from the clinic itself."
     },
     "iso": {
       "badge": "ISO 9001 Certification",
@@ -544,7 +544,7 @@
       "quoteAuthor": "Dr. Vera Ângelo & Dr. Eliane Basques, founders"
     },
     "differentials": {
-      "title": "Why NU.V.E.M ENSINO",
+      "title": "Why NU.V.E.M Ensino",
       "iso": {
         "title": "ISO 9001 Certified",
         "desc": "The only clinic of this type in Belo Horizonte with ISO 9001 certification. Every process, from scheduling to certification, follows rigorous protocols audited by independent bodies."
@@ -572,14 +572,14 @@
     },
     "cta": {
       "title": "Ready to advance your training?",
-      "description": "Explore the NU.V.E.M ENSINO catalog and find the right course for your specialty.",
+      "description": "Explore the NU.V.E.M Ensino catalog and find the right course for your specialty.",
       "button": "View all courses"
     }
   },
   "instructors": {
     "meta": {
       "title": "Instructors",
-      "description": "Meet the specialists who teach NU.V.E.M ENSINO courses."
+      "description": "Meet the specialists who teach NU.V.E.M Ensino courses."
     },
     "badge": "Faculty",
     "title": "Our Instructors",
@@ -589,7 +589,7 @@
   "faq": {
     "meta": {
       "title": "Frequently Asked Questions",
-      "description": "Find answers about NU.V.E.M ENSINO courses."
+      "description": "Find answers about NU.V.E.M Ensino courses."
     },
     "title": "Frequently Asked Questions",
     "subtitle": "Find answers about our courses and platform.",
@@ -645,19 +645,29 @@
   "contact": {
     "meta": {
       "title": "Contact",
-      "description": "Get in touch with the NU.V.E.M ENSINO team by email or WhatsApp."
+      "description": "Get in touch with the NU.V.E.M Ensino team by email or WhatsApp."
     },
     "badge": "Get in touch",
     "title": "Contact",
-    "description": "Have questions about a course, an enrollment, or want to learn more about NU.V.E.M ENSINO? Reach our team through the channels below.",
-    "emailLabel": "Email",
+    "description": "Have questions about a course, an enrollment, or want to learn more about NU.V.E.M Ensino? Reach our team through the channel you prefer.",
     "whatsappLabel": "WhatsApp",
+    "whatsappHint": "The fastest way to reach our team about courses, classes and enrollment.",
     "whatsappButton": "Chat on WhatsApp",
-    "locationLabel": "Location",
-    "locationValue": "Belo Horizonte, MG, Brazil",
+    "emailLabel": "Email",
+    "emailHint": "For detailed questions, sending documents and invoice requests.",
     "sendEmail": "Send email",
-    "faqPrompt": "Before writing to us, check if your question is already answered on our",
-    "faqLink": "frequently asked questions page"
+    "socialLabel": "Social media",
+    "socialHint": "Follow our news, open lessons and classes open for enrollment.",
+    "locationLabel": "Where we are",
+    "locationPlace": "Clínica NU.V.E.M Medicina",
+    "addressLine1": "Rua Ceará, 600 · suite 101",
+    "addressLine2": "Santa Efigênia · Belo Horizonte, MG, Brazil",
+    "addressLine3": "ZIP 30150-310",
+    "directions": "Get directions",
+    "mapTitle": "Map showing the location of Clínica NU.V.E.M Medicina in Belo Horizonte",
+    "faqTitle": "Your question may already be answered",
+    "faqPrompt": "We gathered the most common questions about courses, payments, certificates and platform access.",
+    "faqLink": "See frequently asked questions"
   },
   "consent": {
     "message": "We use cookies to analyze site usage and measure our campaigns, as described in our",
@@ -676,7 +686,7 @@
   },
   "privacy": {
     "title": "Privacy Policy",
-    "lastUpdated": "Last updated: May 2026 · NUVEM ENSINO · CNPJ 42.679.051/0001-31",
+    "lastUpdated": "Last updated: May 2026 · NUVEM Ensino · CNPJ 42.679.051/0001-31",
     "sections": [
       {
         "title": "1. Data collected",
@@ -714,17 +724,17 @@
   },
   "terms": {
     "title": "Terms of Use",
-    "lastUpdated": "Last updated: May 2026 · NUVEM ENSINO · CNPJ 42.679.051/0001-31",
+    "lastUpdated": "Last updated: May 2026 · NUVEM Ensino · CNPJ 42.679.051/0001-31",
     "privacyLink": "→ Privacy Policy",
     "faqLink": "→ FAQ",
     "sections": [
       {
         "title": "1. Acceptance of Terms",
-        "text": "By accessing and using the NU.V.E.M ENSINO platform, you agree to these Terms of Use. If you do not agree with any provision, we recommend that you do not use the services. NU.V.E.M ENSINO reserves the right to update these terms at any time, with prior notice to registered users."
+        "text": "By accessing and using the NU.V.E.M Ensino platform, you agree to these Terms of Use. If you do not agree with any provision, we recommend that you do not use the services. NU.V.E.M Ensino reserves the right to update these terms at any time, with prior notice to registered users."
       },
       {
         "title": "2. Description of Services",
-        "text": "NU.V.E.M ENSINO is an online and in-person medical education platform, operated by NUVEM ENSINO (CNPJ 42.679.051/0001-31), offering courses in gastroenterology, digestive motility and pelvic physiotherapy, taught by qualified professionals."
+        "text": "NU.V.E.M Ensino is an online and in-person medical education platform, operated by NUVEM Ensino (CNPJ 42.679.051/0001-31), offering courses in gastroenterology, digestive motility and pelvic physiotherapy, taught by qualified professionals."
       },
       {
         "title": "3. Registration and Account",
@@ -740,7 +750,7 @@
       },
       {
         "title": "6. Intellectual Property",
-        "text": "All platform content (video lessons, teaching materials, texts, images and trademarks) is the exclusive property of NU.V.E.M ENSINO or its instructors. Reproduction, distribution or commercialization of any content without express written authorization is prohibited."
+        "text": "All platform content (video lessons, teaching materials, texts, images and trademarks) is the exclusive property of NU.V.E.M Ensino or its instructors. Reproduction, distribution or commercialization of any content without express written authorization is prohibited."
       },
       {
         "title": "7. Permitted Use",
@@ -752,7 +762,7 @@
       },
       {
         "title": "9. Limitation of Liability",
-        "text": "NU.V.E.M ENSINO is not responsible for damages arising from technical interruptions, system errors or improper use of the platform by the user. Our commitment is to ensure service availability at a reasonable level of continuity."
+        "text": "NU.V.E.M Ensino is not responsible for damages arising from technical interruptions, system errors or improper use of the platform by the user. Our commitment is to ensure service availability at a reasonable level of continuity."
       },
       {
         "title": "10. Jurisdiction and Legislation",
@@ -801,7 +811,7 @@
     "disclaimer": "Purchase, payment and delivery are handled directly by Editora Rubio (in Brazilian reais, shipped from Brazil). Prices, installments and availability are set by them and may change without notice, so we don't display them here.",
     "cta": {
       "title": "Want to go beyond reading?",
-      "description": "Check out NU.V.E.M ENSINO's courses with Dr. Vera Ângelo and other specialists.",
+      "description": "Check out NU.V.E.M Ensino's courses with Dr. Vera Ângelo and other specialists.",
       "button": "View courses"
     },
     "seeAllLink": "See all publications at Editora Rubio →"

@@ -6,7 +6,7 @@
  * Os inscritos vão para LiveLead com o eventSlug abaixo (o mesmo modelo da
  * live de julho), e aparecem em /admin/live-leads.
  *
- * O vídeo é o publicado no canal da Nuvem Ensino no YouTube (decisão da
+ * O vídeo é o publicado no canal da NUVEM Ensino no YouTube (decisão da
  * coordenação, 16/10/2026). Como ele é público lá, o formulário não impede
  * ninguém de assistir pelo YouTube — serve para quem chega pela página.
  */
