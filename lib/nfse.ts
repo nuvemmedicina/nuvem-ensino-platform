@@ -56,7 +56,7 @@ export async function emitirNotaDoPagamento(
     const nota = await createInvoice({
       ...(parcelado ? { customer: asaasPayment.customer } : { payment: asaasPayment.id }),
       externalReference: pagamento.enrollmentId,
-      serviceDescription: (process.env.ASAAS_NFSE_DESCRICAO ?? "Instrução e treinamento: {curso}").replace("{curso}", curso),
+      serviceDescription: (process.env.ASAAS_NFSE_DESCRICAO ?? "Instrução e treinamento – curso de aperfeiçoamento médico").replace("{curso}", curso),
       observations: `Curso ${curso}, NU.V.E.M Ensino.`,
       value: Number(pagamento.amount),
       effectiveDate: hojeEmBrasilia(),
