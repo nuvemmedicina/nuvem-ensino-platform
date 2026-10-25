@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/admin/flashcards/generate": ["./node_modules/pdfjs-dist/legacy/build/pdf.worker.mjs"],
     "/api/admin/rag/index": ["./node_modules/pdfjs-dist/legacy/build/pdf.worker.mjs"],
+    // As assinaturas ficam fora de public/ (não acessíveis por URL direta),
+    // então o rastreamento de arquivos do build precisa ser avisado
+    // explicitamente para incluí-las na função desta rota.
+    "/api/certificates/[id]/pdf": ["./private/assinaturas/**/*"],
   },
 
   images: {
