@@ -2,11 +2,18 @@ import { prisma } from "@/lib/prisma";
 import { Radio } from "lucide-react";
 import { CabecalhoAdmin, botaoCabecalho } from "@/components/admin/CabecalhoAdmin";
 import { AULA_GRATUITA } from "@/lib/aula-gratuita";
+import { LIVE_DICI } from "@/lib/live-dici";
 
 export const metadata = { title: "Interessados" };
 
 // Mais recente primeiro: é a aba que abre por padrão.
 const EVENTOS = [
+  {
+    slug: LIVE_DICI.eventSlug,
+    rotulo: "Live DICI — novembro",
+    subtitulo: `${LIVE_DICI.dataLabel} · página /live`,
+    aula: false,
+  },
   {
     slug: AULA_GRATUITA.eventSlug,
     rotulo: "Aula gratuita — 5º encontro",

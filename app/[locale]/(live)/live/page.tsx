@@ -1,15 +1,22 @@
 import Image from "next/image";
 import type { Metadata } from "next";
+import Link from "next/link";
 import LiveRegistrationForm from "./LiveRegistrationForm";
+import { LIVE_DICI, liveDiciEncerrada } from "@/lib/live-dici";
+
+// Depois do horário da live a página troca o formulário pelo link do curso.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Live Exclusiva — Curso DICI · NU.V.E.M Ensino",
+  title: "Live gratuita com a Dra. Vera Ângelo — Curso DICI · NU.V.E.M Ensino",
   description:
-    "Participe da live com a Dra. Vera Ângelo sobre o Curso de Aperfeiçoamento em DICI e garanta um desconto exclusivo para os presentes.",
+    "Live gratuita em 18/11, às 19h30: a Dra. Vera Ângelo apresenta o Curso de Aperfeiçoamento em DICI e a condição especial de 30% para entrar agora.",
   alternates: { canonical: "/live" },
 };
 
 export default function LivePage() {
+  const encerrada = liveDiciEncerrada();
+
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       {/* ── Painel da foto ── */}
@@ -52,44 +59,63 @@ export default function LivePage() {
 
       {/* ── Painel do formulário ── */}
       <div className="bg-white flex flex-col justify-center px-8 py-14 lg:px-16 lg:py-20">
-        {/* Badge ao vivo */}
-        <div className="inline-flex items-center gap-2 bg-red-600 text-white text-[10px] font-black tracking-[0.18em] uppercase px-3.5 py-1.5 rounded-full w-fit mb-7 animate-pulse">
-          <span className="w-1.5 h-1.5 rounded-full bg-white" />
-          Live Exclusiva · 22/07 às 19h30
-        </div>
+        {encerrada ? (
+          <>
+            <h1
+              className="text-[#00475E] leading-[1.15] mb-4"
+              style={{ fontFamily: "Georgia, serif", fontSize: "clamp(1.55rem, 3vw, 2.3rem)", fontWeight: "normal" }}
+            >
+              A live já aconteceu, mas ainda dá tempo de entrar no DICI
+            </h1>
+            <p className="text-sm text-[#5C747A] leading-relaxed max-w-[44ch] mb-8">
+              Todas as aulas do Curso de Aperfeiçoamento em DICI ficam gravadas. Você assiste no seu
+              ritmo e participa ao vivo do último encontro, em 25/11.
+            </p>
+            <Link
+              href={`/cursos/${LIVE_DICI.courseSlug}`}
+              className="w-full text-center py-4 rounded-xl bg-[#00475E] hover:bg-[#003344] text-white font-bold text-[15px] transition-all"
+            >
+              Conhecer o curso →
+            </Link>
+          </>
+        ) : (
+          <>
+            {/* Badge ao vivo */}
+            <div className="inline-flex items-center gap-2 bg-red-600 text-white text-[10px] font-black tracking-[0.18em] uppercase px-3.5 py-1.5 rounded-full w-fit mb-7 animate-pulse">
+              <span className="w-1.5 h-1.5 rounded-full bg-white" />
+              Live gratuita · {LIVE_DICI.dataCurta}
+            </div>
 
-        <h1
-          className="text-[#00475E] leading-[1.15] mb-4"
-          style={{
-            fontFamily: "Georgia, serif",
-            fontSize: "clamp(1.55rem, 3vw, 2.3rem)",
-            fontWeight: "normal",
-          }}
-        >
-          Descubra o Curso que vai{" "}
-          <em className="not-italic text-[#0C1E24]">transformar</em>{" "}
-          sua prática clínica em DICI
-        </h1>
+            <h1
+              className="text-[#00475E] leading-[1.15] mb-4"
+              style={{ fontFamily: "Georgia, serif", fontSize: "clamp(1.55rem, 3vw, 2.3rem)", fontWeight: "normal" }}
+            >
+              Live com a Dra. Vera Ângelo:{" "}
+              <em className="not-italic text-[#0C1E24]">ainda dá tempo</em>{" "}
+              de entrar no DICI
+            </h1>
 
-        <p className="text-sm text-[#5C747A] leading-relaxed max-w-[44ch] mb-7">
-          A Dra. Vera Ângelo vai apresentar ao vivo o Curso de Aperfeiçoamento
-          em DICI e revelar, com exclusividade para os presentes, uma condição
-          especial de matrícula.
-        </p>
+            <p className="text-sm text-[#5C747A] leading-relaxed max-w-[44ch] mb-7">
+              {LIVE_DICI.dataLabel}, ao vivo e gratuito. A Dra. Vera Ângelo apresenta o Curso de
+              Aperfeiçoamento em DICI: como ele funciona, o que você aprende nos 4 módulos e como
+              entrar agora, com as aulas gravadas.
+            </p>
 
-        {/* Box de desconto */}
-        <div className="flex items-start gap-3 bg-[#F5EDD4] border border-[#B8973A] rounded-xl px-4 py-3.5 mb-8">
-          <span className="text-xl mt-0.5 shrink-0">🎁</span>
-          <p className="text-sm text-[#0C1E24] leading-relaxed">
-            <strong className="text-[#B8973A] font-bold">Desconto exclusivo para participantes da live.</strong>
-            <br />
-            Válido apenas durante a transmissão. Garanta sua presença para aproveitar.
-          </p>
-        </div>
+            {/* Box da condição */}
+            <div className="flex items-start gap-3 bg-[#F5EDD4] border border-[#B8973A] rounded-xl px-4 py-3.5 mb-8">
+              <span className="text-xl mt-0.5 shrink-0">🎁</span>
+              <p className="text-sm text-[#0C1E24] leading-relaxed">
+                <strong className="text-[#B8973A] font-bold">Condição especial até 29/11.</strong>
+                <br />
+                30% de desconto e 5x sem juros para entrar no curso. A Dra. Vera explica tudo na live.
+              </p>
+            </div>
 
-        <div className="h-px bg-[#D8D2C8] mb-8" />
+            <div className="h-px bg-[#D8D2C8] mb-8" />
 
-        <LiveRegistrationForm />
+            <LiveRegistrationForm />
+          </>
+        )}
 
         {/* Selos ISO + MEC */}
         <div className="mt-10 pt-8 border-t border-[#D8D2C8] flex justify-center">

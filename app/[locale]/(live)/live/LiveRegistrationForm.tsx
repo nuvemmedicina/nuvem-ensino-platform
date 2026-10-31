@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { getStoredAttribution } from "@/lib/utmCapture";
 
 export default function LiveRegistrationForm() {
   const [nome, setNome] = useState("");
   const [especialidade, setEspecialidade] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
+  const [aceita, setAceita] = useState(true);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -26,14 +28,20 @@ export default function LiveRegistrationForm() {
       setError("Preencha todos os campos para confirmar sua inscrição.");
       return;
     }
+    const origem =
+      new URLSearchParams(window.location.search).get("utm_source") ?? getStoredAttribution()?.utmSource ?? "";
     startTransition(async () => {
       try {
         const res = await fetch("/api/live-registro", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nome, especialidade, telefone, email }),
+          body: JSON.stringify({ nome, especialidade, telefone, email, aceitaComunicacoes: aceita, origem }),
         });
-        if (!res.ok) throw new Error();
+        if (!res.ok) {
+          const data = await res.json().catch(() => null);
+          setError(data?.error ?? "Erro ao salvar inscrição. Tente novamente.");
+          return;
+        }
         setDone(true);
       } catch {
         setError("Erro ao salvar inscrição. Tente novamente.");
@@ -119,8 +127,14 @@ export default function LiveRegistrationForm() {
         </div>
       </div>
 
+      <label className="flex items-start gap-2.5 text-[13px] text-[#5C747A] dark:text-[#8AADB5] leading-relaxed cursor-pointer">
+        <input type="checkbox" checked={aceita} onChange={(e) => setAceita(e.target.checked)}
+          className="mt-1 h-4 w-4 accent-[#00475E] shrink-0" />
+        <span>Aceito receber da NU.V.E.M Ensino conteúdos e novidades sobre cursos por e-mail e WhatsApp. Posso cancelar quando quiser.</span>
+      </label>
+
       {error && (
-        <p className="text-sm text-red-500">{error}</p>
+        <p className="text-sm text-red-500" role="alert">{error}</p>
       )}
 
       <button
@@ -132,7 +146,7 @@ export default function LiveRegistrationForm() {
       </button>
 
       <p className="text-[11px] text-center text-[#5C747A] dark:text-[#8AADB5] leading-relaxed">
-        Seus dados estão seguros. Enviamos apenas o link da live no dia do evento.
+        Seus dados estão seguros. O link da live chega por e-mail e WhatsApp antes do evento.
       </p>
     </form>
   );
