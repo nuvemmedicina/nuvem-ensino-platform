@@ -18,6 +18,7 @@ import { prisma } from "@/lib/prisma";
 import { localizedCourse, traduzirModulos } from "@/lib/i18n-content";
 import { auth } from "@/auth";
 import { LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
+import { ofertaAtiva, precoComOferta } from "@/lib/ofertas";
 import ShareButton from "./ShareButton";
 
 import { APP_URL } from "@/lib/appUrl";
@@ -212,6 +213,15 @@ export default async function CoursePage({ params }: Props) {
   const fmtPrice = (v: number) =>
     new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
 
+  // Os textos da oferta são só em português; nas versões EN/ES a página segue como sempre.
+  const oferta = locale === "pt" && !course.externalCheckoutUrl ? ofertaAtiva(course.slug) : null;
+  const precoOferta = oferta ? precoComOferta(fullPrice, oferta) : fullPrice;
+  const checkoutHref = {
+    pathname: "/checkout/[slug]" as const,
+    params: { slug: course.slug },
+    ...(oferta ? { query: { cupom: oferta.cupom } } : {}),
+  };
+
   return (
     <div>
       <script
@@ -267,6 +277,13 @@ export default async function CoursePage({ params }: Props) {
                 {lc.description}
               </p>
 
+              {oferta?.aviso && (
+                <div className="max-w-2xl mb-8 rounded-xl border border-accent/30 bg-primary/40 px-5 py-4">
+                  <p className="font-sans text-sm font-semibold text-accent mb-1">{oferta.aviso.titulo}</p>
+                  <p className="font-sans text-sm text-white/75 leading-relaxed">{oferta.aviso.texto}</p>
+                </div>
+              )}
+
               <div className="flex flex-wrap gap-6 text-white/70">
                 {content.startDate && (
                   <span className="flex items-center gap-2 font-sans text-sm">
@@ -297,9 +314,24 @@ export default async function CoursePage({ params }: Props) {
                 className="rounded-2xl border border-white/10 p-6"
                 style={{ background: "rgba(255,255,255,0.06)", backdropFilter: "blur(8px)" }}
               >
+                {oferta && (
+                  <>
+                    <p className="inline-block font-sans text-[10px] font-bold uppercase tracking-widest text-accent-foreground bg-accent px-3 py-1 rounded-full mb-3">
+                      {oferta.descontoPct}% OFF · até {oferta.fimLabel}
+                    </p>
+                    <p className="font-sans text-sm text-white/40 line-through">
+                      {fmtPrice(fullPrice)}
+                    </p>
+                  </>
+                )}
                 <p className="font-serif text-4xl font-semibold text-accent mb-1">
-                  {fmtPrice(fullPrice)}
+                  {fmtPrice(precoOferta)}
                 </p>
+                {oferta && (
+                  <p className="font-sans text-sm font-semibold text-white/80 mb-1">
+                    ou {oferta.parcelas}x de {fmtPrice(precoOferta / oferta.parcelas)} sem juros
+                  </p>
+                )}
                 <p className="font-sans text-xs text-white/40 mb-6">
                   {course.category === "ONLINE"
                     ? "Acesso completo ao curso"
@@ -338,10 +370,10 @@ export default async function CoursePage({ params }: Props) {
                   </>
                 ) : (
                   <Link
-                    href={{ pathname: "/checkout/[slug]", params: { slug: course.slug } }}
+                    href={checkoutHref}
                     className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full bg-accent text-accent-foreground hover:bg-accent-light transition-colors mb-3"
                   >
-                    {t("checkoutButton")}
+                    {oferta ? `Matricular-se com ${oferta.descontoPct}% OFF` : t("checkoutButton")}
                   </Link>
                 )}
                 <a
@@ -610,9 +642,24 @@ export default async function CoursePage({ params }: Props) {
 
           {/* CTA mobile */}
           <div className="lg:hidden bg-surface border border-border rounded-2xl p-6">
+            {oferta && (
+              <>
+                <p className="inline-block font-sans text-[10px] font-bold uppercase tracking-widest text-white bg-primary px-3 py-1 rounded-full mb-3">
+                  {oferta.descontoPct}% OFF · até {oferta.fimLabel}
+                </p>
+                <p className="font-sans text-sm text-muted line-through">
+                  {fmtPrice(fullPrice)}
+                </p>
+              </>
+            )}
             <p className="font-serif text-3xl font-semibold text-primary mb-1">
-              {fmtPrice(fullPrice)}
+              {fmtPrice(precoOferta)}
             </p>
+            {oferta && (
+              <p className="font-sans text-sm font-semibold text-foreground mb-1">
+                ou {oferta.parcelas}x de {fmtPrice(precoOferta / oferta.parcelas)} sem juros
+              </p>
+            )}
             <p className="font-sans text-xs text-muted mb-5">
               {course.hours}{t("hours")}
             </p>
@@ -628,10 +675,10 @@ export default async function CoursePage({ params }: Props) {
               </a>
             ) : (
               <Link
-                href={{ pathname: "/checkout/[slug]", params: { slug: course.slug } }}
+                href={checkoutHref}
                 className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
               >
-                {t("checkoutButton")}
+                {oferta ? `Matricular-se com ${oferta.descontoPct}% OFF` : t("checkoutButton")}
               </Link>
             )}
           </div>
