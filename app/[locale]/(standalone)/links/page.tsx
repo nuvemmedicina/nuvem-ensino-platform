@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
+import NextLink from "next/link";
 import { Link } from "@/i18n/navigation";
+import { LIVE_DICI, liveDiciEncerrada } from "@/lib/live-dici";
+
+// O destaque da live some sozinho depois do horário dela.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "NU.V.E.M Ensino | Links",
@@ -95,6 +100,23 @@ export default async function LinksPage() {
         >
           Ver cursos
         </Link>
+
+        {!liveDiciEncerrada() && (
+          <NextLink
+            href="/live?utm_source=instagram&utm_medium=bio&utm_campaign=dici-live"
+            className="w-full mt-3 flex items-center justify-between gap-3 rounded-xl border border-[#C9A84C] bg-[#F5EDD4] px-6 py-4 text-[#0E2B33] hover:shadow-sm transition-all"
+          >
+            <span className="flex flex-col">
+              <span className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#B8973A]">
+                Live gratuita · {LIVE_DICI.dataCurta}
+              </span>
+              <span className="font-sans text-[15px] font-semibold mt-0.5">
+                Inscreva-se na live com a Dra. Vera Ângelo
+              </span>
+            </span>
+            <span className="text-[#B8973A]"><ArrowIcon /></span>
+          </NextLink>
+        )}
 
         {cursosPresenciais.length > 0 && (
           <>
