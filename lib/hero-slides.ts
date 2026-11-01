@@ -1,3 +1,5 @@
+import { LIVE_DICI, liveDiciEncerrada } from "@/lib/live-dici";
+
 type Translator = (key: string) => string;
 
 export type HeroSlideLink =
@@ -18,8 +20,11 @@ export interface HeroSlide {
 
 // `t` deve vir de getTranslations({ namespace: "home" }) — as chaves abaixo
 // são relativas a esse namespace (ex.: "hero.badge", "heroCarousel.slide2.badge").
-export function getHeroSlides(t: Translator): HeroSlide[] {
-  return [
+export function getHeroSlides(t: Translator, locale: string): HeroSlide[] {
+  // Até a live de novembro do DICI (só em PT, como a página /live), o convite
+  // abre o carrossel no lugar do slide da gravação de julho.
+  const liveNovembro = locale === "pt" && !liveDiciEncerrada();
+  const slides: HeroSlide[] = [
     {
       id: "excelencia",
       badge: t("hero.badge"),
@@ -65,4 +70,24 @@ export function getHeroSlides(t: Translator): HeroSlide[] {
       },
     },
   ];
+
+  if (!liveNovembro) return slides;
+
+  const convite: HeroSlide = {
+    id: "dici-live-novembro",
+    badge: `Live gratuita · ${LIVE_DICI.dataCurta}`,
+    title: "Live com a Dra. Vera Ângelo: ainda dá tempo de entrar no",
+    titleHighlight: "DICI",
+    description:
+      "Ao vivo e gratuito: como o curso funciona, o que você aprende nos 4 módulos e a condição especial de 30% até 29/11.",
+    primaryCta: {
+      label: "Quero participar",
+      link: { type: "plain", href: "/live?utm_source=site&utm_medium=home&utm_campaign=dici-live" },
+    },
+    secondaryCta: {
+      label: "Detalhes do Curso",
+      link: { type: "route", pathname: "/cursos/[slug]", slug: LIVE_DICI.courseSlug },
+    },
+  };
+  return [convite, ...slides.filter((s) => s.id !== "dici-live")];
 }

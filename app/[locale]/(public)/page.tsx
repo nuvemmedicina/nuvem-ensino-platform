@@ -9,6 +9,10 @@ import HeroStats from "@/components/hero-stats";
 import { getHeroSlides } from "@/lib/hero-slides";
 import { APP_URL } from "@/lib/appUrl";
 
+// Refaz a página a cada hora: o convite da live sai do carrossel depois do
+// horário dela (lib/hero-slides.ts) sem precisar de um novo deploy.
+export const revalidate = 3600;
+
 export async function generateMetadata({
   params,
 }: {
@@ -72,7 +76,7 @@ const jsonLd = {
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
-  const heroSlides = getHeroSlides((key) => t(key));
+  const heroSlides = getHeroSlides((key) => t(key), locale);
 
   // Instrutores do banco
   const dbInstructors = await prisma.instructor.findMany({
