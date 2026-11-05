@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Loader2, Mail, ArrowLeft } from "lucide-react";
+import { useHidratado } from "@/lib/use-hidratado";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
@@ -11,6 +12,7 @@ export default function EsqueciSenhaPage() {
   const t = useTranslations("auth.forgotPassword");
   const [state, setState] = useState<State>("idle");
   const [isPending, startTransition] = useTransition();
+  const hidratado = useHidratado();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -49,7 +51,7 @@ export default function EsqueciSenhaPage() {
           <h1 className="font-serif text-3xl font-light text-foreground mb-1">{t("title")}</h1>
           <p className="font-sans text-sm text-muted mb-8">{t("subtitle")}</p>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <label htmlFor="email" className="font-sans text-xs font-semibold text-foreground/70">
                 {t("emailLabel")}
@@ -67,7 +69,7 @@ export default function EsqueciSenhaPage() {
 
             <button
               type="submit"
-              disabled={isPending}
+              disabled={isPending || !hidratado}
               className="w-full flex items-center justify-center gap-2 font-sans text-sm font-semibold px-4 py-3 rounded-xl bg-primary text-white hover:bg-primary/90 disabled:opacity-60 transition-colors mt-1"
             >
               {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
