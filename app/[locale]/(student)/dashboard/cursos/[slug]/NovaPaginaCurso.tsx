@@ -683,7 +683,8 @@ export async function NovaPaginaCurso(props: NovaPaginaCursoProps) {
                   </section>
                 )}
                 {(() => {
-                  const comAudio = todasAulas.filter((a) => a.audioUrl).length;
+                  // Vídeo do Mux conta: o AudioCast sai do próprio vídeo.
+                  const comAudio = todasAulas.filter((a) => a.muxPlaybackId || a.audioUrl).length;
                   if (comAudio === 0) return null;
                   return (
                     <section className="bg-surface border border-border rounded-2xl p-5">

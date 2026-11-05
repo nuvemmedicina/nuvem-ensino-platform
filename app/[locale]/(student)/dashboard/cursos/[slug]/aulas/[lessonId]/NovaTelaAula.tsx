@@ -128,7 +128,8 @@ export default function NovaTelaAula(props: Props) {
   const temMux = !!aula?.muxPlaybackId;
   const youtube = !temMux && aula?.videoUrl ? idYoutube(aula.videoUrl) : null;
   const temVideo = temMux || !!youtube;
-  const temAudio = !!aula?.audioUrl;
+  // Vídeo do Mux sempre tem AudioCast: o áudio sai do próprio vídeo.
+  const temAudio = temMux || !!aula?.audioUrl;
   const [modo, setModo] = useState<"assistir" | "ouvir">(temVideo ? "assistir" : "ouvir");
 
   const linkAula = (id: string) => `/dashboard/cursos/${courseSlug}/aulas/${id}`;

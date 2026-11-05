@@ -31,6 +31,9 @@ export async function POST(req: NextRequest) {
       new_asset_settings: {
         playback_policy: ["public"],
         encoding_tier: "baseline",
+        // Arquivo só de áudio do próprio vídeo: é o AudioCast da aula
+        // (ver lib/audiocast.ts).
+        static_renditions: [{ resolution: "audio-only" }],
       },
     });
 
