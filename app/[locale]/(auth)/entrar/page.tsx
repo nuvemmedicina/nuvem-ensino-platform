@@ -4,6 +4,7 @@ import { Suspense, useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useHidratado } from "@/lib/use-hidratado";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
@@ -18,6 +19,7 @@ function EntrarForm() {
     errorParam === "CredentialsSignin" ? t("error") : ""
   );
   const [isPending, startTransition] = useTransition();
+  const hidratado = useHidratado();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -69,7 +71,7 @@ function EntrarForm() {
         <div className="flex-1 h-px bg-border" />
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="email" className="font-sans text-xs font-semibold text-foreground/70">
             {t("emailLabel")}
@@ -123,7 +125,7 @@ function EntrarForm() {
 
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || !hidratado}
           className="w-full flex items-center justify-center gap-2 font-sans text-sm font-semibold px-4 py-3 rounded-xl bg-primary text-white hover:bg-primary/90 disabled:opacity-60 transition-colors mt-1"
         >
           {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
