@@ -72,6 +72,17 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // O AudioCast sai do próprio vídeo (lib/audiocast.ts). O upload pelo painel
+    // já pede o arquivo de áudio; isto cobre vídeos enviados por outro caminho,
+    // como o painel do Mux.
+    try {
+      const asset = await mux().video.assets.retrieve(assetId);
+      const temAudio = (asset.static_renditions?.files ?? []).some((f) => f.resolution === "audio-only");
+      if (!temAudio) await mux().video.assets.createStaticRendition(assetId, { resolution: "audio-only" });
+    } catch (err) {
+      console.warn("[Mux Webhook] Não foi possível pedir o áudio do asset", assetId, err);
+    }
+
     console.log(`[Mux Webhook] Asset ${assetId} pronto → playbackId ${playbackId}`);
   }
 

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { audiocastSrc } from "@/lib/audiocast";
+import { audiocastSrc, audioDoVideoSrc } from "@/lib/audiocast";
 
 /**
  * O Google Drive devolve os arquivos com Cross-Origin-Resource-Policy:
@@ -11,8 +11,10 @@ import { audiocastSrc } from "@/lib/audiocast";
  *
  * De quebra o AudioCast passa a exigir matrícula, como as referências.
  *
- * Espelha /api/references/[id]. Quando os áudios saírem do Drive, só a origem
- * do fetch muda: a página continua apontando para cá.
+ * Espelha /api/references/[id].
+ *
+ * Fonte do áudio, em ordem: o áudio do próprio vídeo, gerado pelo Mux (ver
+ * audioDoVideoSrc), e, se ele ainda não existir, o arquivo cadastrado no Drive.
  */
 
 export const runtime = "nodejs";
@@ -28,9 +30,13 @@ export async function GET(
   const { lessonId } = await params;
   const lesson = await prisma.lesson.findUnique({
     where: { id: lessonId },
-    select: { audioUrl: true, module: { select: { courseId: true } } },
+    select: { audioUrl: true, muxPlaybackId: true, module: { select: { courseId: true } } },
   });
-  if (!lesson?.audioUrl) return NextResponse.json({ error: "Áudio não encontrado." }, { status: 404 });
+  const fontes = [
+    lesson?.muxPlaybackId ? audioDoVideoSrc(lesson.muxPlaybackId) : null,
+    lesson?.audioUrl ? audiocastSrc(lesson.audioUrl) : null,
+  ].filter((f): f is string => !!f);
+  if (!lesson || fontes.length === 0) return NextResponse.json({ error: "Áudio não encontrado." }, { status: 404 });
 
   const role = (session.user as { role?: string }).role;
   if (role !== "ADMIN" && role !== "INSTRUCTOR" && role !== "EDITOR") {
@@ -44,17 +50,26 @@ export async function GET(
 
   // O player pede o arquivo em faixas — o Safari do iOS não toca sem isso.
   const range = req.headers.get("range");
-  const upstream = await fetch(audiocastSrc(lesson.audioUrl), {
-    headers: range ? { Range: range } : {},
-    cache: "no-store",
-  });
+  // Só passa para a fonte seguinte quando o arquivo não existe (o Mux ainda
+  // não gerou o áudio). Outro erro numa fonte que existe não deve misturar
+  // pedaços de dois arquivos diferentes no mesmo player.
+  let upstream: Response | null = null;
+  for (const fonte of fontes) {
+    const r = await fetch(fonte, { headers: range ? { Range: range } : {}, cache: "no-store" });
+    if (r.status === 404) { await r.body?.cancel(); continue; }
+    upstream = r;
+    break;
+  }
 
-  if (!upstream.ok || !upstream.body) {
+  if (!upstream?.ok || !upstream.body) {
     return NextResponse.json({ error: "Não foi possível carregar o áudio." }, { status: 502 });
   }
 
+  // O Mux responde "audio/m4a", que não é um tipo registrado; o Safari só
+  // reconhece o mesmo arquivo como "audio/mp4".
+  const tipo = upstream.headers.get("content-type") ?? "audio/mpeg";
   const headers = new Headers({
-    "Content-Type": upstream.headers.get("content-type") ?? "audio/mpeg",
+    "Content-Type": tipo === "audio/m4a" ? "audio/mp4" : tipo,
     "Accept-Ranges": "bytes",
     "Cache-Control": "private, max-age=3600",
   });

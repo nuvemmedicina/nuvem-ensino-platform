@@ -21,6 +21,19 @@ function driveFileId(url: string): string | null {
   return null;
 }
 
+/**
+ * Áudio tirado do próprio vídeo da aula: o Mux gera um arquivo só de áudio
+ * (static rendition "audio-only") para cada vídeo. É a fonte preferida do
+ * AudioCast desde nov/2026 — não há como o áudio ser de outra aula, e toda
+ * aula com vídeo ganha AudioCast sem ninguém subir arquivo.
+ *
+ * O arquivo só existe depois que o Mux termina de gerá-lo; até lá o endereço
+ * dá 404 e a rota cai no áudio do Drive, se houver.
+ */
+export function audioDoVideoSrc(muxPlaybackId: string): string {
+  return `https://stream.mux.com/${muxPlaybackId}/audio.m4a`;
+}
+
 /** URL que o <audio> consegue tocar. Endereços que não são do Drive passam intactos. */
 export function audiocastSrc(url: string): string {
   const id = driveFileId(url);
