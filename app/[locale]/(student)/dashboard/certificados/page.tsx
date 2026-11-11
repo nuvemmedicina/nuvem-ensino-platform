@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Award, Download, ShieldCheck } from "lucide-react";
+import { Award, ClipboardList, Download, ShieldCheck } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { calcularEstatisticas } from "@/lib/gamification";
 import { ProgressoPanel } from "../ProgressoPanel";
@@ -12,6 +12,7 @@ export default async function CertificadosPage({ params }: { params: Promise<{ l
   const t = await getTranslations({ locale, namespace: "dashboard.certificates" });
   const ti = await getTranslations({ locale, namespace: "novaArea.inicio" });
   const tp = await getTranslations({ locale, namespace: "novaArea.paginas.conquistas" });
+  const td = await getTranslations({ locale, namespace: "novaArea.paginas.dadosCertificado" });
 
   const session = await auth();
   if (!session?.user?.id) redirect("/entrar?callbackUrl=/dashboard/certificados");
@@ -37,6 +38,15 @@ export default async function CertificadosPage({ params }: { params: Promise<{ l
 
   const dl = locale === "pt" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US";
 
+  // Pedido da coordenação ainda sem resposta: dados para o certificado da FACOP
+  const pedidosDados = await prisma.enrollment.findMany({
+    where: { userId: session.user.id, certDataRequestedAt: { not: null }, certDataSubmittedAt: null, status: { in: ["ACTIVE", "COMPLETED"] } },
+    select: { course: { select: { title: true, titleEs: true, titleEn: true } } },
+  });
+  const cursosPendentes = new Intl.ListFormat(dl, { type: "conjunction" }).format(
+    pedidosDados.map((p) => (locale === "en" ? p.course.titleEn : locale === "es" ? p.course.titleEs : null) ?? p.course.title),
+  );
+
   const subtitle =
     certificates.length === 0
       ? t("completeCourseDesc")
@@ -55,6 +65,24 @@ export default async function CertificadosPage({ params }: { params: Promise<{ l
           <h1 className="font-serif text-4xl font-medium text-foreground leading-tight">{ti("conquistasTitulo")}</h1>
           <p className="font-sans text-[15px] text-muted mt-1">{ti("conquistasSubtitulo")}</p>
         </div>
+
+        {pedidosDados.length > 0 && (
+          <section className="bg-amber-50 border border-amber-200 rounded-2xl p-5 sm:p-6 flex flex-wrap items-center gap-4">
+            <span className="w-12 h-12 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+              <ClipboardList className="w-6 h-6" aria-hidden="true" />
+            </span>
+            <div className="flex-1 min-w-[min(100%,16rem)]">
+              <h2 className="font-sans text-base font-semibold text-foreground">{td("aviso")}</h2>
+              <p className="font-sans text-sm text-muted mt-0.5">{td("avisoTexto", { cursos: cursosPendentes })}</p>
+            </div>
+            <Link
+              href="/dashboard/dados-certificado"
+              className="inline-flex items-center min-h-[44px] px-5 rounded-full bg-primary text-white font-sans text-sm font-semibold hover:bg-primary/90"
+            >
+              {td("avisoBotao")}
+            </Link>
+          </section>
+        )}
 
         {stats && stats.xp > 0 && (
           <div className="[&>section]:p-0 [&>section]:bg-transparent">
