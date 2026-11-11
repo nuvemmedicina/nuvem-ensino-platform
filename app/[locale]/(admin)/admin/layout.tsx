@@ -43,6 +43,7 @@ export default async function AdminLayout({
     { key: "rag",          href: "/admin/rag",                          grupo: "Ensino", label: "Base IA (RAG)" },
     { key: "users",        href: "/admin/usuarios",                     grupo: "Alunos", label: t("users") },
     { key: "enrollments",  href: "/admin/matriculas",                   grupo: "Alunos", label: t("enrollments") },
+    { key: "facop",        href: "/admin/certificados-facop",           grupo: "Alunos", label: "Certificados FACOP", soAdmin: true },
     { key: "liveLeads",    href: "/admin/live-leads",                   grupo: "Alunos", label: "Interessados" },
     { key: "emails",       href: "/admin/emails",                       grupo: "Alunos", label: "E-mails" },
     { key: "payments",     href: "/admin/pagamentos",                   grupo: "Vendas", label: "Pagamentos" },
@@ -51,6 +52,8 @@ export default async function AdminLayout({
     { key: "settings",     href: "/admin/configuracoes/pagamentos",     grupo: "Configurações", label: "Mercado Pago" },
     { key: "ai",           href: "/admin/configuracoes/ia",             grupo: "Configurações", label: "Inteligência artificial" },
   ];
+  // Certificados FACOP mostra documentos pessoais (RG, CPF): só ADMIN
+  const itensVisiveis = navItems.filter((i) => !("soAdmin" in i) || role === "ADMIN");
 
   return (
     <div className="min-h-screen bg-white flex">
@@ -68,7 +71,7 @@ export default async function AdminLayout({
         <div className="mx-4 h-px bg-border" />
 
         {/* Nav */}
-        <AdminSidebarNav items={navItems} />
+        <AdminSidebarNav items={itensVisiveis} />
 
         <div className="mx-4 h-px bg-border" />
 
@@ -102,7 +105,7 @@ export default async function AdminLayout({
           </div>
           {/* Nav row horizontal */}
           <nav className="flex overflow-x-auto gap-1 px-3 pb-2 scrollbar-none">
-            {navItems.map((item) => (
+            {itensVisiveis.map((item) => (
               <Link
                 key={item.key}
                 href={item.href as "/admin"}

@@ -805,6 +805,51 @@ export async function sendModuloLiberado({
   });
 }
 
+/**
+ * Pede ao aluno os dados que a FACOP exige para emitir o certificado. A
+ * coordenação dispara em lotes por /admin/certificados-facop.
+ */
+export async function sendPedidoDadosCertificado({
+  to,
+  userName,
+  courseName,
+}: {
+  to: string;
+  userName: string;
+  courseName: string;
+}) {
+  const primeiroNome = userName.trim().split(/\s+/)[0] || "aluno(a)";
+  const link = `${APP_URL}/dashboard/dados-certificado`;
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${primeiroNome}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Você está na reta final do <strong>${courseName}</strong>. Para a Faculdade FACOP emitir o seu certificado, precisamos de alguns dados que ainda não temos no seu cadastro.</p>
+    <div style="background:#f0f9fa;border-left:4px solid #00475e;border-radius:8px;padding:16px 20px;margin:24px 0;">
+      <p style="margin:0 0 10px;color:#00475e;font-size:14px;font-weight:700;">O que vamos pedir</p>
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">• Nome completo, como deve sair no certificado</p>
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">• CPF e RG (com o órgão emissor)</p>
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">• Naturalidade (cidade onde você nasceu)</p>
+      <p style="margin:0;color:#374151;font-size:14px;">• Telefone e endereço completo</p>
+    </div>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Leva uns dois minutos. É só entrar com o seu login e preencher.</p>
+    <div style="text-align:center;margin:28px 0;">
+      <a href="${link}"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Preencher meus dados
+      </a>
+    </div>
+    <p style="margin:0 0 16px;color:#6b7280;font-size:13px;">Os dados são usados só para o certificado e ficam guardados no seu cadastro da plataforma.</p>
+    <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Dúvidas? Responda este e-mail ou fale pelo WhatsApp <a href="https://wa.me/5531972291029" style="color:#00475e;">(31) 97229-1029</a>.</p>
+  `;
+
+  return deliver("dados do certificado", to, {
+    from: FROM,
+    to,
+    subject: "Seu certificado: precisamos de alguns dados",
+    html: baseLayout("Dados para o seu certificado", body),
+  });
+}
+
 /** Aviso interno para a coordenação: a nota fiscal de uma venda não saiu (ver lib/nfse.ts). */
 export async function sendAlertaNotaFiscal({
   aluno,

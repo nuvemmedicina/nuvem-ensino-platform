@@ -91,6 +91,16 @@ model User {
   addressNumber      String?
   addressComplement  String?
   province           String?
+  // Cidade e UF do endereço. Antes o endereço só servia para a nota fiscal, e
+  // o Asaas tira a cidade do CEP; a FACOP precisa dela escrita.
+  city               String?
+  state              String?
+  // Dados que a FACOP pede para emitir o certificado (formulário em
+  // /dashboard/dados-certificado). RG com órgão emissor/UF; naturalidade é
+  // "Cidade - UF" de nascimento.
+  rg                 String?
+  rgIssuer           String?
+  birthplace         String?
   role          Role      @default(STUDENT)
   bio           String?
   specialty     String?
@@ -426,6 +436,12 @@ model Enrollment {
   utmSource   String?
   utmMedium   String?
   utmCampaign String?
+
+  // Pedido dos dados para o certificado da FACOP. A coordenação solicita em
+  // lotes (/admin/certificados-facop), começando por quem está perto de
+  // concluir; o aluno responde em /dashboard/dados-certificado.
+  certDataRequestedAt DateTime?
+  certDataSubmittedAt DateTime?
 
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
