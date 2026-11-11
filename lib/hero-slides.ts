@@ -76,10 +76,10 @@ export function getHeroSlides(t: Translator, locale: string): HeroSlide[] {
   const convite: HeroSlide = {
     id: "dici-live-novembro",
     badge: `Live gratuita · ${LIVE_DICI.dataCurta}`,
-    title: "Live com a Dra. Vera Ângelo: ainda dá tempo de entrar no",
-    titleHighlight: "DICI",
+    title: "Live com a Dra. Vera Ângelo:",
+    titleHighlight: "Probióticos na prática clínica",
     description:
-      "Ao vivo e gratuito: como o curso funciona, o que você aprende nos 4 módulos e a condição especial de 30% até 29/11.",
+      "Ao vivo e gratuito: quando o probiótico tem evidência, por que a cepa importa e como indicar nos distúrbios intestinais.",
     primaryCta: {
       label: "Quero participar",
       link: { type: "plain", href: "/live?utm_source=site&utm_medium=home&utm_campaign=dici-live" },

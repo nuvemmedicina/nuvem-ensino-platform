@@ -111,7 +111,7 @@ export default async function LinksPage() {
                 Live gratuita · {LIVE_DICI.dataCurta}
               </span>
               <span className="font-sans text-[15px] font-semibold mt-0.5">
-                Inscreva-se na live com a Dra. Vera Ângelo
+                Probióticos na prática, com a Dra. Vera Ângelo
               </span>
             </span>
             <span className="text-[#B8973A]"><ArrowIcon /></span>
