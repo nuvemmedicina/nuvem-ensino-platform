@@ -8,9 +8,9 @@ import { LIVE_DICI, liveDiciEncerrada } from "@/lib/live-dici";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Live gratuita com a Dra. Vera Ângelo — Curso DICI · NU.V.E.M Ensino",
+  title: "Live gratuita: Probióticos na prática clínica, com a Dra. Vera Ângelo · NU.V.E.M Ensino",
   description:
-    "Live gratuita em 18/11, às 19h30: a Dra. Vera Ângelo apresenta o Curso de Aperfeiçoamento em DICI e a condição especial de 30% para entrar agora.",
+    "Live gratuita em 25/11, às 19h30: a Dra. Vera Ângelo mostra quando o probiótico tem evidência, por que a cepa importa e como indicar nos distúrbios intestinais.",
   alternates: { canonical: "/live" },
 };
 
@@ -68,8 +68,8 @@ export default function LivePage() {
               A live já aconteceu, mas ainda dá tempo de entrar no DICI
             </h1>
             <p className="text-sm text-[#5C747A] leading-relaxed max-w-[44ch] mb-8">
-              Todas as aulas do Curso de Aperfeiçoamento em DICI ficam gravadas. Você assiste no seu
-              ritmo e participa ao vivo do último encontro, em 25/11.
+              Todas as aulas do Curso de Aperfeiçoamento em DICI ficam gravadas, e você assiste no seu
+              ritmo. A condição especial de 30% vale até 29/11.
             </p>
             <Link
               href={`/cursos/${LIVE_DICI.courseSlug}`}
@@ -90,15 +90,14 @@ export default function LivePage() {
               className="text-[#00475E] leading-[1.15] mb-4"
               style={{ fontFamily: "Georgia, serif", fontSize: "clamp(1.55rem, 3vw, 2.3rem)", fontWeight: "normal" }}
             >
-              Live com a Dra. Vera Ângelo:{" "}
-              <em className="not-italic text-[#0C1E24]">ainda dá tempo</em>{" "}
-              de entrar no DICI
+              <em className="not-italic text-[#0C1E24]">Probióticos</em> na prática clínica,
+              com a Dra. Vera Ângelo
             </h1>
 
             <p className="text-sm text-[#5C747A] leading-relaxed max-w-[44ch] mb-7">
-              {LIVE_DICI.dataLabel}, ao vivo e gratuito. A Dra. Vera Ângelo apresenta o Curso de
-              Aperfeiçoamento em DICI: como ele funciona, o que você aprende nos 4 módulos e como
-              entrar agora, com as aulas gravadas.
+              {LIVE_DICI.dataLabel}, ao vivo e gratuito. A Dra. Vera Ângelo mostra quando o probiótico
+              faz diferença e quando é só gasto, por que a cepa importa mais do que a marca e como
+              indicar nos distúrbios intestinais do dia a dia.
             </p>
 
             {/* Box da condição */}
@@ -107,7 +106,8 @@ export default function LivePage() {
               <p className="text-sm text-[#0C1E24] leading-relaxed">
                 <strong className="text-[#B8973A] font-bold">Condição especial até 29/11.</strong>
                 <br />
-                30% de desconto e 5x sem juros para entrar no curso. A Dra. Vera explica tudo na live.
+                30% de desconto e 5x sem juros para entrar no Curso de Aperfeiçoamento em DICI. A Dra.
+                Vera conta tudo no fim da live.
               </p>
             </div>
 
