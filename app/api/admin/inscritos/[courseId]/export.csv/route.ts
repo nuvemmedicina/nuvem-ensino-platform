@@ -44,6 +44,7 @@ export async function GET(
     "E-mail",
     "Telefone",
     "CRM",
+    "Modalidade",
     "Matriculado em",
     ...allDates,
     "Total Presenças",
@@ -62,6 +63,7 @@ export async function GET(
       e.user.email,
       e.user.phone ?? "",
       e.user.crm ?? "",
+      e.modalidade === "PRESENCIAL" ? "Presencial" : e.modalidade === "ONLINE" ? "Online ao vivo" : "",
       new Date(e.enrolledAt).toLocaleDateString("pt-BR"),
       ...allDates.map((d) => {
         const s = attendanceByDate[d];

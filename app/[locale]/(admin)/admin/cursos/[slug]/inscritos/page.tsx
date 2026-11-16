@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft, Download, Users } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { configModalidade, ROTULO_MODALIDADE, lerModalidade } from "@/lib/modalidades";
 import { CheckInRow } from "./CheckInRow";
 import { DatePicker } from "./DatePicker";
 
@@ -47,6 +48,9 @@ export default async function InscritosPage({ params, searchParams }: Props) {
   });
 
   const totalEnrolled = enrollments.length;
+  const cfgModalidade = configModalidade(slug);
+  const presenciais = enrollments.filter((e) => e.modalidade === "PRESENCIAL").length;
+  const online = enrollments.filter((e) => e.modalidade === "ONLINE").length;
   const presentCount = enrollments.filter(
     (e) => e.attendances[0]?.status === "PRESENT" || e.attendances[0]?.status === "LATE",
   ).length;
@@ -107,10 +111,24 @@ export default async function InscritosPage({ params, searchParams }: Props) {
           )}
         </div>
         <div className="bg-surface border border-border rounded-xl p-4">
-          <p className="font-sans text-xs text-muted mb-1">Vagas livres</p>
-          <p className="font-serif text-2xl font-semibold text-foreground">
-            {course.totalSeats !== null ? course.totalSeats - course.reservedSeats : "—"}
-          </p>
+          {cfgModalidade ? (
+            <>
+              <p className="font-sans text-xs text-muted mb-1">Presencial · Online</p>
+              <p className="font-serif text-2xl font-semibold text-foreground">
+                {presenciais} · {online}
+              </p>
+              <p className="font-sans text-xs text-muted mt-0.5">
+                {Math.max(0, cfgModalidade.vagasPresenciais - presenciais)} de {cfgModalidade.vagasPresenciais} vagas presenciais livres
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="font-sans text-xs text-muted mb-1">Vagas livres</p>
+              <p className="font-serif text-2xl font-semibold text-foreground">
+                {course.totalSeats !== null ? course.totalSeats - course.reservedSeats : "—"}
+              </p>
+            </>
+          )}
         </div>
       </div>
 
@@ -150,6 +168,7 @@ export default async function InscritosPage({ params, searchParams }: Props) {
                   studentName={enrollment.user.name ?? enrollment.user.email}
                   studentEmail={enrollment.user.email}
                   studentPhone={enrollment.user.phone}
+                  studentModalidade={(() => { const m = lerModalidade(enrollment.modalidade); return m ? ROTULO_MODALIDADE[m] : null; })()}
                   date={selectedDate}
                   initialStatus={enrollment.attendances[0]?.status ?? null}
                 />

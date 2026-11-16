@@ -4,6 +4,8 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { localizedCourse } from "@/lib/i18n-content";
 import { LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
+import { configModalidade } from "@/lib/modalidades";
+import { presenciaisOcupadas } from "@/lib/modalidadesVagas";
 import CheckoutClient from "./CheckoutClient";
 
 type Props = {
@@ -35,7 +37,7 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
   const course = await prisma.course.findFirst({
     where: { slug, status: "PUBLISHED" },
     select: {
-      title: true, price: true, hours: true,
+      id: true, title: true, price: true, hours: true,
       titleEn: true, titleEs: true,
       shortDesc: true, shortDescEn: true, shortDescEs: true,
       description: true, descriptionEn: true, descriptionEs: true,
@@ -69,8 +71,23 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
       })
     : null;
 
+  // Presencial ou online: quantas vagas presenciais ainda há (a matrícula da própria pessoa não conta).
+  const cfgModalidade = configModalidade(slug);
+  const modalidade = cfgModalidade
+    ? {
+        local: cfgModalidade.local,
+        vagasPresenciais: cfgModalidade.vagasPresenciais,
+        presenciaisRestantes: Math.max(
+          0,
+          cfgModalidade.vagasPresenciais -
+            (await presenciaisOcupadas(prisma, course.id, session ? { userId: session.user.id } : undefined)),
+        ),
+      }
+    : null;
+
   return (
     <CheckoutClient
+      modalidade={modalidade}
       slug={slug}
       courseName={lc.title}
       price={Number(course.price)}

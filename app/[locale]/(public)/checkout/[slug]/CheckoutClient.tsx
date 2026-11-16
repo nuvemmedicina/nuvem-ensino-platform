@@ -8,6 +8,7 @@ import { getGaClientId } from "@/lib/gaClientId";
 import { getFbClientId } from "@/lib/fbClientId";
 import { getStoredAttribution } from "@/lib/utmCapture";
 import { maxParcelas } from "@/lib/parcelamento";
+import type { Modalidade } from "@/lib/modalidades";
 
 declare global {
   interface Window {
@@ -54,6 +55,8 @@ type Props = {
   isGuest?: boolean;
   /** Cupom vindo do link (?cupom=), aplicado automaticamente ao abrir. */
   initialCoupon?: string;
+  /** Cursos que perguntam presencial ou online (lib/modalidades.ts). */
+  modalidade?: { local: string; vagasPresenciais: number; presenciaisRestantes: number } | null;
 };
 
 export default function CheckoutClient({
@@ -68,6 +71,7 @@ export default function CheckoutClient({
   hasPayment,
   isGuest = false,
   initialCoupon = "",
+  modalidade = null,
 }: Props) {
   const t = useTranslations("checkout");
   const router = useRouter();
@@ -96,6 +100,8 @@ export default function CheckoutClient({
   const [endereco, setEndereco] = useState<Endereco>({ ...userAddress, cep: formatCep(userAddress.cep) });
   const [enderecoError, setEnderecoError] = useState("");
   const [buscandoCep, setBuscandoCep] = useState(false);
+  const [escolhaModalidade, setEscolhaModalidade] = useState<Modalidade | null>(null);
+  const [modalidadeError, setModalidadeError] = useState("");
 
   const setCampo = (campo: keyof Endereco, valor: string) => setEndereco((e) => ({ ...e, [campo]: valor }));
 
@@ -239,6 +245,13 @@ export default function CheckoutClient({
 
     if (!validateGuestFields()) return;
 
+    setModalidadeError("");
+    if (modalidade && !escolhaModalidade) {
+      setModalidadeError("Escolha se vai participar presencialmente ou online.");
+      document.getElementById("modalidade")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
     // Cupom 100% — não exige CPF nem método de pagamento
     if (finalPrice === 0) {
       pushBeginCheckout(slug, courseName, 0, "free");
@@ -251,6 +264,7 @@ export default function CheckoutClient({
               courseSlug: slug,
               method: "free",
               couponCode: couponApplied ? couponCode : undefined,
+              modalidade: escolhaModalidade ?? undefined,
               name: isGuest ? guestName.trim() : undefined,
               email: isGuest ? guestEmail.trim() : undefined,
               ...getStoredAttribution(),
@@ -286,6 +300,7 @@ export default function CheckoutClient({
             method,
             couponCode: couponApplied ? couponCode : undefined,
             installments: method === "parcelado" ? installments : 1,
+            modalidade: escolhaModalidade ?? undefined,
             whatsapp: whatsapp.trim() || undefined,
             cpf: cpf.replace(/\D/g, "") || undefined,
             endereco,
@@ -688,6 +703,55 @@ export default function CheckoutClient({
               {enderecoError && <p className="font-sans text-xs text-red-500 mt-1">{enderecoError}</p>}
             </div>
           </section>
+
+          {/* Presencial ou online */}
+          {modalidade && (
+            <section id="modalidade" className="bg-surface border border-border rounded-2xl p-6">
+              <h2 className="font-sans text-sm font-semibold text-foreground mb-4">Como você vai participar?</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {([
+                  {
+                    valor: "PRESENCIAL" as const,
+                    titulo: "Presencial",
+                    texto: modalidade.local,
+                    detalhe:
+                      modalidade.presenciaisRestantes > 0
+                        ? `${modalidade.presenciaisRestantes} de ${modalidade.vagasPresenciais} vagas restantes`
+                        : "Vagas presenciais esgotadas",
+                    esgotado: modalidade.presenciaisRestantes <= 0,
+                  },
+                  {
+                    valor: "ONLINE" as const,
+                    titulo: "Online ao vivo",
+                    texto: "Pelo Google Meet, com tira-dúvidas",
+                    detalhe: "Vagas disponíveis",
+                    esgotado: false,
+                  },
+                ]).map((op) => {
+                  const ativo = escolhaModalidade === op.valor;
+                  return (
+                    <button
+                      key={op.valor}
+                      type="button"
+                      disabled={op.esgotado}
+                      aria-pressed={ativo}
+                      onClick={() => { setEscolhaModalidade(op.valor); setModalidadeError(""); }}
+                      className={`flex flex-col items-start gap-1 p-4 rounded-xl border text-left transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                        ativo ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"
+                      }`}
+                    >
+                      <p className={`font-sans text-sm font-semibold leading-tight ${ativo ? "text-primary" : "text-foreground"}`}>
+                        {op.titulo}
+                      </p>
+                      <p className="font-sans text-[11px] text-muted">{op.texto}</p>
+                      <p className={`font-sans text-[11px] font-medium ${op.esgotado ? "text-red-500" : "text-foreground/70"}`}>{op.detalhe}</p>
+                    </button>
+                  );
+                })}
+              </div>
+              {modalidadeError && <p className="font-sans text-xs text-red-500 mt-2">{modalidadeError}</p>}
+            </section>
+          )}
 
           {/* Forma de pagamento */}
           <section className="bg-surface border border-border rounded-2xl p-6">

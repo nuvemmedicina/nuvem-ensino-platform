@@ -437,6 +437,9 @@ model Enrollment {
   utmMedium   String?
   utmCampaign String?
 
+  // "PRESENCIAL" ou "ONLINE", nos cursos que perguntam no checkout (lib/modalidades.ts)
+  modalidade  String?
+
   // Pedido dos dados para o certificado da FACOP. A coordenação solicita em
   // lotes (/admin/certificados-facop), começando por quem está perto de
   // concluir; o aluno responde em /dashboard/dados-certificado.
