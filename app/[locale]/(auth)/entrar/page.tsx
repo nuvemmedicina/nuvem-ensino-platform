@@ -6,11 +6,12 @@ import { signIn } from "next-auth/react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { destinoSeguro } from "@/lib/destinoSeguro";
 
 function EntrarForm() {
   const t = useTranslations("auth.login");
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
+  const callbackUrl = destinoSeguro(searchParams.get("callbackUrl"));
   const errorParam = searchParams.get("error");
 
   const [showPassword, setShowPassword] = useState(false);
@@ -133,7 +134,7 @@ function EntrarForm() {
 
       <p className="font-sans text-sm text-muted text-center mt-7">
         {t("noAccount")}{" "}
-        <Link href="/cadastro" className="font-semibold text-primary hover:text-primary/80 transition-colors">
+        <Link href={callbackUrl === "/dashboard" ? "/cadastro" : { pathname: "/cadastro", query: { callbackUrl } }} className="font-semibold text-primary hover:text-primary/80 transition-colors">
           {t("createAccount")}
         </Link>
       </p>

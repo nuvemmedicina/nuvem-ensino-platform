@@ -51,7 +51,11 @@ export default async function CheckoutPage({ params, searchParams }: Props) {
   // Checkout como convidado (sem login) só é permitido para o curso da live —
   // os demais cursos continuam exigindo login antes de comprar, como sempre.
   const allowGuestCheckout = slug === LIVE_DICI_SLUG;
-  if (!session && !allowGuestCheckout) redirect(`/entrar?callbackUrl=/checkout/${slug}`);
+  if (!session && !allowGuestCheckout) {
+    // O cupom do link (ex.: oferta da página do curso) precisa sobreviver ao login e ao cadastro.
+    const destino = `/checkout/${slug}${typeof cupom === "string" && cupom ? `?cupom=${encodeURIComponent(cupom)}` : ""}`;
+    redirect(`/entrar?callbackUrl=${encodeURIComponent(destino)}`);
+  }
 
   const lc = localizedCourse(course, locale);
   const mpTokenDb = await prisma.platformSetting.findUnique({ where: { key: "mp_access_token" } });
