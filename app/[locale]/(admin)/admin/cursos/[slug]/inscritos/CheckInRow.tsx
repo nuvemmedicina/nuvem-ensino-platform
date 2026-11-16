@@ -11,6 +11,8 @@ type Props = {
   studentName: string;
   studentEmail: string;
   studentPhone?: string | null;
+  /** "Presencial" ou "Online ao vivo", nos cursos que perguntam no checkout. */
+  studentModalidade?: string | null;
   date: string; // "YYYY-MM-DD"
   initialStatus: AttendanceStatus | null;
 };
@@ -44,6 +46,7 @@ export function CheckInRow({
   studentName,
   studentEmail,
   studentPhone,
+  studentModalidade,
   date,
   initialStatus,
 }: Props) {
@@ -66,7 +69,14 @@ export function CheckInRow({
   return (
     <tr className="border-b border-border/50 hover:bg-white/[0.02] transition-colors">
       <td className="py-3 px-4">
-        <p className="font-sans text-sm text-foreground">{studentName}</p>
+        <p className="font-sans text-sm text-foreground">
+          {studentName}
+          {studentModalidade && (
+            <span className="ml-2 align-middle font-sans text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border border-border text-muted">
+              {studentModalidade}
+            </span>
+          )}
+        </p>
         <p className="font-sans text-xs text-muted">{studentEmail}</p>
         {studentPhone && (
           <a

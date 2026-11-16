@@ -3,6 +3,8 @@ import Stripe from "stripe";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { sincronizarVagas, vagasOcupadas } from "@/lib/vagas";
+import { configModalidade, lerModalidade } from "@/lib/modalidades";
+import { presenciaisOcupadas } from "@/lib/modalidadesVagas";
 import {
   findOrCreateCustomer,
   createPayment,
@@ -21,8 +23,15 @@ export async function POST(req: Request) {
   const session = await auth();
   const {
     courseSlug, method, couponCode, installments, whatsapp, cpf, name, email,
-    gaClientId, fbp, fbc, utmSource, utmMedium, utmCampaign, endereco,
+    gaClientId, fbp, fbc, utmSource, utmMedium, utmCampaign, endereco, modalidade: modalidadeBruta,
   } = await req.json();
+
+  // Cursos que perguntam presencial ou online (lib/modalidades.ts).
+  const cfgModalidade = typeof courseSlug === "string" ? configModalidade(courseSlug) : null;
+  const modalidade = cfgModalidade ? lerModalidade(modalidadeBruta) : null;
+  if (cfgModalidade && !modalidade) {
+    return NextResponse.json({ error: "Escolha se vai participar presencialmente ou online." }, { status: 400 });
+  }
 
   // Endereço de quem paga: o Asaas exige endereço completo com CEP para emitir a nota fiscal.
   const texto = (v: unknown, max = 120) => (typeof v === "string" ? v.trim().slice(0, max) : "");
@@ -145,6 +154,15 @@ export async function POST(req: Request) {
           throw Object.assign(new Error("Não há vagas disponíveis para este curso."), { status: 409 });
       }
 
+      if (cfgModalidade && modalidade === "PRESENCIAL") {
+        const ocupadas = await presenciaisOcupadas(tx, c.id, { userId });
+        if (ocupadas >= cfgModalidade.vagasPresenciais)
+          throw Object.assign(
+            new Error("As vagas presenciais esgotaram. Você ainda pode participar online, ao vivo pelo Google Meet."),
+            { status: 409 },
+          );
+      }
+
       const existing = await tx.enrollment.findUnique({
         where: { userId_courseId: { userId, courseId: c.id } },
         select: { id: true, status: true },
@@ -153,7 +171,7 @@ export async function POST(req: Request) {
         throw Object.assign(new Error("Você já está matriculado neste curso."), { status: 409 });
 
       const enr = existing
-        ? await tx.enrollment.update({ where: { id: existing.id }, data: { status: "PENDING" } })
+        ? await tx.enrollment.update({ where: { id: existing.id }, data: { status: "PENDING", ...(modalidade ? { modalidade } : {}) } })
         : await tx.enrollment.create({
             // UTM só é gravada na criação: se a pessoa tentar o checkout de
             // novo depois, a matrícula já existente mantém a campanha da
@@ -163,6 +181,7 @@ export async function POST(req: Request) {
               utmSource: typeof utmSource === "string" ? utmSource : null,
               utmMedium: typeof utmMedium === "string" ? utmMedium : null,
               utmCampaign: typeof utmCampaign === "string" ? utmCampaign : null,
+              modalidade,
             },
           });
 
