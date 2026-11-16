@@ -18,7 +18,7 @@ import { prisma } from "@/lib/prisma";
 import { localizedCourse, traduzirModulos } from "@/lib/i18n-content";
 import { auth } from "@/auth";
 import { LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
-import { ofertaAtiva, precoComOferta } from "@/lib/ofertas";
+import { ofertaAtiva, precoComOferta, rotuloDesconto } from "@/lib/ofertas";
 import ShareButton from "./ShareButton";
 
 import { APP_URL } from "@/lib/appUrl";
@@ -317,7 +317,7 @@ export default async function CoursePage({ params }: Props) {
                 {oferta && (
                   <>
                     <p className="inline-block font-sans text-[10px] font-bold uppercase tracking-widest text-accent-foreground bg-accent px-3 py-1 rounded-full mb-3">
-                      {oferta.descontoPct}% OFF · até {oferta.fimLabel}
+                      {rotuloDesconto(oferta)} · até {oferta.fimLabel}
                     </p>
                     <p className="font-sans text-sm text-white/40 line-through">
                       {fmtPrice(fullPrice)}
@@ -373,7 +373,7 @@ export default async function CoursePage({ params }: Props) {
                     href={checkoutHref}
                     className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full bg-accent text-accent-foreground hover:bg-accent-light transition-colors mb-3"
                   >
-                    {oferta ? `Matricular-se com ${oferta.descontoPct}% OFF` : t("checkoutButton")}
+                    {oferta ? `Matricular-se com ${rotuloDesconto(oferta)}` : t("checkoutButton")}
                   </Link>
                 )}
                 <a
@@ -645,7 +645,7 @@ export default async function CoursePage({ params }: Props) {
             {oferta && (
               <>
                 <p className="inline-block font-sans text-[10px] font-bold uppercase tracking-widest text-white bg-primary px-3 py-1 rounded-full mb-3">
-                  {oferta.descontoPct}% OFF · até {oferta.fimLabel}
+                  {rotuloDesconto(oferta)} · até {oferta.fimLabel}
                 </p>
                 <p className="font-sans text-sm text-muted line-through">
                   {fmtPrice(fullPrice)}
@@ -678,7 +678,7 @@ export default async function CoursePage({ params }: Props) {
                 href={checkoutHref}
                 className="block w-full text-center font-sans text-sm font-semibold px-6 py-3.5 rounded-full bg-primary text-white hover:bg-primary-dark transition-colors"
               >
-                {oferta ? `Matricular-se com ${oferta.descontoPct}% OFF` : t("checkoutButton")}
+                {oferta ? `Matricular-se com ${rotuloDesconto(oferta)}` : t("checkoutButton")}
               </Link>
             )}
           </div>
