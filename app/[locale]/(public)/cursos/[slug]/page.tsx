@@ -661,7 +661,7 @@ export default async function CoursePage({ params }: Props) {
               </p>
             )}
             <p className="font-sans text-xs text-muted mb-5">
-              {course.hours}{t("hours")}
+              {course.hours} {t("hours")}
             </p>
             {course.externalCheckoutUrl ? (
               <a

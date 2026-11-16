@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { Suspense, useState, useTransition } from "react";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { destinoSeguro } from "@/lib/destinoSeguro";
 
 declare global {
   interface Window {
@@ -55,8 +57,10 @@ async function registerUser(data: {
   return res.json();
 }
 
-export default function CadastroPage() {
+function CadastroForm() {
   const t = useTranslations("auth.register");
+  // Quem veio do checkout volta para lá depois do cadastro, com o cupom.
+  const callbackUrl = destinoSeguro(useSearchParams().get("callbackUrl"));
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -81,12 +85,12 @@ export default function CadastroPage() {
         return;
       }
       await pushSignUp();
-      await signIn("credentials", { email, password, callbackUrl: "/dashboard" });
+      await signIn("credentials", { email, password, callbackUrl });
     });
   }
 
   async function handleGoogle() {
-    await signIn("google", { callbackUrl: "/dashboard" });
+    await signIn("google", { callbackUrl });
   }
 
   return (
@@ -191,10 +195,18 @@ export default function CadastroPage() {
 
       <p className="font-sans text-sm text-muted text-center mt-7">
         {t("hasAccount")}{" "}
-        <Link href="/entrar" className="font-semibold text-primary hover:text-primary/80 transition-colors">
+        <Link href={callbackUrl === "/dashboard" ? "/entrar" : { pathname: "/entrar", query: { callbackUrl } }} className="font-semibold text-primary hover:text-primary/80 transition-colors">
           {t("signIn")}
         </Link>
       </p>
     </div>
+  );
+}
+
+export default function CadastroPage() {
+  return (
+    <Suspense fallback={<div className="h-96 animate-pulse rounded-2xl bg-border/20" />}>
+      <CadastroForm />
+    </Suspense>
   );
 }
