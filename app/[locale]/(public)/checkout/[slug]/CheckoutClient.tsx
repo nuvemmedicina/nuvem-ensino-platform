@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { getGaClientId } from "@/lib/gaClientId";
 import { getFbClientId } from "@/lib/fbClientId";
 import { getStoredAttribution } from "@/lib/utmCapture";
-import { MAX_PARCELAS } from "@/lib/parcelamento";
+import { maxParcelas } from "@/lib/parcelamento";
 
 declare global {
   interface Window {
@@ -88,7 +88,7 @@ export default function CheckoutClient({
   const [cpfError, setCpfError] = useState("");
   const [pixSecondsLeft, setPixSecondsLeft] = useState(0);
   const pixTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const [installments, setInstallments] = useState(3);
+  const [installments, setInstallments] = useState(Math.min(3, maxParcelas(slug)));
   const [guestName, setGuestName] = useState(userName);
   const [guestEmail, setGuestEmail] = useState(userEmail);
   const [guestNameError, setGuestNameError] = useState("");
@@ -157,7 +157,7 @@ export default function CheckoutClient({
     },
     parcelado: {
       label: t("methods.parcelado.label"),
-      desc: t("methods.parcelado.desc"),
+      desc: t("methods.parcelado.desc", { parcelas: maxParcelas(slug) }),
       icon: <CreditCard className="w-4 h-4" />,
     },
   };
@@ -729,7 +729,7 @@ export default function CheckoutClient({
             {method === "parcelado" && (
               <div className="mt-4 bg-background rounded-xl p-4 font-sans text-sm text-muted">
                 <p className="font-semibold text-foreground mb-3">{t("installments")}</p>
-                {Array.from({ length: MAX_PARCELAS }, (_, i) => i + 1).map((n) => (
+                {Array.from({ length: maxParcelas(slug) }, (_, i) => i + 1).map((n) => (
                   <button
                     key={n}
                     type="button"

@@ -10,7 +10,10 @@ import { LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
 export type OfertaCurso = {
   slug: string;
   cupom: string;
-  descontoPct: number;
+  /** Desconto em %; use este OU descontoValor, conforme o cupom. */
+  descontoPct?: number;
+  /** Desconto em reais, para chegar a um preço redondo (ex.: de R$ 799 por R$ 699). */
+  descontoValor?: number;
   parcelas: number;
   inicio: Date;
   fim: Date;
@@ -22,6 +25,16 @@ export type OfertaCurso = {
 
 const OFERTAS: OfertaCurso[] = [
   // Campanha de fim de ano do DICI: 30% em público até a Black Friday.
+  // Teste respiratório teórico-prático de 12/12 com a Health Go: de R$ 799 por R$ 699.
+  {
+    slug: "testes-respiratorios-h2-ch4-h2s-teorico-pratico",
+    cupom: "RESPIRA100",
+    descontoValor: 100,
+    parcelas: 2, // este curso só parcela em até 2x (lib/parcelamento.ts)
+    inicio: new Date("2026-11-16T00:00:00-03:00"),
+    fim: new Date("2026-12-11T23:59:59-03:00"),
+    fimLabel: "11/12",
+  },
   {
     slug: LIVE_DICI_SLUG,
     cupom: "AINDADATEMPO",
@@ -51,5 +64,15 @@ export function ofertaAtiva(
 
 /** Preço com o desconto da oferta, arredondado em centavos como no checkout. */
 export function precoComOferta(preco: number, oferta: OfertaCurso): number {
-  return Math.round(preco * (100 - oferta.descontoPct)) / 100;
+  if (oferta.descontoValor) return Math.round((preco - oferta.descontoValor) * 100) / 100;
+  return Math.round(preco * (100 - (oferta.descontoPct ?? 0))) / 100;
+}
+
+/** Selo do desconto: "30% OFF" ou "R$ 100 OFF". */
+export function rotuloDesconto(oferta: OfertaCurso): string {
+  if (oferta.descontoValor) {
+    const valor = oferta.descontoValor.toLocaleString("pt-BR", { minimumFractionDigits: Number.isInteger(oferta.descontoValor) ? 0 : 2 });
+    return `R$ ${valor} OFF`;
+  }
+  return `${oferta.descontoPct ?? 0}% OFF`;
 }
