@@ -219,7 +219,7 @@
       },
       "parcelado": {
         "label": "Tarjeta de Crédito",
-        "desc": "Hasta 5 cuotas"
+        "desc": "Hasta {parcelas} cuotas"
       }
     }
   },

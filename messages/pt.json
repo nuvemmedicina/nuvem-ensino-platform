@@ -219,7 +219,7 @@
       },
       "parcelado": {
         "label": "Cartão de Crédito",
-        "desc": "Até 5x no cartão"
+        "desc": "Até {parcelas}x no cartão"
       }
     }
   },

@@ -10,7 +10,7 @@ import {
   cancelAsaasPayment,
   updateCustomerAddress,
 } from "@/lib/asaas";
-import { MAX_PARCELAS } from "@/lib/parcelamento";
+import { maxParcelas } from "@/lib/parcelamento";
 import { LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
 import { createPasswordResetToken } from "@/lib/tokens";
 import { sendSetPasswordEmail } from "@/lib/email";
@@ -305,7 +305,7 @@ export async function POST(req: Request) {
         value:             finalPrice,
         description:       `${dbCourse.title} — NU.V.E.M Ensino`,
         externalReference: enrollment.id,
-        installmentCount:  method === "parcelado" ? Math.min(Math.max(Number(installments) || 1, 1), MAX_PARCELAS) : 1,
+        installmentCount:  method === "parcelado" ? Math.min(Math.max(Number(installments) || 1, 1), maxParcelas(courseSlug)) : 1,
         successUrl,
       });
 

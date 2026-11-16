@@ -219,7 +219,7 @@
       },
       "parcelado": {
         "label": "Credit Card",
-        "desc": "Up to 5x installments"
+        "desc": "Up to {parcelas}x installments"
       }
     }
   },
