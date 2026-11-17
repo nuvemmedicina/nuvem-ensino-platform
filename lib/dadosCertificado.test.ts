@@ -1,14 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { enderecoCompleto, separarCidadeUf, validarDados } from "./dadosCertificado";
+import { enderecoCompleto, validarDados } from "./dadosCertificado";
 
 const completo = {
   nome: "  Maria   da Silva ",
   cpf: "529.982.247-25",
-  rg: "MG-12.345.678",
-  rgOrgao: "ssp-mg",
-  naturalidadeCidade: "Belo Horizonte",
-  naturalidadeUf: "mg",
   telefone: "(31) 99999-0000",
   cep: "30150-310",
   rua: "Rua Ceará",
@@ -24,8 +20,6 @@ test("aceita dados completos e normaliza", () => {
   assert.deepEqual(erros, []);
   assert.equal(dados.nome, "Maria da Silva");
   assert.equal(dados.cpf, "52998224725");
-  assert.equal(dados.rgOrgao, "SSP-MG");
-  assert.equal(dados.naturalidadeUf, "MG");
   assert.equal(dados.telefone, "31999990000");
   assert.equal(dados.cep, "30150310");
 });
@@ -35,14 +29,12 @@ test("aponta cada campo com problema", () => {
   assert.deepEqual(erros.sort(), ["cpf", "nome", "numero", "uf"]);
 });
 
-test("complemento é opcional", () => {
-  assert.deepEqual(validarDados({ ...completo, complemento: "" }).erros, []);
+test("RG e naturalidade não são mais pedidos", () => {
+  assert.deepEqual(validarDados({ ...completo, rg: "", naturalidadeCidade: "" }).erros, []);
 });
 
-test("separa cidade e UF", () => {
-  assert.deepEqual(separarCidadeUf("Belo Horizonte - MG"), ["Belo Horizonte", "MG"]);
-  assert.deepEqual(separarCidadeUf("Recife/pe"), ["Recife", "PE"]);
-  assert.deepEqual(separarCidadeUf("Assunção"), ["Assunção", ""]);
+test("complemento é opcional", () => {
+  assert.deepEqual(validarDados({ ...completo, complemento: "" }).erros, []);
 });
 
 test("monta o endereço numa linha", () => {

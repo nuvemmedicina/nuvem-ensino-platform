@@ -5,7 +5,7 @@ import { carregarSituacaoFacop } from "@/lib/certificadosFacop";
 
 /**
  * Dados dos alunos que já responderam ao pedido, nas colunas do formulário
- * financeiro da FACOP. Separado por ";" e com BOM para o Excel em português
+ * financeiro da FACOP que ela ainda pede (sem RG e naturalidade desde 17/11). Separado por ";" e com BOM para o Excel em português
  * abrir com acentos e colunas certas.
  */
 export async function GET(req: Request) {
@@ -24,15 +24,13 @@ export async function GET(req: Request) {
   const { alunos } = await carregarSituacaoFacop(curso.id);
   const respondidos = alunos.filter((a) => a.respondidoEm).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
 
-  const cabecalho = ["Ref", "Curso", "Carga horária", "Nome completo", "RG", "CPF", "Naturalidade", "Contato", "E-mail", "Endereço completo", "Dados recebidos em"];
+  const cabecalho = ["Ref", "Curso", "Carga horária", "Nome completo", "CPF", "Contato", "E-mail", "Endereço completo", "Dados recebidos em"];
   const linhas = respondidos.map((a, i) => [
     String(i + 1),
     curso.title,
     `${curso.hours} Horas`,
     a.facop.nome,
-    a.facop.rg,
     a.facop.cpf,
-    a.facop.naturalidade,
     a.facop.contato,
     a.facop.email,
     a.facop.endereco,

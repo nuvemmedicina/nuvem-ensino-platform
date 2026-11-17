@@ -29,7 +29,7 @@ function mascaraTelefone(v: string) {
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
 
-export function FormularioDadosCertificado({ inicial, cpfFixo }: { inicial: DadosCertificado; cpfFixo: boolean }) {
+export function FormularioDadosCertificado({ inicial, email, cpfFixo }: { inicial: DadosCertificado; email: string; cpfFixo: boolean }) {
   const t = useTranslations("novaArea.paginas.dadosCertificado");
   const [estado, acao, pendente] = useActionState<EstadoDadosCertificado, FormData>(salvarDadosCertificado, null);
   // Tudo controlado: o React limpa campos não controlados depois de uma
@@ -90,7 +90,7 @@ export function FormularioDadosCertificado({ inicial, cpfFixo }: { inicial: Dado
       {...props}
     />
   );
-  const seletorUf = (k: "uf" | "naturalidadeUf", rotuloAcessivel: string) => (
+  const seletorUf = (k: "uf", rotuloAcessivel: string) => (
     <select
       id={`dc-${k}`}
       name={k}
@@ -120,7 +120,7 @@ export function FormularioDadosCertificado({ inicial, cpfFixo }: { inicial: Dado
           {msg("nome") ?? <p className="font-sans text-xs text-muted mt-1.5">{t("nomeAjuda")}</p>}
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2">
           <div>
             <label htmlFor="dc-cpf" className={rotulo}>{t("cpf")}</label>
             {cpfFixo ? (
@@ -145,27 +145,9 @@ export function FormularioDadosCertificado({ inicial, cpfFixo }: { inicial: Dado
             )}
           </div>
           <div>
-            <label htmlFor="dc-rg" className={rotulo}>{t("rg")}</label>
-            {texto("rg")}
-            {msg("rg")}
-          </div>
-          <div>
-            <label htmlFor="dc-rgOrgao" className={rotulo}>{t("rgOrgao")}</label>
-            {texto("rgOrgao", { placeholder: t("rgOrgaoPh") })}
-            {msg("rgOrgao")}
-          </div>
-        </div>
-
-        <div className="grid gap-5 grid-cols-[1fr_7rem]">
-          <div>
-            <label htmlFor="dc-naturalidadeCidade" className={rotulo}>{t("naturalidade")}</label>
-            {texto("naturalidadeCidade")}
-            {msg("naturalidadeCidade")}
-          </div>
-          <div>
-            <label htmlFor="dc-naturalidadeUf" className={rotulo}>{t("uf")}</label>
-            {seletorUf("naturalidadeUf", `${t("naturalidade")}: ${t("uf")}`)}
-            {msg("naturalidadeUf")}
+            <label htmlFor="dc-email" className={rotulo}>{t("email")}</label>
+            <input id="dc-email" value={email} readOnly className={`${campo} border-border bg-background text-muted cursor-default`} aria-describedby="dc-email-ajuda" />
+            <p id="dc-email-ajuda" className="font-sans text-xs text-muted mt-1.5">{t("emailAjuda")}</p>
           </div>
         </div>
       </fieldset>
