@@ -23,6 +23,7 @@ import ShareButton from "./ShareButton";
 
 import { APP_URL } from "@/lib/appUrl";
 import { moduleColor } from "@/lib/moduleColors";
+import { mostraNumeroDeVagas } from "@/lib/vagasExibicao";
 type Props = {
   params: Promise<{ slug: string; locale: string }>;
 };
@@ -294,9 +295,11 @@ export default async function CoursePage({ params }: Props) {
                 {availableSeats !== null && (
                   <span className="flex items-center gap-2 font-sans text-sm">
                     <Users className="w-4 h-4 text-accent/70" />
-                    {availableSeats === 1
-                      ? t("availableSeats", { count: availableSeats })
-                      : t("availableSeatsPlural", { count: availableSeats })}
+                    {!mostraNumeroDeVagas(course.slug)
+                      ? availableSeats <= 0 ? t("soldOut") : t("limitedSeats")
+                      : availableSeats === 1
+                        ? t("availableSeats", { count: availableSeats })
+                        : t("availableSeatsPlural", { count: availableSeats })}
                   </span>
                 )}
                 {course.location && (
@@ -338,7 +341,7 @@ export default async function CoursePage({ params }: Props) {
                     : "Por pessoa, inclui todos os módulos"}
                 </p>
 
-                {course.totalSeats && reservedPct > 0 && (
+                {course.totalSeats && reservedPct > 0 && mostraNumeroDeVagas(course.slug) && (
                   <div className="mb-5">
                     <div className="flex justify-between font-sans text-[11px] text-white/50 mb-1.5">
                       <span>Reservas</span>

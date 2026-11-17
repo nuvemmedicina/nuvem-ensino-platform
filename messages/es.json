@@ -132,7 +132,9 @@
       "seats": "Plazas disponibles",
       "reserved": "{pct}% Reservado",
       "training": "{hours}h de formación",
-      "learnMore": "Saber más"
+      "learnMore": "Saber más",
+      "limitedSeats": "Plazas limitadas",
+      "soldOut": "Sin plazas disponibles"
     },
     "empty": {
       "title": "No se encontraron cursos",
@@ -163,7 +165,8 @@
     "checkoutButton": "Inscribirse ahora",
     "soldOut": "Sin plazas disponibles",
     "availableSeats": "{count} plaza disponible",
-    "availableSeatsPlural": "{count} plazas disponibles"
+    "availableSeatsPlural": "{count} plazas disponibles",
+    "limitedSeats": "Plazas limitadas"
   },
   "checkout": {
     "title": "Completar Inscripción",

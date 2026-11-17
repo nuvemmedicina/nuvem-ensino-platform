@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { getTranslations } from "next-intl/server";
 import { localizedCourse } from "@/lib/i18n-content";
 import { Link } from "@/i18n/navigation";
+import { mostraNumeroDeVagas } from "@/lib/vagasExibicao";
 
 export async function generateMetadata({
   params,
@@ -289,7 +290,7 @@ export default async function CursosPage({
                         <span className="absolute bottom-3 left-4 font-sans text-[10px] font-semibold uppercase tracking-widest text-white bg-primary/80 px-2.5 py-1 rounded-full">
                           {categoryLabel(course.category)}
                         </span>
-                        {course.totalSeats && reservedPct > 0 && (
+                        {course.totalSeats && reservedPct > 0 && mostraNumeroDeVagas(course.slug) && (
                           <span className="absolute bottom-3 right-4 font-sans text-[10px] font-semibold text-white/80">
                             {t("card.reserved", { pct: reservedPct })}
                           </span>
@@ -311,7 +312,12 @@ export default async function CursosPage({
                           {lc.shortDesc ?? lc.description}
                         </p>
 
-                        {course.totalSeats && (
+                        {course.totalSeats && !mostraNumeroDeVagas(course.slug) && (
+                          <p className="font-sans text-[11px] font-semibold text-primary">
+                            {availableSeats !== null && availableSeats <= 0 ? t("card.soldOut") : t("card.limitedSeats")}
+                          </p>
+                        )}
+                        {course.totalSeats && mostraNumeroDeVagas(course.slug) && (
                           <div className="flex flex-col gap-1">
                             <div className="flex justify-between font-sans text-[11px] text-muted">
                               <span>{t("card.seats")}</span>

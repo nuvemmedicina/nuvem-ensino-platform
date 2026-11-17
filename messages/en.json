@@ -132,7 +132,9 @@
       "seats": "Available seats",
       "reserved": "{pct}% Reserved",
       "training": "{hours}h of training",
-      "learnMore": "Learn more"
+      "learnMore": "Learn more",
+      "limitedSeats": "Limited seats",
+      "soldOut": "Sold out"
     },
     "empty": {
       "title": "No courses found",
@@ -163,7 +165,8 @@
     "checkoutButton": "Enroll now",
     "soldOut": "Sold out",
     "availableSeats": "{count} seat available",
-    "availableSeatsPlural": "{count} seats available"
+    "availableSeatsPlural": "{count} seats available",
+    "limitedSeats": "Limited seats"
   },
   "checkout": {
     "title": "Complete Enrollment",
