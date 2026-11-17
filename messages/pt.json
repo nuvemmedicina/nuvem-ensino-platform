@@ -132,7 +132,9 @@
       "seats": "Vagas disponíveis",
       "reserved": "{pct}% Reservado",
       "training": "{hours}h de formação",
-      "learnMore": "Saiba mais"
+      "learnMore": "Saiba mais",
+      "limitedSeats": "Vagas limitadas",
+      "soldOut": "Vagas esgotadas"
     },
     "empty": {
       "title": "Nenhum curso encontrado",
@@ -163,7 +165,8 @@
     "checkoutButton": "Matricular-se agora",
     "soldOut": "Vagas esgotadas",
     "availableSeats": "{count} vaga disponível",
-    "availableSeatsPlural": "{count} vagas disponíveis"
+    "availableSeatsPlural": "{count} vagas disponíveis",
+    "limitedSeats": "Vagas limitadas"
   },
   "checkout": {
     "title": "Finalizar Matrícula",
