@@ -4,8 +4,7 @@
  * valendo no checkout (Course.totalSeats).
  */
 const OCULTAR_NUMERO_DE_VAGAS = new Set<string>([
-  // Teste respiratório presencial de 12/12/2026: pedido da Dra. Vera (17/11/2026).
-  "testes-respiratorios-h2-ch4-h2s-teorico-pratico",
+  // Nenhum curso hoje. O teste respiratório de 12/12/2026 usou por um dia, até deixar de ter presencial.
 ]);
 
 export function mostraNumeroDeVagas(slug: string): boolean {
