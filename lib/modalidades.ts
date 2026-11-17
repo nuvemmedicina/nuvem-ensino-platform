@@ -12,11 +12,8 @@ export type ConfigModalidade = {
 };
 
 const CURSOS: Record<string, ConfigModalidade> = {
-  // Teste respiratório teórico-prático de 12/12/2026 (decisão da Ana, 16/11/2026).
-  "testes-respiratorios-h2-ch4-h2s-teorico-pratico": {
-    vagasPresenciais: 30,
-    local: "NU.V.E.M Medicina, Belo Horizonte",
-  },
+  // Nenhum curso pergunta hoje. O teste respiratório de 12/12/2026 usou esta pergunta
+  // por um dia; em 17/11 virou duas turmas separadas (presencial e online).
 };
 
 export function configModalidade(slug: string): ConfigModalidade | null {

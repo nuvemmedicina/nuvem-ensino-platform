@@ -25,16 +25,6 @@ export type OfertaCurso = {
 
 const OFERTAS: OfertaCurso[] = [
   // Campanha de fim de ano do DICI: 30% em público até a Black Friday.
-  // Teste respiratório teórico-prático de 12/12 com a Health Go: de R$ 799 por R$ 699.
-  {
-    slug: "testes-respiratorios-h2-ch4-h2s-teorico-pratico",
-    cupom: "RESPIRA100",
-    descontoValor: 100,
-    parcelas: 2, // este curso só parcela em até 2x (lib/parcelamento.ts)
-    inicio: new Date("2026-11-16T00:00:00-03:00"),
-    fim: new Date("2026-12-11T23:59:59-03:00"),
-    fimLabel: "11/12",
-  },
   {
     slug: LIVE_DICI_SLUG,
     cupom: "AINDADATEMPO",
