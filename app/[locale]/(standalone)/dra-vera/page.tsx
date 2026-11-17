@@ -195,7 +195,7 @@ export default function DraveraPage() {
               <p className="font-semibold text-foreground mb-2">Liderança Atual</p>
               <ul className="space-y-1.5 text-muted list-disc list-inside">
                 <li>Diretora Científica da NU.V.E.M Ensino</li>
-                <li>Diretora Técnica da NU.V.E.M Medicina</li>
+                <li>Responsável Técnica da NU.V.E.M Medicina</li>
               </ul>
             </div>
           </div>

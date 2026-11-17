@@ -89,7 +89,7 @@ export async function GET(req: NextRequest, { params }: Props) {
     (instructorUserId && loadSignature(`${instructorUserId}.jpg`)) ||
     undefined;
 
-  // ── Assinatura da Diretora Técnica ───────────────────────────────────────
+  // ── Assinatura da Responsável Técnica ───────────────────────────────────────
   const directorSignature =
     loadSignature("vera-angelo.png") ||
     loadSignature("vera-angelo.jpg") ||
