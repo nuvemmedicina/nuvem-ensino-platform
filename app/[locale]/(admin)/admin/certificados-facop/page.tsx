@@ -9,8 +9,8 @@ import { TabelaFacop } from "./TabelaFacop";
 
 /**
  * Certificados FACOP: desempenho dos alunos e pedido, em lotes, dos dados que
- * a faculdade exige (RG, naturalidade, CPF, endereço). Só ADMIN: a página
- * mostra documentos pessoais.
+ * a faculdade exige (nome completo, CPF, contato e endereço). Só ADMIN: a
+ * página mostra dados pessoais.
  */
 export default async function CertificadosFacopPage({ searchParams }: { searchParams: Promise<{ curso?: string }> }) {
   const session = await auth();

@@ -1,7 +1,8 @@
 /**
- * Dados que a FACOP pede para emitir o certificado: nome completo, RG,
- * CPF, naturalidade, contato, e-mail e endereço completo (o mesmo
- * formulário financeiro que a coordenação manda a cada turma).
+ * Dados que a FACOP pede para emitir o certificado: nome completo, CPF,
+ * contato, e-mail e endereço completo. Em 17/11/2026 a FACOP dispensou RG e
+ * naturalidade; as colunas User.rg, rgIssuer e birthplace ficaram no banco
+ * com o que os primeiros alunos já tinham enviado, mas não são mais pedidas.
  *
  * A coordenação pede em lotes (/admin/certificados-facop) e o aluno
  * responde em /dashboard/dados-certificado.
@@ -16,10 +17,6 @@ export const UFS = [
 export type DadosCertificado = {
   nome: string;
   cpf: string;
-  rg: string;
-  rgOrgao: string;
-  naturalidadeCidade: string;
-  naturalidadeUf: string;
   telefone: string;
   cep: string;
   rua: string;
@@ -32,14 +29,6 @@ export type DadosCertificado = {
 
 export type CampoDados = keyof DadosCertificado;
 
-/** "Belo Horizonte - MG" → ["Belo Horizonte", "MG"]. */
-export function separarCidadeUf(valor: string | null | undefined): [string, string] {
-  const v = (valor ?? "").trim();
-  const m = v.match(/^(.*?)\s*[-/]\s*([A-Za-z]{2})$/);
-  if (m && (UFS as readonly string[]).includes(m[2].toUpperCase())) return [m[1].trim(), m[2].toUpperCase()];
-  return [v, ""];
-}
-
 const limpar = (v: unknown, max: number) => String(v ?? "").replace(/\s+/g, " ").trim().slice(0, max);
 
 /**
@@ -50,10 +39,6 @@ export function validarDados(entrada: Record<string, unknown>): { dados: DadosCe
   const dados: DadosCertificado = {
     nome: limpar(entrada.nome, 120),
     cpf: soDigitos(limpar(entrada.cpf, 20)),
-    rg: limpar(entrada.rg, 30),
-    rgOrgao: limpar(entrada.rgOrgao, 30).toUpperCase(),
-    naturalidadeCidade: limpar(entrada.naturalidadeCidade, 80),
-    naturalidadeUf: limpar(entrada.naturalidadeUf, 2).toUpperCase(),
     telefone: soDigitos(limpar(entrada.telefone, 30)),
     cep: soDigitos(limpar(entrada.cep, 12)),
     rua: limpar(entrada.rua, 120),
@@ -69,10 +54,6 @@ export function validarDados(entrada: Record<string, unknown>): { dados: DadosCe
   // O nome vai no certificado: nome e sobrenome, no mínimo
   if (dados.nome.split(" ").length < 2) erros.push("nome");
   if (!cpfValido(dados.cpf)) erros.push("cpf");
-  if (soDigitos(dados.rg).length < 4) erros.push("rg");
-  if (dados.rgOrgao.length < 2) erros.push("rgOrgao");
-  if (dados.naturalidadeCidade.length < 2) erros.push("naturalidadeCidade");
-  if (!uf(dados.naturalidadeUf)) erros.push("naturalidadeUf");
   if (dados.telefone.length < 10 || dados.telefone.length > 13) erros.push("telefone");
   if (dados.cep.length !== 8) erros.push("cep");
   if (dados.rua.length < 2) erros.push("rua");
@@ -105,10 +86,4 @@ export function enderecoCompleto(u: UsuarioEndereco): string {
     u.city ? `, ${u.city}${u.state ? ` - ${u.state}` : ""}` : "",
     cep.length === 8 ? `, CEP ${cep.slice(0, 5)}-${cep.slice(5)}` : "",
   ].join("");
-}
-
-/** RG com o órgão emissor, para a planilha da FACOP: "1.076.642 (PCE-MG)". */
-export function rgCompleto(rg: string | null, orgao: string | null): string {
-  if (!rg) return "";
-  return orgao ? `${rg} (${orgao})` : rg;
 }

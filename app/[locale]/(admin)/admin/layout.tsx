@@ -52,7 +52,7 @@ export default async function AdminLayout({
     { key: "settings",     href: "/admin/configuracoes/pagamentos",     grupo: "Configurações", label: "Mercado Pago" },
     { key: "ai",           href: "/admin/configuracoes/ia",             grupo: "Configurações", label: "Inteligência artificial" },
   ];
-  // Certificados FACOP mostra documentos pessoais (RG, CPF): só ADMIN
+  // Certificados FACOP mostra dados pessoais (CPF, endereço): só ADMIN
   const itensVisiveis = navItems.filter((i) => !("soAdmin" in i) || role === "ADMIN");
 
   return (

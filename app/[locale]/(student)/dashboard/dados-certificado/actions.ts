@@ -13,7 +13,8 @@ export type EstadoDadosCertificado =
   | null;
 
 /**
- * Grava os dados que a FACOP pede para o certificado e marca como respondidos
+ * Grava os dados que a FACOP pede para o certificado (nome, CPF, telefone e
+ * endereço; o e-mail é o da conta) e marca como respondidos
  * os pedidos em aberto do aluno (um por curso).
  */
 export async function salvarDadosCertificado(
@@ -45,9 +46,6 @@ export async function salvarDadosCertificado(
         data: {
           name: dados.nome,
           ...(cpfFixo ? {} : { taxId: dados.cpf }),
-          rg: dados.rg,
-          rgIssuer: dados.rgOrgao,
-          birthplace: `${dados.naturalidadeCidade} - ${dados.naturalidadeUf}`,
           phone: dados.telefone,
           postalCode: dados.cep,
           address: dados.rua,

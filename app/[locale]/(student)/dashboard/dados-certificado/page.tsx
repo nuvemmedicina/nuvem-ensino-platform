@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { Award, CheckCircle2 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { cpfValido, soDigitos } from "@/lib/cpf";
-import { separarCidadeUf, type DadosCertificado } from "@/lib/dadosCertificado";
+import type { DadosCertificado } from "@/lib/dadosCertificado";
 import { FormularioDadosCertificado } from "./FormularioDadosCertificado";
 
 /**
@@ -23,7 +23,7 @@ export default async function DadosCertificadoPage({ params }: { params: Promise
     prisma.user.findUnique({
       where: { id: session.user.id },
       select: {
-        name: true, taxId: true, rg: true, rgIssuer: true, birthplace: true, phone: true,
+        name: true, email: true, taxId: true, phone: true,
         postalCode: true, address: true, addressNumber: true, addressComplement: true, province: true, city: true, state: true,
       },
     }),
@@ -44,15 +44,10 @@ export default async function DadosCertificadoPage({ params }: { params: Promise
     .filter((d): d is Date => !!d)
     .sort((a, b) => b.getTime() - a.getTime())[0];
 
-  const [natCidade, natUf] = separarCidadeUf(user.birthplace);
   const telefone = soDigitos(user.phone ?? "");
   const inicial: DadosCertificado = {
     nome: user.name ?? "",
     cpf: user.taxId ?? "",
-    rg: user.rg ?? "",
-    rgOrgao: user.rgIssuer ?? "",
-    naturalidadeCidade: natCidade,
-    naturalidadeUf: natUf,
     telefone: telefone.startsWith("55") && telefone.length > 11 ? telefone.slice(2) : telefone,
     cep: user.postalCode ?? "",
     rua: user.address ?? "",
@@ -85,7 +80,7 @@ export default async function DadosCertificadoPage({ params }: { params: Promise
               </p>
             )}
             <section className="bg-surface border border-border rounded-2xl p-5 sm:p-7">
-              <FormularioDadosCertificado inicial={inicial} cpfFixo={!!user.taxId && cpfValido(user.taxId)} />
+              <FormularioDadosCertificado inicial={inicial} email={user.email} cpfFixo={!!user.taxId && cpfValido(user.taxId)} />
             </section>
           </>
         )}

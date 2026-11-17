@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { cpfValido, formatarCpf } from "@/lib/cpf";
 import { formatPhone } from "@/lib/phone";
-import { enderecoCompleto, rgCompleto } from "@/lib/dadosCertificado";
+import { enderecoCompleto } from "@/lib/dadosCertificado";
 
 export type AlunoFacop = {
   enrollmentId: string;
@@ -16,9 +16,7 @@ export type AlunoFacop = {
   faltando: string[];
   facop: {
     nome: string;
-    rg: string;
     cpf: string;
-    naturalidade: string;
     contato: string;
     email: string;
     endereco: string;
@@ -54,7 +52,7 @@ export async function carregarSituacaoFacop(courseId: string): Promise<SituacaoF
         certDataSubmittedAt: true,
         user: {
           select: {
-            name: true, email: true, phone: true, taxId: true, rg: true, rgIssuer: true, birthplace: true,
+            name: true, email: true, phone: true, taxId: true,
             postalCode: true, address: true, addressNumber: true, addressComplement: true, province: true, city: true, state: true,
           },
         },
@@ -79,8 +77,6 @@ export async function carregarSituacaoFacop(courseId: string): Promise<SituacaoF
     const faltando = [
       !u.name || u.name.trim().split(/\s+/).length < 2 ? "nome completo" : "",
       !u.taxId || !cpfValido(u.taxId) ? "CPF" : "",
-      !u.rg ? "RG" : "",
-      !u.birthplace ? "naturalidade" : "",
       !u.phone ? "telefone" : "",
       !endereco ? "endereço" : "",
     ].filter(Boolean);
@@ -97,9 +93,7 @@ export async function carregarSituacaoFacop(courseId: string): Promise<SituacaoF
       faltando,
       facop: {
         nome: u.name ?? "",
-        rg: rgCompleto(u.rg, u.rgIssuer),
         cpf: u.taxId && cpfValido(u.taxId) ? formatarCpf(u.taxId) : "",
-        naturalidade: u.birthplace ?? "",
         contato: formatPhone(u.phone),
         email: u.email,
         endereco,

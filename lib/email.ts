@@ -827,11 +827,10 @@ export async function sendPedidoDadosCertificado({
     <div style="background:#f0f9fa;border-left:4px solid #00475e;border-radius:8px;padding:16px 20px;margin:24px 0;">
       <p style="margin:0 0 10px;color:#00475e;font-size:14px;font-weight:700;">O que vamos pedir</p>
       <p style="margin:0 0 6px;color:#374151;font-size:14px;">• Nome completo, como deve sair no certificado</p>
-      <p style="margin:0 0 6px;color:#374151;font-size:14px;">• CPF e RG (com o órgão emissor)</p>
-      <p style="margin:0 0 6px;color:#374151;font-size:14px;">• Naturalidade (cidade onde você nasceu)</p>
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">• CPF</p>
       <p style="margin:0;color:#374151;font-size:14px;">• Telefone e endereço completo</p>
     </div>
-    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Leva uns dois minutos. É só entrar com o seu login e preencher.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Leva só um minuto. É só entrar com o seu login, conferir e preencher.</p>
     <div style="text-align:center;margin:28px 0;">
       <a href="${link}"
          style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
