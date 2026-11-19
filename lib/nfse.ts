@@ -23,6 +23,15 @@ function aliquota(nome: string): number {
   return Number.isFinite(v) ? v : 0;
 }
 
+/**
+ * Texto que o Portal Nacional aceita. Os subscritos de "H₂, CH₄ e H₂S" faziam o
+ * portal recusar a nota com um erro genérico ("Erro ao gerar nota") em nov/2026;
+ * a normalização NFKC troca ₂ por 2 e afins. A barra vertical sai por garantia.
+ */
+export function textoParaNota(texto: string): string {
+  return texto.normalize("NFKC").replace(/\s*\|\s*/g, " - ");
+}
+
 /** Data de hoje em Brasília (YYYY-MM-DD). */
 function hojeEmBrasilia(): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
@@ -56,8 +65,10 @@ export async function emitirNotaDoPagamento(
     const nota = await createInvoice({
       ...(parcelado ? { customer: asaasPayment.customer } : { payment: asaasPayment.id }),
       externalReference: pagamento.enrollmentId,
-      serviceDescription: (process.env.ASAAS_NFSE_DESCRICAO ?? "Instrução e treinamento – curso de aperfeiçoamento médico").replace("{curso}", curso),
-      observations: `Curso ${curso}, NU.V.E.M Ensino.`,
+      serviceDescription: textoParaNota(
+        (process.env.ASAAS_NFSE_DESCRICAO ?? "Instrução e treinamento – curso de aperfeiçoamento médico").replace("{curso}", curso),
+      ),
+      observations: textoParaNota(`Curso ${curso}, NU.V.E.M Ensino.`),
       value: Number(pagamento.amount),
       effectiveDate: hojeEmBrasilia(),
       municipalServiceCode: process.env.ASAAS_NFSE_CODIGO_SERVICO ?? "08.02.01.001",
