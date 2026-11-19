@@ -16,6 +16,13 @@ export default async function CuponsPage() {
     },
   });
 
+  // Cursos para restringir o cupom (vazio = vale para todos).
+  const cursos = await prisma.course.findMany({
+    where: { status: { not: "ARCHIVED" } },
+    orderBy: { title: "asc" },
+    select: { id: true, title: true },
+  });
+
   const serialized = coupons.map((c) => ({
     id:           c.id,
     code:         c.code,
@@ -25,6 +32,7 @@ export default async function CuponsPage() {
     usesCount:    c.usages.length,
     expiresAt:    c.expiresAt    ? c.expiresAt.toISOString() : null,
     active:       c.active,
+    courseId:     c.courseId ?? null,
     createdAt:    c.createdAt.toISOString(),
     usages:       c.usages.map((u) => ({
       courseTitle: u.course.title,
@@ -45,7 +53,7 @@ export default async function CuponsPage() {
         ]}
       />
 
-      <CouponManager initialCoupons={serialized} />
+      <CouponManager initialCoupons={serialized} cursos={cursos} />
     </div>
   );
 }

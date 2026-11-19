@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    const { code } = await req.json();
+    const { code, courseSlug } = await req.json();
 
     if (!code || typeof code !== "string") {
       return NextResponse.json({ valid: false, error: "Código inválido." }, { status: 400 });
@@ -26,6 +26,17 @@ export async function POST(req: Request) {
 
     if (coupon.maxUses !== null && coupon.usesCount >= coupon.maxUses) {
       return NextResponse.json({ valid: false, reason: "limit" });
+    }
+
+    // Cupom de um curso só (ex.: AINDADATEMPO, do DICI) não vale nos outros.
+    if (coupon.courseId) {
+      const curso =
+        typeof courseSlug === "string"
+          ? await prisma.course.findUnique({ where: { slug: courseSlug }, select: { id: true } })
+          : null;
+      if (curso?.id !== coupon.courseId) {
+        return NextResponse.json({ valid: false, reason: "course" });
+      }
     }
 
     return NextResponse.json({

@@ -195,6 +195,7 @@
     "couponExpired": "This coupon has expired.",
     "couponLimitReached": "This coupon has reached its usage limit.",
     "couponNotFound": "Coupon not found. Please check the code.",
+    "couponWrongCourse": "This coupon is not valid for this course.",
     "couponInvalid": "Invalid or expired coupon.",
     "couponError": "Error validating coupon.",
     "orderSummary": "Order summary",

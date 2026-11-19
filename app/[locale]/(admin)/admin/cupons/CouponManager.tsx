@@ -19,6 +19,7 @@ type Coupon = {
   usesCount: number;
   expiresAt: string | null;
   active: boolean;
+  courseId: string | null;
   createdAt: string;
   usages?: CouponUsage[];
 };
@@ -35,10 +36,18 @@ const emptyForm = {
   discountFlat: "",
   maxUses: "",
   expiresAt: "",
+  courseId: "",
   active: true,
 };
 
-export default function CouponManager({ initialCoupons }: { initialCoupons: Coupon[] }) {
+export default function CouponManager({
+  initialCoupons,
+  cursos,
+}: {
+  initialCoupons: Coupon[];
+  cursos: { id: string; title: string }[];
+}) {
+  const nomeCurso = (id: string | null) => (id ? cursos.find((x) => x.id === id)?.title ?? "Curso removido" : null);
   const [coupons, setCoupons] = useState(initialCoupons);
   const [form, setForm] = useState<FormState>({ open: false, editing: null });
   const [fields, setFields] = useState(emptyForm);
@@ -64,6 +73,7 @@ export default function CouponManager({ initialCoupons }: { initialCoupons: Coup
       discountFlat: c.discountFlat?.toString() ?? "",
       maxUses:     c.maxUses?.toString() ?? "",
       expiresAt:   c.expiresAt ? c.expiresAt.slice(0, 10) : "",
+      courseId:    c.courseId ?? "",
       active:      c.active,
     });
     setError("");
@@ -85,6 +95,7 @@ export default function CouponManager({ initialCoupons }: { initialCoupons: Coup
           discountFlat: fields.type === "flat" && fields.discountFlat ? Number(fields.discountFlat) : null,
           maxUses:      fields.maxUses  ? Number(fields.maxUses)  : null,
           expiresAt:    fields.expiresAt || null,
+          courseId:     fields.courseId || null,
         };
 
         if (form.editing) {
@@ -166,6 +177,9 @@ export default function CouponManager({ initialCoupons }: { initialCoupons: Coup
                     {/* Código */}
                     <td className="px-5 py-3.5">
                       <span className="font-mono text-sm font-semibold text-foreground">{c.code}</span>
+                      <span className="block font-sans text-xs text-muted mt-0.5">
+                        {nomeCurso(c.courseId) ? `Só ${nomeCurso(c.courseId)}` : "Todos os cursos"}
+                      </span>
                     </td>
 
                     {/* Desconto */}
@@ -360,6 +374,23 @@ export default function CouponManager({ initialCoupons }: { initialCoupons: Coup
                   </div>
                 </div>
               )}
+
+              {/* Curso */}
+              <div>
+                <label className="block font-sans text-xs font-semibold text-muted uppercase tracking-wider mb-1.5">
+                  Vale para
+                </label>
+                <select
+                  value={fields.courseId}
+                  onChange={(e) => setFields((f) => ({ ...f, courseId: e.target.value }))}
+                  className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm text-foreground focus:outline-none focus:border-primary/50"
+                >
+                  <option value="">Todos os cursos</option>
+                  {cursos.map((x) => (
+                    <option key={x.id} value={x.id}>{x.title}</option>
+                  ))}
+                </select>
+              </div>
 
               {/* Limite de usos + Validade (lado a lado) */}
               <div className="grid grid-cols-2 gap-3">
