@@ -880,3 +880,182 @@ export async function sendAlertaNotaFiscal({
     html: baseLayout("Nota fiscal não emitida", body),
   });
 }
+
+/**
+ * Aviso geral de que a declaração de matrícula pode ser baixada pela área do
+ * aluno, sem pedir à coordenação. Quem precisa de nota fiscal responde o e-mail.
+ */
+export async function sendAvisoDeclaracaoMatricula({
+  to,
+  userName,
+}: {
+  to: string;
+  userName: string;
+}) {
+  const primeiroNome = userName.trim().split(/\s+/)[0];
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${primeiroNome}</strong>!</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Para quem precisa apenas da <strong>declaração de matrícula</strong>, ela já está disponível na área do aluno. Você pode baixá-la a qualquer hora, sem precisar pedir para a coordenação.</p>
+    <div style="background:#f0f9fa;border-left:4px solid #00475e;border-radius:8px;padding:16px 20px;margin:24px 0;">
+      <p style="margin:0 0 10px;color:#00475e;font-size:14px;font-weight:700;">Como baixar</p>
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">1. Entre em <a href="${APP_URL}/dashboard" style="color:#00475e;">nuvemensino.com.br/dashboard</a> com o seu login.</p>
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">2. Clique em <strong>Meus cursos</strong>, no menu da esquerda.</p>
+      <p style="margin:0;color:#374151;font-size:14px;">3. No cartão do curso, clique em <strong>Baixar declaração de matrícula</strong>.</p>
+    </div>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">O PDF sai na hora, com seus dados, a carga horária, o período do curso e a assinatura da Dra. Vera Ângelo. O certificado é emitido pela Faculdade FACOP, instituição credenciada pelo MEC.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:14px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px 16px;"><strong>Atenção:</strong> se o seu CPF ainda não estiver no cadastro, o site vai pedir na primeira vez. É só digitar.</p>
+    <div style="text-align:center;margin:28px 0;">
+      <a href="${APP_URL}/dashboard"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Acessar a área do aluno
+      </a>
+    </div>
+    <div style="background:#f0f7f8;border:1px solid #cbe4e6;border-radius:12px;padding:16px 20px;margin:24px 0;">
+      <p style="margin:0 0 8px;color:#00475e;font-size:14px;font-weight:700;">Precisa de nota fiscal?</p>
+      <p style="margin:0 0 8px;color:#374151;font-size:14px;">É só responder a este e-mail com os seus dados:</p>
+      <p style="margin:0 0 4px;color:#374151;font-size:14px;">• Nome completo</p>
+      <p style="margin:0 0 4px;color:#374151;font-size:14px;">• CPF</p>
+      <p style="margin:0;color:#374151;font-size:14px;">• Endereço completo, com CEP</p>
+    </div>
+    <p style="margin:24px 0 0;color:#9ca3af;font-size:13px;">Qualquer dúvida, estamos à disposição. Um abraço, Equipe NUVEM Ensino.</p>
+  `;
+
+  return deliver("aviso declaração de matrícula", to, {
+    from: FROM,
+    to,
+    subject: "Sua declaração de matrícula já está disponível na área do aluno",
+    html: baseLayout("Declaração de matrícula", body),
+  });
+}
+
+/** Por que a pessoa está na lista fechada do DICI — aparece no e-mail. */
+export type OrigemListaFechada = "live de julho" | "aula gratuita" | "teste respiratório";
+
+const MOTIVO_LISTA_FECHADA: Record<OrigemListaFechada, { abertura: string; rodape: string }> = {
+  "live de julho": {
+    abertura: "Você esteve com a gente na live do DICI, em julho, com a Dra. Vera Ângelo.",
+    rodape: "você se inscreveu na live do DICI de julho",
+  },
+  "aula gratuita": {
+    abertura: "Você assistiu à aula gratuita do 5º encontro do DICI, com a Dra. Vera Ângelo.",
+    rodape: "você se inscreveu na aula gratuita do DICI",
+  },
+  "teste respiratório": {
+    abertura: "Você já estudou com a NU.V.E.M Ensino no curso de testes respiratórios.",
+    rodape: "você estudou num curso de testes respiratórios da NU.V.E.M Ensino",
+  },
+};
+
+/**
+ * Convite com 50% no DICI para a lista fechada (alunos dos cursos de teste
+ * respiratório e inscritos nas lives que ainda não são do DICI).
+ *
+ * Cada pessoa tem um código próprio, de uso único: o desconto não é público e
+ * não pode ser repassado. O texto diz de onde veio o contato, porque a live de
+ * julho não pedia consentimento, e oferece a saída por resposta.
+ */
+export function montarConviteListaFechadaDici({
+  nome,
+  origem,
+  codigo,
+  link,
+  validoAte,
+}: {
+  nome: string;
+  origem: OrigemListaFechada;
+  codigo: string;
+  link: string;
+  validoAte: string;
+}) {
+  const primeiroNome = nome.trim().split(/\s+/)[0];
+  const saudacao = primeiroNome ? `Olá, <strong>${primeiroNome}</strong>!` : "Olá!";
+  const motivo = MOTIVO_LISTA_FECHADA[origem];
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">${saudacao}</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">${motivo.abertura} Por isso, antes de abrir a campanha ao público, separamos uma condição só para você no <strong>Curso de Aperfeiçoamento em DICI: Neurogastroenterologia e Métodos Diagnósticos Complementares</strong>.</p>
+    <div style="background:#f0f7f8;border:1px solid #cbe4e6;border-radius:12px;padding:20px;margin:24px 0;text-align:center;">
+      <p style="margin:0 0 6px;color:#00475e;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;">50% de desconto · código pessoal</p>
+      <p style="margin:0 0 10px;color:#00475e;font-size:26px;font-weight:700;letter-spacing:0.06em;">${codigo}</p>
+      <p style="margin:0 0 6px;color:#6b7280;font-size:14px;"><s>R$ 2.998</s> &nbsp;→&nbsp; <strong style="color:#00475e;font-size:18px;">R$ 1.499 à vista</strong></p>
+      <p style="margin:0 0 10px;color:#00475e;font-size:15px;font-weight:600;">ou 5x de R$ 299,80 sem juros</p>
+      <p style="margin:0;color:#6b7280;font-size:13px;">Válido até ${validoAte}, para uma matrícula.</p>
+    </div>
+    <div style="text-align:center;margin:28px 0;">
+      <a href="${link}"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Garantir minha vaga com 50%
+      </a>
+    </div>
+    <p style="margin:0 0 12px;color:#374151;font-size:15px;">O curso já começou, e isso não é problema: <strong>todas as aulas ficam gravadas</strong>. Você assiste no seu ritmo e ainda participa ao vivo do último encontro, em 25/11.</p>
+    <div style="background:#f0f9fa;border-left:4px solid #00475e;border-radius:8px;padding:16px 20px;margin:24px 0;">
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">✔ 96h com certificado MEC/FACOP</p>
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">✔ 16 aulas gravadas em 4 módulos, baseadas nos Critérios de Roma V</p>
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">✔ Gravação dos encontros já realizados e o 8º encontro ao vivo</p>
+      <p style="margin:0;color:#374151;font-size:14px;">✔ Módulos bônus “Como eu faço”</p>
+    </div>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">O link acima já abre o pagamento com o desconto aplicado. Qualquer dúvida, é só responder este e-mail.</p>
+    <p style="margin:0 0 24px;color:#374151;font-size:15px;">Um abraço,<br/>Equipe NU.V.E.M Ensino</p>
+    <p style="margin:0;color:#9ca3af;font-size:12px;">Você recebeu este e-mail porque ${motivo.rodape}. Se não quiser receber nossos próximos contatos, responda com “SAIR”.</p>
+  `;
+
+  return {
+    subject: "Uma condição só para você no DICI: 50% de desconto",
+    html: baseLayout("Uma condição só para você", body),
+  };
+}
+
+export async function sendConviteListaFechadaDici(
+  to: string,
+  dados: Parameters<typeof montarConviteListaFechadaDici>[0],
+) {
+  const { subject, html } = montarConviteListaFechadaDici(dados);
+  return deliver("lista fechada DICI 50%", to, { from: FROM, to, subject, html });
+}
+
+/**
+ * Aviso a quem se inscreveu em /live de que a live mudou de 18/11 para 25/11
+ * e ganhou tema próprio (probióticos). A inscrição continua valendo.
+ */
+export function montarAvisoNovaDataLive({ nome }: { nome: string }) {
+  const primeiroNome = nome.trim().split(/\s+/)[0];
+  const saudacao = primeiroNome ? `Olá, <strong>${primeiroNome}</strong>!` : "Olá!";
+
+  const body = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">${saudacao}</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Obrigado por se inscrever na live com a Dra. Vera Ângelo. Temos uma novidade: a live <strong>mudou de data</strong> e ganhou um tema que é pergunta de todo dia no consultório.</p>
+    <div style="background:#f0f7f8;border:1px solid #cbe4e6;border-radius:12px;padding:20px;margin:24px 0;text-align:center;">
+      <p style="margin:0 0 6px;color:#00475e;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;">Live gratuita · nova data</p>
+      <p style="margin:0 0 8px;color:#00475e;font-size:22px;font-weight:700;">Probióticos na prática clínica</p>
+      <p style="margin:0 0 4px;color:#374151;font-size:15px;"><s style="color:#9ca3af;">18/11</s> &nbsp;→&nbsp; <strong>Quarta, 25/11, às 19h30</strong></p>
+      <p style="margin:0;color:#6b7280;font-size:13px;">Ao vivo pelo YouTube, com a Dra. Vera Ângelo</p>
+    </div>
+    <p style="margin:0 0 10px;color:#374151;font-size:15px;">Na live, a Dra. Vera vai mostrar:</p>
+    <div style="background:#f0f9fa;border-left:4px solid #00475e;border-radius:8px;padding:16px 20px;margin:0 0 24px;">
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">✔ Quando o probiótico tem evidência e quando é só gasto</p>
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">✔ Por que a cepa e a dose importam mais do que a marca</p>
+      <p style="margin:0;color:#374151;font-size:14px;">✔ Como indicar nos distúrbios intestinais do dia a dia</p>
+    </div>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;"><strong>Você não precisa se inscrever de novo.</strong> Sua inscrição continua valendo, e o link da transmissão chega por e-mail antes da live.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Se quiser chamar um colega, o link de inscrição é este:</p>
+    <div style="text-align:center;margin:20px 0 28px;">
+      <a href="${APP_URL}/live?utm_source=email&utm_medium=inscritos&utm_campaign=live-probioticos"
+         style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
+        Ver a página da live
+      </a>
+    </div>
+    <p style="margin:0 0 24px;color:#374151;font-size:15px;">Até lá!<br/>Equipe NU.V.E.M Ensino</p>
+    <p style="margin:0;color:#9ca3af;font-size:12px;">Você recebeu este e-mail porque se inscreveu na live da NU.V.E.M Ensino. Se não quiser receber nossos próximos contatos, responda com “SAIR”.</p>
+  `;
+
+  return {
+    subject: "A live mudou: Probióticos na prática clínica, 25/11 às 19h30",
+    html: baseLayout("A live mudou de data", body),
+  };
+}
+
+export async function sendAvisoNovaDataLive(to: string, dados: Parameters<typeof montarAvisoNovaDataLive>[0]) {
+  const { subject, html } = montarAvisoNovaDataLive(dados);
+  return deliver("aviso nova data da live", to, { from: FROM, to, subject, html });
+}
