@@ -50,6 +50,10 @@ const socialLinks = {
 
 const books = [
   {
+    title: "Intolerâncias & Alergias Alimentares: da fisiopatologia à prática clínica",
+    href: "https://editorarubio.com.br/intolerancias",
+  },
+  {
     title: "Perguntas e Respostas Comentadas de Gastrenterologia Clínica e Hepatologia",
     href: "https://rubio.com.br/livro/a62313/9786588340998/perguntas-e-respostas-comentadas-de-gastrenterologia-clinica-e-hepatologia.html",
   },

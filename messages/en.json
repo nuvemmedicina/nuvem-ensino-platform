@@ -812,6 +812,12 @@
     "soloLabel": "Sole authorship",
     "coLabel": "Edited and co-authored works",
     "buyButton": "Buy at Rubio",
+    "roles": {
+      "organizer": "Editor",
+      "organizerWith": "Editor · with {names}",
+      "with": "With {names}"
+    },
+    "coverAlt": "Cover of the book {title}",
     "disclaimer": "Purchase, payment and delivery are handled directly by Editora Rubio (in Brazilian reais, shipped from Brazil). Prices, installments and availability are set by them and may change without notice, so we don't display them here.",
     "cta": {
       "title": "Want to go beyond reading?",

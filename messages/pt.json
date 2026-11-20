@@ -812,6 +812,12 @@
     "soloLabel": "Autoria individual",
     "coLabel": "Organizados e em coautoria",
     "buyButton": "Comprar na Rubio",
+    "roles": {
+      "organizer": "Organizadora",
+      "organizerWith": "Organizadora · com {names}",
+      "with": "Com {names}"
+    },
+    "coverAlt": "Capa do livro {title}",
     "disclaimer": "A compra, o pagamento e a entrega são feitos diretamente pela Editora Rubio. Preços, parcelamento e disponibilidade são definidos por ela e podem mudar sem aviso, por isso não são exibidos aqui.",
     "cta": {
       "title": "Quer ir além da leitura?",
