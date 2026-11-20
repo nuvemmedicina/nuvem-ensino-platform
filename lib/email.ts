@@ -1059,3 +1059,167 @@ export async function sendAvisoNovaDataLive(to: string, dados: Parameters<typeof
   const { subject, html } = montarAvisoNovaDataLive(dados);
   return deliver("aviso nova data da live", to, { from: FROM, to, subject, html });
 }
+
+// ─── Live "Probióticos na prática clínica" (25/11/2026) ─────────────────────
+// Três lembretes aos inscritos (véspera, manhã do dia, 1 hora antes) e três
+// e-mails depois da live, com a gravação e a oferta de 30% do DICI, que acaba
+// em 29/11. Disparo por prisma/enviar-emails-live-probioticos.ts.
+
+export type EtapaLiveProbioticos = "vespera" | "hoje" | "1hora" | "gravacao" | "blackfriday" | "ultimodia";
+
+export const ETAPAS_LIVE_PROBIOTICOS: EtapaLiveProbioticos[] = ["vespera", "hoje", "1hora", "gravacao", "blackfriday", "ultimodia"];
+
+/** As três últimas levam a oferta do DICI: não vão para quem já é aluno. */
+export const ETAPAS_COM_OFERTA: EtapaLiveProbioticos[] = ["gravacao", "blackfriday", "ultimodia"];
+
+function linkOfertaDici(etapa: EtapaLiveProbioticos) {
+  return `${APP_URL}/checkout/dici-neurogastroenterologia-2026?cupom=AINDADATEMPO&utm_source=email&utm_medium=inscritos-live&utm_campaign=black-november&utm_content=${etapa}`;
+}
+
+function linkPaginaDici(etapa: EtapaLiveProbioticos) {
+  return `${APP_URL}/cursos/dici-neurogastroenterologia-2026?utm_source=email&utm_medium=inscritos-live&utm_campaign=black-november&utm_content=${etapa}`;
+}
+
+function botaoLive(href: string, texto: string) {
+  return `<div style="text-align:center;margin:24px 0 28px;">
+      <a href="${href}" style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:15px;font-weight:600;display:inline-block;">${texto}</a>
+    </div>`;
+}
+
+function cartaoLive(rotulo: string, quando: string) {
+  return `<div style="background:#f0f7f8;border:1px solid #cbe4e6;border-radius:12px;padding:20px;margin:24px 0;text-align:center;">
+      <p style="margin:0 0 6px;color:#00475e;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;">${rotulo}</p>
+      <p style="margin:0 0 8px;color:#00475e;font-size:22px;font-weight:700;">Probióticos na prática clínica</p>
+      <p style="margin:0 0 4px;color:#374151;font-size:15px;"><strong>${quando}</strong></p>
+      <p style="margin:0;color:#6b7280;font-size:13px;">Ao vivo pelo YouTube, com a Dra. Vera Ângelo</p>
+    </div>`;
+}
+
+const pLive = (t: string) => `<p style="margin:0 0 16px;color:#374151;font-size:15px;">${t}</p>`;
+
+const AVISO_INSCRICAO_LIVE = `<p style="margin:0;color:#9ca3af;font-size:12px;">Você recebeu este e-mail porque se inscreveu na live da NU.V.E.M Ensino. Se não quiser receber nossos próximos contatos, responda com “SAIR”.</p>`;
+
+const assinaturaLive = (despedida: string) =>
+  `<p style="margin:0 0 24px;color:#374151;font-size:15px;">${despedida}<br/>Equipe NU.V.E.M Ensino</p>
+    ${AVISO_INSCRICAO_LIVE}`;
+
+const CARTAO_DICI = `<div style="background:#f0f9fa;border-left:4px solid #00475e;border-radius:8px;padding:16px 20px;margin:0 0 24px;">
+      <p style="margin:0 0 10px;color:#00475e;font-size:15px;font-weight:700;">DICI: Neurogastroenterologia e Métodos Diagnósticos Complementares</p>
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">✔ 96 horas, com certificado da FACOP, instituição credenciada pelo MEC</p>
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">✔ 16 temas em 4 módulos, dos Critérios de Roma V aos testes respiratórios, manometria e pHmetria</p>
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">✔ Módulos bônus “Como eu faço”, com 16 horas de conteúdo prático</p>
+      <p style="margin:0;color:#374151;font-size:14px;">✔ Aulas e encontros gravados, com <strong>um ano de acesso</strong> para assistir no seu ritmo</p>
+    </div>`;
+
+function cartaoOferta(prazo: string) {
+  return `<div style="background:#00475e;border-radius:12px;padding:20px;margin:0 0 8px;text-align:center;">
+      <p style="margin:0 0 4px;color:#cbe4e6;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;">Black November</p>
+      <p style="margin:0 0 4px;color:#ffffff;font-size:24px;font-weight:700;">30% de desconto</p>
+      <p style="margin:0 0 8px;color:#ffffff;font-size:15px;">em até 5x sem juros no cartão</p>
+      <p style="margin:0;color:#cbe4e6;font-size:13px;">${prazo} · cupom <strong style="color:#ffffff;">AINDADATEMPO</strong> já aplicado pelo botão</p>
+    </div>`;
+}
+
+export function montarEmailLiveProbioticos(
+  etapa: EtapaLiveProbioticos,
+  { nome, linkYoutube }: { nome: string; linkYoutube: string },
+) {
+  const primeiroNome = nome.trim().split(/\s+/)[0];
+  const ola = primeiroNome ? `Olá, <strong>${primeiroNome}</strong>!` : "Olá!";
+  const agenda =
+    "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+    `&text=${encodeURIComponent("Live: Probióticos na prática clínica (NU.V.E.M Ensino)")}` +
+    "&dates=20261125T223000Z/20261126T003000Z" +
+    `&details=${encodeURIComponent(`Ao vivo com a Dra. Vera Ângelo: ${linkYoutube}`)}`;
+
+  switch (etapa) {
+    case "vespera":
+      return {
+        subject: "É amanhã: Probióticos na prática clínica, às 19h30",
+        html: baseLayout("A live é amanhã", `
+    ${pLive(ola)}
+    ${pLive("Amanhã à noite a Dra. Vera Ângelo responde, ao vivo, uma pergunta que aparece todo dia no consultório: quando o probiótico tem evidência e quando é só gasto?")}
+    ${cartaoLive("Live gratuita · amanhã", "Quarta, 25/11, às 19h30")}
+    ${pLive("Ela vai mostrar por que a cepa e a dose importam mais do que a marca e como indicar nos distúrbios intestinais do dia a dia. No fim, responde às perguntas do chat.")}
+    ${pLive("O link da transmissão já está pronto. Salve na sua agenda para não perder:")}
+    ${botaoLive(agenda, "Salvar na minha agenda")}
+    ${pLive(`Link do YouTube: <a href="${linkYoutube}" style="color:#00475e;">${linkYoutube}</a>`)}
+    ${assinaturaLive("Até amanhã!")}`),
+      };
+
+    case "hoje":
+      return {
+        subject: "Hoje, 19h30: live com a Dra. Vera sobre probióticos",
+        html: baseLayout("A live é hoje", `
+    ${pLive(ola)}
+    ${pLive("É hoje! A live gratuita com a Dra. Vera Ângelo começa às <strong>19h30</strong>, ao vivo pelo YouTube.")}
+    ${cartaoLive("Live gratuita · hoje", "Hoje, 25/11, às 19h30")}
+    ${pLive("Traga suas dúvidas sobre probióticos: a Dra. Vera reserva o fim da live para responder às perguntas do chat.")}
+    ${botaoLive(linkYoutube, "Abrir a transmissão")}
+    ${pLive("Dica: clique em “Notifique-me” no YouTube para receber um aviso quando a live começar.")}
+    ${assinaturaLive("Até a noite!")}`),
+      };
+
+    case "1hora":
+      return {
+        subject: "Começa em 1 hora: Probióticos na prática clínica",
+        html: baseLayout("Começa em 1 hora", `
+    ${pLive(ola)}
+    ${pLive("Falta 1 hora! Às <strong>19h30</strong> a Dra. Vera Ângelo entra ao vivo para falar de probióticos na prática clínica.")}
+    ${botaoLive(linkYoutube, "Entrar na live")}
+    ${pLive("O chat abre alguns minutos antes. Até já!")}
+    ${AVISO_INSCRICAO_LIVE}`),
+      };
+
+    case "gravacao":
+      return {
+        subject: "A gravação da live de probióticos (e um convite da Dra. Vera)",
+        html: baseLayout("Obrigada por estar com a gente", `
+    ${pLive(ola)}
+    ${pLive("Obrigada por se inscrever na live de ontem. Se não conseguiu assistir, ou quer rever algum trecho, a gravação está no YouTube:")}
+    ${botaoLive(linkYoutube, "Assistir à gravação")}
+    ${pLive("O probiótico é só uma parte da história. Entender o eixo cérebro-intestino-microbiota, aplicar os Critérios de Roma V e saber pedir e interpretar os exames complementares é o que muda a conduta. É isso que a Dra. Vera e a equipe ensinam no DICI:")}
+    ${CARTAO_DICI}
+    ${pLive("O curso começou em agosto, mas <strong>ainda dá tempo</strong>: quem entra agora assiste a tudo gravado, faz as avaliações e recebe o certificado.")}
+    ${cartaoOferta("Até domingo, 29/11, às 23h59")}
+    ${botaoLive(linkOfertaDici("gravacao"), "Garantir minha vaga com 30%")}
+    ${pLive(`Quer ver o programa completo antes? <a href="${linkPaginaDici("gravacao")}" style="color:#00475e;">Conheça a página do curso</a>.`)}
+    ${assinaturaLive("Um abraço,")}`),
+      };
+
+    case "blackfriday":
+      return {
+        subject: "Black Friday: últimos 3 dias com 30% no DICI",
+        html: baseLayout("Últimos 3 dias", `
+    ${pLive(ola)}
+    ${pLive("Hoje é Black Friday, e a oferta do curso DICI entra nos <strong>últimos 3 dias</strong>. Não vamos aumentar o desconto: os 30% valem até domingo e, depois disso, o curso volta ao valor normal.")}
+    ${cartaoOferta("Termina domingo, 29/11, às 23h59")}
+    ${botaoLive(linkOfertaDici("blackfriday"), "Quero os 30% de desconto")}
+    ${CARTAO_DICI}
+    ${pLive(`Ainda não viu a live de probióticos? <a href="${linkYoutube}" style="color:#00475e;">A gravação está aqui</a>.`)}
+    ${assinaturaLive("Um abraço,")}`),
+      };
+
+    case "ultimodia":
+      return {
+        subject: "Termina hoje à meia-noite: 30% no DICI",
+        html: baseLayout("Termina hoje", `
+    ${pLive(ola)}
+    ${pLive("Último aviso: o desconto de 30% no curso DICI, com a Dra. Vera Ângelo, <strong>termina hoje às 23h59</strong>.")}
+    ${pLive("Quem entra agora assiste a todas as aulas e encontros gravados, com um ano de acesso, faz as avaliações e recebe o certificado de 96 horas da FACOP.")}
+    ${cartaoOferta("Só até hoje, 29/11, às 23h59")}
+    ${botaoLive(linkOfertaDici("ultimodia"), "Garantir minha vaga agora")}
+    ${pLive("Ficou alguma dúvida? É só responder a este e-mail ou chamar no WhatsApp (31) 97229-1029.")}
+    ${assinaturaLive("Um abraço,")}`),
+      };
+  }
+}
+
+export async function sendEmailLiveProbioticos(
+  etapa: EtapaLiveProbioticos,
+  to: string,
+  dados: Parameters<typeof montarEmailLiveProbioticos>[1],
+) {
+  const { subject, html } = montarEmailLiveProbioticos(etapa, dados);
+  return deliver(`live probióticos (${etapa})`, to, { from: FROM, to, subject, html });
+}
