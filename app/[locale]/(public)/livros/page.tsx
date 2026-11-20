@@ -38,7 +38,22 @@ export async function generateMetadata({
 // produto confirmado, por isso apontam para a busca pela autora na Rubio.
 const RUBIO_SEARCH_URL = "https://www.rubio.com.br/busca?q=Andrade%2C+Vera+L%C3%BAcia+%C3%82ngelo";
 
-const books: { title: string; authors?: string; href: string; solo: boolean; cover?: string }[] = [
+// Linha de papel embaixo do título: "organizer" vira Organizadora/Editor e
+// "coauthors" vira "com Fulano e Beltrano", ambos traduzidos por idioma (os
+// nomes ficam como estão). "coverTitle" encurta o título no texto alternativo
+// da capa quando o título completo tem subtítulo.
+type Book = {
+  title: string;
+  coverTitle?: string;
+  organizer?: boolean;
+  coauthors?: string[];
+  href: string;
+  solo: boolean;
+  cover?: string;
+};
+
+// Ordem: do mais recente para o mais antigo dentro de cada seção.
+const books: Book[] = [
   {
     title: "Testes Respiratórios em Gastrenterologia: Hidrogênio, Metano e Helicobacter Pylori",
     href: "https://rubio.com.br/livro/a62312/9786588340974/testes-respiratorios-em-gastrenterologia-hidrogenio-metano-e-helicobacter-pylori.html",
@@ -58,50 +73,66 @@ const books: { title: string; authors?: string; href: string; solo: boolean; cov
     solo: true,
   },
   {
+    title: "Intolerâncias & Alergias Alimentares: da fisiopatologia à prática clínica",
+    coverTitle: "Intolerâncias & Alergias Alimentares",
+    organizer: true,
+    coauthors: ["Ilanna Marques"],
+    href: "https://editorarubio.com.br/intolerancias",
+    cover: "/books/intolerancias-alergias-alimentares.jpg",
+    solo: false,
+  },
+  {
     title: "Métodos Diagnósticos em Doenças Funcionais e Motilidade Digestiva do Núcleo de Fisiologia Gastrintes",
-    authors: "Com Paulo José Pereira de Campos Carvalho e Nayara Salgado Carvalho",
+    coauthors: ["Paulo José Pereira de Campos Carvalho", "Nayara Salgado Carvalho"],
     href: "https://rubio.com.br/livro/c58906/9786588340844/metodos-diagnosticos-em-doencas-funcionais-e-motilidade-digestiva-do-nucleo-de-fisiologia-gastrintes.html",
     cover: "/books/metodos-diagnosticos-doencas-funcionais.jpg",
     solo: false,
   },
   {
     title: "Doenças Funcionais na Gastrenterologia",
-    authors: "Organizadora",
+    organizer: true,
     href: "https://rubio.com.br/livro/a61637/9786588340783/doencas-funcionais-na-gastrenterologia.html",
     cover: "/books/doencas-funcionais-na-gastrenterologia.jpg",
     solo: false,
   },
   {
     title: "Manual de Terapêutica em Gastrenterologia e Hepatologia Pediátrica",
-    authors: "Com Ana Daniela Izoton de Sadovsky",
+    coauthors: ["Ana Daniela Izoton de Sadovsky"],
     href: "https://www.rubio.com.br/livro/s31420/9786588340318/manual-de-terapeutica-em-gastrenterologia-e-hepatologia-pediatrica.html",
     cover: "/books/manual-terapeutica-pediatrica.jpg",
     solo: false,
   },
   {
     title: "Manual de Terapêutica em Gastroenterologia e Hepatologia",
-    authors: "Organizadora",
+    organizer: true,
     href: "https://www.rubio.com.br/livro/a57877/9786588340240/manual-de-terapeutica-em-gastroenterologia-e-hepatologia.html",
     cover: "/books/manual-terapeutica-gastroenterologia-hepatologia.jpg",
     solo: false,
   },
   {
     title: "Casos Comentados de Gastrenterologia e Hepatologia",
-    authors: "Organizadora",
+    organizer: true,
     href: "https://rubio.com.br/livro/a57235/9786588340028/casos-comentados-de-gastrenterologia-e-hepatologia.html",
     cover: "/books/casos-comentados-gastroenterologia-hepatologia.jpg",
     solo: false,
   },
 ];
 
-function BookCard({ book, buyLabel }: { book: (typeof books)[number]; buyLabel: string }) {
+type BookLabels = {
+  buy: string;
+  role: (book: Book) => string | null;
+  coverAlt: (book: Book) => string;
+};
+
+function BookCard({ book, labels }: { book: Book; labels: BookLabels }) {
+  const role = labels.role(book);
   return (
     <div className="bg-surface border border-border rounded-2xl overflow-hidden flex flex-col">
       <div className="relative w-full bg-primary/5" style={{ aspectRatio: "3/4" }}>
         {book.cover ? (
           <Image
             src={book.cover}
-            alt={book.title}
+            alt={labels.coverAlt(book)}
             fill
             className="object-contain"
             sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw"
@@ -115,8 +146,8 @@ function BookCard({ book, buyLabel }: { book: (typeof books)[number]; buyLabel: 
       <div className="p-6 flex flex-col gap-4 flex-1">
         <div className="flex-1">
           <h3 className="font-serif text-lg font-medium text-foreground leading-snug">{book.title}</h3>
-          {book.authors && (
-            <p className="font-sans text-xs text-muted mt-1">{book.authors}</p>
+          {role && (
+            <p className="font-sans text-xs text-muted mt-1">{role}</p>
           )}
         </div>
         <BuyBookLink
@@ -124,7 +155,7 @@ function BookCard({ book, buyLabel }: { book: (typeof books)[number]; buyLabel: 
           title={book.title}
           className="inline-flex items-center justify-center gap-2 font-sans text-sm font-semibold px-5 py-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary-dark transition-colors"
         >
-          {buyLabel}
+          {labels.buy}
           <ExternalLink className="w-4 h-4" />
         </BuyBookLink>
       </div>
@@ -143,6 +174,20 @@ export default async function LivrosPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "books" });
+
+  // "A e B" / "A and B" / "A y B", conforme o idioma.
+  const listFormat = new Intl.ListFormat(locale, { style: "long", type: "conjunction" });
+  const labels: BookLabels = {
+    buy: t("buyButton"),
+    role: (book) => {
+      const names = book.coauthors?.length ? listFormat.format(book.coauthors) : null;
+      if (book.organizer && names) return t("roles.organizerWith", { names });
+      if (book.organizer) return t("roles.organizer");
+      if (names) return t("roles.with", { names });
+      return null;
+    },
+    coverAlt: (book) => t("coverAlt", { title: book.coverTitle ?? book.title }),
+  };
 
   const soloBooks = books.filter((b) => b.solo);
   const coBooks = books.filter((b) => !b.solo);
@@ -171,7 +216,7 @@ export default async function LivrosPage({
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {soloBooks.map((book) => (
-            <BookCard key={book.href + book.title} book={book} buyLabel={t("buyButton")} />
+            <BookCard key={book.href + book.title} book={book} labels={labels} />
           ))}
         </div>
       </section>
@@ -184,7 +229,7 @@ export default async function LivrosPage({
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {coBooks.map((book) => (
-              <BookCard key={book.href + book.title} book={book} buyLabel={t("buyButton")} />
+              <BookCard key={book.href + book.title} book={book} labels={labels} />
             ))}
           </div>
         </div>
