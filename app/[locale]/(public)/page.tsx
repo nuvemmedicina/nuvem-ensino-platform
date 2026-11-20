@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { Monitor, Clock, ArrowRight } from "lucide-react";
 import HeroCarousel from "@/components/hero-carousel";
 import HeroStats from "@/components/hero-stats";
+import { LaunchBanner } from "@/components/LaunchBanner";
 import { getHeroSlides } from "@/lib/hero-slides";
 import { APP_URL } from "@/lib/appUrl";
 
@@ -154,6 +155,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
       {/* ── Stats strip ──────────────────────────────────────────────────── */}
       <HeroStats />
+
+      {/* ── Lançamento de livro (some sozinha depois do prazo) ──────────── */}
+      <LaunchBanner locale={locale} className="py-12" />
 
       {/* ── Modalidades ──────────────────────────────────────────────────── */}
       <section className="relative py-24 px-4 overflow-hidden"
