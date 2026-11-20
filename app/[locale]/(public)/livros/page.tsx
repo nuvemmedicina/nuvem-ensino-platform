@@ -118,6 +118,22 @@ const books: Book[] = [
   },
 ];
 
+// Faixa de lançamento no topo da página. Sai do ar sozinha no fim de 01/12/2026
+// (horário de Brasília): a página é refeita a cada hora (revalidate), então
+// some na primeira atualização depois desse horário. Sem preço, desconto nem
+// prazo na faixa: as condições da pré-venda ficam na página da Rubio.
+const LAUNCH = {
+  href: "https://editorarubio.com.br/intolerancias",
+  until: new Date("2026-12-02T00:00:00-03:00"),
+};
+
+// Fora do componente porque lê o relógio: o livro em lançamento, ou nada
+// depois do prazo.
+function currentLaunchBook(): Book | undefined {
+  if (Date.now() >= LAUNCH.until.getTime()) return undefined;
+  return books.find((b) => b.href === LAUNCH.href);
+}
+
 type BookLabels = {
   buy: string;
   role: (book: Book) => string | null;
@@ -163,6 +179,52 @@ function BookCard({ book, labels }: { book: Book; labels: BookLabels }) {
   );
 }
 
+function LaunchBanner({
+  book,
+  labels,
+  t,
+}: {
+  book: Book;
+  labels: BookLabels;
+  t: (key: "badge" | "byline" | "button") => string;
+}) {
+  return (
+    <section className="max-w-5xl mx-auto px-4 pt-12">
+      <div className="bg-accent/40 border border-border rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
+        {book.cover && (
+          <div className="relative w-32 sm:w-36 shrink-0 rounded-lg overflow-hidden shadow-md" style={{ aspectRatio: "1403/2000" }}>
+            <Image
+              src={book.cover}
+              alt={labels.coverAlt(book)}
+              fill
+              className="object-cover"
+              sizes="144px"
+              priority
+            />
+          </div>
+        )}
+        <div className="flex-1 text-center sm:text-left">
+          <span className="font-sans text-xs font-semibold tracking-[0.25em] uppercase text-primary/70 mb-2 block">
+            {t("badge")}
+          </span>
+          <h2 className="font-serif text-2xl sm:text-3xl font-medium text-foreground leading-snug">
+            {book.title}
+          </h2>
+          <p className="font-sans text-sm text-muted mt-2">{t("byline")}</p>
+          <BuyBookLink
+            href={book.href}
+            title={book.title}
+            className="mt-5 inline-flex items-center justify-center gap-2 font-sans text-sm font-semibold px-6 py-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary-dark transition-colors"
+          >
+            {t("button")}
+            <ExternalLink className="w-4 h-4" />
+          </BuyBookLink>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // O rodapé lista os cursos publicados; a página é refeita no máximo uma vez por hora.
 export const revalidate = 3600;
 
@@ -189,6 +251,9 @@ export default async function LivrosPage({
     coverAlt: (book) => t("coverAlt", { title: book.coverTitle ?? book.title }),
   };
 
+  const launchBook = currentLaunchBook();
+  const tLaunch = await getTranslations({ locale, namespace: "books.launch" });
+
   const soloBooks = books.filter((b) => b.solo);
   const coBooks = books.filter((b) => !b.solo);
 
@@ -208,6 +273,8 @@ export default async function LivrosPage({
           </p>
         </div>
       </section>
+
+      {launchBook && <LaunchBanner book={launchBook} labels={labels} t={tLaunch} />}
 
       {/* Autoria individual */}
       <section className="max-w-5xl mx-auto px-4 py-16">
