@@ -1,7 +1,7 @@
 ﻿import type { Metadata } from "next";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ExternalLink } from "lucide-react";
 
@@ -106,12 +106,16 @@ export async function generateMetadata({
   };
 }
 
+// Lê os professores do banco; a página é refeita no máximo uma vez por hora.
+export const revalidate = 3600;
+
 export default async function InstrutoresPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "instructors" });
 
   const instructors = await prisma.instructor.findMany({

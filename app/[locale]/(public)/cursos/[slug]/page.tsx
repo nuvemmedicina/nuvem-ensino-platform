@@ -1,7 +1,7 @@
 ﻿import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import {
   Clock,
@@ -16,10 +16,10 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { localizedCourse, traduzirModulos } from "@/lib/i18n-content";
-import { auth } from "@/auth";
 import { LIVE_DICI_SLUG } from "@/lib/live-dici-promo";
 import { ofertaAtiva, precoComOferta, rotuloDesconto } from "@/lib/ofertas";
 import ShareButton from "./ShareButton";
+import AulaMatriculados from "./AulaMatriculados";
 
 import { APP_URL } from "@/lib/appUrl";
 import { moduleColor } from "@/lib/moduleColors";
@@ -28,9 +28,11 @@ type Props = {
   params: Promise<{ slug: string; locale: string }>;
 };
 
-// Força renderização dinâmica: a página verifica matrícula por sessão do usuário
-// e não pode ser pré-gerada estaticamente
-export const dynamic = "force-dynamic";
+// Página guardada em cache e refeita no máximo a cada 5 minutos (preço,
+// oferta e vagas). Ela era montada a cada visita só para saber se quem visita
+// é aluno; isso agora fica em AulaMatriculados, que pergunta ao servidor
+// apenas quando o curso tem aula exclusiva.
+export const revalidate = 300;
 
 export async function generateStaticParams() {
   const courses = await prisma.course.findMany({
@@ -98,6 +100,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CoursePage({ params }: Props) {
   const { slug, locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "coursePage" });
   const tNav = await getTranslations({ locale, namespace: "nav" });
 
@@ -135,19 +138,6 @@ export default async function CoursePage({ params }: Props) {
   if (!courseRaw) notFound();
   // Módulos, temas e aulas no idioma da página (vazio = português)
   const course = { ...courseRaw, modules: traduzirModulos(courseRaw.modules, locale) };
-
-  // Verificar se o usuário está matriculado (para liberar vídeo de aula)
-  const session = await auth();
-  const isEnrolled = session?.user?.id
-    ? !!(await prisma.enrollment.findFirst({
-        where: {
-          userId: session.user.id,
-          courseId: course.id,
-          status: { in: ["ACTIVE", "COMPLETED"] },
-        },
-        select: { id: true },
-      }))
-    : false;
 
   const lc = localizedCourse(course, locale);
   const splitLines = (s: string | null | undefined) =>
@@ -394,24 +384,7 @@ export default async function CoursePage({ params }: Props) {
       </section>
 
       {/* ── Aula (YouTube) — apenas para matriculados ── */}
-      {course.previewUrl && isEnrolled && (
-        <section className="bg-canvas/50 border-b border-white/5 py-10 px-4">
-          <div className="max-w-3xl mx-auto">
-            <p className="font-sans text-xs font-semibold text-accent/70 uppercase tracking-widest text-center mb-4">
-              Acesso exclusivo — aluno matriculado
-            </p>
-            <div className="relative w-full rounded-2xl overflow-hidden border border-white/10" style={{ paddingTop: "56.25%" }}>
-              <iframe
-                src={course.previewUrl}
-                title={lc.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full"
-              />
-            </div>
-          </div>
-        </section>
-      )}
+      {course.previewUrl && <AulaMatriculados slug={course.slug} titulo={lc.title} />}
 
       {/* ── Conteúdo principal ── */}
       <div className="max-w-5xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-12 items-start">

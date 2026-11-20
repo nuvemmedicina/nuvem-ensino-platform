@@ -45,9 +45,9 @@ const socialLinks = [
   },
 ];
 
-export default async function Footer() {
+export default async function Footer({ locale }: { locale: string }) {
   const [t, dbCourses] = await Promise.all([
-    getTranslations("footer"),
+    getTranslations({ locale, namespace: "footer" }),
     prisma.course.findMany({
       where: { status: "PUBLISHED" },
       select: { title: true, slug: true, category: true },

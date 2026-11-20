@@ -1,7 +1,7 @@
 ﻿import type { Metadata } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import { PostHogProvider } from "@/components/PostHogProvider";
@@ -124,6 +124,11 @@ export default async function LocaleLayout({
   if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
     notFound();
   }
+
+  // Sem isto o next-intl descobre o idioma lendo os cabeçalhos da requisição,
+  // e qualquer página passa a ser montada de novo a cada visita, até as que
+  // não mudam (era o que gastava a CPU que pausou o site em 20/11/2026).
+  setRequestLocale(locale);
 
   const messages = await getMessages();
 

@@ -1,6 +1,6 @@
 ﻿import type { Metadata } from "next";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 import { Monitor, Clock, ArrowRight } from "lucide-react";
@@ -75,6 +75,7 @@ const jsonLd = {
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "home" });
   const heroSlides = getHeroSlides((key) => t(key), locale);
 
