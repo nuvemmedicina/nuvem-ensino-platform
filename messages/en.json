@@ -818,6 +818,11 @@
       "with": "With {names}"
     },
     "coverAlt": "Cover of the book {title}",
+    "launch": {
+      "badge": "New release",
+      "byline": "Edited by Dr. Vera Ângelo with Ilanna Marques.",
+      "button": "Learn more at Rubio"
+    },
     "disclaimer": "Purchase, payment and delivery are handled directly by Editora Rubio (in Brazilian reais, shipped from Brazil). Prices, installments and availability are set by them and may change without notice, so we don't display them here.",
     "cta": {
       "title": "Want to go beyond reading?",

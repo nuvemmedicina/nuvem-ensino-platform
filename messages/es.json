@@ -818,6 +818,11 @@
       "with": "Con {names}"
     },
     "coverAlt": "Portada del libro {title}",
+    "launch": {
+      "badge": "Lanzamiento",
+      "byline": "Organizado por la Dra. Vera Ângelo con Ilanna Marques.",
+      "button": "Conocer en Rubio"
+    },
     "disclaimer": "La compra, el pago y la entrega se realizan directamente por la Editora Rubio (en reales brasileños, con envío desde Brasil). Precios, cuotas y disponibilidad son definidos por ella y pueden cambiar sin aviso, por eso no se muestran aquí.",
     "cta": {
       "title": "¿Quiere ir más allá de la lectura?",
