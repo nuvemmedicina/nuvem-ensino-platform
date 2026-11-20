@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   const session = await auth();
   const {
     courseSlug, method, couponCode, installments, whatsapp, cpf, name, email,
-    gaClientId, fbp, fbc, utmSource, utmMedium, utmCampaign, endereco, modalidade: modalidadeBruta,
+    gaClientId, gaSessionId, gclid, fbp, fbc, utmSource, utmMedium, utmCampaign, endereco, modalidade: modalidadeBruta,
   } = await req.json();
 
   // Cursos que perguntam presencial ou online (lib/modalidades.ts).
@@ -344,6 +344,8 @@ export async function POST(req: Request) {
           asaasPaymentId: payment.id,
           couponId:      appliedCoupon?.id ?? null,
           gaClientId:    typeof gaClientId === "string" ? gaClientId : null,
+          gaSessionId:   typeof gaSessionId === "string" && /^\d{1,20}$/.test(gaSessionId) ? gaSessionId : null,
+          gclid:         typeof gclid === "string" && gclid.length <= 300 ? gclid : null,
           fbp:           typeof fbp === "string" ? fbp : null,
           fbc:           typeof fbc === "string" ? fbc : null,
         },

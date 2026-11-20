@@ -2,13 +2,14 @@
 
 import { useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { captureAttribution } from "@/lib/utmCapture";
+import { captureAttribution, captureGclid } from "@/lib/utmCapture";
 
 function AttributionCapturer() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
     captureAttribution(searchParams);
+    captureGclid(searchParams);
   }, [searchParams]);
 
   return null;

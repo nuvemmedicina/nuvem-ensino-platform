@@ -4,9 +4,9 @@ import { useState, useTransition, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { CreditCard, QrCode, FileText, Loader2, Shield, CheckCircle, Zap, Copy, Check, X, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { getGaClientId } from "@/lib/gaClientId";
+import { getGaClientId, getGaSessionId } from "@/lib/gaClientId";
 import { getFbClientId } from "@/lib/fbClientId";
-import { getStoredAttribution } from "@/lib/utmCapture";
+import { getStoredAttribution, getStoredGclid } from "@/lib/utmCapture";
 import { maxParcelas } from "@/lib/parcelamento";
 import type { Modalidade } from "@/lib/modalidades";
 
@@ -308,6 +308,8 @@ export default function CheckoutClient({
             name: isGuest ? guestName.trim() : undefined,
             email: isGuest ? guestEmail.trim() : undefined,
             gaClientId: getGaClientId() ?? undefined,
+            gaSessionId: getGaSessionId() ?? undefined,
+            gclid: getStoredGclid() ?? undefined,
             fbp: getFbClientId() ?? undefined,
             ...getStoredAttribution(),
           }),

@@ -3,6 +3,9 @@ import * as Sentry from "@sentry/nextjs";
 
 type PurchaseEventInput = {
   clientId: string | null;
+  /** session_id do GA4 (lib/gaClientId.ts). Sem ele a compra chega ao GA4
+   * sem origem e o Google Ads não a importa como conversão. */
+  sessionId?: string | null;
   value: number;
   currency: string;
   courseSlug: string;
@@ -48,6 +51,11 @@ export function sendGA4PurchaseEvent(input: PurchaseEventInput): void {
               {
                 name: "purchase",
                 params: {
+                  // session_id liga a compra à visita (e ao clique de anúncio)
+                  // em que a pessoa estava; engagement_time_msec é o que a
+                  // documentação do GA4 pede para o evento contar na sessão.
+                  session_id: input.sessionId ?? undefined,
+                  engagement_time_msec: input.sessionId ? 100 : undefined,
                   currency: input.currency,
                   value: input.value,
                   payment_method: input.paymentMethod,
