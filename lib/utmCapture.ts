@@ -72,3 +72,38 @@ export function getStoredAttribution(): {
   const { utmSource, utmMedium, utmCampaign, fbc } = stored;
   return { utmSource, utmMedium, utmCampaign, fbc };
 }
+
+/**
+ * Clique de anúncio do Google (parâmetro gclid, que a codificação automática
+ * do Google Ads acrescenta na URL). Ao contrário das UTMs acima, aqui vale o
+ * último clique: é o modelo do próprio Google Ads, e um gclid novo sempre
+ * substitui o anterior. Guardado separado para não mexer na atribuição de
+ * primeira visita. Serve para o nosso relatório saber quais matrículas
+ * vieram do anúncio, já que o anúncio do Google não leva UTM.
+ */
+const GCLID_KEY = "nuvem_gclid";
+
+export function captureGclid(searchParams: URLSearchParams): void {
+  if (typeof window === "undefined") return;
+  const gclid = searchParams.get("gclid");
+  if (!gclid) return;
+  try {
+    window.localStorage.setItem(GCLID_KEY, JSON.stringify({ gclid, savedAt: Date.now() }));
+  } catch {
+    // Armazenamento indisponível: sem gclid guardado, a compra só fica sem essa marcação.
+  }
+}
+
+export function getStoredGclid(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(GCLID_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { gclid?: string; savedAt?: number };
+    if (typeof parsed.gclid !== "string" || typeof parsed.savedAt !== "number") return null;
+    if (Date.now() - parsed.savedAt > EXPIRY_MS) return null;
+    return parsed.gclid;
+  } catch {
+    return null;
+  }
+}

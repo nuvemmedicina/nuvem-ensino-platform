@@ -516,6 +516,15 @@ model Payment {
   // lib/ga4MeasurementProtocol.ts). Nunca é dado pessoal, é um identificador
   // técnico aleatório gerado pelo próprio Google.
   gaClientId     String?
+  // session_id do GA4 (cookie _ga_<ID do fluxo>), mesma condição de
+  // consentimento do gaClientId. Vai junto no evento de compra para o GA4
+  // ligar a venda à visita que veio do anúncio; sem ele a compra fica sem
+  // origem e o Google Ads não importa a conversão.
+  gaSessionId    String?
+  // Clique de anúncio do Google (gclid, último clique, lib/utmCapture.ts).
+  // O anúncio do Google não leva UTM: é o que marca a matrícula como vinda
+  // do Google Ads nos nossos relatórios.
+  gclid          String?
   // Mesma ideia do gaClientId, mas do Meta Pixel (cookie _fbp), só existe
   // com o cookie de publicidade aceito. Usado em lib/metaConversionsApi.ts.
   fbp            String?
