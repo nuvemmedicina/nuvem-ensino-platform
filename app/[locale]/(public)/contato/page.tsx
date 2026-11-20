@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Mail, MapPin, Navigation, ArrowUpRight, HelpCircle } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 
 const EMAIL = "cursos@nuvemensino.com.br";
@@ -81,12 +81,16 @@ export async function generateMetadata({
   };
 }
 
+// O rodapé lista os cursos publicados; a página é refeita no máximo uma vez por hora.
+export const revalidate = 3600;
+
 export default async function ContatoPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "contact" });
 
   return (

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Award, BookOpen, Users, MapPin, ExternalLink, Star, GraduationCap, Microscope, Globe } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 
@@ -42,12 +42,16 @@ const staticPhotos: Record<string, string> = {
   "dra-anna-karoline": "/instructors/anna-karoline.jpg",
 };
 
+// Lê os professores do banco; a página é refeita no máximo uma vez por hora.
+export const revalidate = 3600;
+
 export default async function SobrePage({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "about" });
 
   // Instrutores do banco — com fallback de foto estática

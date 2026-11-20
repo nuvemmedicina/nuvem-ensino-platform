@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { BookOpen, ExternalLink } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { BuyBookLink } from "@/components/BuyBookLink";
 
@@ -132,12 +132,16 @@ function BookCard({ book, buyLabel }: { book: (typeof books)[number]; buyLabel: 
   );
 }
 
+// O rodapé lista os cursos publicados; a página é refeita no máximo uma vez por hora.
+export const revalidate = 3600;
+
 export default async function LivrosPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "books" });
 
   const soloBooks = books.filter((b) => b.solo);
