@@ -211,6 +211,7 @@ export default function CheckoutClient({
           expired: t("couponExpired"),
           limit: t("couponLimitReached"),
           notfound: t("couponNotFound"),
+          course: t("couponWrongCourse"),
         };
         setCouponError(porMotivo[data.reason as string] ?? t("couponInvalid"));
       }

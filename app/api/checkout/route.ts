@@ -105,7 +105,7 @@ export async function POST(req: Request) {
   // Validate coupon
   let discountPct = 0;
   let discountFlat = 0;
-  let appliedCoupon: { id: string; discountPct: number | null; discountFlat: unknown; maxUses: number | null; usesCount: number } | null = null;
+  let appliedCoupon: { id: string; discountPct: number | null; discountFlat: unknown; maxUses: number | null; usesCount: number; courseId: string | null } | null = null;
   if (couponCode) {
     // Normaliza igual à caixa do cupom (/api/coupons/validate). Sem isso, um
     // código digitado em minúscula ou com espaço era aceito na tela, mostrava o
@@ -146,6 +146,8 @@ export async function POST(req: Request) {
         select: { id: true, title: true, price: true, hours: true, totalSeats: true, reservedSeats: true },
       });
       if (!c) throw Object.assign(new Error("Curso não cadastrado no banco."), { status: 404 });
+      if (appliedCoupon?.courseId && appliedCoupon.courseId !== c.id)
+        throw Object.assign(new Error("Este cupom não vale para este curso."), { status: 400 });
 
       // Vaga pela contagem real; a matrícula da própria pessoa (nova tentativa) não conta
       if (c.totalSeats !== null) {

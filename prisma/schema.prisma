@@ -266,6 +266,7 @@ model Course {
   modules               Module[]
   enrollments           Enrollment[]
   coupons               CouponUsage[]
+  cuponsExclusivos      Coupon[]
   tags                  CourseTag[]
   liveSessions          LiveSession[]
   forumPosts            ForumPost[]
@@ -544,7 +545,10 @@ model Coupon {
   expiresAt    DateTime?
   active       Boolean   @default(true)
   createdAt    DateTime  @default(now())
+  /// Quando preenchido, o cupom só vale para este curso; vazio vale para todos.
+  courseId     String?
 
+  course Course?       @relation(fields: [courseId], references: [id], onDelete: SetNull)
   usages CouponUsage[]
 }
 

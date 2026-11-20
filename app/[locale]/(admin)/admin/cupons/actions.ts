@@ -16,6 +16,7 @@ export async function createCoupon(data: {
   discountFlat: number | null;
   maxUses: number | null;
   expiresAt: string | null;
+  courseId: string | null;
 }) {
   await requireAdmin();
 
@@ -30,6 +31,7 @@ export async function createCoupon(data: {
       discountFlat: data.discountFlat ?? null,
       maxUses:      data.maxUses      ?? null,
       expiresAt:    data.expiresAt ? new Date(data.expiresAt) : null,
+      courseId:     data.courseId || null,
       active: true,
     },
   });
@@ -45,6 +47,7 @@ export async function updateCoupon(
     discountFlat: number | null;
     maxUses: number | null;
     expiresAt: string | null;
+    courseId: string | null;
     active: boolean;
   },
 ) {
@@ -61,6 +64,7 @@ export async function updateCoupon(
       discountFlat: data.discountFlat ?? null,
       maxUses:      data.maxUses      ?? null,
       expiresAt:    data.expiresAt ? new Date(data.expiresAt) : null,
+      courseId:     data.courseId || null,
       active:       data.active,
     },
   });
