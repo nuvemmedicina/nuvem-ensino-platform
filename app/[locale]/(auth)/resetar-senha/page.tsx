@@ -4,6 +4,7 @@ import { Suspense, useState, useTransition } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2, CheckCircle, ArrowLeft } from "lucide-react";
+import { useHidratado } from "@/lib/use-hidratado";
 
 function ResetarSenhaForm() {
   const searchParams = useSearchParams();
@@ -15,6 +16,7 @@ function ResetarSenhaForm() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const hidratado = useHidratado();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -67,7 +69,7 @@ function ResetarSenhaForm() {
       <h1 className="font-serif text-3xl font-light text-foreground mb-1">Nova senha</h1>
       <p className="font-sans text-sm text-muted mb-8">Digite e confirme sua nova senha abaixo.</p>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form method="post" onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="password" className="font-sans text-xs font-semibold text-foreground/70">Nova senha</label>
           <div className="relative">
@@ -104,7 +106,7 @@ function ResetarSenhaForm() {
           <p className="font-sans text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
         )}
 
-        <button type="submit" disabled={isPending}
+        <button type="submit" disabled={isPending || !hidratado}
           className="w-full flex items-center justify-center gap-2 font-sans text-sm font-semibold px-4 py-3 rounded-xl bg-primary text-white hover:bg-primary/90 disabled:opacity-60 transition-colors mt-1">
           {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
           Salvar nova senha
