@@ -6,6 +6,10 @@
  * Os inscritos vão para LiveLead com o eventSlug abaixo e aparecem em
  * /admin/live-leads. Depois do horário de término, a página deixa de pedir
  * inscrição e manda para a página do curso, que mostra a oferta de 30%.
+ *
+ * A transmissão no YouTube é não listada: só chega a ela quem tem o link. Por
+ * isso o link aparece só depois da inscrição e, quando a live acaba, vira o
+ * botão da gravação (o endereço continua o mesmo).
  */
 export const LIVE_DICI = {
   eventSlug: "dici-live-novembro-2026",
@@ -13,6 +17,7 @@ export const LIVE_DICI = {
   dataCurta: "25/11 às 19h30",
   fim: new Date("2026-11-25T21:30:00-03:00"),
   courseSlug: "dici-neurogastroenterologia-2026",
+  youtubeUrl: "https://www.youtube.com/live/OVpi7v0xv2A",
 } as const;
 
 export function liveDiciEncerrada(agora = new Date()) {

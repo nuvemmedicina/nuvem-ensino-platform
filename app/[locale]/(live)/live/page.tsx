@@ -77,6 +77,14 @@ export default function LivePage() {
             >
               Conhecer o curso →
             </Link>
+            <a
+              href={LIVE_DICI.youtubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full text-center mt-3 py-4 rounded-xl border border-[#00475E] text-[#00475E] hover:bg-[#00475E]/5 font-bold text-[15px] transition-all"
+            >
+              Assistir à gravação da live
+            </a>
           </>
         ) : (
           <>

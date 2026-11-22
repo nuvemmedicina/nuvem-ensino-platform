@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { getStoredAttribution } from "@/lib/utmCapture";
+import { LIVE_DICI } from "@/lib/live-dici";
 
 export default function LiveRegistrationForm() {
   const [nome, setNome] = useState("");
@@ -61,10 +62,19 @@ export default function LiveRegistrationForm() {
         >
           Inscrição confirmada!
         </h3>
-        <p className="text-sm text-[#5C747A] dark:text-[#8AADB5] leading-relaxed max-w-[34ch]">
-          Você receberá o link da live no seu e-mail e WhatsApp antes do evento.
-          Fique atento!
+        <p className="text-sm text-[#5C747A] dark:text-[#8AADB5] leading-relaxed max-w-[36ch]">
+          A live acontece {LIVE_DICI.dataLabel.charAt(0).toLowerCase() + LIVE_DICI.dataLabel.slice(1)}, no YouTube. Guarde o
+          link abaixo e toque em <strong className="font-semibold">Notifique-me</strong> para receber o aviso quando
+          começar. Também mandamos o lembrete por e-mail e WhatsApp.
         </p>
+        <a
+          href={LIVE_DICI.youtubeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full text-center py-4 rounded-xl bg-[#00475E] hover:bg-[#003344] text-white font-bold text-[15px] transition-all"
+        >
+          Abrir a live no YouTube →
+        </a>
       </div>
     );
   }
