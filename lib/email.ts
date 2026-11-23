@@ -670,19 +670,21 @@ export async function sendTerceiroLembreteAulas({
   userName,
   courseName,
   courseSlug,
+  aulasLiberadas,
 }: {
   to: string;
   userName: string;
   courseName: string;
   courseSlug: string;
+  aulasLiberadas: number;
 }) {
   const link = `${APP_URL}/dashboard/cursos/${courseSlug}`;
   const entrar = `${APP_URL}/entrar`;
 
   const body = `
     <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
-    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Sua matrícula no <strong>${courseName}</strong> está ativa, e a turma já avançou bastante: <strong>três módulos estão liberados</strong>, com 51 aulas gravadas, e os encontros ao vivo também ficaram gravados na plataforma.</p>
-    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Nada está perdido. Você assiste no seu ritmo, na ordem que preferir, e o Módulo IV só chega em novembro: ainda dá tempo de alcançar a turma.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Sua matrícula no <strong>${courseName}</strong> está ativa, e o curso inteiro já está à sua espera: <strong>os quatro módulos e os Módulos Bônus "Como Eu Faço" estão liberados</strong>, com ${aulasLiberadas} aulas gravadas, e os encontros ao vivo também ficaram gravados na plataforma.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Nada está perdido. Você assiste no seu ritmo, na ordem que preferir, e ao concluir o curso recebe o seu certificado.</p>
     <div style="text-align:center;margin:28px 0;">
       <a href="${link}"
          style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">
@@ -731,7 +733,7 @@ export async function sendRetomarAulas({
   const body = `
     <p style="margin:0 0 16px;color:#374151;font-size:15px;">Olá, <strong>${userName}</strong>!</p>
     <p style="margin:0 0 16px;color:#374151;font-size:15px;">Você já concluiu <strong>${feitas}</strong> do <strong>${courseName}</strong>, e seu progresso está guardado: é só voltar e continuar de onde parou.</p>
-    <p style="margin:0 0 16px;color:#374151;font-size:15px;">Desde agosto a turma avançou: <strong>três módulos estão liberados</strong>, com ${aulasLiberadas} aulas gravadas, e os encontros ao vivo também ficaram gravados na plataforma. O Módulo IV chega em novembro, então este é um bom momento para colocar as aulas em dia.</p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;">A turma avançou: <strong>os quatro módulos já estão liberados</strong>, junto com os Módulos Bônus "Como Eu Faço", somando ${aulasLiberadas} aulas gravadas. Os encontros ao vivo também ficaram gravados na plataforma, e cada módulo tem a sua prova. É um ótimo momento para colocar as aulas em dia.</p>
     <div style="text-align:center;margin:28px 0;">
       <a href="${link}"
          style="background:#00475e;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;display:inline-block;">

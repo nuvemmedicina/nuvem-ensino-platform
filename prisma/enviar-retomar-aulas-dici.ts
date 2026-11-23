@@ -1,6 +1,7 @@
 /**
- * Convite para retomar o DICI (01/10/2026) — alunos com matrícula ativa que
- * concluíram ao menos uma aula, mas não registram atividade desde CORTE.
+ * Convite para retomar o DICI — alunos com matrícula ativa que concluíram ao
+ * menos uma aula, mas não registram atividade há mais de DIAS_PARADO dias.
+ * Enviado em 01/10/2026 (corte fixo em 1º/09) e em 23/11/2026.
  * Também gera a lista de WhatsApp do mesmo grupo, com mensagem pronta.
  *
  *   npx tsx prisma/enviar-retomar-aulas-dici.ts lista.txt                # simulação + lista
@@ -16,15 +17,21 @@ config({ path: ".env.local" });
 const prisma = new PrismaClient({ adapter: new PrismaNeon({ connectionString: process.env.DATABASE_URL! }) });
 
 const SLUG = "dici-neurogastroenterologia-2026";
-const CORTE = new Date("2026-09-01T03:00:00Z"); // 1º/09 00:00 em Brasília
+const DIAS_PARADO = 30;
+const CORTE = new Date(Date.now() - DIAS_PARADO * 24 * 3600e3);
 const EMAIL_TESTE = "anapgs.mkt@gmail.com";
 const PAUSA_MS = 600;
 const EMAIL_OK = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
 const LINK_CURSO = "https://www.nuvemensino.com.br/dashboard/cursos/" + SLUG;
 const LINK_ENTRAR = "https://www.nuvemensino.com.br/entrar";
 
-// Segunda conta da Dra. Vera é da equipe, não de aluna.
-const EXCLUIR = new Set(["veraluciaangeloandrade@gmail.com"]);
+// Segunda conta da Dra. Vera é da equipe, não de aluna. Contas duplicadas de
+// alunos (a pessoa recebe só na principal) vêm de EXCLUIR_EMAILS no .env.local,
+// separadas por vírgula, para não gravar e-mail de aluno no repositório.
+const EXCLUIR = new Set([
+  "veraluciaangeloandrade@gmail.com",
+  ...(process.env.EXCLUIR_EMAILS ?? "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean),
+]);
 
 const TITULO = /^(dr|dra|drª|prof|profª|profa)\.?$/i;
 const primeiroNome = (n: string | null) => {
@@ -40,7 +47,7 @@ function waLink(tel: string | null): string | null {
 }
 
 const mensagemWhats = (nome: string, aulas: number) =>
-  `Oi, ${nome}! Aqui é da equipe da NU.V.E.M Ensino 🎓 Vimos que você já concluiu ${aulas === 1 ? "1 aula" : `${aulas} aulas`} do Aperfeiçoamento em DICI, e seu progresso está guardado. A turma avançou: os Módulos I, II e III já estão liberados e os encontros ao vivo ficaram gravados. O Módulo IV chega em novembro, então é um ótimo momento para colocar as aulas em dia!\n\nLink para entrar: ${LINK_ENTRAR}\nDepois de entrar, é só clicar no Aperfeiçoamento em DICI: ${LINK_CURSO}\n\nQualquer dificuldade, me chama por aqui que a gente resolve!`;
+  `Oi, ${nome}! Aqui é da equipe da NU.V.E.M Ensino 🎓 Vimos que você já concluiu ${aulas === 1 ? "1 aula" : `${aulas} aulas`} do Aperfeiçoamento em DICI, e seu progresso está guardado. A turma avançou: os quatro módulos e os Módulos Bônus já estão liberados, e os encontros ao vivo ficaram gravados. É um ótimo momento para colocar as aulas em dia!\n\nLink para entrar: ${LINK_ENTRAR}\nDepois de entrar, é só clicar no Aperfeiçoamento em DICI: ${LINK_CURSO}\n\nQualquer dificuldade, me chama por aqui que a gente resolve!`;
 
 async function main() {
   const saida = process.argv[2];
@@ -78,7 +85,7 @@ async function main() {
         ultima: new Date(ultima),
       };
     })
-    .filter((a) => a.aulas > 0 && a.ultima < CORTE && EMAIL_OK.test(a.email) && !EXCLUIR.has(a.email))
+    .filter((a) => a.aulas > 0 && a.ultima < CORTE && EMAIL_OK.test(a.email) && !EXCLUIR.has(a.email.toLowerCase()))
     .sort((a, b) => a.nomeCompleto.localeCompare(b.nomeCompleto, "pt-BR"));
 
   const dataBR = (d: Date) => d.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
