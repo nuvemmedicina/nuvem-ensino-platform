@@ -1,5 +1,5 @@
 /**
- * Terceiro lembrete de aulas do DICI (01/10/2026) — para todo aluno com
+ * Lembrete de aulas do DICI (01/10 e 23/11/2026) — para todo aluno com
  * matrícula ativa que ainda não concluiu nenhuma aula, pago ou cortesia.
  * Quem já tem senha ou login Google recebe sendTerceiroLembreteAulas; quem
  * nunca criou senha recebe o e-mail de primeiro acesso com link válido por
@@ -46,6 +46,9 @@ async function main() {
   const { createPasswordResetToken } = await import("@/lib/tokens");
 
   const curso = await prisma.course.findUniqueOrThrow({ where: { slug: SLUG }, select: { id: true, title: true } });
+  const aulasLiberadas = await prisma.lesson.count({
+    where: { module: { courseId: curso.id, OR: [{ releaseDate: null }, { releaseDate: { lte: new Date() } }] } },
+  });
 
   const enrollments = await prisma.enrollment.findMany({
     where: { courseId: curso.id, status: "ACTIVE", user: { instructor: { is: null }, role: "STUDENT" } },
@@ -71,7 +74,7 @@ async function main() {
 
   const disparar = async (a: (typeof alvo)[number], to: string) => {
     if (a.temCred) {
-      return sendTerceiroLembreteAulas({ to, userName: a.nome, courseName: curso.title, courseSlug: SLUG });
+      return sendTerceiroLembreteAulas({ to, userName: a.nome, courseName: curso.title, courseSlug: SLUG, aulasLiberadas });
     }
     // O token é sempre do aluno; no teste só o destinatário muda.
     const token = await createPasswordResetToken(a.email, VALIDADE_HORAS);
@@ -80,7 +83,7 @@ async function main() {
 
   if (teste) {
     console.log(`\nMODO TESTE — o lembrete vai para ${EMAIL_TESTE}. Nenhum aluno recebe nada.`);
-    const r = await sendTerceiroLembreteAulas({ to: EMAIL_TESTE, userName: "Ana Paula", courseName: curso.title, courseSlug: SLUG });
+    const r = await sendTerceiroLembreteAulas({ to: EMAIL_TESTE, userName: "Ana Paula", courseName: curso.title, courseSlug: SLUG, aulasLiberadas });
     console.log(r.ok ? `OK enviado para ${EMAIL_TESTE} (${r.id})` : `!! FALHOU — ${r.error}`);
     if (!r.ok) process.exitCode = 1;
     return;
