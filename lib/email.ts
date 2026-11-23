@@ -1225,3 +1225,62 @@ export async function sendEmailLiveProbioticos(
   const { subject, html } = montarEmailLiveProbioticos(etapa, dados);
   return deliver(`live probióticos (${etapa})`, to, { from: FROM, to, subject, html });
 }
+
+// ─── Super live de encerramento do DICI (25/11/2026) ─────────────────────────
+// O 8º e último encontro síncrono do DICI virou a live aberta de probióticos, no
+// YouTube (não listada), em vez do Google Meet. Aviso aos alunos e lembrete do
+// dia. Disparo por prisma/enviar-super-live-encerramento-dici.ts.
+
+export function montarSuperLiveEncerramentoDici(
+  tipo: "aviso" | "lembrete",
+  { nome, linkYoutube }: { nome: string; linkYoutube: string },
+) {
+  const primeiroNome = nome.trim().split(/\s+/)[0];
+  const ola = primeiroNome ? `Olá, <strong>${primeiroNome}</strong>!` : "Olá!";
+  const linkColegas = `${APP_URL}/live?utm_source=email&utm_medium=alunos-dici&utm_campaign=live-probioticos`;
+  const naoEMeet = pLive(
+    "<strong>Atenção: desta vez não é pelo Google Meet.</strong> O encontro acontece no YouTube, neste link:",
+  );
+
+  if (tipo === "lembrete") {
+    return {
+      subject: "Hoje, 19h30: super live de encerramento do DICI, no YouTube",
+      html: baseLayout("É hoje", `
+    ${pLive(ola)}
+    ${pLive("Hoje é o nosso último encontro do Curso de Aperfeiçoamento em DICI: a super live de encerramento com a Dra. Vera Ângelo, às <strong>19h30</strong>.")}
+    ${cartaoLive("Super live de encerramento · hoje", "Hoje, 25/11, às 19h30")}
+    ${naoEMeet}
+    ${botaoLive(linkYoutube, "Abrir a live no YouTube")}
+    ${pLive("Traga suas dúvidas: a Dra. Vera reserva o fim da live para responder às perguntas do chat.")}
+    <p style="margin:0 0 24px;color:#374151;font-size:15px;">Até a noite!<br/>Equipe NU.V.E.M Ensino</p>`),
+    };
+  }
+
+  return {
+    subject: "Encerramento do DICI: super live com a Dra. Vera, quarta às 19h30",
+    html: baseLayout("Super live de encerramento", `
+    ${pLive(ola)}
+    ${pLive("O nosso 8º e último encontro do Curso de Aperfeiçoamento em DICI vai ser diferente: uma <strong>super live de encerramento</strong>, ao vivo pelo YouTube, com a Dra. Vera Ângelo.")}
+    ${cartaoLive("Super live de encerramento", "Quarta, 25/11, às 19h30")}
+    <p style="margin:0 0 10px;color:#374151;font-size:15px;">O tema é uma pergunta de todo dia no consultório. A Dra. Vera vai mostrar:</p>
+    <div style="background:#f0f9fa;border-left:4px solid #00475e;border-radius:8px;padding:16px 20px;margin:0 0 24px;">
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">✔ Quando o probiótico tem evidência e quando é só gasto</p>
+      <p style="margin:0 0 6px;color:#374151;font-size:14px;">✔ Por que a cepa e a dose importam mais do que a marca</p>
+      <p style="margin:0;color:#374151;font-size:14px;">✔ Como indicar nos distúrbios intestinais do dia a dia</p>
+    </div>
+    ${naoEMeet}
+    ${botaoLive(linkYoutube, "Abrir a live no YouTube")}
+    ${pLive("Dica: abra o link agora e clique em “Notifique-me” para o YouTube avisar quando a live começar. No dia, mandamos um lembrete.")}
+    ${pLive(`Se quiser chamar um colega, ele se inscreve por aqui: <a href="${linkColegas}" style="color:#00475e;">nuvemensino.com.br/live</a>.`)}
+    <p style="margin:0 0 24px;color:#374151;font-size:15px;">Até quarta!<br/>Equipe NU.V.E.M Ensino</p>`),
+  };
+}
+
+export async function sendSuperLiveEncerramentoDici(
+  tipo: "aviso" | "lembrete",
+  to: string,
+  dados: Parameters<typeof montarSuperLiveEncerramentoDici>[1],
+) {
+  const { subject, html } = montarSuperLiveEncerramentoDici(tipo, dados);
+  return deliver(`super live encerramento DICI (${tipo})`, to, { from: FROM, to, subject, html });
+}

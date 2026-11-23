@@ -30,7 +30,7 @@ const prisma = new PrismaClient({ adapter });
 
 // Preencher com o link da transmissão quando o Wallace criar a live no
 // YouTube (@nuvemensino). O envio real é bloqueado enquanto estiver vazio.
-const LINK_YOUTUBE = "";
+const LINK_YOUTUBE = "https://www.youtube.com/live/OVpi7v0xv2A";
 const LINK_PREVIA = "https://www.youtube.com/@nuvemensino";
 
 const EVENT_SLUG = "dici-live-novembro-2026";
