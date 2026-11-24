@@ -23,10 +23,10 @@ export default function LivePage() {
       <div className="relative h-[56vw] max-h-[480px] lg:h-screen lg:max-h-none lg:sticky lg:top-0 overflow-hidden bg-[#003344]">
         <div className="absolute inset-0">
           <Image
-            src="/instructors/dra-vera-angelo-1.jpeg"
+            src="/instructors/dra-vera-angelo-live.webp"
             alt="Dra. Vera Ângelo"
             fill
-            className="object-cover object-center lg:object-[center_15%]"
+            className="object-cover object-[center_15%] lg:object-center"
             priority
             sizes="(max-width: 1024px) 100vw, 50vw"
           />
