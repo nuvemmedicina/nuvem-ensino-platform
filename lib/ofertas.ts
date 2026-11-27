@@ -36,7 +36,7 @@ const OFERTAS: OfertaCurso[] = [
     aviso: {
       titulo: "Ainda dá tempo de entrar",
       texto:
-        "A turma começou em agosto, mas todas as aulas ficam gravadas. Você assiste no seu ritmo e participa ao vivo do 8º encontro, em 25/11.",
+        "A turma começou em agosto, mas todas as aulas e os encontros ao vivo ficam gravados. Você assiste no seu ritmo, quando e onde quiser.",
     },
   },
 ];

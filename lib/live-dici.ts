@@ -13,6 +13,8 @@ export const LIVE_DICI = {
   dataCurta: "25/11 às 19h30",
   fim: new Date("2026-11-25T21:30:00-03:00"),
   courseSlug: "dici-neurogastroenterologia-2026",
+  /** Gravação no YouTube (não listada): divulgada só depois que a live acontece. */
+  gravacaoUrl: "https://www.youtube.com/live/OVpi7v0xv2A",
 } as const;
 
 export function liveDiciEncerrada(agora = new Date()) {
