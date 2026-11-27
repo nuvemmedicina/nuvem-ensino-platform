@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import NextLink from "next/link";
 import { Link } from "@/i18n/navigation";
 import { LIVE_DICI, liveDiciEncerrada } from "@/lib/live-dici";
+import { ofertaAtiva, rotuloDesconto } from "@/lib/ofertas";
 
 // O destaque da live some sozinho depois do horário dela.
 export const dynamic = "force-dynamic";
@@ -72,8 +73,12 @@ export default async function LinksPage() {
     .filter((c) => c.category === "HANDS_ON" || c.category === "HYBRID")
     .slice(0, 4);
 
+  // O DICI fica em destaque no topo; com a oferta, o selo mostra o desconto.
+  const cursoDestaque = dbCourses.find((c) => c.slug === LIVE_DICI.courseSlug);
+  const oferta = cursoDestaque ? ofertaAtiva(cursoDestaque.slug) : null;
+
   const cursosOnline = dbCourses
-    .filter((c) => c.category === "ONLINE")
+    .filter((c) => c.category === "ONLINE" && c.slug !== cursoDestaque?.slug)
     .slice(0, 4);
 
   return (
@@ -100,6 +105,24 @@ export default async function LinksPage() {
         >
           Ver cursos
         </Link>
+
+        {cursoDestaque && (
+          <NextLink
+            href={`/cursos/${cursoDestaque.slug}?utm_source=instagram&utm_medium=bio&utm_campaign=${oferta ? "black-november" : "links"}`}
+            className="w-full mt-3 flex items-center justify-between gap-3 rounded-xl border-2 border-[#C9A84C] bg-[#F5EDD4] px-6 py-5 text-[#0E2B33] shadow-sm hover:shadow-md transition-all"
+          >
+            <span className="flex flex-col">
+              <span className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#B8973A]">
+                {oferta ? `Black November · ${rotuloDesconto(oferta)} até ${oferta.fimLabel}` : "Curso em destaque"}
+              </span>
+              <span className="font-sans text-[16px] font-semibold mt-1 leading-snug">{cursoDestaque.title}</span>
+              <span className="font-sans text-[13px] text-[#5B6B6E] mt-1">
+                Com a Dra. Vera Ângelo · aulas gravadas, no seu ritmo
+              </span>
+            </span>
+            <span className="text-[#B8973A]"><ArrowIcon /></span>
+          </NextLink>
+        )}
 
         {!liveDiciEncerrada() && (
           <NextLink
