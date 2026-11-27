@@ -21,9 +21,11 @@ export interface HeroSlide {
 // `t` deve vir de getTranslations({ namespace: "home" }) — as chaves abaixo
 // são relativas a esse namespace (ex.: "hero.badge", "heroCarousel.slide2.badge").
 export function getHeroSlides(t: Translator, locale: string): HeroSlide[] {
-  // Até a live de novembro do DICI (só em PT, como a página /live), o convite
-  // abre o carrossel no lugar do slide da gravação de julho.
-  const liveNovembro = locale === "pt" && !liveDiciEncerrada();
+  // Live de novembro do DICI (só em PT, como a página /live): antes dela o
+  // convite abre o carrossel; depois, a gravação no YouTube. Nos dois casos
+  // entra no lugar do slide da gravação de julho.
+  const liveNovembro = locale === "pt";
+  const liveAconteceu = liveDiciEncerrada();
   const slides: HeroSlide[] = [
     {
       id: "excelencia",
@@ -73,6 +75,20 @@ export function getHeroSlides(t: Translator, locale: string): HeroSlide[] {
 
   if (!liveNovembro) return slides;
 
+  const gravacao: HeroSlide = {
+    id: "dici-live-novembro",
+    badge: "Gravação da live · Dra. Vera Ângelo",
+    title: "Assista à live",
+    titleHighlight: "Probióticos na prática clínica",
+    description:
+      "Quando o probiótico tem evidência, por que a cepa importa e como indicar nos distúrbios intestinais. A gravação completa está no YouTube.",
+    primaryCta: { label: "Assistir no YouTube", link: { type: "plain", href: LIVE_DICI.gravacaoUrl } },
+    secondaryCta: {
+      label: "Detalhes do Curso",
+      link: { type: "route", pathname: "/cursos/[slug]", slug: LIVE_DICI.courseSlug },
+    },
+  };
+
   const convite: HeroSlide = {
     id: "dici-live-novembro",
     badge: `Live gratuita · ${LIVE_DICI.dataCurta}`,
@@ -89,5 +105,5 @@ export function getHeroSlides(t: Translator, locale: string): HeroSlide[] {
       link: { type: "route", pathname: "/cursos/[slug]", slug: LIVE_DICI.courseSlug },
     },
   };
-  return [convite, ...slides.filter((s) => s.id !== "dici-live")];
+  return [liveAconteceu ? gravacao : convite, ...slides.filter((s) => s.id !== "dici-live")];
 }

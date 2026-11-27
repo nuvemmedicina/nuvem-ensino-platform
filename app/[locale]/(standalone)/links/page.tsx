@@ -124,7 +124,24 @@ export default async function LinksPage() {
           </NextLink>
         )}
 
-        {!liveDiciEncerrada() && (
+        {liveDiciEncerrada() ? (
+          <a
+            href={LIVE_DICI.gravacaoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full mt-3 flex items-center justify-between gap-3 rounded-xl border border-[#E4E1D6] bg-white px-6 py-4 text-[#0E2B33] hover:border-[#0E2B33]/30 hover:shadow-sm transition-all"
+          >
+            <span className="flex flex-col">
+              <span className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-[#C0392B]">
+                ▶ Gravação no YouTube
+              </span>
+              <span className="font-sans text-[15px] font-semibold mt-0.5">
+                Live: Probióticos na prática clínica, com a Dra. Vera Ângelo
+              </span>
+            </span>
+            <span className="text-[#8A8577]"><ArrowIcon /></span>
+          </a>
+        ) : (
           <NextLink
             href="/live?utm_source=instagram&utm_medium=bio&utm_campaign=dici-live"
             className="w-full mt-3 flex items-center justify-between gap-3 rounded-xl border border-[#C9A84C] bg-[#F5EDD4] px-6 py-4 text-[#0E2B33] hover:shadow-sm transition-all"

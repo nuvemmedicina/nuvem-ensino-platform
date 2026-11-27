@@ -3,19 +3,21 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import LiveRegistrationForm from "./LiveRegistrationForm";
 import { LIVE_DICI, liveDiciEncerrada } from "@/lib/live-dici";
+import { ofertaAtiva } from "@/lib/ofertas";
 
 // Depois do horário da live a página troca o formulário pelo link do curso.
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Live gratuita: Probióticos na prática clínica, com a Dra. Vera Ângelo · NU.V.E.M Ensino",
+  title: "Live: Probióticos na prática clínica, com a Dra. Vera Ângelo · NU.V.E.M Ensino",
   description:
-    "Live gratuita em 25/11, às 19h30: a Dra. Vera Ângelo mostra quando o probiótico tem evidência, por que a cepa importa e como indicar nos distúrbios intestinais.",
+    "Na live, a Dra. Vera Ângelo mostra quando o probiótico tem evidência, por que a cepa importa e como indicar nos distúrbios intestinais.",
   alternates: { canonical: "/live" },
 };
 
 export default function LivePage() {
   const encerrada = liveDiciEncerrada();
+  const oferta = ofertaAtiva(LIVE_DICI.courseSlug);
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
@@ -65,15 +67,25 @@ export default function LivePage() {
               className="text-[#00475E] leading-[1.15] mb-4"
               style={{ fontFamily: "Georgia, serif", fontSize: "clamp(1.55rem, 3vw, 2.3rem)", fontWeight: "normal" }}
             >
-              A live já aconteceu, mas ainda dá tempo de entrar no DICI
+              <em className="not-italic text-[#0C1E24]">Probióticos</em> na prática clínica: assista à
+              gravação da live
             </h1>
             <p className="text-sm text-[#5C747A] leading-relaxed max-w-[44ch] mb-8">
-              Todas as aulas do Curso de Aperfeiçoamento em DICI ficam gravadas, e você assiste no seu
-              ritmo. A condição especial de 30% vale até 29/11.
+              A live com a Dra. Vera Ângelo está completa no YouTube. E todas as aulas do Curso de
+              Aperfeiçoamento em DICI também ficam gravadas, para você assistir no seu ritmo.
+              {oferta && ` A condição especial de ${oferta.descontoPct}% vale até ${oferta.fimLabel}.`}
             </p>
+            <a
+              href={LIVE_DICI.gravacaoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full text-center py-4 rounded-xl bg-[#00475E] hover:bg-[#003344] text-white font-bold text-[15px] transition-all"
+            >
+              ▶ Assistir no YouTube
+            </a>
             <Link
               href={`/cursos/${LIVE_DICI.courseSlug}`}
-              className="w-full text-center py-4 rounded-xl bg-[#00475E] hover:bg-[#003344] text-white font-bold text-[15px] transition-all"
+              className="w-full mt-3 text-center py-4 rounded-xl border border-[#00475E] text-[#00475E] hover:bg-[#00475E]/5 font-bold text-[15px] transition-all"
             >
               Conhecer o curso →
             </Link>
